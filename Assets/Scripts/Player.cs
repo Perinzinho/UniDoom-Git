@@ -2,42 +2,26 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    
-    public float speed = 6f;
-    
-    
-    private CharacterController controller;
-    private Vector3 velocity;
-    
-    public Transform cameraTransform;
+    private PlayerMovement playerMoviment;
+    [SerializeField] private float speed = 5f;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        controller = GetComponent<CharacterController>();
+        playerMoviment = GetComponent<PlayerMovement>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        MoveHorizontal();
+        playerMoviment.MoveHorizontal();
     }
-    
-    void MoveHorizontal()
+
+    // Added to fix CS1061
+    private void MoveHorizontal()
     {
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-
-        // pega a direção da câmera, mas zera o eixo Y pra não "voar"
-        Vector3 camForward = cameraTransform.forward;
-        camForward.y = 0f;
-        camForward.Normalize();
-
-        Vector3 camRight = cameraTransform.right;
-        camRight.y = 0f;
-        camRight.Normalize();
-
-        Vector3 move = camRight * x + camForward * z;
-        controller.Move(move * speed * Time.deltaTime);
+        float h = Input.GetAxis("Horizontal");
+        transform.Translate(Vector3.right * h * speed * Time.deltaTime);
     }
 }
 
