@@ -1,27 +1,18 @@
 using UnityEngine;
+using Assets.Scripts;
 
-public class PlayerMovement : MonoBehaviour
+public class Player : MonoBehaviour
 {
-    private PlayerMovement playerMoviment;
-    [SerializeField] private float speed = 5f;
+    private PlayerMovement playerMovement;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        playerMoviment = GetComponent<PlayerMovement>();
+        playerMovement = GetComponent<PlayerMovement>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        playerMoviment.MoveHorizontal();
-    }
-
-    // Added to fix CS1061
-    private void MoveHorizontal()
-    {
-        float h = Input.GetAxis("Horizontal");
-        transform.Translate(Vector3.right * h * speed * Time.deltaTime);
+        playerMovement.MoveHorizontal();
+        playerMovement.ApplyGravity();
     }
 }
-
