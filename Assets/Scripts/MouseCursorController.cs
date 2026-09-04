@@ -2,15 +2,13 @@ using UnityEngine;
 
 public class MouseController : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
     void Start()
     {
-        
+    Cursor.lockState = CursorLockMode.Locked;
+    Cursor.visible = false; // esconde o cursor do SO, o crosshair vira 100% UI agora
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        Cursor.SetCursor
-    }
 }
+
+    
