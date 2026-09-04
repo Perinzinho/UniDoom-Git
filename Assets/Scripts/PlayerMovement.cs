@@ -43,7 +43,7 @@ namespace Assets.Scripts
         }
 
         // Faz player cair no chão
-        void ApplyGravity()
+        public void ApplyGravity()
         {
             if (controller.isGrounded && velocity.y < 0)
             {
