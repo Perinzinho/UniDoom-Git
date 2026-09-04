@@ -11,18 +11,13 @@ namespace Assets.Scripts
         private CharacterController controller;
         private Vector3 velocity;
 
-        public Transform cameraTransform;
+        public Transform cameraTransform; // Linka isso a câmera do player
 
         void Start()
         {
             controller = GetComponent<CharacterController>();
         }
-
-        void Update()
-        {
-            MoveHorizontal();
-            ApplyGravity();
-        }
+        
 
         public void MoveHorizontal()
         {
@@ -39,6 +34,13 @@ namespace Assets.Scripts
             camRight.Normalize();
 
             Vector3 move = camRight * x + camForward * z;
+
+            // Resolve o problema de soma de velocidades ao andar na diagonal
+            if (move.magnitude > 1f)
+            {
+                move.Normalize();
+            }
+
             controller.Move(move * speed * Time.deltaTime);
         }
 
