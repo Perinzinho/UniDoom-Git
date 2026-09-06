@@ -29,7 +29,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3799770223020247429}
+  - {fileID: 853459716173810053}
   m_Father: {fileID: 853627128634026859}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4233473681101587877
@@ -50,7 +50,7 @@ GameObject:
   - component: {fileID: 1798324845489719241}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -213,8 +213,8 @@ MonoBehaviour:
   speed: 6
   gravity: -9.81
   groundedGravity: -2
-  cameraTransform: {fileID: 3799770223020247429}
---- !u!1 &9032181694028972101
+  cameraTransform: {fileID: 853459716173810053}
+--- !u!1 &4997456423089676155
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -222,12 +222,12 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3799770223020247429}
-  - component: {fileID: 8670039986290654217}
-  - component: {fileID: 7848172078238504021}
-  - component: {fileID: 1363404390727833201}
-  - component: {fileID: 1587122664385733343}
-  - component: {fileID: 7217580127728170766}
+  - component: {fileID: 853459716173810053}
+  - component: {fileID: 2139143450908638635}
+  - component: {fileID: 2275377868813361720}
+  - component: {fileID: 8890477100317745633}
+  - component: {fileID: 2956069067552328964}
+  - component: {fileID: 3800380786966928542}
   m_Layer: 0
   m_Name: FirstPersonCamera
   m_TagString: Untagged
@@ -235,28 +235,28 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3799770223020247429
+--- !u!4 &853459716173810053
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9032181694028972101}
+  m_GameObject: {fileID: 4997456423089676155}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.23513278, z: -0, w: 0.9719633}
+  m_LocalRotation: {x: -0, y: 0.25400886, z: -0, w: 0.9672019}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.112822, y: 0.7313148, z: 2.3824756}
+  m_LocalScale: {x: 2.1128218, y: 0.7313148, z: 2.3824759}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9012013704435278577}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8670039986290654217
+  m_LocalEulerAnglesHint: {x: -2.743, y: -175.065, z: -0.656}
+--- !u!114 &2139143450908638635
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9032181694028972101}
+  m_GameObject: {fileID: 4997456423089676155}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
@@ -274,7 +274,7 @@ MonoBehaviour:
     LookAtTarget: {fileID: 0}
     CustomLookAtTarget: 0
   Lens:
-    FieldOfView: 65.15732
+    FieldOfView: 60.000004
     OrthographicSize: 5
     NearClipPlane: 0.3
     FarClipPlane: 1000
@@ -293,26 +293,26 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 0
---- !u!114 &7848172078238504021
+--- !u!114 &2275377868813361720
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9032181694028972101}
+  m_GameObject: {fileID: 4997456423089676155}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36d1163fa822e8b418a0a603ec078d5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineHardLockToTarget
   Damping: 0
---- !u!114 &1363404390727833201
+--- !u!114 &8890477100317745633
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9032181694028972101}
+  m_GameObject: {fileID: 4997456423089676155}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62d54399b04b4fa48a73e121d4937dd4, type: 3}
@@ -321,7 +321,7 @@ MonoBehaviour:
   ReferenceFrame: 0
   RecenterTarget: 0
   PanAxis:
-    Value: 27.1989
+    Value: 29.429728
     Center: 0
     Range: {x: -180, y: 180}
     Wrap: 1
@@ -340,13 +340,13 @@ MonoBehaviour:
       Wait: 1
       Time: 2
     Restrictions: 0
---- !u!114 &1587122664385733343
+--- !u!114 &2956069067552328964
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9032181694028972101}
+  m_GameObject: {fileID: 4997456423089676155}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dbe43d662878a7c43bcd44d43c9e2094, type: 3}
@@ -354,14 +354,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineDeoccluder
   CollideAgainst:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 1
   IgnoreTag: 
   TransparentLayers:
     serializedVersion: 2
     m_Bits: 0
-  MinimumDistanceFromTarget: 0.5
+  MinimumDistanceFromTarget: 0.3
   AvoidObstacles:
-    Enabled: 0
+    Enabled: 1
     DistanceLimit: 0
     MinimumOcclusionTime: 0
     CameraRadius: 0.4
@@ -379,13 +379,13 @@ MonoBehaviour:
     NearLimit: 5
     FarLimit: 30
     MaxQualityBoost: 0.2
---- !u!114 &7217580127728170766
+--- !u!114 &3800380786966928542
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9032181694028972101}
+  m_GameObject: {fileID: 4997456423089676155}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89875cdc57c54474a8a74efd9b2a3b5d, type: 3}
@@ -397,11 +397,11 @@ MonoBehaviour:
   m_ControllerManager:
     Controllers:
     - Name: Look X (Pan)
-      Owner: {fileID: 1363404390727833201}
+      Owner: {fileID: 8890477100317745633}
       Enabled: 1
       Input:
-        InputAction: {fileID: -5630151704836100654, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
-        Gain: 1
+        InputAction: {fileID: -5630151704836100654, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+        Gain: 8
         LegacyInput: 
         LegacyGain: 1
         CancelDeltaTime: 0
@@ -410,17 +410,17 @@ MonoBehaviour:
         AccelTime: 0
         DecelTime: 0
     - Name: Look Y (Tilt)
-      Owner: {fileID: 1363404390727833201}
+      Owner: {fileID: 8890477100317745633}
       Enabled: 0
       Input:
-        InputAction: {fileID: -5630151704836100654, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
-        Gain: -1
+        InputAction: {fileID: 0}
+        Gain: 1
         LegacyInput: 
         LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
-        AccelTime: 0.2
-        DecelTime: 0.2
+        AccelTime: 0
+        DecelTime: 0
   PlayerIndex: -1
   AutoEnableInputs: 1
