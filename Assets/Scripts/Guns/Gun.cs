@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public abstract class Gun : MonoBehaviour
 {
@@ -38,27 +39,26 @@ public abstract class Gun : MonoBehaviour
 
 
     // Tenta realizar um disparo.
+    public event Action OnShoot;
+
     public void TryShoot()
     {
-        // Não permite atirar enquanto a arma estiver recarregando.
         if (recharging != null && recharging.IsReloading)
         {
             Debug.Log($"{name}: não pode atirar enquanto recarrega.");
             return;
         }
 
-        // Verifica se existe pelo menos uma munição no pente.
         if (!HasAmmo())
         {
             Debug.Log($"{name}: sem munição no pente.");
             return;
         }
 
-        // Executa o disparo específico da arma.
         Shoot();
-
-        // Após o disparo, remove uma munição do pente.
         ConsumeAmmo();
+
+        OnShoot?.Invoke();
     }
 
 
