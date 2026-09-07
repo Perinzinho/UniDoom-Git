@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6743295283283433834}
   m_Layer: 0
   m_Name: Inimigo
-  m_TagString: Untagged
+  m_TagString: Inimigo
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -128,6 +128,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48efc3bebc7c1064d94efa879513c36e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Inimigo
+  vidaMaxima: 100
+  velocidade: 3
+  danoAtaque: 10
+  alcanceAtaque: 1.5
+  cooldownAtaque: 1
+  OnVidaAlterada:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMorte:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!54 &6743295283283433834
 Rigidbody:
   m_ObjectHideFlags: 0
