@@ -7,6 +7,7 @@ public class WeaponSpriteAnimator : MonoBehaviour
     [SerializeField] private Image weaponImage;
     [SerializeField] private Sprite[] idleFrames;
     [SerializeField] private Sprite[] shootFrames;
+    [SerializeField] private Sprite[] rechargeFrames;
     [SerializeField] private float frameRate = 12f;
 
     private Sprite[] currentAnimation;
@@ -80,4 +81,5 @@ public class WeaponSpriteAnimator : MonoBehaviour
 
         weaponImage.sprite = currentAnimation[currentFrame];
     }
+    
 }
