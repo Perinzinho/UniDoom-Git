@@ -31,11 +31,11 @@ public class Pistol : Gun
     // Implementação do Shoot definido como abstract na classe Gun.
     protected override void Shoot()
     {
-        Debug.Log("Pistola disparou!");
+        DebugUI.Log("Pistola disparou!");
 
         if (playerCamera == null)
         {
-            Debug.LogWarning("Pistol: nenhuma câmera foi configurada.");
+            DebugUI.LogWarning("Pistol: nenhuma câmera foi configurada.");
             return;
         }
 
@@ -54,7 +54,7 @@ public class Pistol : Gun
         // range = distância máxima que o tiro pode alcançar
         if (Physics.Raycast(ray, out RaycastHit hit, range))
         {
-            Debug.Log(
+            DebugUI.Log(
                 $"Pistola acertou: {hit.collider.name} | Dano: {damage}"
             );
 

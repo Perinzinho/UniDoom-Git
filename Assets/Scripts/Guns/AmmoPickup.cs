@@ -6,7 +6,7 @@ public class AmmoPickup : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"Trigger detectado com: {other.name}, tag: {other.tag}");
+        DebugUI.Log($"Trigger detectado com: {other.name}, tag: {other.tag}");
         if (!other.CompareTag("Player"))
             return;
 
@@ -15,7 +15,7 @@ public class AmmoPickup : MonoBehaviour
 
         if (currentGun == null)
         {
-            Debug.LogWarning("AmmoPickup: nenhuma arma encontrada no Player.");
+            DebugUI.LogWarning("AmmoPickup: nenhuma arma encontrada no Player.");
             return;
         }
 

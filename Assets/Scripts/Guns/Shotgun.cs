@@ -39,11 +39,11 @@ public class Shotgun : Gun
     // Implementa o Shoot abstrato definido na classe Gun.
     protected override void Shoot()
     {
-        Debug.Log("Shotgun disparou!");
+        DebugUI.Log("Shotgun disparou!");
 
         if (playerCamera == null)
         {
-            Debug.LogWarning("Shotgun: nenhuma câmera foi configurada.");
+            DebugUI.LogWarning("Shotgun: nenhuma câmera foi configurada.");
             return;
         }
 
@@ -85,7 +85,7 @@ public class Shotgun : Gun
             // dentro da distância máxima definida em range.
             if (Physics.Raycast(ray, out RaycastHit hit, range))
             {
-                Debug.Log(
+                DebugUI.Log(
                     $"Pellet acertou: {hit.collider.name} | " +
                     $"Dano: {damagePerPellet}"
                 );

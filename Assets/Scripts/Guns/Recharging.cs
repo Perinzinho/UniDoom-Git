@@ -22,7 +22,7 @@ public class Recharging : MonoBehaviour
     {
         IsReloading = true;  // marca a arma como recarregando
 
-        Debug.Log($"{gun.name}: recarregando...");
+        DebugUI.Log($"{gun.name}: recarregando...");
 
         yield return new WaitForSeconds(reloadTime);   //espera o tempo de recarga sem travar o jogo
 

@@ -45,13 +45,13 @@ public abstract class Gun : MonoBehaviour
     {
         if (recharging != null && recharging.IsReloading)
         {
-            Debug.Log($"{name}: não pode atirar enquanto recarrega.");
+            DebugUI.Log($"{name}: não pode atirar enquanto recarrega.");
             return;
         }
 
         if (!HasAmmo())
         {
-            Debug.Log($"{name}: sem munição no pente.");
+            DebugUI.Log($"{name}: sem munição no pente.");
             return;
         }
 
@@ -68,7 +68,7 @@ public abstract class Gun : MonoBehaviour
         // Sem o componente Recharging não conseguimos executar a recarga.
         if (recharging == null)
         {
-            Debug.LogWarning($"{name}: componente Recharging não encontrado.");
+            DebugUI.LogWarning($"{name}: componente Recharging não encontrado.");
             return;
         }
 
@@ -80,14 +80,14 @@ public abstract class Gun : MonoBehaviour
         // não existe necessidade de recarregar.
         if (currentAmmo >= magazineSize)
         {
-            Debug.Log($"{name}: pente já está cheio.");
+            DebugUI.Log($"{name}: pente já está cheio.");
             return;
         }
 
         // Sem munição reserva não temos balas para colocar no pente.
         if (reserveAmmo <= 0)
         {
-            Debug.Log($"{name}: sem munição reserva.");
+            DebugUI.Log($"{name}: sem munição reserva.");
             return;
         }
 
@@ -108,7 +108,7 @@ public abstract class Gun : MonoBehaviour
     {
         currentAmmo--;
 
-        Debug.Log(
+        DebugUI.Log(
             $"{name}: {currentAmmo}/{magazineSize} | Reserva: {reserveAmmo}"
         );
     }
@@ -124,7 +124,7 @@ public abstract class Gun : MonoBehaviour
         // Adiciona a quantidade recebida à munição reserva.
         reserveAmmo += amount;
 
-        Debug.Log(
+        DebugUI.Log(
             $"{name}: pegou {amount} munições. Reserva: {reserveAmmo}"
         );
     }
@@ -145,7 +145,7 @@ public abstract class Gun : MonoBehaviour
         // Remove da reserva a mesma quantidade colocada no pente.
         reserveAmmo -= ammoToReload;
 
-        Debug.Log(
+        DebugUI.Log(
             $"{name}: recarga concluída. " +
             $"Pente: {currentAmmo}/{magazineSize} | Reserva: {reserveAmmo}"
         );
