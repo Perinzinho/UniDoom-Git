@@ -6,16 +6,16 @@ public class AmmoPickup : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        DebugUI.Log($"Trigger detectado com: {other.name}, tag: {other.tag}");
+        DebugUI.Log($"Trigger detected with: {other.name}, tag: {other.tag}");
         if (!other.CompareTag("Player"))
             return;
 
-        // Busca o Gun em qualquer lugar do objeto que entrou no trigger (ou seus filhos).
+        // Search for Gun anywhere on the object that entered the trigger (or its children).
         Gun currentGun = other.GetComponentInChildren<Gun>();
 
         if (currentGun == null)
         {
-            DebugUI.LogWarning("AmmoPickup: nenhuma arma encontrada no Player.");
+            DebugUI.LogWarning("AmmoPickup: no weapon found on Player.");
             return;
         }
 
