@@ -8,41 +8,59 @@ public class WeaponSpriteAnimator : MonoBehaviour
     [SerializeField] private Sprite[] idleFrames;
     [SerializeField] private Sprite[] shootFrames;
     [SerializeField] private Sprite[] rechargeFrames;
-    [SerializeField] private float frameRate = 12f;
+    [SerializeField] private float idleFrameRate = 12f;
+    [SerializeField] private float shootFrameRate = 20f;
+    [SerializeField] private float rechargeFrameRate = 5f;
 
     private Sprite[] currentAnimation;
+    private float currentFrameRate;
     private int currentFrame;
     private float timer;
     private bool isShooting;
+    private bool isReloading;
 
     void Start()
     {
         currentAnimation = idleFrames;
+        currentFrameRate = idleFrameRate;
         if (currentAnimation.Length > 0)
             weaponImage.sprite = currentAnimation[0];
 
-        // Se a arma já existir na cena (não instanciada em runtime), inscreve direto.
-        if (gun != null)
-            gun.OnShoot += PlayShootAnimation;
+        UnsubscribeFromGun(gun); // evita duplicar inscrição se SetGun já rodou antes deste Start()
+        SubscribeToGun(gun);
     }
 
     // Chamado de fora (pelo Spawner/GameManager) depois que o Player é instanciado.
     public void SetGun(Gun newGun)
     {
-        // Se já tinha uma arma inscrita antes, desinscreve pra não duplicar eventos.
-        if (gun != null)
-            gun.OnShoot -= PlayShootAnimation;
-
+        UnsubscribeFromGun(gun);
         gun = newGun;
-
-        if (gun != null)
-            gun.OnShoot += PlayShootAnimation;
+        SubscribeToGun(gun);
     }
 
     void OnDisable()
     {
-        if (gun != null)
-            gun.OnShoot -= PlayShootAnimation;
+        UnsubscribeFromGun(gun);
+    }
+
+    private void SubscribeToGun(Gun targetGun)
+    {
+        if (targetGun == null)
+            return;
+
+        targetGun.OnShoot += PlayShootAnimation;
+        targetGun.OnReloadStarted += PlayRechargeAnimation;
+        targetGun.OnReloadFinished += StopRechargeAnimation;
+    }
+
+    private void UnsubscribeFromGun(Gun targetGun)
+    {
+        if (targetGun == null)
+            return;
+
+        targetGun.OnShoot -= PlayShootAnimation;
+        targetGun.OnReloadStarted -= PlayRechargeAnimation;
+        targetGun.OnReloadFinished -= StopRechargeAnimation;
     }
 
     void Update()
@@ -50,8 +68,10 @@ public class WeaponSpriteAnimator : MonoBehaviour
         if (currentAnimation == null || currentAnimation.Length == 0)
             return;
 
+        float frameInterval = 1f / Mathf.Max(currentFrameRate, 1f);
+
         timer += Time.deltaTime;
-        if (timer >= 1f / frameRate)
+        if (timer >= frameInterval)
         {
             timer = 0;
 
@@ -61,25 +81,64 @@ public class WeaponSpriteAnimator : MonoBehaviour
 
             if (currentFrame >= currentAnimation.Length)
             {
-                currentFrame = 0;
+                if (isReloading)
+                {
+                    // Toca uma vez e segura o último frame até a recarga terminar.
+                    currentFrame = currentAnimation.Length - 1;
+                    return;
+                }
 
                 if (isShooting)
                 {
                     isShooting = false;
                     currentAnimation = idleFrames;
+                    currentFrameRate = idleFrameRate;
                 }
+
+                currentFrame = 0;
             }
         }
     }
 
     void PlayShootAnimation()
     {
+        if (isReloading)
+            return;
+
         isShooting = true;
         currentAnimation = shootFrames;
+        currentFrameRate = shootFrameRate;
         currentFrame = 0;
         timer = 0;
 
         weaponImage.sprite = currentAnimation[currentFrame];
     }
-    
+
+    void PlayRechargeAnimation()
+    {
+        if (isReloading)
+            return;
+
+        isReloading = true;
+        isShooting = false;
+        currentAnimation = rechargeFrames;
+        currentFrameRate = rechargeFrameRate;
+        currentFrame = 0;
+        timer = 0;
+
+        if (currentAnimation.Length > 0)
+            weaponImage.sprite = currentAnimation[0];
+    }
+
+    void StopRechargeAnimation()
+    {
+        isReloading = false;
+        currentAnimation = idleFrames;
+        currentFrameRate = idleFrameRate;
+        currentFrame = 0;
+        timer = 0;
+
+        if (currentAnimation.Length > 0)
+            weaponImage.sprite = currentAnimation[0];
+    }
 }
