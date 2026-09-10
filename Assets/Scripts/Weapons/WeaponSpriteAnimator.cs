@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class WeaponSpriteAnimator : MonoBehaviour
@@ -7,7 +8,8 @@ public class WeaponSpriteAnimator : MonoBehaviour
     [SerializeField] private Image weaponImage;
     [SerializeField] private Sprite[] idleFrames;
     [SerializeField] private Sprite[] shootFrames;
-    [SerializeField] private Sprite[] rechargeFrames;
+    [FormerlySerializedAs("rechargeFrames")]
+    [SerializeField] private Sprite[] reloadFrames;
     [SerializeField] private float frameRate = 12f;
 
     private Sprite[] currentAnimation;
@@ -21,15 +23,15 @@ public class WeaponSpriteAnimator : MonoBehaviour
         if (currentAnimation.Length > 0)
             weaponImage.sprite = currentAnimation[0];
 
-        // Se a arma já existir na cena (não instanciada em runtime), inscreve direto.
+        // If weapon already exists in scene (not instantiated at runtime), subscribe directly.
         if (gun != null)
             gun.OnShoot += PlayShootAnimation;
     }
 
-    // Chamado de fora (pelo Spawner/GameManager) depois que o Player é instanciado.
+    // Called from outside (by Spawner/GameManager) after Player is instantiated.
     public void SetGun(Gun newGun)
     {
-        // Se já tinha uma arma inscrita antes, desinscreve pra não duplicar eventos.
+        // If previously subscribed, unsubscribe to avoid duplicate events.
         if (gun != null)
             gun.OnShoot -= PlayShootAnimation;
 
