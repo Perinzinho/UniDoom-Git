@@ -417,13 +417,13 @@ MonoBehaviour:
   - {fileID: -1703986165, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
   rechargeFrames:
   - {fileID: 1853681772, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
-  - {fileID: 1577745526, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
   - {fileID: -575250233, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
   - {fileID: 1561782323, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
   - {fileID: -1354428207, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
+  - {fileID: 1577745526, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
   idleFrameRate: 12
   shootFrameRate: 20
-  rechargeFrameRate: 8
+  rechargeFrameRate: 12
 --- !u!114 &297624500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1694,6 +1694,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc2cd35ea8da4d94dbed596fe59ea6a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnerInimigos
+  prefabInimigo: {fileID: 0}
+  pontosDeSpawn: []
 --- !u!1 &1700444701
 GameObject:
   m_ObjectHideFlags: 0
