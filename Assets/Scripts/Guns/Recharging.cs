@@ -1,33 +1,39 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class Recharging : MonoBehaviour
 {
-    [SerializeField] private float reloadTime = 2f; //tempo de recarga
+    [SerializeField] private float reloadTime = 2f;
 
-    public bool IsReloading { get; private set; } //indica se a arma está recarregando se sim marca como true
+    public bool IsReloading { get; private set; }
 
-    public void StartReload(Gun gun)  //função para iniciar recarga da arma, recebe como parâmetro a arma que será recarregada
+    public event Action OnReloadStarted;
+    public event Action OnReloadFinished;
+
+    public void StartReload(Gun gun)
     {
-        if (gun == null) //verifica se a arma é nula, se sim retorna
+        if (gun == null)
             return;
 
-        if (IsReloading) //impede iniciar uma recarga se a arma já estiver recarregando
+        if (IsReloading)
             return;
 
-        StartCoroutine(ReloadCoroutine(gun));  //inicia o processo de recarga
+        IsReloading = true;
+        StartCoroutine(ReloadCoroutine(gun));
     }
 
-    private IEnumerator ReloadCoroutine(Gun gun)  //controla o tempo de recarga
+    private IEnumerator ReloadCoroutine(Gun gun)
     {
-        IsReloading = true;  // marca a arma como recarregando
+        OnReloadStarted?.Invoke();
 
         DebugUI.Log($"{gun.name}: recarregando...");
 
-        yield return new WaitForSeconds(reloadTime);   //espera o tempo de recarga sem travar o jogo
+        yield return new WaitForSeconds(reloadTime);
 
-        gun.FinishReload();  //avisa a arma que a recarga terminou e atualiza a munição
+        gun.FinishReload();
 
-        IsReloading = false;  //marca a recarga como concluída
+        IsReloading = false;
+        OnReloadFinished?.Invoke();
     }
 }
