@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class BillBoard : MonoBehaviour
+public class Billboard : MonoBehaviour
 {
-    //Técnica do Doom que o objeto 2d fica sempre olhando para  o player
+    // Doom-style billboard technique: the 2D object always faces the player
     private Transform cameraTransform;
     void Start()
     {
