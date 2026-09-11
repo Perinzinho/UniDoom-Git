@@ -1,33 +1,39 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class Reloading : MonoBehaviour
 {
-    [SerializeField] private float reloadTime = 2f; // reload duration
+    [SerializeField] private float reloadTime = 2f;
 
-    public bool IsReloading { get; private set; } // indicates if the weapon is currently reloading
+    public bool IsReloading { get; private set; }
 
-    public void StartReload(Gun gun)  // starts reloading for the given weapon
+    public event Action OnReloadStarted;
+    public event Action OnReloadFinished;
+
+    public void StartReload(Gun gun)
     {
-        if (gun == null) // check if weapon is null
+        if (gun == null)
             return;
 
-        if (IsReloading) // prevent starting a reload if already reloading
+        if (IsReloading)
             return;
 
-        StartCoroutine(ReloadCoroutine(gun));  // start reload process
+        IsReloading = true;
+        StartCoroutine(ReloadCoroutine(gun));
     }
 
-    private IEnumerator ReloadCoroutine(Gun gun)  // controls reload timing
+    private IEnumerator ReloadCoroutine(Gun gun)
     {
-        IsReloading = true;  // mark weapon as reloading
+        OnReloadStarted?.Invoke();
 
-        DebugUI.Log($"{gun.name}: reloading...");
+        DebugUI.Log($"{gun.name}: recarregando...");
 
-        yield return new WaitForSeconds(reloadTime);   // wait for reload duration without freezing the game
+        yield return new WaitForSeconds(reloadTime);
 
-        gun.FinishReload();  // notify weapon that reload finished and update ammo
+        gun.FinishReload();
 
-        IsReloading = false;  // mark reload as complete
+        IsReloading = false;
+        OnReloadFinished?.Invoke();
     }
 }

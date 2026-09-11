@@ -1,58 +1,68 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 using System;
 
 public abstract class Gun : MonoBehaviour
 {
     [Header("Ammo")]
-
-    // Maximum ammo that fits in the magazine.
     [SerializeField] protected int magazineSize = 10;
-
-    // Current ammo in the magazine.
     [SerializeField] protected int currentAmmo = 10;
-
-    // Reserve ammo outside the magazine.
     [SerializeField] protected int reserveAmmo = 30;
 
-
     [Header("Reload")]
+    protected Reloading recharging;
 
-    // Reference to the component responsible for reload timing.
-    [FormerlySerializedAs("recharging")]
-    protected Reloading reloading;
-
-
-    // Allow other scripts to query ammo values without direct modification.
     public int CurrentAmmo => currentAmmo;
     public int ReserveAmmo => reserveAmmo;
     public int MagazineSize => magazineSize;
 
+    public event Action OnShoot;
 
-    // Called when the weapon is initialized.
+    // Novos eventos: repassam o que acontece no Recharging para quem escuta o Gun.
+    public event Action OnReloadStarted;
+    public event Action OnReloadFinished;
+
     protected virtual void Awake()
     {
-        if (reloading == null)
+        if (recharging == null)
         {
-            reloading = GetComponent<Reloading>();
+            recharging = GetComponent<Reloading>();
+        }
+
+        if (recharging != null)
+        {
+            recharging.OnReloadStarted += HandleReloadStarted;
+            recharging.OnReloadFinished += HandleReloadFinished;
         }
     }
 
+    protected virtual void OnDestroy()
+    {
+        if (recharging != null)
+        {
+            recharging.OnReloadStarted -= HandleReloadStarted;
+            recharging.OnReloadFinished -= HandleReloadFinished;
+        }
+    }
+    
+    
 
-    // Attempt to fire.
-    public event Action OnShoot;
+    private void HandleReloadStarted()
+    {
+        OnReloadStarted?.Invoke();
+    }
+    private void HandleReloadFinished() => OnReloadFinished?.Invoke();
 
     public void TryShoot()
     {
-        if (reloading != null && reloading.IsReloading)
+        if (recharging != null && recharging.IsReloading)
         {
-            DebugUI.Log($"{name}: cannot shoot while reloading.");
+            DebugUI.Log($"{name}: não pode atirar enquanto recarrega.");
             return;
         }
 
         if (!HasAmmo())
         {
-            DebugUI.Log($"{name}: no ammo in magazine.");
+            DebugUI.Log($"{name}: sem munição no pente.");
             return;
         }
 
@@ -62,96 +72,62 @@ public abstract class Gun : MonoBehaviour
         OnShoot?.Invoke();
     }
 
-
-    // Attempt to start reloading.
     public void TryReload()
     {
-        // Without Reloading component we cannot reload.
-        if (reloading == null)
+        if (recharging == null)
         {
-            DebugUI.LogWarning($"{name}: Reloading component not found.");
+            DebugUI.LogWarning($"{name}: componente Recharging não encontrado.");
             return;
         }
 
-        // If already reloading, don't start another.
-        if (reloading.IsReloading)
+        if (recharging.IsReloading)
             return;
 
-        // If magazine is already full, no need to reload.
         if (currentAmmo >= magazineSize)
         {
-            DebugUI.Log($"{name}: magazine already full.");
+            DebugUI.Log($"{name}: pente já está cheio.");
             return;
         }
 
-        // Without reserve ammo we have nothing to reload.
         if (reserveAmmo <= 0)
         {
-            DebugUI.Log($"{name}: no reserve ammo.");
+            DebugUI.Log($"{name}: sem munição reserva.");
             return;
         }
 
-        // Start reload process.
-        reloading.StartReload(this);
+        recharging.StartReload(this);
     }
 
-
-    // Check if magazine still has ammo.
     protected bool HasAmmo()
     {
         return currentAmmo > 0;
     }
 
-
-    // Consume one round from the magazine after firing.
     protected void ConsumeAmmo()
     {
         currentAmmo--;
-
-        DebugUI.Log(
-            $"{name}: {currentAmmo}/{magazineSize} | Reserve: {reserveAmmo}"
-        );
+        DebugUI.Log($"{name}: {currentAmmo}/{magazineSize} | Reserva: {reserveAmmo}");
     }
 
-
-    // Add ammo to the reserve.
     public void AddAmmo(int amount)
     {
-        // Prevent invalid or negative values.
         if (amount <= 0)
             return;
 
-        // Add amount to reserve ammo.
         reserveAmmo += amount;
-
-        DebugUI.Log(
-            $"{name}: picked up {amount} ammo. Reserve: {reserveAmmo}"
-        );
+        DebugUI.Log($"{name}: pegou {amount} munições. Reserva: {reserveAmmo}");
     }
 
-
-    // Finish reloading by transferring ammo from reserve to magazine.
     public void FinishReload()
     {
-        // Calculate how many rounds are missing to fill the magazine.
         int missingAmmo = magazineSize - currentAmmo;
-
-        // Decide how many rounds can actually be loaded.
         int ammoToReload = Mathf.Min(missingAmmo, reserveAmmo);
 
-        // Add rounds to magazine.
         currentAmmo += ammoToReload;
-
-        // Remove the same amount from reserve.
         reserveAmmo -= ammoToReload;
 
-        DebugUI.Log(
-            $"{name}: reload complete. " +
-            $"Magazine: {currentAmmo}/{magazineSize} | Reserve: {reserveAmmo}"
-        );
+        DebugUI.Log($"{name}: recarga concluída. Pente: {currentAmmo}/{magazineSize} | Reserva: {reserveAmmo}");
     }
 
-
-    // Every weapon inheriting from Gun must implement its own shooting behavior.
     protected abstract void Shoot();
 }
