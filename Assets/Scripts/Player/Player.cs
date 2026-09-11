@@ -1,5 +1,4 @@
 using UnityEngine;
-using Assets.Scripts;
 
 public class Player : MonoBehaviour
 {
