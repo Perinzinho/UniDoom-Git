@@ -1,4 +1,4 @@
-%YAML 1.1
+﻿%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!29 &1
 OcclusionCullingSettings:
@@ -415,15 +415,8 @@ MonoBehaviour:
   - {fileID: 1368288400, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
   - {fileID: 1231192932, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
   - {fileID: -1703986165, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
-  rechargeFrames:
-  - {fileID: 1853681772, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
-  - {fileID: -575250233, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
-  - {fileID: 1561782323, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
-  - {fileID: -1354428207, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
-  - {fileID: 1577745526, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
-  idleFrameRate: 12
-  shootFrameRate: 20
-  rechargeFrameRate: 12
+  rechargeFrames: []
+  frameRate: 20
 --- !u!114 &297624500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -549,7 +542,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.25400886, z: 0, w: 0.9672019}
+  m_LocalRotation: {x: 0, y: 0.39298427, z: 0, w: 0.9195452}
   m_LocalPosition: {x: 1.21429, y: 2.176938, z: 1.21429}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1661,7 +1654,7 @@ GameObject:
   - component: {fileID: 1147615467}
   - component: {fileID: 1147615468}
   m_Layer: 0
-  m_Name: SpawnerInimigos
+  m_Name: EnemySpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1693,9 +1686,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc2cd35ea8da4d94dbed596fe59ea6a4, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SpawnerInimigos
-  prefabInimigo: {fileID: 0}
-  pontosDeSpawn: []
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
 --- !u!1 &1700444701
 GameObject:
   m_ObjectHideFlags: 0
@@ -1928,3 +1919,4 @@ SceneRoots:
   - {fileID: 1985760847}
   - {fileID: 1147615467}
   - {fileID: 554884679}
+
