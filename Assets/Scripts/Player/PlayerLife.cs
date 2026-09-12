@@ -1,18 +1,36 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerLife : MonoBehaviour
 {
+    [Header("Health Settings")]
+    [SerializeField] private int maxHealth = 100;
+    [SerializeField] private int currentHealth;
 
-    // Use this for initialization
+    public int MaxHealth => maxHealth;
+    public int CurrentHealth => currentHealth;
+
     void Start()
     {
-
+        currentHealth = maxHealth;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Heal(int amount)
     {
+        currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
+    }
 
+    public void TakeDamage(int amount)
+    {
+        currentHealth = Mathf.Max(currentHealth - amount, 0);
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        Debug.Log("Player morreu!");
     }
 }

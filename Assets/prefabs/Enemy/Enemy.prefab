@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &45991328570233237
 GameObject:
@@ -128,15 +128,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48efc3bebc7c1064d94efa879513c36e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  vidaMaxima: 100
-  velocidade: 3
-  danoAtaque: 10
-  alcanceAtaque: 1.5
-  cooldownAtaque: 1
-  OnVidaAlterada:
+  maxHealth: 100
+  moveSpeed: 3
+  attackDamage: 10
+  attackRange: 1.5
+  attackCooldown: 1
+  OnHealthChanged:
     m_PersistentCalls:
       m_Calls: []
-  OnMorte:
+  OnDeath:
     m_PersistentCalls:
       m_Calls: []
 --- !u!54 &6743295283283433834
@@ -166,4 +166,3 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
-
