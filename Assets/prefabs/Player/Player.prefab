@@ -48,6 +48,7 @@ GameObject:
   - component: {fileID: 4318508841993598366}
   - component: {fileID: 1115736793923111173}
   - component: {fileID: 1798324845489719241}
+  - component: {fileID: 44499596702930519}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -214,6 +215,20 @@ MonoBehaviour:
   gravity: -9.81
   groundedGravity: -2
   cameraTransform: {fileID: 853459716173810053}
+--- !u!114 &44499596702930519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4233473681101587877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af502575d73c1af4a97c8c28f060395e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerLife
+  maxHealth: 100
+  currentHealth: 2
 --- !u!1 &4997456423089676155
 GameObject:
   m_ObjectHideFlags: 0
