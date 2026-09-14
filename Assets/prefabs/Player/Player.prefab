@@ -48,7 +48,7 @@ GameObject:
   - component: {fileID: 4318508841993598366}
   - component: {fileID: 1115736793923111173}
   - component: {fileID: 1798324845489719241}
-  - component: {fileID: 44499596702930519}
+  - component: {fileID: 37910181126576703}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -215,7 +215,7 @@ MonoBehaviour:
   gravity: -9.81
   groundedGravity: -2
   cameraTransform: {fileID: 853459716173810053}
---- !u!114 &44499596702930519
+--- !u!114 &37910181126576703
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -228,7 +228,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerLife
   maxHealth: 100
-  currentHealth: 2
+  currentHealth: 0
 --- !u!1 &4997456423089676155
 GameObject:
   m_ObjectHideFlags: 0
