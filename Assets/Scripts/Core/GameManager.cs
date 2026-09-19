@@ -9,10 +9,22 @@ public class GameManager : MonoBehaviour
     
     [SerializeField] private GameObject crosshairPrefab; // drag the "CrossHair" prefab (the entire Canvas)
 
+    [Tooltip("Optional: 6 frames of life_sprt.png. Auto-loaded in the editor if empty.")]
+    [SerializeField] private Sprite[] heartBeatingFrames;
+
     void Start()
     {
         GameObject playerInstance = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
         Instantiate(crosshairPrefab);
+
+        PlayerLife playerLife = playerInstance.GetComponent<PlayerLife>();
+        HeartAnimator heartbeat = new GameObject("HealthHeart").AddComponent<HeartAnimator>();
+        heartbeat.Init(playerLife);
+        if (heartBeatingFrames != null && heartBeatingFrames.Length > 0)
+        {
+            heartbeat.SetHeartFrames(heartBeatingFrames);
+        }
+        DebugUI.Log($"playerLife found: {playerLife != null}");
 
         Pistol playerGun = playerInstance.GetComponentInChildren<Pistol>();
         WeaponSpriteAnimator weaponAnimator = FindObjectOfType<WeaponSpriteAnimator>();
