@@ -8,11 +8,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform spawnPoint;
 
     [Header("UI")]
-    [SerializeField] private GameObject crosshairPrefab; // Canvas inteiro do CrossHair
+    [SerializeField] private GameObject crosshairPrefab;
+    [SerializeField] private GameObject AmmoPrefab; // Canvas inteiro do CrossHair
 
     [Header("HUD de vida")]
     [SerializeField] private Sprite[] heartFrames;  // frames do life_sprt.png, na ordem
     [SerializeField] private TMP_FontAsset heartFont; // sua fonte (.asset do TextMeshPro)
+
 
 
     private void Start()
@@ -21,6 +23,7 @@ public class GameManager : MonoBehaviour
 
         SpawnCrosshair();
         SpawnHeartHud(player);
+        SpawnAmmoHud();
         ConnectWeapon(player);
     }
 
@@ -35,6 +38,20 @@ public class GameManager : MonoBehaviour
 
         Instantiate(crosshairPrefab);
     }
+
+private void SpawnAmmoHud()
+{
+    Debug.Log($"SpawnAmmoHud chamado. AmmoPrefab null? {AmmoPrefab == null}");
+
+    if (AmmoPrefab == null)
+    {
+        Debug.LogWarning($"{name}: AmmoPrefab não atribuído.");
+        return;
+    }
+
+    GameObject hud = Instantiate(AmmoPrefab);
+    Debug.Log($"Ammo HUD instanciado: {hud.name} | Canvas: {hud.GetComponentInChildren<Canvas>() != null}", hud);
+}
 
     private void SpawnHeartHud(GameObject player)
     {
