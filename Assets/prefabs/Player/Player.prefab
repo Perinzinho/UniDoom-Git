@@ -49,6 +49,7 @@ GameObject:
   - component: {fileID: 1115736793923111173}
   - component: {fileID: 1798324845489719241}
   - component: {fileID: 37910181126576703}
+  - component: {fileID: 6152180489217585534}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -65,8 +66,8 @@ Transform:
   m_GameObject: {fileID: 4233473681101587877}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.21429, y: 1.671, z: 1.21429}
-  m_LocalScale: {x: 0.47330064, y: 1.3674, z: 0.4197314}
+  m_LocalPosition: {x: 1.21429, y: 2.4246, z: 1.21429}
+  m_LocalScale: {x: 0.47330064, y: 2.1209743, z: 0.4197314}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9012013704435278577}
@@ -149,7 +150,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: -2, z: 0}
 --- !u!143 &3552798783383129839
 CharacterController:
   m_ObjectHideFlags: 0
@@ -172,7 +173,7 @@ CharacterController:
   m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.8
+  m_SkinWidth: 0.05
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4318508841993598366
@@ -229,6 +230,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerLife
   maxHealth: 100
   currentHealth: 0
+--- !u!114 &6152180489217585534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4233473681101587877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d94b490a15da7cf46b072884bc57325a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootstepController
+  woodSteps:
+  - {fileID: 8300000, guid: 3d324c2248fa0084a81689ca4c65dfd7, type: 3}
+  - {fileID: 8300000, guid: 994da682daabaa04bb02e7dd9f514e2f, type: 3}
+  - {fileID: 8300000, guid: 1071c5db6bb20084d80e670607472dc7, type: 3}
+  - {fileID: 8300000, guid: 0e77196fad022bf4db2f33780024ef4f, type: 3}
+  - {fileID: 8300000, guid: 51e624681ba7de1408e7c98abef62e70, type: 3}
+  - {fileID: 8300000, guid: f45f78e67c01157449b42e547d110160, type: 3}
+  - {fileID: 8300000, guid: a197037d05e1cd54194f7d3a70d96b48, type: 3}
+  - {fileID: 8300000, guid: 23b92c82bb9ee7b4ea8052076586b6a6, type: 3}
+  concreteSteps:
+  - {fileID: 8300000, guid: bd57ade313b1fd649aaaa7d15c2a941d, type: 3}
+  ecoSteps:
+  - {fileID: 8300000, guid: dbe230e27c605764a87efc4908838322, type: 3}
+  footstepSource: {fileID: 0}
+  volume: 0.577
+  volumeVariation: 0.15
+  pitchVariation: 0.08
+  minSpeedVolume: 0.4
+  strideLength: 2.5
+  referenceSpeed: 6
+  minSpeed: 0.1
+  landMinAirTime: 0.2
+  rayExtraDistance: 0.3
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  debugLogs: 0
 --- !u!1 &4997456423089676155
 GameObject:
   m_ObjectHideFlags: 0
