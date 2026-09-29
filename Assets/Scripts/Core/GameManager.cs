@@ -1,45 +1,67 @@
+using TMPro;
 using UnityEngine;
-using System;
-using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private GameObject playerPrefab; // Player prefab
-    [SerializeField] private Transform spawnPoint; // Where the player spawns
-    
-    [SerializeField] private GameObject crosshairPrefab; // drag the "CrossHair" prefab (the entire Canvas)
+    [Header("Player")]
+    [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private Transform spawnPoint;
 
-    [Tooltip("Optional: 6 frames of life_sprt.png. Auto-loaded in the editor if empty.")]
-    [SerializeField] private Sprite[] heartBeatingFrames;
+    [Header("UI")]
+    [SerializeField] private GameObject crosshairPrefab; // Canvas inteiro do CrossHair
 
-    void Start()
+    [Header("HUD de vida")]
+    [SerializeField] private Sprite[] heartFrames;  // frames do life_sprt.png, na ordem
+    [SerializeField] private TMP_FontAsset heartFont; // sua fonte (.asset do TextMeshPro)
+
+
+    private void Start()
     {
-        GameObject playerInstance = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
+        GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
+
+        SpawnCrosshair();
+        SpawnHeartHud(player);
+        ConnectWeapon(player);
+    }
+
+
+    private void SpawnCrosshair()
+    {
+        if (crosshairPrefab == null)
+        {
+            DebugUI.LogWarning($"{name}: crosshairPrefab não atribuído.");
+            return;
+        }
+
         Instantiate(crosshairPrefab);
+    }
 
-        PlayerLife playerLife = playerInstance.GetComponent<PlayerLife>();
-        HeartAnimator heartbeat = new GameObject("HealthHeart").AddComponent<HeartAnimator>();
-        heartbeat.Init(playerLife);
-        if (heartBeatingFrames != null && heartBeatingFrames.Length > 0)
+    private void SpawnHeartHud(GameObject player)
+    {
+        if (!player.TryGetComponent(out PlayerLife playerLife))
         {
-            heartbeat.SetHeartFrames(heartBeatingFrames);
+            DebugUI.LogWarning($"{name}: PlayerLife não encontrado no player.");
+            return;
         }
-        DebugUI.Log($"playerLife found: {playerLife != null}");
 
-        Pistol playerGun = playerInstance.GetComponentInChildren<Pistol>();
-        WeaponSpriteAnimator weaponAnimator = FindObjectOfType<WeaponSpriteAnimator>();
+        HeartAnimator heart = new GameObject("HealthHeart").AddComponent<HeartAnimator>();
+        heart.Init(playerLife, heartFrames, heartFont);
 
-        DebugUI.Log($"playerGun found: {playerGun != null}");
-        DebugUI.Log($"weaponAnimator found: {weaponAnimator != null}");
+        DebugUI.Log("HeartAnimator criado e conectado ao PlayerLife.");
+    }
 
-        if (weaponAnimator != null && playerGun != null)
+    private void ConnectWeapon(GameObject player)
+    {
+        Pistol playerGun = player.GetComponentInChildren<Pistol>();
+        WeaponSpriteAnimator weaponAnimator = FindFirstObjectByType<WeaponSpriteAnimator>();
+
+        if (playerGun == null || weaponAnimator == null)
         {
-            weaponAnimator.SetGun(playerGun);
-            DebugUI.Log("SetGun called successfully!");
+            DebugUI.LogWarning($"{name}: não deu para ligar a arma ao animator (gun: {playerGun != null}, animator: {weaponAnimator != null}).");
+            return;
         }
-        else
-        {
-            DebugUI.LogWarning("GameManager: could not connect weapon to sprite animator.");
-        }
+
+        weaponAnimator.SetGun(playerGun);
+        DebugUI.Log("SetGun chamado com sucesso.");
     }
 }
