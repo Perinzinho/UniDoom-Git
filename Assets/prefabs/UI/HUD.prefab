@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8468780396005633303}
   - component: {fileID: 2293820472432889002}
   - component: {fileID: 5268414308319587143}
+  - component: {fileID: 4152505251992849069}
   m_Layer: 5
   m_Name: LifeCount
   m_TagString: Untagged
@@ -65,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 100/100
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -137,6 +138,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4152505251992849069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1577193946703704249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87a53ee8682c2f04c86526a2b1ccfba7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthUI
+  healthText: {fileID: 5268414308319587143}
 --- !u!1 &1617781514330923301
 GameObject:
   m_ObjectHideFlags: 0
@@ -150,7 +164,7 @@ GameObject:
   - component: {fileID: 4760673902106715578}
   - component: {fileID: 3254175049638257510}
   m_Layer: 5
-  m_Name: Life
+  m_Name: LifeHUD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -323,6 +337,7 @@ GameObject:
   - component: {fileID: 6652361627902175797}
   - component: {fileID: 8146708041810395778}
   - component: {fileID: 6598539743314095210}
+  - component: {fileID: 5200631079580688974}
   m_Layer: 5
   m_Name: AmmoCount
   m_TagString: Untagged
@@ -377,7 +392,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 0/0
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -449,6 +464,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5200631079580688974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7279534621232248259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3279016bd57e1f74cb43d264ace2c3b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AmmoUI
+  ammoText: {fileID: 6598539743314095210}
 --- !u!1 &7527904577173648442
 GameObject:
   m_ObjectHideFlags: 0
