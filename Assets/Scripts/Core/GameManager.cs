@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
     [Header("Player")]
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private Transform spawnPoint;
+    [SerializeField] private GameObject weaponPrefab;
 
     [Header("UI")]
     [SerializeField] private GameObject crosshairPrefab;
@@ -17,6 +18,7 @@ public class GameManager : MonoBehaviour
     {
         GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
 
+        Instantiate(weaponPrefab);
         SpawnCrosshair();
         SpawnHUD();
         ConnectWeapon(player);
