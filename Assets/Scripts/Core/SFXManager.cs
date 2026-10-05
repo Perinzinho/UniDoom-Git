@@ -1,38 +1,26 @@
 using UnityEngine;
 
-public class SFXManager : MonoBehaviour
+public class SFXManager : SFXPlayer
 {
     public static SFXManager Instance { get; private set; }
 
-    [Header("Sons")]
-    [SerializeField] private AudioClip walkConcrete;
-    [SerializeField] private AudioClip walkEco;
-    [SerializeField] private AudioClip walkWood;
+    [Header("Sons globais")]
+    [SerializeField] private SoundBank uiClick;
+    [SerializeField] private SoundBank pickup;
 
-    [Header("Config")]
-    [SerializeField] private AudioSource source;
-    [SerializeField, Range(0f, 1f)] private float volume = 1f;
-
-    private void Awake()
+    protected override void Awake()
     {
-        // Singleton: só existe um manager
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
-        DontDestroyOnLoad(gameObject); // mantém entre cenas
+        DontDestroyOnLoad(gameObject);
+        base.Awake();
     }
 
-    public void PlayWalkConcrete() => Play(walkConcrete);
-    public void PlaywalkEco() => Play(walkEco);
-    public void PlayWalkWood()  => Play(walkWood);
-
-    public void Play(AudioClip clip, float pitchVariation = 0.1f)
-    {
-        if (clip == null) return;
-        source.pitch = 1f + Random.Range(-pitchVariation, pitchVariation);
-        source.PlayOneShot(clip, volume);
-    }
+    public void PlayUIClick() => Play(uiClick);
+    public void PlayPickup()  => Play(pickup);
 }
