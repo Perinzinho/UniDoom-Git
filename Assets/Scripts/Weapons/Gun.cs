@@ -103,9 +103,12 @@ public abstract class Gun : MonoBehaviour
         return currentAmmo > 0;
     }
 
+    public event Action OnAmmoChanged;
+
     protected void ConsumeAmmo()
     {
         currentAmmo--;
+        OnAmmoChanged?.Invoke();
         DebugUI.Log($"{name}: {currentAmmo}/{magazineSize} | Reserva: {reserveAmmo}");
     }
 
@@ -115,6 +118,7 @@ public abstract class Gun : MonoBehaviour
             return;
 
         reserveAmmo += amount;
+        OnAmmoChanged?.Invoke();
         DebugUI.Log($"{name}: pegou {amount} munições. Reserva: {reserveAmmo}");
     }
 
@@ -126,6 +130,7 @@ public abstract class Gun : MonoBehaviour
         currentAmmo += ammoToReload;
         reserveAmmo -= ammoToReload;
 
+        OnAmmoChanged?.Invoke();
         DebugUI.Log($"{name}: recarga concluída. Pente: {currentAmmo}/{magazineSize} | Reserva: {reserveAmmo}");
     }
 
