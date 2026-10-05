@@ -50,6 +50,7 @@ GameObject:
   - component: {fileID: 1798324845489719241}
   - component: {fileID: 37910181126576703}
   - component: {fileID: 6152180489217585534}
+  - component: {fileID: 7897649698321676050}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -286,6 +287,21 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   debugLogs: 0
+--- !u!114 &7897649698321676050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4233473681101587877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bb0d76138c5ba14b9329557a094eb0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerPickupKey
+  key01: 0
+  key02: 0
+  key03: 0
 --- !u!1 &4997456423089676155
 GameObject:
   m_ObjectHideFlags: 0
