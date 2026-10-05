@@ -25,8 +25,8 @@ Transform:
   m_GameObject: {fileID: 2945205564073786843}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.37, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0.367, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 853459716173810053}
@@ -331,9 +331,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4997456423089676155}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.25400886, z: -0, w: 0.9672019}
+  m_LocalRotation: {x: -0, y: 0.9635229, z: -0, w: 0.26762605}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.1128218, y: 0.7313148, z: 2.3824759}
+  m_LocalScale: {x: 1, y: 0.7313148, z: 2.3824759}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5023624674628963854}
@@ -410,7 +410,7 @@ MonoBehaviour:
   ReferenceFrame: 0
   RecenterTarget: 0
   PanAxis:
-    Value: 29.429728
+    Value: 148.9539
     Center: 0
     Range: {x: -180, y: 180}
     Wrap: 1
@@ -443,16 +443,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineDeoccluder
   CollideAgainst:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 4294967295
   IgnoreTag: 
   TransparentLayers:
     serializedVersion: 2
     m_Bits: 0
-  MinimumDistanceFromTarget: 0.3
+  MinimumDistanceFromTarget: 0.5
   AvoidObstacles:
     Enabled: 1
     DistanceLimit: 0
-    MinimumOcclusionTime: 0
+    MinimumOcclusionTime: 2.36
     CameraRadius: 0.4
     UseFollowTarget:
       Enabled: 0
