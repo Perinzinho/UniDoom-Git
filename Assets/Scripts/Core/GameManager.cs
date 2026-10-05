@@ -1,33 +1,112 @@
+using TMPro;
 using UnityEngine;
-using System;
-using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private GameObject playerPrefab; // Player prefab
-    [SerializeField] private Transform spawnPoint; // Where the player spawns
-    
-    [SerializeField] private GameObject crosshairPrefab; // drag the "CrossHair" prefab (the entire Canvas)
+    [Header("Player")]
+    [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private Transform spawnPoint;
+    [SerializeField] private GameObject weaponPrefab;
 
-    void Start()
+    [Header("UI")]
+    [SerializeField] private GameObject crosshairPrefab;
+    [SerializeField] private GameObject HUDPrefab;
+
+    private GameObject hudInstance;
+
+    private void Start()
     {
-        GameObject playerInstance = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
+        GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
+
+        Instantiate(weaponPrefab);
+        SpawnCrosshair();
+        SpawnHUD();
+        ConnectWeapon(player);
+        ConnectHealth(player);
+    }
+
+    private void SpawnCrosshair()
+    {
+        if (crosshairPrefab == null)
+        {
+            DebugUI.LogWarning($"{name}: crosshairPrefab não atribuído.");
+            return;
+        }
+
         Instantiate(crosshairPrefab);
+    }
 
-        Pistol playerGun = playerInstance.GetComponentInChildren<Pistol>();
-        WeaponSpriteAnimator weaponAnimator = FindObjectOfType<WeaponSpriteAnimator>();
+    private void SpawnHUD()
+    {
+        if (HUDPrefab == null)
+        {
+            DebugUI.LogWarning($"{name}: HUDPrefab não atribuído.");
+            return;
+        }
 
-        DebugUI.Log($"playerGun found: {playerGun != null}");
-        DebugUI.Log($"weaponAnimator found: {weaponAnimator != null}");
+        hudInstance = Instantiate(HUDPrefab);
+    }
 
-        if (weaponAnimator != null && playerGun != null)
+    private void ConnectWeapon(GameObject player)
+    {
+        Pistol playerGun = player.GetComponentInChildren<Pistol>();
+        WeaponSpriteAnimator weaponAnimator = FindFirstObjectByType<WeaponSpriteAnimator>();
+
+        if (playerGun == null)
+        {
+            DebugUI.LogWarning($"{name}: Pistol não encontrada no player.");
+            return;
+        }
+
+        if (weaponAnimator != null)
         {
             weaponAnimator.SetGun(playerGun);
-            DebugUI.Log("SetGun called successfully!");
+            DebugUI.Log("SetGun chamado no WeaponSpriteAnimator.");
         }
         else
         {
-            DebugUI.LogWarning("GameManager: could not connect weapon to sprite animator.");
+            DebugUI.LogWarning($"{name}: WeaponSpriteAnimator não encontrado.");
         }
+
+        // Conecta a UI de munição
+        if (hudInstance != null)
+        {
+            AmmoUI ammoUI = hudInstance.GetComponentInChildren<AmmoUI>();
+
+            if (ammoUI != null)
+            {
+                ammoUI.SetGun(playerGun);
+                DebugUI.Log("SetGun chamado no AmmoUI.");
+            }
+            else
+            {
+                DebugUI.LogWarning($"{name}: AmmoUI não encontrado no HUD.");
+            }
+        }
+    }
+    
+    private void ConnectHealth(GameObject player)
+    {
+        PlayerLife playerLife = player.GetComponentInChildren<PlayerLife>();
+
+        if (playerLife == null)
+        {
+            DebugUI.LogWarning($"{name}: PlayerLife não encontrado no player.");
+            return;
+        }
+
+        if (hudInstance == null)
+            return;
+
+        HealthUI healthUI = hudInstance.GetComponentInChildren<HealthUI>();
+
+        if (healthUI == null)
+        {
+            DebugUI.LogWarning($"{name}: HealthUI não encontrado no HUD.");
+            return;
+        }
+
+        healthUI.SetPlayer(playerLife);
+        DebugUI.Log("SetPlayer chamado no HealthUI.");
     }
 }
