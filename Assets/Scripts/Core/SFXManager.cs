@@ -4,9 +4,8 @@ public class SFXManager : SFXPlayer
 {
     public static SFXManager Instance { get; private set; }
 
-    [Header("Sons globais")]
-    [SerializeField] private SoundBank uiClick;
-    [SerializeField] private SoundBank pickup;
+    [Header("Sons globais")] [SerializeField]
+    private SoundBank KeyPickupSound;
 
     protected override void Awake()
     {
@@ -20,7 +19,5 @@ public class SFXManager : SFXPlayer
         DontDestroyOnLoad(gameObject);
         base.Awake();
     }
-
-    public void PlayUIClick() => Play(uiClick);
-    public void PlayPickup()  => Play(pickup);
+    public void PlayKeyPickupSound()  => Play(KeyPickupSound);
 }

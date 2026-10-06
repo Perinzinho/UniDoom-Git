@@ -20,6 +20,7 @@ public class PlayerPickupKey : MonoBehaviour
 
     private void Collect(int index, Collider key)
     {
+        SFXManager.Instance.PlayKeyPickupSound();
         Destroy(key.gameObject);
         keysUI.ShowKey(index);
     }
