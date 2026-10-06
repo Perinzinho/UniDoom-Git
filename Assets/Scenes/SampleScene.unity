@@ -1908,11 +1908,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd42ccab7618a0a4c8b3835eecb1dc0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SFXManager
-  walkConcrete: {fileID: 0}
-  walkEco: {fileID: 0}
-  walkWood: {fileID: 0}
-  source: {fileID: 0}
-  volume: 1
+  template: {fileID: 0}
+  poolSize: 6
+  masterVolume: 1
+  spatialBlend: 0
+  KeyPickupSound:
+    clips:
+    - {fileID: 8300000, guid: 72c9b56c06426d6439bba7d98ec25dcd, type: 3}
+    volume: 1
+    volumeVariation: 0.1
+    basePitch: 1
+    pitchVariation: 0.08
 --- !u!82 &1242450372
 AudioSource:
   m_ObjectHideFlags: 0
