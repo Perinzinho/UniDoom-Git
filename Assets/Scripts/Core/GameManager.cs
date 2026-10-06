@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] private GameObject crosshairPrefab;
     [SerializeField] private GameObject HUDPrefab;
+    [SerializeField] private GameObject KeysPrefab;
 
     private GameObject hudInstance;
 
@@ -23,6 +24,7 @@ public class GameManager : MonoBehaviour
         SpawnHUD();
         ConnectWeapon(player);
         ConnectHealth(player);
+        SpawnKeyUI(player);
     }
 
     private void SpawnCrosshair()
@@ -108,5 +110,13 @@ public class GameManager : MonoBehaviour
 
         healthUI.SetPlayer(playerLife);
         DebugUI.Log("SetPlayer chamado no HealthUI.");
+    }
+
+    private void SpawnKeyUI(GameObject player)
+    {
+        GameObject keyInstance = Instantiate(KeysPrefab);
+
+        KeysUI keysUI = keyInstance.GetComponentInChildren<KeysUI>();
+        player.GetComponentInChildren<PlayerPickupKey>().SetKeysUI(keysUI);
     }
 }
