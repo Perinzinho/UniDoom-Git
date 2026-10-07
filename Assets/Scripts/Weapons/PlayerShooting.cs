@@ -12,6 +12,7 @@ public class PlayerShooting : MonoBehaviour
         if (Input.GetButtonDown("Fire1"))
         {
             gun.TryShoot();
+            
         }
 
         if (Input.GetKeyDown(KeyCode.R))

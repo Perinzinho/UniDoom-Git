@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 public abstract class Gun : MonoBehaviour
 {
@@ -63,7 +64,13 @@ public abstract class Gun : MonoBehaviour
         if (!HasAmmo())
         {
             DebugUI.Log($"{name}: sem munição no pente.");
-            return;
+            if (name == "Pistol")
+            {
+                SFXManager.Instance.PlayEmptyShootSound();
+                return;
+            }
+            
+            
         }
 
         Shoot();
@@ -92,7 +99,6 @@ public abstract class Gun : MonoBehaviour
         if (reserveAmmo <= 0)
         {
             DebugUI.Log($"{name}: sem munição reserva.");
-            return;
         }
 
         recharging.StartReload(this);
