@@ -51,42 +51,24 @@ public class GameManager : MonoBehaviour
 
     private void ConnectWeapon(GameObject player)
     {
-        Pistol playerGun = player.GetComponentInChildren<Pistol>();
+        PlayerWeaponManager weaponManager = player.GetComponent<PlayerWeaponManager>();
         WeaponSpriteAnimator weaponAnimator = FindFirstObjectByType<WeaponSpriteAnimator>();
+        AmmoUI ammoUI = hudInstance != null ? hudInstance.GetComponentInChildren<AmmoUI>() : null;
 
-        if (playerGun == null)
+        if (weaponManager != null)
         {
-            DebugUI.LogWarning($"{name}: Pistol não encontrada no player.");
+            weaponManager.BindUI(weaponAnimator, ammoUI);
             return;
         }
 
+        // Keep support for player prefabs without the swapping component.
+        Gun playerGun = player.GetComponentInChildren<Gun>();
         if (weaponAnimator != null)
-        {
             weaponAnimator.SetGun(playerGun);
-            DebugUI.Log("SetGun chamado no WeaponSpriteAnimator.");
-        }
-        else
-        {
-            DebugUI.LogWarning($"{name}: WeaponSpriteAnimator não encontrado.");
-        }
-
-        // Conecta a UI de munição
-        if (hudInstance != null)
-        {
-            AmmoUI ammoUI = hudInstance.GetComponentInChildren<AmmoUI>();
-
-            if (ammoUI != null)
-            {
-                ammoUI.SetGun(playerGun);
-                DebugUI.Log("SetGun chamado no AmmoUI.");
-            }
-            else
-            {
-                DebugUI.LogWarning($"{name}: AmmoUI não encontrado no HUD.");
-            }
-        }
+        if (ammoUI != null)
+            ammoUI.SetGun(playerGun);
     }
-    
+
     private void ConnectHealth(GameObject player)
     {
         PlayerLife playerLife = player.GetComponentInChildren<PlayerLife>();

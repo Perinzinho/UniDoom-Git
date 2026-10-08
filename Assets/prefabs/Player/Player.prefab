@@ -51,6 +51,8 @@ GameObject:
   - component: {fileID: 37910181126576703}
   - component: {fileID: 6152180489217585534}
   - component: {fileID: 7897649698321676050}
+  - component: {fileID: 6100776350431300381}
+  - component: {fileID: 11400010}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -591,9 +593,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5993189608913675164, guid: cb19f188b8d0f784c894251fd0aa3cd5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1785513447485147807}
-    - targetCorrespondingSourceObject: {fileID: 5993189608913675164, guid: cb19f188b8d0f784c894251fd0aa3cd5, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6100776350431300381}
   m_SourcePrefab: {fileID: 100100000, guid: cb19f188b8d0f784c894251fd0aa3cd5, type: 3}
 --- !u!4 &5023624674628963854 stripped
 Transform:
@@ -642,10 +641,24 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5137545396397481644}
+  m_GameObject: {fileID: 4233473681101587877}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 50ce9a5a8ae91e54a93f717fd9da2b8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerShooting
   gun: {fileID: 6936170606505450757}
+--- !u!114 &11400010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4233473681101587877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaeb2c2256ce8c19eb0a6d6b016f326f, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerWeaponManager
+  initialWeapon: {fileID: 11400000, guid: aa8e4a71b76f0a97faeef4cd31da2ae0, type: 2}
+  weaponHolder: {fileID: 853459716173810053}
