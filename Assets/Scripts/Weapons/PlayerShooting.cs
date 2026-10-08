@@ -4,6 +4,11 @@ public class PlayerShooting : MonoBehaviour
 {
     [SerializeField] private Gun gun;
 
+    public void SetGun(Gun newGun)
+    {
+        gun = newGun;
+    }
+
     void Update()
     {
         if (gun == null)

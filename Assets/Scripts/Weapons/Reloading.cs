@@ -23,6 +23,21 @@ public class Reloading : MonoBehaviour
         StartCoroutine(ReloadCoroutine(gun));
     }
 
+    public void CancelReload()
+    {
+        if (!IsReloading)
+            return;
+
+        StopAllCoroutines();
+        IsReloading = false;
+        OnReloadFinished?.Invoke();
+    }
+
+    private void OnDisable()
+    {
+        CancelReload();
+    }
+
     private IEnumerator ReloadCoroutine(Gun gun)
     {
         OnReloadStarted?.Invoke();
