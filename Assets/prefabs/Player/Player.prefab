@@ -25,8 +25,8 @@ Transform:
   m_GameObject: {fileID: 2945205564073786843}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.37, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0.367, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 853459716173810053}
@@ -48,6 +48,9 @@ GameObject:
   - component: {fileID: 4318508841993598366}
   - component: {fileID: 1115736793923111173}
   - component: {fileID: 1798324845489719241}
+  - component: {fileID: 37910181126576703}
+  - component: {fileID: 6152180489217585534}
+  - component: {fileID: 7897649698321676050}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -64,8 +67,8 @@ Transform:
   m_GameObject: {fileID: 4233473681101587877}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.21429, y: 1.671, z: 1.21429}
-  m_LocalScale: {x: 0.47330064, y: 1.3674, z: 0.4197314}
+  m_LocalPosition: {x: 1.21429, y: 2.4246, z: 1.21429}
+  m_LocalScale: {x: 0.47330064, y: 2.1209743, z: 0.4197314}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9012013704435278577}
@@ -148,7 +151,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: -2, z: 0}
 --- !u!143 &3552798783383129839
 CharacterController:
   m_ObjectHideFlags: 0
@@ -171,7 +174,7 @@ CharacterController:
   m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.8
+  m_SkinWidth: 0.05
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4318508841993598366
@@ -214,6 +217,107 @@ MonoBehaviour:
   gravity: -9.81
   groundedGravity: -2
   cameraTransform: {fileID: 853459716173810053}
+--- !u!114 &37910181126576703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4233473681101587877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af502575d73c1af4a97c8c28f060395e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerLife
+  maxHealth: 100
+  currentHealth: 0
+--- !u!114 &6152180489217585534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4233473681101587877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d94b490a15da7cf46b072884bc57325a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootstepController
+  template: {fileID: 0}
+  poolSize: 6
+  masterVolume: 1
+  spatialBlend: 0
+  woodSteps:
+    clips:
+    - {fileID: 8300000, guid: 3d324c2248fa0084a81689ca4c65dfd7, type: 3}
+    - {fileID: 8300000, guid: 994da682daabaa04bb02e7dd9f514e2f, type: 3}
+    - {fileID: 8300000, guid: 1071c5db6bb20084d80e670607472dc7, type: 3}
+    - {fileID: 8300000, guid: 0e77196fad022bf4db2f33780024ef4f, type: 3}
+    - {fileID: 8300000, guid: 51e624681ba7de1408e7c98abef62e70, type: 3}
+    - {fileID: 8300000, guid: f45f78e67c01157449b42e547d110160, type: 3}
+    - {fileID: 8300000, guid: a197037d05e1cd54194f7d3a70d96b48, type: 3}
+    - {fileID: 8300000, guid: 23b92c82bb9ee7b4ea8052076586b6a6, type: 3}
+    volume: 1
+    volumeVariation: 0.1
+    basePitch: 1
+    pitchVariation: 0.08
+  concreteSteps:
+    clips:
+    - {fileID: 8300000, guid: 732addef25452314d8883bce80d6a898, type: 3}
+    - {fileID: 8300000, guid: 24e119f15feab294384c3b2ab3629242, type: 3}
+    - {fileID: 8300000, guid: 09e45e8efe669c74d94cc216078da415, type: 3}
+    - {fileID: 8300000, guid: cca3494531c22a84e9e0635dd0f380fd, type: 3}
+    - {fileID: 8300000, guid: 659c3336d7c50d84a9a76aa1012c14d5, type: 3}
+    - {fileID: 8300000, guid: 65ec5b4f3c0d6b44f982fb940f3ad627, type: 3}
+    - {fileID: 8300000, guid: 26b096c828dd57d4eb54305ca933d829, type: 3}
+    - {fileID: 8300000, guid: 88893cf6aabecad44bb664e79f9b2d6d, type: 3}
+    - {fileID: 8300000, guid: e25bc57116e215641ae1364b2b85a92e, type: 3}
+    - {fileID: 8300000, guid: cc751cc7b97ef784c810ae2073900e1c, type: 3}
+    - {fileID: 8300000, guid: 7fbf520de6e901a44a667c1b9f119d67, type: 3}
+    volume: 1
+    volumeVariation: 0.1
+    basePitch: 1
+    pitchVariation: 0.08
+  ecoSteps:
+    clips:
+    - {fileID: 8300000, guid: 932858e78c9442146909185e32bffec7, type: 3}
+    - {fileID: 8300000, guid: 33bfae1ce168ba84fba4fe930265a6df, type: 3}
+    - {fileID: 8300000, guid: c28831b1b88152f4eb30139fd64473c9, type: 3}
+    - {fileID: 8300000, guid: 4a4aacd94fa5cd54c9a1f17af6e0acb7, type: 3}
+    - {fileID: 8300000, guid: 283579f3c5279604287376e76a6f953c, type: 3}
+    - {fileID: 8300000, guid: 2f29745419d3fb649a43db2b96775e83, type: 3}
+    - {fileID: 8300000, guid: 0c835032cffbfa246baa5fc0eb14c81a, type: 3}
+    - {fileID: 8300000, guid: 00747b840328cbf42a3693acb9614d91, type: 3}
+    volume: 1
+    volumeVariation: 0.1
+    basePitch: 1
+    pitchVariation: 0.08
+  minSpeedVolume: 0.4
+  strideLength: 2.5
+  referenceSpeed: 6
+  minSpeed: 0.1
+  landMinAirTime: 0.2
+  rayExtraDistance: 0.3
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  debugLogs: 0
+--- !u!114 &7897649698321676050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4233473681101587877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bb0d76138c5ba14b9329557a094eb0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerPickupKey
+  key01: 0
+  key02: 0
+  key03: 0
+  keyCanvas: {fileID: 3737847170416861560, guid: 80b8c28052617e74ba0fbde250255fba, type: 3}
 --- !u!1 &4997456423089676155
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,9 +347,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4997456423089676155}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.25400886, z: -0, w: 0.9672019}
+  m_LocalRotation: {x: -0, y: 0.9635229, z: -0, w: 0.26762605}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.1128218, y: 0.7313148, z: 2.3824759}
+  m_LocalScale: {x: 1, y: 0.7313148, z: 2.3824759}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5023624674628963854}
@@ -322,7 +426,7 @@ MonoBehaviour:
   ReferenceFrame: 0
   RecenterTarget: 0
   PanAxis:
-    Value: 29.429728
+    Value: 148.9539
     Center: 0
     Range: {x: -180, y: 180}
     Wrap: 1
@@ -355,16 +459,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineDeoccluder
   CollideAgainst:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 4294967295
   IgnoreTag: 
   TransparentLayers:
     serializedVersion: 2
     m_Bits: 0
-  MinimumDistanceFromTarget: 0.3
+  MinimumDistanceFromTarget: 0.5
   AvoidObstacles:
     Enabled: 1
     DistanceLimit: 0
-    MinimumOcclusionTime: 0
+    MinimumOcclusionTime: 2.36
     CameraRadius: 0.4
     UseFollowTarget:
       Enabled: 0

@@ -28,8 +28,18 @@ public class Reloading : MonoBehaviour
         OnReloadStarted?.Invoke();
 
         DebugUI.Log($"{gun.name}: recarregando...");
+        
+        if (gun.name == "Pistol")
+        {
+            SFXManager.Instance.PlayPistolRechargeSound();
+        }
+        
+        
 
         yield return new WaitForSeconds(reloadTime);
+        
+        
+        
 
         gun.FinishReload();
 
