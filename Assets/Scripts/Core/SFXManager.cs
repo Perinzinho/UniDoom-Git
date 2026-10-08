@@ -1,38 +1,38 @@
 using UnityEngine;
 
-public class SFXManager : MonoBehaviour
+public class SFXManager : SFXPlayer
 {
     public static SFXManager Instance { get; private set; }
 
-    [Header("Sons")]
-    [SerializeField] private AudioClip walkConcrete;
-    [SerializeField] private AudioClip walkEco;
-    [SerializeField] private AudioClip walkWood;
+    [Header("Sons globais")] [SerializeField]
+    private SoundBank KeyPickupSound;
 
-    [Header("Config")]
-    [SerializeField] private AudioSource source;
-    [SerializeField, Range(0f, 1f)] private float volume = 1f;
+    [Header("Som Pistola")] 
+    [SerializeField] private SoundBank PistolShootSound;
+    [SerializeField] private SoundBank PistolRechargeSound;
+    [SerializeField] private SoundBank PistolEmptySound;
+    
+    [Header("Som Shotgun")]
+    [SerializeField] private SoundBank ShotGunShootSound;
+    [SerializeField] private SoundBank ShotgunRechargeSound;
+    
 
-    private void Awake()
+    protected override void Awake()
     {
-        // Singleton: só existe um manager
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
-        DontDestroyOnLoad(gameObject); // mantém entre cenas
+        DontDestroyOnLoad(gameObject);
+        base.Awake();
     }
-
-    public void PlayWalkConcrete() => Play(walkConcrete);
-    public void PlaywalkEco() => Play(walkEco);
-    public void PlayWalkWood()  => Play(walkWood);
-
-    public void Play(AudioClip clip, float pitchVariation = 0.1f)
-    {
-        if (clip == null) return;
-        source.pitch = 1f + Random.Range(-pitchVariation, pitchVariation);
-        source.PlayOneShot(clip, volume);
-    }
+    public void PlayKeyPickupSound()  => Play(KeyPickupSound);
+    public void PlayPistolShootSound() => Play(PistolShootSound);
+    public void PlayPistolRechargeSound() => Play(PistolRechargeSound);
+    public void PlayEmptyShootSound() => Play(PistolEmptySound);
+    public void PlayShotgunShootSound() => Play(ShotGunShootSound);
+    public void PlayShotgunRechargeSound() => Play(ShotgunRechargeSound);
 }
