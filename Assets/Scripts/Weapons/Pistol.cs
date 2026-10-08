@@ -39,7 +39,7 @@ public class Pistol : Gun
             return;
         }
 
-
+        
         // Create a ray starting at camera position and going forward.
         Ray ray = new Ray(
             playerCamera.transform.position,
@@ -59,5 +59,7 @@ public class Pistol : Gun
 
             // hit.collider.GetComponent<Health>()?.TakeDamage(damage);
         }
+        
+        SFXManager.Instance.PlayPistolShootSound();
     }
 }
