@@ -64,13 +64,9 @@ public abstract class Gun : MonoBehaviour
         if (!HasAmmo())
         {
             DebugUI.Log($"{name}: sem munição no pente.");
-            if (name == "Pistol")
-            {
+            if (this is Pistol && SFXManager.Instance != null)
                 SFXManager.Instance.PlayEmptyShootSound();
-                return;
-            }
-            
-            
+            return;
         }
 
         Shoot();
@@ -99,6 +95,7 @@ public abstract class Gun : MonoBehaviour
         if (reserveAmmo <= 0)
         {
             DebugUI.Log($"{name}: sem munição reserva.");
+            return;
         }
 
         recharging.StartReload(this);
