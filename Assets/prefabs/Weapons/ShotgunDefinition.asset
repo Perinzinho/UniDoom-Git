@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df224c73a824ee41da81a85eb0bf95f2, type: 3}
+  m_Name: ShotgunDefinition
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponDefinition
+  gunPrefab: {fileID: 11400000, guid: 6d6ae4f55a5431a297f7fa60a83f39a4, type: 3}
+  pickupPrefab: {fileID: 4786408415445628171, guid: 9ec7d785828adb3c2d8571823af96aa0, type: 3}
+  idleFrames:
+  - {fileID: -401562691, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  shootFrames:
+  - {fileID: 432235278, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  - {fileID: 1815807466, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  - {fileID: 1596288279, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  - {fileID: 1249275435, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  - {fileID: -1858405222, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  rechargeFrames:
+  - {fileID: -1304702986, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  - {fileID: 1493358697, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  - {fileID: -1946729236, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  - {fileID: 768257191, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  - {fileID: 1022560857, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  - {fileID: 766458428, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  - {fileID: 1798957077, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  - {fileID: 360597643, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  - {fileID: 2015568859, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  - {fileID: 442399568, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  - {fileID: -1621286101, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  - {fileID: -54458962, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  - {fileID: 1633983736, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  - {fileID: 1306732499, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  - {fileID: -1249267017, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+  idleFrameRate: 12
+  shootFrameRate: 20
+  rechargeFrameRate: 5
