@@ -18,6 +18,9 @@ public class WeaponSpriteAnimator : MonoBehaviour
     private float timer;
     private bool isShooting;
     private bool isReloading;
+    private Vector2 defaultHudPosition;
+    private Vector2 defaultHudSize;
+    private bool hasDefaultHudLayout;
 
     void Start()
     {
@@ -49,6 +52,7 @@ public class WeaponSpriteAnimator : MonoBehaviour
             shootFrameRate = definition.ShootFrameRate;
             rechargeFrameRate = definition.RechargeFrameRate;
         }
+        ApplyHudLayout(definition);
         isShooting = false;
         isReloading = false;
         currentFrame = 0;
@@ -67,6 +71,28 @@ public class WeaponSpriteAnimator : MonoBehaviour
         SubscribeToGun(gun);
     }
 
+    private void ApplyHudLayout(WeaponDefinition definition)
+    {
+        if (weaponImage == null)
+            return;
+
+        RectTransform imageTransform = weaponImage.rectTransform;
+        if (!hasDefaultHudLayout)
+        {
+            defaultHudPosition = imageTransform.anchoredPosition;
+            defaultHudSize = imageTransform.sizeDelta;
+            hasDefaultHudLayout = true;
+        }
+
+        // Always start from the prefab position so switching weapons never accumulates offsets.
+        imageTransform.anchoredPosition = defaultHudPosition +
+            (definition != null ? definition.HudOffset : Vector2.zero);
+        Vector2 configuredSize = definition != null ? definition.HudSize : Vector2.zero;
+        imageTransform.sizeDelta = configuredSize.x > 0f && configuredSize.y > 0f
+            ? configuredSize
+            : defaultHudSize;
+    }
+
     void OnDisable()
     {
         UnsubscribeFromGun(gun);
@@ -76,6 +102,9 @@ public class WeaponSpriteAnimator : MonoBehaviour
     {
         if (targetGun == null)
             return;
+
+        if (rechargeFrames != null && rechargeFrames.Length > 0)
+            targetGun.SetReloadCycleDuration(rechargeFrames.Length / Mathf.Max(rechargeFrameRate, 1f));
 
         targetGun.OnShoot += PlayShootAnimation;
         targetGun.OnReloadStarted += PlayRechargeAnimation;
@@ -94,12 +123,34 @@ public class WeaponSpriteAnimator : MonoBehaviour
 
     void Update()
     {
-        if (currentAnimation == null || currentAnimation.Length == 0)
+        if (currentAnimation == null || currentAnimation.Length == 0 || weaponImage == null)
             return;
 
         float frameInterval = 1f / Mathf.Max(currentFrameRate, 1f);
 
         timer += Time.deltaTime;
+        if (isReloading)
+        {
+            if (gun is Shotgun && gun.ReloadRoundCount > 0)
+            {
+                // One complete cycle per shell, using the same clock as ammo insertion.
+                // Hold the final frame instead of starting an extra cycle at the deadline.
+                int totalFrames = gun.ReloadRoundCount * currentAnimation.Length;
+                int reloadFrame = Mathf.Min(
+                    Mathf.FloorToInt(gun.ReloadElapsedTime * currentFrameRate), totalFrames - 1);
+                currentFrame = reloadFrame % currentAnimation.Length;
+                weaponImage.sprite = currentAnimation[currentFrame];
+                return;
+            }
+
+            // Loop at the configured speed until OnReloadFinished stops the animation.
+            int framesToAdvance = Mathf.FloorToInt(timer / frameInterval);
+            timer -= framesToAdvance * frameInterval;
+            currentFrame = (currentFrame + framesToAdvance) % currentAnimation.Length;
+            weaponImage.sprite = currentAnimation[currentFrame];
+            return;
+        }
+
         if (timer >= frameInterval)
         {
             timer = 0;
@@ -110,13 +161,6 @@ public class WeaponSpriteAnimator : MonoBehaviour
 
             if (currentFrame >= currentAnimation.Length)
             {
-                if (isReloading)
-                {
-                    // Toca uma vez e segura o último frame até a recarga terminar.
-                    currentFrame = currentAnimation.Length - 1;
-                    return;
-                }
-
                 if (isShooting)
                 {
                     isShooting = false;
@@ -167,7 +211,7 @@ public class WeaponSpriteAnimator : MonoBehaviour
         currentFrame = 0;
         timer = 0;
 
-        if (currentAnimation.Length > 0)
+        if (currentAnimation != null && currentAnimation.Length > 0 && weaponImage != null)
             weaponImage.sprite = currentAnimation[0];
     }
 }
