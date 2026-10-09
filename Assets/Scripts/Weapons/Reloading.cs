@@ -44,9 +44,13 @@ public class Reloading : MonoBehaviour
 
         DebugUI.Log($"{gun.name}: recarregando...");
         
-        if (gun.name == "Pistol")
+        if (gun is Pistol)
         {
             SFXManager.Instance.PlayPistolRechargeSound();
+        }
+        else if (gun is Shotgun)
+        {
+            SFXManager.Instance.PlayShotgunRechargeSound();
         }
         
         

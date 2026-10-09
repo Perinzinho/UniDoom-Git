@@ -15,6 +15,7 @@ public class SFXManager : SFXPlayer
     [Header("Som Shotgun")]
     [SerializeField] private SoundBank ShotGunShootSound;
     [SerializeField] private SoundBank ShotgunRechargeSound;
+    [SerializeField] private SoundBank ShotgunEmptySound;
     
 
     protected override void Awake()
@@ -35,4 +36,5 @@ public class SFXManager : SFXPlayer
     public void PlayEmptyShootSound() => Play(PistolEmptySound);
     public void PlayShotgunShootSound() => Play(ShotGunShootSound);
     public void PlayShotgunRechargeSound() => Play(ShotgunRechargeSound);
+    public void PlayShotgunEmptySound() => Play(ShotgunEmptySound);
 }
