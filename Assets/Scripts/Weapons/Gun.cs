@@ -66,7 +66,12 @@ public abstract class Gun : MonoBehaviour
             DebugUI.Log($"{name}: sem munição no pente.");
             if (this is Pistol && SFXManager.Instance != null)
                 SFXManager.Instance.PlayEmptyShootSound();
+
+
+            if(this is Shotgun && SFXManager.Instance != null)
+                SFXManager.Instance.PlayShotgunEmptySound();
             return;
+                
         }
 
         Shoot();

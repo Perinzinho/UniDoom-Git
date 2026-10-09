@@ -447,7 +447,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.6188913, z: 0, w: 0.7854767}
+  m_LocalRotation: {x: 0, y: 0.9635229, z: 0, w: 0.26762605}
   m_LocalPosition: {x: 1.21429, y: 3.2029974, z: 1.21429}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1999,13 +1999,22 @@ MonoBehaviour:
     basePitch: 1
     pitchVariation: 0.08
   ShotGunShootSound:
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: deb82ce1e727251408ca45f085a06f8e, type: 3}
     volume: 1
     volumeVariation: 0.1
     basePitch: 1
     pitchVariation: 0.08
   ShotgunRechargeSound:
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: ea03f41cf2dcdc34088f7d4e55e0b27f, type: 3}
+    volume: 1
+    volumeVariation: 0.1
+    basePitch: 1
+    pitchVariation: 0.08
+  ShotgunEmptySound:
+    clips:
+    - {fileID: 8300000, guid: df2ec23d86b71364ba108f9a6388642e, type: 3}
     volume: 1
     volumeVariation: 0.1
     basePitch: 1
