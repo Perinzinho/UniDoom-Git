@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df224c73a824ee41da81a85eb0bf95f2, type: 3}
+  m_Name: PistolDefinition
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponDefinition
+  gunPrefab: {fileID: 11400000, guid: a042fa0313ace54309daa4bf376b5ae0, type: 3}
+  pickupPrefab: {fileID: 4786408415445628171, guid: c9e5f7d5fa61c1d0bb38c0b6af920c5d, type: 3}
+  idleFrames:
+  - {fileID: 201287709, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
+  shootFrames:
+  - {fileID: 1368288400, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
+  - {fileID: 1231192932, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
+  - {fileID: -1703986165, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
+  rechargeFrames:
+  - {fileID: 1853681772, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
+  - {fileID: -575250233, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
+  - {fileID: 1561782323, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
+  - {fileID: -1354428207, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
+  - {fileID: 1577745526, guid: 2f92c247c6a2e6b43ae65a83e508dc91, type: 3}
+  idleFrameRate: 12
+  shootFrameRate: 20
+  rechargeFrameRate: 5
