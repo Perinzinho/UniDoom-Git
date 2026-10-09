@@ -15,6 +15,14 @@ public abstract class Gun : MonoBehaviour
     public int CurrentAmmo => currentAmmo;
     public int ReserveAmmo => reserveAmmo;
     public int MagazineSize => magazineSize;
+    public int ReloadRoundCount => recharging != null ? recharging.ReloadRoundCount : 0;
+    public float ReloadElapsedTime => recharging != null ? recharging.ReloadElapsedTime : 0f;
+
+    public void SetReloadCycleDuration(float duration)
+    {
+        if (this is Shotgun && recharging != null)
+            recharging.SetReloadCycleDuration(duration);
+    }
 
     public event Action OnShoot;
 
@@ -132,14 +140,26 @@ public abstract class Gun : MonoBehaviour
 
     public void FinishReload()
     {
+        TransferReloadAmmo(magazineSize);
+        DebugUI.Log($"{name}: recarga concluída. Pente: {currentAmmo}/{magazineSize} | Reserva: {reserveAmmo}");
+    }
+
+    public void ReloadOneRound()
+    {
+        TransferReloadAmmo(1);
+    }
+
+    private void TransferReloadAmmo(int maxRounds)
+    {
         int missingAmmo = magazineSize - currentAmmo;
-        int ammoToReload = Mathf.Min(missingAmmo, reserveAmmo);
+        int ammoToReload = Mathf.Min(maxRounds, Mathf.Min(missingAmmo, reserveAmmo));
+        if (ammoToReload <= 0)
+            return;
 
         currentAmmo += ammoToReload;
         reserveAmmo -= ammoToReload;
 
         OnAmmoChanged?.Invoke();
-        DebugUI.Log($"{name}: recarga concluída. Pente: {currentAmmo}/{magazineSize} | Reserva: {reserveAmmo}");
     }
 
     protected abstract void Shoot();
