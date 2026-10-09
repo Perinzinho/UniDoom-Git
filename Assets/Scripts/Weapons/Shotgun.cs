@@ -82,9 +82,9 @@ public class Shotgun : Gun
                 );
 
 
-                IDamageable damageable = hit.collider.GetComponentInParent<IDamageable>();
-                if (damageable != null && !damageable.IsDead)
-                    damageable.TakeDamage(damagePerPellet, gameObject);
+                // Future: look for Health component on hit object and apply pellet damage.
+
+                // hit.collider.GetComponent<Health>()?.TakeDamage(damagePerPellet);
             }
         }
     }

@@ -55,9 +55,9 @@ public class Pistol : Gun
             );
 
 
-            IDamageable damageable = hit.collider.GetComponentInParent<IDamageable>();
-            if (damageable != null && !damageable.IsDead)
-                damageable.TakeDamage(damage, gameObject);
+            // Future: look for a Health component on hit object and apply damage.
+
+            // hit.collider.GetComponent<Health>()?.TakeDamage(damage);
         }
         
         SFXManager.Instance.PlayPistolShootSound();
