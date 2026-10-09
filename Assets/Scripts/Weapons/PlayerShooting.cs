@@ -4,6 +4,11 @@ public class PlayerShooting : MonoBehaviour
 {
     [SerializeField] private Gun gun;
 
+    public void SetGun(Gun newGun)
+    {
+        gun = newGun;
+    }
+
     void Update()
     {
         if (gun == null)
@@ -12,6 +17,7 @@ public class PlayerShooting : MonoBehaviour
         if (Input.GetButtonDown("Fire1"))
         {
             gun.TryShoot();
+            
         }
 
         if (Input.GetKeyDown(KeyCode.R))

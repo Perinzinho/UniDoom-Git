@@ -4,25 +4,24 @@ public class PlayerMovement : MonoBehaviour
 {
     public float speed = 6f;
     public float gravity = -9.81f;
-    public float groundedGravity = -2f; // small force to keep grounded
+    public float groundedGravity = -2f;
+    public Transform cameraTransform;
 
     private CharacterController controller;
     private Vector3 velocity;
-
-    public Transform cameraTransform; // Link to player camera
+    private Vector3 horizontalMove;
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
     }
-        
 
+    // Só calcula a direção, não move ainda
     public void MoveHorizontal()
     {
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
-        // get camera direction but zero Y axis to avoid flying
         Vector3 camForward = cameraTransform.forward;
         camForward.y = 0f;
         camForward.Normalize();
@@ -32,29 +31,20 @@ public class PlayerMovement : MonoBehaviour
         camRight.Normalize();
 
         Vector3 move = camRight * x + camForward * z;
+        if (move.magnitude > 1f) move.Normalize();
 
-        // Fix diagonal speed stacking
-        if (move.magnitude > 1f)
-        {
-            move.Normalize();
-        }
-
-        controller.Move(move * speed * Time.deltaTime);
+        horizontalMove = move * speed;
     }
 
-    // Apply gravity to the player
+    // Aplica gravidade e faz UM único Move com tudo junto
     public void ApplyGravity()
     {
-        if (controller.isGrounded && velocity.y < 0)
-        {
-            // reset vertical velocity when grounded
+        if (controller.isGrounded && velocity.y < 0f)
             velocity.y = groundedGravity;
-        }
         else
-        {
             velocity.y += gravity * Time.deltaTime;
-        }
 
-        controller.Move(velocity * Time.deltaTime);
+        Vector3 finalMove = horizontalMove + Vector3.up * velocity.y;
+        controller.Move(finalMove * Time.deltaTime);
     }
 }

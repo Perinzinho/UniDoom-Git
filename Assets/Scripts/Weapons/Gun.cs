@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 public abstract class Gun : MonoBehaviour
 {
@@ -63,6 +64,8 @@ public abstract class Gun : MonoBehaviour
         if (!HasAmmo())
         {
             DebugUI.Log($"{name}: sem munição no pente.");
+            if (this is Pistol && SFXManager.Instance != null)
+                SFXManager.Instance.PlayEmptyShootSound();
             return;
         }
 
@@ -103,9 +106,12 @@ public abstract class Gun : MonoBehaviour
         return currentAmmo > 0;
     }
 
+    public event Action OnAmmoChanged;
+
     protected void ConsumeAmmo()
     {
         currentAmmo--;
+        OnAmmoChanged?.Invoke();
         DebugUI.Log($"{name}: {currentAmmo}/{magazineSize} | Reserva: {reserveAmmo}");
     }
 
@@ -115,6 +121,7 @@ public abstract class Gun : MonoBehaviour
             return;
 
         reserveAmmo += amount;
+        OnAmmoChanged?.Invoke();
         DebugUI.Log($"{name}: pegou {amount} munições. Reserva: {reserveAmmo}");
     }
 
@@ -126,6 +133,7 @@ public abstract class Gun : MonoBehaviour
         currentAmmo += ammoToReload;
         reserveAmmo -= ammoToReload;
 
+        OnAmmoChanged?.Invoke();
         DebugUI.Log($"{name}: recarga concluída. Pente: {currentAmmo}/{magazineSize} | Reserva: {reserveAmmo}");
     }
 
