@@ -23,7 +23,7 @@ public class WeaponSpriteAnimator : MonoBehaviour
     {
         currentAnimation = idleFrames;
         currentFrameRate = idleFrameRate;
-        if (currentAnimation.Length > 0)
+        if (currentAnimation != null && currentAnimation.Length > 0 && weaponImage != null)
             weaponImage.sprite = currentAnimation[0];
 
         UnsubscribeFromGun(gun); // evita duplicar inscrição se SetGun já rodou antes deste Start()
@@ -33,8 +33,37 @@ public class WeaponSpriteAnimator : MonoBehaviour
     // Chamado de fora (pelo Spawner/GameManager) depois que o Player é instanciado.
     public void SetGun(Gun newGun)
     {
+        SetGun(newGun, null);
+    }
+
+    public void SetGun(Gun newGun, WeaponDefinition definition)
+    {
         UnsubscribeFromGun(gun);
         gun = newGun;
+        if (definition != null)
+        {
+            idleFrames = definition.IdleFrames;
+            shootFrames = definition.ShootFrames;
+            rechargeFrames = definition.RechargeFrames;
+            idleFrameRate = definition.IdleFrameRate;
+            shootFrameRate = definition.ShootFrameRate;
+            rechargeFrameRate = definition.RechargeFrameRate;
+        }
+        isShooting = false;
+        isReloading = false;
+        currentFrame = 0;
+        timer = 0;
+        currentAnimation = idleFrames;
+        currentFrameRate = idleFrameRate;
+        if (weaponImage != null)
+            weaponImage.sprite = idleFrames != null && idleFrames.Length > 0 ? idleFrames[0] : null;
+        if (isActiveAndEnabled)
+            SubscribeToGun(gun);
+    }
+
+    void OnEnable()
+    {
+        UnsubscribeFromGun(gun);
         SubscribeToGun(gun);
     }
 
@@ -102,7 +131,7 @@ public class WeaponSpriteAnimator : MonoBehaviour
 
     void PlayShootAnimation()
     {
-        if (isReloading)
+        if (isReloading || shootFrames == null || shootFrames.Length == 0)
             return;
 
         isShooting = true;
@@ -116,7 +145,7 @@ public class WeaponSpriteAnimator : MonoBehaviour
 
     void PlayRechargeAnimation()
     {
-        if (isReloading)
+        if (isReloading || rechargeFrames == null || rechargeFrames.Length == 0)
             return;
 
         isReloading = true;
@@ -126,7 +155,7 @@ public class WeaponSpriteAnimator : MonoBehaviour
         currentFrame = 0;
         timer = 0;
 
-        if (currentAnimation.Length > 0)
+        if (currentAnimation != null && currentAnimation.Length > 0 && weaponImage != null)
             weaponImage.sprite = currentAnimation[0];
     }
 
