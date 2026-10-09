@@ -40,6 +40,7 @@ public class Shotgun : Gun
     protected override void Shoot()
     {
         DebugUI.Log("Shotgun fired!");
+        SFXManager.Instance.PlayShotgunShootSound();
 
         if (playerCamera == null)
         {
