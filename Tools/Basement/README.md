@@ -1,5 +1,67 @@
 # Porão — arena e câmara final
 
+## Revisão atual: escala, paredes e horror da área final
+
+A arena agora mede **40 × 34 m**, com **9,5 m livres até o teto**. A sala do
+chefão mede **42 × 36 m**, com **12 m de altura livre**: aproximadamente **6,4 vezes
+a área anterior na instância do mapa**. Os dois ambientes compensam a escala
+não uniforme da raiz na `SampleScene`; suas dimensões e os equipamentos passam
+a corresponder a metros reais, usando o player atual de 2,12 m como referência.
+Os quatro barris medem aproximadamente **1,64 m de altura e 0,96 m de diâmetro**.
+
+A parede de entrada removida da instância é restaurada e sua duplicata antiga
+é desativada. As paredes estruturais recebem malhas fechadas normalizadas e
+colisões correspondentes. Quatro componentes ProBuilder dessas paredes são
+removidos porque reconstruíam a geometria deformada ao carregar o prefab;
+os dados anteriores permanecem no snapshot da revisão. A ampliação cresce para
+longe das outras salas, preservando os pontos de entrada. O corredor em L é
+reconectado à arena e tem **3,6 m de largura e 5,2 m de altura livres**. O portão
+de combate e as duas portas de acesso acompanham as aberturas de 4,2 m de altura,
+incluindo triggers e folga das dobradiças.
+
+Tubulações, válvulas, treliças, cabos, exaustor danificado, mofo, fuligem e entulho
+reforçam a fundição abandonada. A sala final ganha uma estrutura colossal de
+costelas em torno do selo, seis corpos de cabeça para baixo suspensos por
+correntes, relíquias de crânios, dois corpos no piso, marcas rituais e sangue nas
+canaletas. Uma estação de contenção com outro corpo e matéria orgânica invadindo
+as tubulações antecipam o horror na arena. Os corpos têm roupa e cobertura opaca
+na cabeça, sem rostos identificáveis. A iluminação vermelha e quente pertence
+aos prefabs; as texturas próprias usam 128 px e filtro Point. Malhas pequenas são
+agrupadas por material, e sangue, crânios e corpos não bloqueiam a circulação.
+
+O acabamento novo está nos prefabs aninhados `BasementFinalArena.prefab` e
+`BasementFinalSanctum.prefab`, em `Assets/Art/Basement`. O marcador
+`FinalBossSpawn` acompanha o novo centro da sala. A revisão mantém o encontro de
+12 inimigos e a trava até a última morte; não cria nem substitui o chefão.
+
+`BasementFinalBuilder.cs`, `BasementFinalArt.cs` e `BasementFinalVerifier.cs`
+geram a revisão sobre o estado atual, em uma cópia isolada do Unity 6000.5.7f1.
+Copie os três para `Assets/Editor`, mantendo também `BasementBuilder.cs` para o
+teste do encontro, e execute `BasementFinalBuilder.Build`. O snapshot anterior
+fica em `.utmp/Basement-final-before` e a cópia de trabalho em `.utmp/BasementPreview`.
+
+`install_final_basement.py` sem argumentos prepara o YAML preservado na cópia
+isolada; depois execute `BasementFinalVerifier.Verify`, com log em
+`.utmp/Basement-final-verify.log`. `--install` transfere a revisão validada ao
+projeto principal, recusando mudanças concorrentes. Apenas a instância do porão,
+suas duas portas de acesso e a atividade da parede duplicada são alteradas na
+cena. Os demais blocos da `SampleScene` ficam idênticos ao snapshot.
+
+A verificação inclui paredes e teto por raycasts, escala dos barris, circulação
+com o CharacterController real em ida e volta no prefab e no mapa, volume de
+combate lateral, portas fechadas e abertas nos dois sentidos, resposta por
+aproximação e a trava dos 12 inimigos. Também procura colisões de outras salas
+dentro das áreas ampliadas numa grade de volumes do tamanho do player.
+Os resultados estão em `final-validation.txt`; `Basement-BossHorrorInMap.png`
+e `Basement-AbandonedStationInMap.png` mostram os novos detalhes. Os testes rodam
+em modo de edição; combate e dificuldade ainda precisam de playtest.
+
+As seções abaixo registram as gerações anteriores do porão.
+
+A revisão de escala e acabamento está em [RoomStyle](../RoomStyle/README.md):
+arena mais larga, teto mais alto, pilares afastados e materiais derivados da
+sala do diretor, também aplicados à sala de aula.
+
 O `Assets/prefabs/Scenario/Basement.prefab` recebe modelos 3D com texturas pixeladas
 128 × 128, filtro Point e materiais URP. A paleta acompanha as outras salas:
 pedra suja, tijolos escuros, ferro, ferrugem, luz âmbar e detalhes vermelhos.
