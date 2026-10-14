@@ -14,6 +14,7 @@ ART = 'Assets/Art/Basement/ArenaHorror'
 TARGETS = ['Assets/prefabs/Scenario/Basement.prefab', 'Assets/Art/Basement/BasementFinalArena.prefab']
 RUNTIME = 'Assets/TotalChaos/Runtime/TCFlickerLight.cs'
 CONVERTER = 'Assets/TotalChaos/Editor/TotalChaosMaterialConverter.cs'
+SCENE = 'Assets/Scenes/SampleScene.unity'
 spec = importlib.util.spec_from_file_location('pbr_installer', ROOT / 'Tools/Basement/Surface/install_surface.py')
 base = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(base)
@@ -59,7 +60,7 @@ def stage():
             result += block
         staged = base.blocks(result)
         for fid, (kind, block) in old.items():
-            if kind == 4:
+            if kind == 4 and base.field(block, 'm_Children'):
                 assert base.substitute(staged[fid][1], block, 'm_Children') == block
             if kind in [33, 65, 64, 54, 136, 1001] or (kind == 114 and base.script(block) not in base.VISUAL_SCRIPTS):
                 assert staged[fid][1] == block, 'Original geometry/collision/gameplay changed'
@@ -68,19 +69,39 @@ def stage():
 
 
 def install():
+    build_marker = PREVIEW / 'Preview/ArenaHorror/dismemberment-build.txt'
+    assert build_marker.exists() and build_marker.read_text().strip() == 'upper-thigh-remains-v2', \
+        'Refusing stale staging: rebuild the arena after the dismemberment update'
+    staged_arena = (PREVIEW / TARGETS[1]).read_text(encoding='utf-8-sig')
+    for name in ['Dismembered casualties from pre-arena body', 'West headless torso missing left arm and right leg',
+                 'East headless torso missing right arm and left leg']:
+        assert name in staged_arena, 'Refusing stale staging: missing ' + name
+    for name in ['Remains_Corpse_skin.asset', 'Remains_Severed_tissue.asset', 'Remains_Dried_seepage.asset']:
+        assert (PREVIEW / ART / 'Meshes' / name).exists(), 'Refusing stale staging: missing ' + name
     base.require_log('Basement-arena-horror-final.log', ['BASEMENT_ARENA_HORROR_FINAL_OK', 'BASEMENT_SURFACE_GAMEPLAY_OK',
         'BASEMENT_ENCOUNTER_TEST_OK', 'BASEMENT_SURFACE_SRP_BATCHER_OK', 'Exiting batchmode successfully'])
     base.require_log('Basement-arena-horror-play.log', ['BASEMENT_SURFACE_PLAYMODE_OK', 'BASEMENT_ARENA_FLICKER_RUNTIME_OK'])
     manifest = json.loads((BEFORE / 'manifest.json').read_text())
     for name, expected in manifest.items():
-        if name in [RUNTIME, CONVERTER]:
+        if name in [RUNTIME, CONVERTER, SCENE]:
             assert (ROOT / name).read_bytes() == (PREVIEW / name).read_bytes()
+        elif name in TARGETS:
+            before = base.blocks((BEFORE / name).read_text(encoding='utf-8-sig'))
+            installed = base.blocks((ROOT / name).read_text(encoding='utf-8-sig'))
+            assert before.keys() <= installed.keys(), 'An original prefab object was removed: ' + name
+            for fid, (kind, block) in before.items():
+                if kind in [33, 65, 64, 54, 136, 1001] or (kind == 114 and base.script(block) not in base.VISUAL_SCRIPTS):
+                    assert installed[fid][1] == block, 'Previously installed prefab changed gameplay/collision: ' + name + ' ' + fid
         else:
             assert hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == expected, 'Concurrent modification: ' + name
     for path in TARGETS:
         shutil.copy2(PREVIEW / path, ROOT / path)
+    dependencies = set((PREVIEW / 'Preview/ArenaHorror/dependencies.txt').read_text().splitlines())
     for path in (PREVIEW / ART).rglob('*'):
         if path.is_file():
+            asset = str(path.relative_to(PREVIEW)).replace('\\', '/').removesuffix('.meta')
+            if '/Textures/' not in asset and not asset.endswith('.json') and asset not in dependencies:
+                continue
             destination = ROOT / path.relative_to(PREVIEW)
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(path, destination)
@@ -99,6 +120,23 @@ def install():
         if line.startswith('Horror-'):
             metrics[line.split(':')[0]] = line
     (ROOT / 'Tools/Basement/Horror/capture-metrics.txt').write_text('\n'.join(metrics.values())+'\n')
+    source_root = PREVIEW / 'Preview/ArenaHorror/HumanSource'
+    source_dest = ROOT / 'Tools/Basement/Horror/Source/MakeHuman'
+    source_dest.mkdir(parents=True, exist_ok=True)
+    records = json.loads((source_root / 'model-sources.json').read_text())
+    for record in records:
+        name = record['file']
+        source = PREVIEW / ART / name if name.startswith('Textures/') else source_root / name
+        assert hashlib.sha256(source.read_bytes()).hexdigest() == record['sha256']
+        if not name.startswith('Textures/'):
+            shutil.copy2(source, source_dest / name)
+            record['file'] = 'Tools/Basement/Horror/Source/MakeHuman/' + name
+        else:
+            record['file'] = ART + '/' + name
+    shutil.copy2(source_root / 'LICENSE-MakeHuman.md', source_dest / 'LICENSE-MakeHuman.md')
+    (source_dest / 'model-sources.json').write_text(json.dumps(records, indent=2))
+    shutil.copy2(PREVIEW / 'Preview/ArenaHorror/Sources/pose-metrics.json', ROOT / 'Tools/Basement/Horror/pose-metrics.json')
+    shutil.copy2(PREVIEW / 'Preview/ArenaHorror/Sources/dismemberment-metrics.json', ROOT / 'Tools/Basement/Horror/dismemberment-metrics.json')
     print('Arena refinement installed. Existing solid collision, boss room, main scene and encounter unchanged.')
 
 

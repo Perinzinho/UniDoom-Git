@@ -40,7 +40,7 @@ public static class BasementArenaHorrorBuilder
             MakeMaterial("Damp concrete",floor,new Color(.35f,.36f,.29f),false);
             MakeMaterial("Dried seepage",floor,new Color(.23f,.095f,.073f),false);
             MakeMaterial("Corroded tray",rust,new Color(.32f,.30f,.26f),false);
-            SkinMaterial();
+            SkinMaterial();TissueMaterial();
             materials["Structural iron"]=iron;materials["Rusted steel"]=rust;
             var station=root.transform.Find("Abandoned restraint station");
             foreach(var renderer in station.GetComponentsInChildren<MeshRenderer>(true))
@@ -49,6 +49,8 @@ public static class BasementArenaHorrorBuilder
             Corpse(station);
             var dressing=Group(root.transform,"Arena horror dressing",Vector3.zero);
             Dress(dressing);CombineDressing(dressing);
+            var remains=Group(dressing,"Dismembered casualties from pre-arena body",Vector3.zero);
+            AddMutilatedRemains(remains);CombineDressing(remains);
             PrefabUtility.SaveAsPrefabAsset(root,Arena);
         }
         finally{PrefabUtility.UnloadPrefabContents(root);}
@@ -90,7 +92,9 @@ public static class BasementArenaHorrorBuilder
             PrefabUtility.SaveAsPrefabAsset(root,Room);
         }
         finally{PrefabUtility.UnloadPrefabContents(root);}
-        AssetDatabase.SaveAssets();BakeArenaReflection();Capture();Verify();Debug.Log("BASEMENT_ARENA_HORROR_BUILD_OK");
+        AssetDatabase.SaveAssets();BakeArenaReflection();Capture();Verify();
+        File.WriteAllText("Preview/ArenaHorror/dismemberment-build.txt","upper-thigh-remains-v2\n");
+        Debug.Log("BASEMENT_ARENA_HORROR_BUILD_OK");
     }
     static Material FindSurface(GameObject root,string name)=>root.GetComponentsInChildren<MeshRenderer>(true)
         .SelectMany(r=>r.sharedMaterials).FirstOrDefault(m=>m && SourceName(m)==name);
@@ -114,6 +118,15 @@ public static class BasementArenaHorrorBuilder
         material.SetTextureScale("_BaseMap",Vector2.one);material.SetTextureOffset("_BaseMap",Vector2.zero);
         material.SetColor("_BaseColor",new Color(.62f,.69f,.65f));material.SetFloat("_Metallic",0);material.SetFloat("_Smoothness",.08f);
         material.SetFloat("_Cull",0);material.enableInstancing=true;EditorUtility.SetDirty(material);materials["Corpse skin"]=material;
+    }
+    static void TissueMaterial()
+    {
+        const string path=Art+"/Materials/Severed_tissue.mat";
+        var material=AssetDatabase.LoadAssetAtPath<Material>(path);
+        if(!material){material=new Material(Shader.Find("Universal Render Pipeline/Lit"));AssetDatabase.CreateAsset(material,path);}
+        material.SetColor("_BaseColor",new Color(.23f,.043f,.029f));material.SetFloat("_Metallic",0);
+        material.SetFloat("_Smoothness",.34f);material.SetFloat("_Cull",0);material.enableInstancing=true;
+        EditorUtility.SetDirty(material);materials["Severed tissue"]=material;
     }
     static Material MakeMaterial(string name,Material source,Color color,bool linen)
     {
@@ -171,7 +184,7 @@ public static class BasementArenaHorrorBuilder
         =>Shape(p,name,Save(name,ChaosGeometry.Sweep(points,radius,12)),Vector3.zero,material);
     static float ClothHeight(float x,float z)
     {
-        int iz=Mathf.Clamp(Mathf.RoundToInt((z+1.285f)/1.76f*152),0,152),ix=0;
+        int iz=Mathf.Clamp(Mathf.RoundToInt((z+.875f)/1.415f*152),0,152),ix=0;
         for(int i=1;i<=84;i++)if(Mathf.Abs(drape.vertices[iz*85+i].x-x)<Mathf.Abs(drape.vertices[iz*85+ix].x-x))ix=i;
         return drape.vertices[iz*85+ix].y;
     }
@@ -229,6 +242,31 @@ public static class BasementArenaHorrorBuilder
             material.SetColor("_BaseColor",new Color(.78f,.84f,.82f));material.SetColor("_EmissionColor",new Color(.78f,.84f,.82f)*.9f);EditorUtility.SetDirty(material);emitter.sharedMaterial=material;
         }
         CombineDressing(t,t.GetComponentsInChildren<MeshRenderer>().Where(r=>!r.transform.IsChildOf(body)).ToArray());
+    }
+    static Mesh Part(string name)=>Read(name);
+    static void AddMutilatedRemains(Transform parent)
+    {
+        var west=Group(parent,"West headless torso missing left arm and right leg",V(-9.2f,.045f,-1.8f));
+        west.localRotation=Quaternion.Euler(0,-28,0);west.localScale=Vector3.one*.88f;
+        Shape(west,"Body with severed left arm, right leg and head",Part("DismemberedTorsoWest"),Vector3.zero,"Corpse skin");
+        Shape(west,"Detached head beside torso",Part("SeveredHead"),V(.58f,-.055f,.04f),"Corpse skin",V(8,0,-35));
+        Shape(west,"Detached left arm beside torso",Part("SeveredArmL"),V(-.70f,-.095f,-.30f),"Corpse skin",V(0,0,-18));
+        Shape(west,"Detached right leg beside torso",Part("SeveredLegR"),V(.62f,-.085f,-.72f),"Corpse skin",V(-8,0,14));
+        Shape(west,"Neck wound",Save("NeckWound",ChaosGeometry.Ellipsoid(V(.22f,.12f,.075f),15)),V(0,.18f,.485f),"Severed tissue");
+        Shape(west,"Left shoulder wound",Save("ShoulderWound",ChaosGeometry.Ellipsoid(V(.085f,.15f,.18f),15)),V(-.20f,.17f,.20f),"Severed tissue");
+        Shape(west,"Right thigh wound",Save("ThighWound",ChaosGeometry.Ellipsoid(V(.17f,.11f,.08f),15)),V(.105f,.16f,-.43f),"Severed tissue");
+        Patch(west,"West casualty blood pool",V(0,.012f,-.03f),V(1.45f,0,1.85f),"Dried seepage",301);
+
+        var east=Group(parent,"East headless torso missing right arm and left leg",V(9.5f,.045f,4.6f));
+        east.localRotation=Quaternion.Euler(0,64,0);east.localScale=Vector3.one*.94f;
+        Shape(east,"Body with severed right arm, left leg and head",Part("DismemberedTorsoEast"),Vector3.zero,"Corpse skin");
+        Shape(east,"Detached head at shoulder side",Part("SeveredHead"),V(-.60f,-.055f,.08f),"Corpse skin",V(0,0,38));
+        Shape(east,"Detached right arm beside torso",Part("SeveredArmR"),V(.72f,-.095f,-.32f),"Corpse skin",V(0,0,18));
+        Shape(east,"Detached left leg beside torso",Part("SeveredLegL"),V(-.62f,-.085f,-.72f),"Corpse skin",V(8,0,-15));
+        Shape(east,"Neck wound",Save("NeckWound",ChaosGeometry.Ellipsoid(V(.22f,.12f,.075f),15)),V(0,.18f,.485f),"Severed tissue");
+        Shape(east,"Right shoulder wound",Save("ShoulderWound",ChaosGeometry.Ellipsoid(V(.085f,.15f,.18f),15)),V(.20f,.17f,.20f),"Severed tissue");
+        Shape(east,"Left thigh wound",Save("ThighWound",ChaosGeometry.Ellipsoid(V(.17f,.11f,.08f),15)),V(-.105f,.16f,-.43f),"Severed tissue");
+        Patch(east,"East casualty blood trail",V(0,.012f,-.03f),V(1.5f,0,1.9f),"Dried seepage",302);
     }
     static void Patch(Transform parent,string name,Vector3 position,Vector3 size,string material,int seed,Vector3? rotation=null)
     {
@@ -294,7 +332,7 @@ public static class BasementArenaHorrorBuilder
     static void CombineDressing(Transform root,MeshRenderer[] selection=null)
     {
         var renderers=selection ?? root.GetComponentsInChildren<MeshRenderer>();
-        string prefix=root.name=="Arena horror dressing" ? "Dressing_" : "Workstation_";
+        string prefix=root.name=="Arena horror dressing" ? "Dressing_" : root.name=="Dismembered casualties from pre-arena body" ? "Remains_" : "Workstation_";
         foreach(var group in renderers.GroupBy(r=>r.sharedMaterial))
         {
             var mesh=new Mesh{indexFormat=IndexFormat.UInt32};
@@ -360,12 +398,14 @@ public static class BasementArenaHorrorBuilder
             .Concat(details.GetComponentsInChildren<MeshRenderer>().Select(r=>r.name+": enabled="+r.enabled+" area center="+area.InverseTransformPoint(r.bounds.center)+" world size="+r.bounds.size)));
         var render=typeof(BasementSurfaceBuilder).GetMethod("Render",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Static);
         var lod=station.GetComponentInChildren<LODGroup>();lod.ForceLOD(0);
+        LODGroup remainsLod=null;
         try
         {
             render.Invoke(null,new object[]{room,station,V(2.45f,2.05f,1.6f),V(0,1.18f,-.08f),"Horror-Body",false});
             render.Invoke(null,new object[]{room,station,V(.32f,1.88f,1.28f),V(.025f,1.28f,.7f),"Horror-BodyClose",false});
+            render.Invoke(null,new object[]{room,nested,V(-6.2f,1.45f,-.7f),V(-9.05f,.26f,-1.75f),"Horror-Remains",true});
         }
-        finally{lod.ForceLOD(-1);}
+        finally{lod.ForceLOD(-1);if(remainsLod)remainsLod.ForceLOD(-1);}
     }
     public static void Verify()
     {
@@ -376,12 +416,29 @@ public static class BasementArenaHorrorBuilder
             if(!dressing || dressing.GetComponentsInChildren<Collider>(true).Length!=0)throw new Exception("Decorative dressing missing or blocks movement");
             var corpse=root.transform.Find("PreBossArea/BasementFinalArena/Abandoned restraint station/Rebuilt mortuary body and restraint table/Adult corpse with draped linen");
             if(!corpse || !corpse.GetComponent<LODGroup>())throw new Exception("Detailed body/LOD missing");
+            var remains=root.transform.Find("PreBossArea/BasementFinalArena/Arena horror dressing/Dismembered casualties from pre-arena body");
+            if(!remains || !remains.Find("West headless torso missing left arm and right leg") ||
+                !remains.Find("East headless torso missing right arm and left leg") || remains.GetComponentsInChildren<Collider>(true).Length!=0 ||
+                remains.GetComponentsInChildren<MeshRenderer>(true).Length>3)
+                throw new Exception("Two segmented non-blocking variants of the existing body are required");
+            var profile=root.transform.Find("PreBossArea").GetComponentInChildren<Volume>().sharedProfile;
+            if(!profile || !profile.TryGet<ColorAdjustments>(out var grading) || !grading.postExposure.overrideState || Mathf.Abs(grading.postExposure.value+.04f)>.001f)
+                throw new Exception("Arena exposure profile did not persist");
+            var skin=corpse.GetComponentsInChildren<MeshRenderer>().First(r=>r.name=="Anatomical human head and hands");
+            if(!skin.sharedMaterial.GetTexture("_BaseMap") || skin.GetComponent<MeshFilter>().sharedMesh.uv.Length==0)
+                throw new Exception("Human skin texture/UV missing");
             var flickers=root.GetComponentsInChildren<TCFlickerLight>(true).Where(f=>f.enabled).ToArray();
             if(flickers.Length!=3 || flickers.Any(f=>!f.transform.IsChildOf(root.transform.Find("PreBossArea")) || !f.synchronizeEmission))throw new Exception("Arena flicker configuration invalid");
-            if(dressing.GetComponentsInChildren<MeshRenderer>().Length>12)throw new Exception("Decoration not consolidated");
+            if(dressing.GetComponentsInChildren<MeshRenderer>().Count(r=>r.transform.parent && r.transform.parent.name.StartsWith("Combined dressing "))>12)
+                throw new Exception("Environmental dressing is not consolidated");
             Debug.Log("BASEMENT_ARENA_HORROR_VERIFIED body LOD, three independent faulty lamps, static combined dressing, unchanged solid collision");
         }
         finally{PrefabUtility.UnloadPrefabContents(root);}
     }
-    public static void FinalCheck(){Verify();BasementSurfaceBuilder.FinalCheck();Capture();Debug.Log("BASEMENT_ARENA_HORROR_FINAL_OK");}
+    public static void FinalCheck()
+    {
+        Verify();BasementSurfaceBuilder.FinalCheck();Capture();
+        File.WriteAllLines("Preview/ArenaHorror/dependencies.txt",AssetDatabase.GetDependencies(new[]{Room,Arena},true).Where(p=>p.StartsWith(Art+"/")));
+        Debug.Log("BASEMENT_ARENA_HORROR_FINAL_OK");
+    }
 }

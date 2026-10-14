@@ -59,7 +59,8 @@ public static class BasementSurfacePlayVerifier
                 if(!flickerSpans.TryGetValue(flicker,out var span))span=new Vector2(intensity,intensity);
                 flickerSpans[flicker]=new Vector2(Mathf.Min(span.x,intensity),Mathf.Max(span.y,intensity));
                 float basis=(float)typeof(TCFlickerLight).GetField("_base",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance).GetValue(flicker);
-                foreach(var emitter in flicker.GetComponentsInChildren<Renderer>())
+                var emitters=(Renderer[])typeof(TCFlickerLight).GetField("_emitters",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance).GetValue(flicker);
+                foreach(var emitter in emitters)
                 {
                     var material=emitter.sharedMaterial;if(!material || !material.HasProperty("_EmissionColor"))continue;
                     var properties=new MaterialPropertyBlock();emitter.GetPropertyBlock(properties);
