@@ -154,7 +154,7 @@ public static class CylinderBuilder
                 else {Box(p,"Concrete wall",V(0,2,-.03f),V(width,4,.42f),"Plaster");Solid(p,V(0,2,-.03f),V(width,4,.42f));}
                 if(!interactive)Box(p,"Stone base course",V(0,.32f,-.26f),V(width,.64f,.14f),"Concrete");
                 if(!interactive)
-                {Shape(p,"Sealed door image - noninteractive",V(0,1.52f,-.251f),V(Mathf.Min(1.5f,width-.35f),2.95f,1),"SealedDoor",PrimitiveType.Quad);
+                {Shape(p,"Sealed door image - noninteractive",V(0,1.635f,-.251f),V(1.85f,3.25f,1),"SealedDoor",PrimitiveType.Quad);
                     if(i%6==0)Box(p,"Unlit emergency lamp",V(0,3.55f,-.33f),V(.5f,.06f,.08f),"Dark");}
             }
             else {Box(p,"Entrance lintel",V(0,3.8f,0),V(width,.4f,.48f),"Iron");if(i==0)Label(p,V(0,3.77f,-.3f),"ATRIUM / 09",.075f,new Color(.85f,.62f,.28f),false);}

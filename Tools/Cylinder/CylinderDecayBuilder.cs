@@ -50,7 +50,7 @@ public static class CylinderDecayBuilder
                 int index = int.Parse(bay.name.Substring("Service bay ".Length));
                 foreach(var renderer in bay.GetComponentsInChildren<MeshRenderer>())
                     if(renderer.sharedMaterial && renderer.sharedMaterial.name.StartsWith("SealedDoor"))
-                        renderer.sharedMaterial = mats[new[] { "SealedDoor", "SealedDoorPanel", "SealedDoorSlab" }[index % 3]];
+                        renderer.sharedMaterial = mats["SealedDoor"];
             }
             foreach(var label in atrium.GetComponentsInChildren<TextMesh>())
                 if(label.text == "CANTEEN 09") label.text = "CANTINA 09";

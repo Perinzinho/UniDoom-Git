@@ -1,5 +1,17 @@
 # Porão — arena e câmara final
 
+A revisão atual de [materiais e atmosfera](Surface/README.md) segue a skill de
+direção visual fornecida pelo usuário: texturas PBR CC0 em 1K–2K, luzes locais,
+névoa regional leve, pós-processamento discreto e reflexos estáticos. Ela substitui
+o acabamento Point/128 px da [revisão anterior](../TotalChaosSkill/README.md).
+O tamanho da arena e da sala final, o corredor e o combate existentes são mantidos.
+
+A revisão [TotalChaosStyle](../TotalChaosStyle/README.md) aplica o estudo do
+Total Chaos original para GZDoom: barris com perfil e amassados, serviços curvos
+com flanges e válvulas, mortalhas com dobras, costelas curvas e espinhos afilados.
+Materiais com relevo e desgaste fino acompanham a geometria. A estrutura ampliada,
+os colisores e os componentes de combate anteriores são mantidos.
+
 ## Revisão atual: escala, paredes e horror da área final
 
 A arena agora mede **40 × 34 m**, com **9,5 m livres até o teto**. A sala do

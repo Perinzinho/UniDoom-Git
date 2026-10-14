@@ -1,0 +1,42 @@
+{
+  "name": "SalaDeAula",
+  "theme": "apartments",
+  "cellSize": 2,
+  "wallHeight": 3.8,
+  "doorHeight": 2.72,
+  "ceiling": true,
+  "autoShell": true,
+  "textureMeters": 3,
+  "seed": 1718,
+  "preserveExistingGeometry": true,
+  "purpose": "Schematic of approved existing routes and atmosphere cues, not replacement geometry.",
+  "grid": [
+    "           ",
+    " PX        ",
+    " D         ",
+    " .......I. ",
+    " ..L....L. ",
+    " ......C.. ",
+    " ......... ",
+    " ....L.... ",
+    " .C....C.. ",
+    " ...C..... ",
+    " ......... ",
+    "           "
+  ],
+  "existingMap": {
+    "prefab": "Assets/prefabs/Scenario/ClassRoom.prefab",
+    "dimensionsMeters": [
+      18,
+      16,
+      3.8
+    ],
+    "playerHeightMeters": 2.1209743,
+    "deskCount": 42,
+    "enemyPlacement": "unchanged; scene spawner is outside this room prefab",
+    "note": "evacuation/last lecture",
+    "route": "entrance -> flanking aisle -> lecturer wall -> same entrance",
+    "safeCue": "warm lecturer desk lamp",
+    "darkCue": "rear damaged fluorescent sector"
+  }
+}
