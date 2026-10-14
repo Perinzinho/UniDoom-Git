@@ -6,6 +6,8 @@ from mesh_io import write
 
 ROOT = Path(__file__).resolve().parents[3]
 SOURCE = ROOT / '.utmp/BasementPreview/Preview/ArenaHorror/HumanSource'
+if not (SOURCE/'base.obj').exists():
+    SOURCE=ROOT/'Tools/Basement/Horror/Source/MakeHuman'
 OUTPUT = ROOT / '.utmp/BasementPreview/Preview/ArenaHorror/Sources'
 
 
@@ -65,9 +67,7 @@ def pose(v,faces):
 
 
 def mesh(posed,normals,uv,faces):
-    # Keep the complete head and arms; all omitted torso geometry remains covered by the sheet.
-    visible=(posed[:,2]>.485)|(np.abs(posed[:,0])>.19)
-    faces=faces[np.any(visible[faces[:,:,0]],axis=1)]
+    # Keep the complete anatomical surface underneath the cloth as well.
     pairs,inverse=np.unique(faces.reshape(-1,2),axis=0,return_inverse=True)
     vertices=posed[pairs[:,0]];coords=uv[pairs[:,1]];ns=normals[pairs[:,0]];tri=inverse.reshape(-1,3)
     write('AnatomicalAdultBody',vertices,tri,coords,ns)
@@ -81,7 +81,7 @@ def mesh(posed,normals,uv,faces):
 
 
 def sheet(posed,triangles,nx,nz,name):
-    xs=np.linspace(-.665,.665,nx+1);zs=np.linspace(-1.285,.475,nz+1)
+    xs=np.linspace(-.665,.665,nx+1);zs=np.linspace(-.875,.54,nz+1)
     top=np.full((nz+1,nx+1),.014)
     for tri in triangles:
         p=posed[tri];xz=p[:,[0,2]]
@@ -96,16 +96,19 @@ def sheet(posed,triangles,nx,nz,name):
         hit=(u>=0)&(w>=0)&(u+w<=1)
         y=p[0,1]+u*(p[1,1]-p[0,1])+w*(p[2,1]-p[0,1])
         window=top[iz0:iz1+1,ix0:ix1+1];window[:]=np.maximum(window,np.where(hit,y,.014))
+    support=top.copy()
     # Cloth bridges small anatomical gaps, then folds back around the exposed hands.
     for _ in range(5):
         padded=np.pad(top,1,mode='edge')
         top=np.maximum(top,np.maximum.reduce([padded[:-2,1:-1],padded[2:,1:-1],padded[1:-1,:-2],padded[1:-1,2:]])-.009)
     kernel=np.exp(-np.arange(-4,5)**2/(2*1.7**2));kernel/=kernel.sum()
     for axis in [0,1]:top=np.apply_along_axis(lambda r:np.convolve(np.pad(r,4,mode='edge'),kernel,mode='valid'),axis,top)
-    x,z=np.meshgrid(xs,zs);x-=np.sign(x)*(.42*np.exp(-((z+.08)/.20)**2))*np.clip(np.abs(x)/.665,0,1)**1.5
-    for row in range(nz+1):top[row]=np.interp(x[row],xs,top[row])
+    x,z=np.meshgrid(xs,zs)
+    for row in range(nz+1):
+        top[row]=np.maximum(np.interp(x[row],xs,top[row]),np.interp(x[row],xs,support[row]))
     folds=.007*np.sin(x*48+z*11)+.004*np.sin(x*83-z*21)
-    y=top+.009+folds;overhang=np.clip((np.abs(x)-.49)/.175,0,1)
+    # Clearance includes the gaps between cloth samples, avoiding skin poking through.
+    y=top+.042+folds;overhang=np.clip((np.abs(x)-.49)/.175,0,1)
     y=y*(1-overhang)-.27*overhang+.006*np.sin(z*31)*overhang
     vertices=np.stack([x,y,z],axis=-1).reshape(-1,3);tris=[]
     for iz in range(nz):

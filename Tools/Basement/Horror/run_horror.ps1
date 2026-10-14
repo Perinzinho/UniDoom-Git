@@ -15,6 +15,10 @@ Copy-Item -LiteralPath (Join-Path $projectRoot 'Assets/TotalChaos/Runtime/TCFlic
 Copy-Item -LiteralPath (Join-Path $projectRoot 'Assets/TotalChaos/Editor/TotalChaosMaterialConverter.cs') -Destination (Join-Path $previewRoot 'Assets/TotalChaos/Editor/TotalChaosMaterialConverter.cs')
 $steps = if ($Phase -eq 'build') { @('build') } else { @('final','play') }
 if ($Phase -eq 'build') {
+    & python (Join-Path $PSScriptRoot 'pose_human.py')
+    if ($LASTEXITCODE -ne 0) { throw 'Anatomical body generation failed' }
+    & python (Join-Path $PSScriptRoot 'cut_human.py')
+    if ($LASTEXITCODE -ne 0) { throw 'Anatomical body dismemberment failed' }
     foreach ($asset in @('Assets/prefabs/Scenario/Basement.prefab','Assets/Art/Basement/BasementFinalArena.prefab')) {
         Copy-Item -LiteralPath (Join-Path $projectRoot ".utmp/Basement-arena-horror/before/$asset") -Destination (Join-Path $previewRoot $asset)
     }
