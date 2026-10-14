@@ -1,0 +1,65 @@
+{
+  "name": "Cilindro",
+  "theme": "apartments",
+  "cellSize": 2,
+  "wallHeight": 8.6,
+  "doorHeight": 3.25,
+  "ceiling": true,
+  "autoShell": true,
+  "textureMeters": 3,
+  "seed": 1718,
+  "preserveExistingGeometry": true,
+  "purpose": "Schematic of approved existing routes and atmosphere cues, not replacement geometry.",
+  "grid": [
+    "                                   ",
+    "                 P                 ",
+    "                 .                 ",
+    "                 .                 ",
+    "           .............           ",
+    "         .................         ",
+    "        .................I.        ",
+    "      ....L..................      ",
+    "     ...................L.....     ",
+    "     .........................     ",
+    "    .............L.............    ",
+    "    ...........#####...........    ",
+    "    ...........#####...........    ",
+    " ..D...........#####...........D.. ",
+    "    ...........#####...........    ",
+    "    ...........#####...........    ",
+    "    ...........................    ",
+    "     ..I......................     ",
+    "     ...L...............L.....     ",
+    "      .......................      ",
+    "        ...................        ",
+    "         .................         ",
+    "           .............           ",
+    "                 D                 ",
+    "                 .                 ",
+    "                 X                 ",
+    "                                   "
+  ],
+  "existingMap": {
+    "prefab": "Assets/prefabs/Scenario/Cylinder.prefab",
+    "dimensionsMeters": [
+      57,
+      41,
+      8.6
+    ],
+    "functionalDoors": 3,
+    "sealedDoors": 43,
+    "doorLeafMeters": [
+      1.85,
+      3.25
+    ],
+    "existingFloorCircuits": 2,
+    "notes": [
+      "radio without response",
+      "missing notices"
+    ],
+    "route": "south entry -> outer circuit / kiosk circuit -> three existing accesses",
+    "safeCue": "radio and canteen",
+    "darkCue": "damaged gallery sector",
+    "warnings": "The stock validator counts cycles between door-separated regions, not the two continuous floor circuits. These are validated with the real player in Unity."
+  }
+}

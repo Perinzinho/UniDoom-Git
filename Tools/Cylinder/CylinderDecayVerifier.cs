@@ -37,7 +37,7 @@ public static class CylinderDecayVerifier
         Settings(); RenderStories(atrium, "InMap");
         foreach(var renderer in hidden) renderer.enabled = true;
         source.SetActive(true); Object.DestroyImmediate(instance);
-        File.WriteAllText("Preview/Cylinder-decay-validation.txt", "Cylinder decay verified\n43 static PNG door faces, 3 finishes, no cross boards or handles.\n3 original proximity doors remain functional; closed blocking and open passage checked.\nActual CharacterController traverses both full circulation loops and south entrance in prefab and map transform.\n80 original kiosk props supported; roof sealed with 384 upward rays.\nRadio, campus map, missing notices, vending machine, benches, abandoned food and luggage.\nClaw tracks, eggs, creature molt, damp, peeling walls and hanging roof damage.\nAll new closed-door materials are non-emissive; the three usable doors keep their red indicators.\nGeometry and textures retain the pixel style; new textures use Point and max 128 px.\nMain scene and other room assets are not saved by this revision.\nEdit-mode validation; combat and discovery pacing still need playtesting.\n");
+        File.WriteAllText("Preview/Cylinder-decay-validation.txt", "Cylinder decay verified\n43 static doors with one finish, no cross boards or handles.\n3 original proximity doors remain functional; closed blocking and open passage checked.\nActual CharacterController traverses both full circulation loops and south entrance in prefab and map transform.\n80 original kiosk props supported; roof sealed with 384 upward rays.\nRadio, campus map, missing notices, vending machine, benches, abandoned food and luggage.\nClaw tracks, eggs, creature molt, damp, peeling walls and hanging roof damage.\nAll new closed-door materials are non-emissive; the three usable doors keep their red indicators.\nGeometry and textures retain the pixel style; new textures use Point and max 128 px.\nMain scene and other room assets are not saved by this revision.\nEdit-mode validation; combat and discovery pacing still need playtesting.\n");
         Debug.Log("CYLINDER_DECAY_MAP_OK"); Debug.Log("CYLINDER_DECAY_VERIFIED");
     }
     static void Settings()
@@ -50,10 +50,10 @@ public static class CylinderDecayVerifier
     {
         if(Vector3.Distance(atrium.lossyScale, Vector3.one) > .005f) throw new Exception(label + " atrium scale changed");
         var images = atrium.GetComponentsInChildren<MeshRenderer>().Where(r => r.sharedMaterial && r.sharedMaterial.name.StartsWith("SealedDoor")).ToArray();
-        if(images.Length != 43 || images.Select(r => r.sharedMaterial.name).Distinct().Count() != 3) throw new Exception("Expected 43 quiet door images in 3 finishes");
+        if(images.Length != 43 || images.Select(r => r.sharedMaterial.name).Distinct().Count() != 1) throw new Exception("Expected 43 quiet doors in one standard finish");
         foreach(var image in images)
         {
-            if(image.GetComponent<MeshFilter>().sharedMesh.vertexCount != 4 || image.GetComponent<Collider>() || image.GetComponentInParent<OpenDoorWithKey>()) throw new Exception("Sealed door no longer a static quad");
+            if(!image.GetComponent<MeshFilter>().sharedMesh || image.GetComponent<Collider>() || image.GetComponentInParent<OpenDoorWithKey>()) throw new Exception("Sealed door geometry or static behaviour changed");
             if(image.sharedMaterial.IsKeywordEnabled("_EMISSION")) throw new Exception("Closed doors must not show active light cues");
         }
         if(atrium.GetComponentsInChildren<OpenDoorWithKey>().Length != 3) throw new Exception("Interactive door count changed");
@@ -69,7 +69,7 @@ public static class CylinderDecayVerifier
             var importer = (TextureImporter)AssetImporter.GetAtPath(path.Replace('\\', '/'));
             if(importer.filterMode != FilterMode.Point || importer.maxTextureSize != 128) throw new Exception("Texture pixel sampling changed");
         }
-        Debug.Log("CYLINDER_DECAY_" + label + "_DETAILS_OK 43 quiet static doors, 3 finishes and 3 usable doors");
+        Debug.Log("CYLINDER_DECAY_" + label + "_DETAILS_OK 43 quiet standard doors and 3 usable doors");
     }
     static void RenderStories(Transform atrium, string suffix)
     {

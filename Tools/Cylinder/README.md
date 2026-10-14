@@ -1,12 +1,27 @@
 # Cylinder — pátio circular abandonado
 
-## Revisão atual: portas discretas e vestígios das criaturas
+## Revisão atual: atmosfera da skill e portas padronizadas
 
-As **43 portas lacradas** continuam sendo PNGs estáticos sobre paredes sólidas,
-agora **sem X, tábuas ou maçanetas**, com três acabamentos: metal esverdeado com
-veneziana, painel oxidado e chapa cinzenta. Apenas as três portas funcionais
-mantêm maçanetas, indicadores vermelhos e abertura por aproximação. A textura
-principal conserva seu GUID e o gerador original também deixa de desenhar os X.
+A atmosfera segue a [skill Total Chaos Maps](../TotalChaosSkill/README.md), com
+névoa regional, luz escassa, lâmpadas defeituosas e textura Point em 128 px.
+O mapa e a sinalização do rádio voltam a aparecer à frente da porta decorativa.
+O traçado e as dimensões das portas padronizadas permanecem os mesmos.
+
+A revisão [TotalChaosStyle](../TotalChaosStyle/README.md) aplica o estudo do
+Total Chaos original para GZDoom: superfícies mais detalhadas, peças curvas,
+carapaça segmentada, tecido dobrado e destroços irregulares. Todas as 46 folhas
+de porta usam o mesmo modelo verde com painéis e veneziana, com 1,85 m de largura
+e 3,25 m de altura. As 43 decorativas compartilham um acabamento e não têm X ou
+maçaneta; apenas as três funcionais têm maçaneta e abertura por aproximação.
+Os comportamentos e colisores anteriores são mantidos.
+
+## Base de abandono e vestígios das criaturas
+
+As **43 portas lacradas** ficam sobre paredes sólidas, **sem X, tábuas ou
+maçanetas**. A geometria atual acrescenta chanfros, painéis e venezianas.
+Apenas as três portas funcionais mantêm maçanetas, indicadores vermelhos e
+abertura por aproximação. A textura original conserva seu GUID e o gerador
+original também deixa de desenhar os X.
 
 O novo grupo `Abandoned circular atrium/Timeworn atrium stories` acrescenta uma
 cantina encerrada com refeições estragadas, bandejas, embalagens, bagagem,
@@ -69,7 +84,7 @@ junto às paredes reforçam o abandono. A colisão do piso permanece contínua.
 Tomando a entrada sul como referência, há uma porta à esquerda, outra à direita
 e uma no fundo, atrás da cantina. Elas têm folha móvel, batente, maçaneta,
 indicador vermelho e `OpenDoorWithKey`, usando a abertura por aproximação existente,
-sem exigir chaves. As outras 43 portas são imagens planas de folhas lacradas,
+sem exigir chaves. As outras 43 portas são folhas lacradas decorativas,
 sem X, maçanetas, triggers ou componentes de interação. A parede
 atrás dessas imagens continua sólida. Apenas as três portas interagíveis têm
 luz vermelha ligada; as luminárias das portas lacradas ficam apagadas.

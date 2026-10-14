@@ -1,5 +1,16 @@
 # Sala universitária abandonada
 
+A revisão atual de [materiais PBR fotografados](Surface/README.md) aplica o novo
+pedido com texturas CC0, shader URP e conversão reversível. Conserva a
+[iluminação validada](Lighting/README.md): exposição fixa, transições suaves,
+luzes estáveis e sombras com orçamento reservado. O traçado universitário é mantido.
+
+As revisões anteriores de [TotalChaosStyle](../TotalChaosStyle/README.md) e
+[Total Chaos Maps](../TotalChaosSkill/README.md) forneceram a base. TotalChaosStyle
+acrescenta geometria chanfrada ao mobiliário, serviços curvos, tecido com dobras, entulho fraturado e
+materiais com relevo e desgaste fino, seguindo o estudo do Total Chaos original
+para GZDoom. A escala universitária e os colisores existentes são mantidos.
+
 A revisão está no prefab aninhado `Assets/Art/ClassRoom/AbandonedClassRoomInterior.prefab`,
 usado por `Assets/prefabs/Scenario/ClassRoom.prefab` e pela `SampleScene`.
 
@@ -18,8 +29,9 @@ Poças de sangue, respingos, marcas de mãos, pegadas e rastros de arrasto condu
 a três corpos adultos vestidos, com a cabeça inteiramente coberta e sem detalhes
 faciais. Um deles está sob um lençol. Algumas luminárias ficam apagadas, com
 iluminação quente pontual e uma luz vermelha de quarentena. As texturas e materiais
-mantêm o acabamento pixelado já usado no projeto; a geometria dos corpos é simples
-e facetada. Corpos, sangue e pequenos destroços não adicionam colisões.
+recebem o acabamento PBR e a filtragem descritos na revisão de iluminação;
+o mosaico original do piso é preservado. Corpos, sangue e pequenos destroços
+não adicionam colisões.
 
 ## Geração e validação
 
