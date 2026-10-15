@@ -8,8 +8,11 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
+import sys
+sys.path.insert(0, str(ROOT / 'Tools/ProjectOrganization'))
+from resolve_paths import resolve
 OUTPUT = ROOT / '.utmp/BasementOptimization'
-PREFAB = ROOT / 'Assets/prefabs/Scenario/Basement.prefab'
+PREFAB = resolve(ROOT / 'Assets/prefabs/Scenario/Basement.prefab')
 
 
 def blocks(text):
@@ -27,7 +30,7 @@ def main():
     assert before.keys() == after.keys(), 'Prefab fileIDs changed'
     cached_index = OUTPUT / 'guid-index.json'
     if cached_index.exists():
-        index = {guid: ROOT / path for guid, path in json.loads(cached_index.read_text(encoding='utf-8-sig')).items()}
+        index = {guid: resolve(ROOT / path) for guid, path in json.loads(cached_index.read_text(encoding='utf-8-sig')).items()}
     else:
         index = {}
         for meta in (ROOT / 'Assets').rglob('*.meta'):
