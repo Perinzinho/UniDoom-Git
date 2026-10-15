@@ -4,6 +4,9 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
+import sys
+sys.path.insert(0, str(ROOT / 'Tools/ProjectOrganization'))
+from resolve_paths import resolve
 OUTPUT = ROOT / '.utmp/ClassRoomOptimization'
 
 
@@ -27,13 +30,13 @@ def texture_bindings(text):
 
 def main():
     inventory = json.loads(read(OUTPUT / 'static-inventory.json'))
-    index = {g: ROOT / p for g, p in json.loads(read(OUTPUT / 'guid-index.json')).items()}
+    index = {g: resolve(ROOT / p) for g, p in json.loads(read(OUTPUT / 'guid-index.json')).items()}
     changed_meshes = 0
     cleared_texts = 0
     total_ids = 0
     for path in inventory['prefabs']:
         before = blocks(read(OUTPUT / 'source-before' / path))
-        after = blocks(read(ROOT / path))
+        after = blocks(read(resolve(ROOT / path)))
         assert before.keys() == after.keys(), f'Prefab fileIDs changed: {path}'
         text_objects = {re.search(r'm_GameObject: \{fileID: (\d+)\}', b)[1]
                         for kind, b in after.values() if kind == '102'}
@@ -66,7 +69,7 @@ def main():
     changed_materials = 0
     for path in inventory['materials']:
         old = read(OUTPUT / 'source-before' / path)
-        new = read(ROOT / path)
+        new = read(resolve(ROOT / path))
         if old == new:
             continue
         # All colors, controls, render states, UV transforms and subassets survive.
@@ -82,7 +85,7 @@ def main():
     importer_count = 0
     for backup in (OUTPUT / 'source-before').rglob('*.meta'):
         path = backup.relative_to(OUTPUT / 'source-before')
-        old, new = read(backup), read(ROOT / path)
+        old, new = read(backup), read(resolve(ROOT / path))
         normalize = lambda t: re.sub(r'(?m)^(\s*(?:textureType|sRGBTexture): )\d+', r'\1', t)
         assert normalize(old) == normalize(new), f'Unexpected importer edit: {path}'
         assert re.search(r'\bsRGBTexture: (\d+)', new)[1] == '0', f'Nonlinear data texture: {path}'
