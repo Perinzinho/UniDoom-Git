@@ -70,6 +70,7 @@ public class TotalChaosMaterialConverter : EditorWindow
             new Vector4(.25f, preset == TotalChaosSurfacePreset.Metal ? .12f : .04f, .65f, 1));
         material.SetColor("_BaseColor", preset == TotalChaosSurfacePreset.Metal ? new Color(.65f,.67f,.63f) : preset == TotalChaosSurfacePreset.Wood ? new Color(1.35f,1.4f,1.32f) : new Color(.7f,.73f,.69f));
         material.enableInstancing = true;
+        TotalChaosMaterialGUI.UpdateSharedMaskKeyword(material);
         AssetDatabase.CreateAsset(material, path);
         // Store a direct reference by GUID; filename is enough for reversal without a second material copy.
         File.WriteAllText(outputRoot + "/Originals/" + guid + "_" + preset + ".json", JsonUtility.ToJson(new Origin { materialGuid = guid, source = sourcePath }, true));
@@ -158,6 +159,18 @@ public class TotalChaosMaterialGUI : ShaderGUI
             !Mathf.Approximately(material.GetFloat("_DetailNormalMapScale"), 1);
         Keyword(material, "_DETAIL_MULX2", detail && !scaled);
         Keyword(material, "_DETAIL_SCALED", detail && scaled);
+        UpdateSharedMaskKeyword(material);
+    }
+    // All three slots sample the same base UV in LitInput; their individual ST
+    // values are unused. Identical texture objects also share sampler settings.
+    public static void UpdateSharedMaskKeyword(Material material)
+    {
+        if (!material || !material.shader || material.shader.name != "UniDoom/TotalChaosInspiredSurface") return;
+        var mask = material.GetTexture("_MetallicGlossMap");
+        Keyword(material, "_TC_SHARED_MASK", mask &&
+            material.IsKeywordEnabled("_METALLICSPECGLOSSMAP") &&
+            !material.IsKeywordEnabled("_SPECULAR_SETUP") &&
+            material.GetTexture("_OcclusionMap") == mask && material.GetTexture("_DirtMap") == mask);
     }
     static void Keyword(Material material, string key, bool active) { if (active) material.EnableKeyword(key); else material.DisableKeyword(key); }
 }

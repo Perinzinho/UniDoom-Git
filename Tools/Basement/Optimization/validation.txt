@@ -1,0 +1,132 @@
+Unity 6000.5.7f1 / URP 17.5.0
+Development Build Windows x64: SUCCESS
+Build output: .utmp/BasementOptimization/Build/UniDoom.exe
+Build log: .utmp/BasementOptimization/build.log
+Final Editor compilation/render/encounter check: SUCCESS
+Final log: .utmp/BasementOptimization/final-check.log
+No Shader error, error CS or Exception: entries in these logs.
+Warnings from existing packages/asset configuration remain in the logs.
+
+Before:
+BasementArenaEncounter: 1
+BasementGateLayout: 1
+TotalChaosMaps.TCFlickerLight: 17
+TotalChaosMaps.TCMapMarker: 2
+TotalChaosMaps.TCRegionAtmosphere: 4
+UnityEngine.BoxCollider: 88
+UnityEngine.Light: 70
+UnityEngine.LODGroup: 48
+UnityEngine.MeshFilter: 571
+UnityEngine.MeshRenderer: 577
+UnityEngine.ProBuilder.ProBuilderMesh: 8
+UnityEngine.ReflectionProbe: 2
+UnityEngine.Rendering.Universal.UniversalAdditionalLightData: 65
+UnityEngine.Rendering.Volume: 4
+UnityEngine.TextMesh: 6
+UnityEngine.Transform: 1227
+Distinct renderer materials: 93
+Distinct MeshFilter meshes: 366
+Mesh runtime memory bytes (Editor, not Player): 108575262
+Unique mesh vertices: 881367
+Shader Universal Render Pipeline/Lit: 55 materials
+Shader UniDoom/TotalChaosInspiredSurface: 37 materials
+Shader GUI/Text Shader: 1 materials
+Shadow-casting active lights: 3
+
+After:
+BasementArenaEncounter: 1
+BasementGateLayout: 1
+TotalChaosMaps.TCFlickerLight: 17
+TotalChaosMaps.TCMapMarker: 2
+TotalChaosMaps.TCRegionAtmosphere: 4
+UnityEngine.BoxCollider: 88
+UnityEngine.Light: 70
+UnityEngine.LODGroup: 48
+UnityEngine.MeshFilter: 571
+UnityEngine.MeshRenderer: 577
+UnityEngine.ProBuilder.ProBuilderMesh: 8
+UnityEngine.ReflectionProbe: 2
+UnityEngine.Rendering.Universal.UniversalAdditionalLightData: 65
+UnityEngine.Rendering.Volume: 4
+UnityEngine.TextMesh: 6
+UnityEngine.Transform: 1227
+Distinct renderer materials: 93
+Distinct MeshFilter meshes: 343
+Mesh runtime memory bytes (Editor, not Player): 108365326
+Unique mesh vertices: 879999
+Shader Universal Render Pipeline/Lit: 55 materials
+Shader UniDoom/TotalChaosInspiredSurface: 37 materials
+Shader GUI/Text Shader: 1 materials
+Shadow-casting active lights: 3
+
+Structural and screenshot verification:
+PASS: 2945 fileIDs preserved; 23 equivalent MeshFilter references changed.
+PASS: four shader A/B captures are pixel-identical on the tested desktop GPU.
+{
+  "arena-renderer0.png": {
+    "changed_pixels": 4,
+    "bbox": [
+      1,
+      210,
+      4,
+      214
+    ],
+    "mean_absolute_error_0_255": [
+      4.123263888888889e-05,
+      3.580729166666667e-05,
+      1.953125e-05
+    ]
+  },
+  "arena-renderer1.png": {
+    "changed_pixels": 1,
+    "bbox": [
+      2,
+      211,
+      3,
+      212
+    ],
+    "mean_absolute_error_0_255": [
+      4.123263888888889e-05,
+      3.580729166666667e-05,
+      2.170138888888889e-05
+    ]
+  },
+  "boss-renderer0.png": {
+    "changed_pixels": 0,
+    "bbox": null,
+    "mean_absolute_error_0_255": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "boss-renderer1.png": {
+    "changed_pixels": 0,
+    "bbox": null,
+    "mean_absolute_error_0_255": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "gate-renderer0.png": {
+    "changed_pixels": 0,
+    "bbox": null,
+    "mean_absolute_error_0_255": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "gate-renderer1.png": {
+    "changed_pixels": 0,
+    "bbox": null,
+    "mean_absolute_error_0_255": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  }
+}
+
+Performance in the Player and on target hardware was not measured.
