@@ -1,0 +1,758 @@
+diff --git a/Assets/Art/Basement/ArenaHorror/Materials/Corroded_tray.mat b/Assets/Art/Basement/ArenaHorror/Materials/Corroded_tray.mat
+index a5aee8c..cdb69ef 100644
+--- a/Assets/Art/Basement/ArenaHorror/Materials/Corroded_tray.mat
++++ b/Assets/Art/Basement/ArenaHorror/Materials/Corroded_tray.mat
+@@ -11,7 +11,8 @@ Material:
+   m_Shader: {fileID: 4800000, guid: 36756308e0f7bbc42946bae05e4d098c, type: 3}
+   m_Parent: {fileID: 0}
+   m_ModifiedSerializedProperties: 0
+-  m_ValidKeywords: []
++  m_ValidKeywords:
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/ArenaHorror/Materials/Damp_concrete.mat b/Assets/Art/Basement/ArenaHorror/Materials/Damp_concrete.mat
+index 1c63832..0c77053 100644
+--- a/Assets/Art/Basement/ArenaHorror/Materials/Damp_concrete.mat
++++ b/Assets/Art/Basement/ArenaHorror/Materials/Damp_concrete.mat
+@@ -14,6 +14,7 @@ Material:
+   m_ValidKeywords:
+   - _METALLICSPECGLOSSMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/ArenaHorror/Materials/Drain_sludge.mat b/Assets/Art/Basement/ArenaHorror/Materials/Drain_sludge.mat
+index a9ca83c..0a4291b 100644
+--- a/Assets/Art/Basement/ArenaHorror/Materials/Drain_sludge.mat
++++ b/Assets/Art/Basement/ArenaHorror/Materials/Drain_sludge.mat
+@@ -14,6 +14,7 @@ Material:
+   m_ValidKeywords:
+   - _METALLICSPECGLOSSMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/ArenaHorror/Materials/Dried_seepage.mat b/Assets/Art/Basement/ArenaHorror/Materials/Dried_seepage.mat
+index 0cb40cd..41f6391 100644
+--- a/Assets/Art/Basement/ArenaHorror/Materials/Dried_seepage.mat
++++ b/Assets/Art/Basement/ArenaHorror/Materials/Dried_seepage.mat
+@@ -14,6 +14,7 @@ Material:
+   m_ValidKeywords:
+   - _METALLICSPECGLOSSMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/ArenaHorror/Materials/Rubber_restraints.mat b/Assets/Art/Basement/ArenaHorror/Materials/Rubber_restraints.mat
+index 320d945..0192f73 100644
+--- a/Assets/Art/Basement/ArenaHorror/Materials/Rubber_restraints.mat
++++ b/Assets/Art/Basement/ArenaHorror/Materials/Rubber_restraints.mat
+@@ -14,6 +14,7 @@ Material:
+   m_ValidKeywords:
+   - _METALLICSPECGLOSSMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/ArenaPolish/Materials/Aged_painted_equipment.mat b/Assets/Art/Basement/ArenaPolish/Materials/Aged_painted_equipment.mat
+index 82d1fe0..33b6e98 100644
+--- a/Assets/Art/Basement/ArenaPolish/Materials/Aged_painted_equipment.mat
++++ b/Assets/Art/Basement/ArenaPolish/Materials/Aged_painted_equipment.mat
+@@ -15,6 +15,7 @@ Material:
+   - _METALLICSPECGLOSSMAP
+   - _NORMALMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/ArenaPolish/Materials/Black_rubber_cable.mat b/Assets/Art/Basement/ArenaPolish/Materials/Black_rubber_cable.mat
+index d546391..c8f4ad6 100644
+--- a/Assets/Art/Basement/ArenaPolish/Materials/Black_rubber_cable.mat
++++ b/Assets/Art/Basement/ArenaPolish/Materials/Black_rubber_cable.mat
+@@ -15,6 +15,7 @@ Material:
+   - _METALLICSPECGLOSSMAP
+   - _NORMALMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/ArenaPolish/Materials/Dry_chipped_masonry.mat b/Assets/Art/Basement/ArenaPolish/Materials/Dry_chipped_masonry.mat
+index 98e0cf2..3577ccb 100644
+--- a/Assets/Art/Basement/ArenaPolish/Materials/Dry_chipped_masonry.mat
++++ b/Assets/Art/Basement/ArenaPolish/Materials/Dry_chipped_masonry.mat
+@@ -15,6 +15,7 @@ Material:
+   - _METALLICSPECGLOSSMAP
+   - _NORMALMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/ArenaPolish/Materials/Oxidized_structural_steel.mat b/Assets/Art/Basement/ArenaPolish/Materials/Oxidized_structural_steel.mat
+index 6363243..2e76c9a 100644
+--- a/Assets/Art/Basement/ArenaPolish/Materials/Oxidized_structural_steel.mat
++++ b/Assets/Art/Basement/ArenaPolish/Materials/Oxidized_structural_steel.mat
+@@ -15,6 +15,7 @@ Material:
+   - _METALLICSPECGLOSSMAP
+   - _NORMALMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/ArenaPolish/Materials/Worn_brass_fasteners.mat b/Assets/Art/Basement/ArenaPolish/Materials/Worn_brass_fasteners.mat
+index dadc592..16ab177 100644
+--- a/Assets/Art/Basement/ArenaPolish/Materials/Worn_brass_fasteners.mat
++++ b/Assets/Art/Basement/ArenaPolish/Materials/Worn_brass_fasteners.mat
+@@ -15,6 +15,7 @@ Material:
+   - _METALLICSPECGLOSSMAP
+   - _NORMALMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/DetailPolish/Materials/Coagulated_floor_residue.mat b/Assets/Art/Basement/DetailPolish/Materials/Coagulated_floor_residue.mat
+index f9aedf5..162aff9 100644
+--- a/Assets/Art/Basement/DetailPolish/Materials/Coagulated_floor_residue.mat
++++ b/Assets/Art/Basement/DetailPolish/Materials/Coagulated_floor_residue.mat
+@@ -14,6 +14,7 @@ Material:
+   m_ValidKeywords:
+   - _METALLICSPECGLOSSMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/DetailPolish/Materials/Dust_at_contact.mat b/Assets/Art/Basement/DetailPolish/Materials/Dust_at_contact.mat
+index 28d9c83..81f56a2 100644
+--- a/Assets/Art/Basement/DetailPolish/Materials/Dust_at_contact.mat
++++ b/Assets/Art/Basement/DetailPolish/Materials/Dust_at_contact.mat
+@@ -14,6 +14,7 @@ Material:
+   m_ValidKeywords:
+   - _METALLICSPECGLOSSMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/DetailPolish/Materials/Mineral_runoff.mat b/Assets/Art/Basement/DetailPolish/Materials/Mineral_runoff.mat
+index 66333e7..caa1b75 100644
+--- a/Assets/Art/Basement/DetailPolish/Materials/Mineral_runoff.mat
++++ b/Assets/Art/Basement/DetailPolish/Materials/Mineral_runoff.mat
+@@ -14,6 +14,7 @@ Material:
+   m_ValidKeywords:
+   - _METALLICSPECGLOSSMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/DetailPolish/Materials/Stagnant_sacrificial_drainage.mat b/Assets/Art/Basement/DetailPolish/Materials/Stagnant_sacrificial_drainage.mat
+index a2569f4..c3274bb 100644
+--- a/Assets/Art/Basement/DetailPolish/Materials/Stagnant_sacrificial_drainage.mat
++++ b/Assets/Art/Basement/DetailPolish/Materials/Stagnant_sacrificial_drainage.mat
+@@ -14,6 +14,7 @@ Material:
+   m_ValidKeywords:
+   - _METALLICSPECGLOSSMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/Ritual/Materials/Soot_blackened_iron.mat b/Assets/Art/Basement/Ritual/Materials/Soot_blackened_iron.mat
+index 230798e..dd536cf 100644
+--- a/Assets/Art/Basement/Ritual/Materials/Soot_blackened_iron.mat
++++ b/Assets/Art/Basement/Ritual/Materials/Soot_blackened_iron.mat
+@@ -15,6 +15,7 @@ Material:
+   - _METALLICSPECGLOSSMAP
+   - _NORMALMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/RitualExpansion/Materials/Charcoal_residue.mat b/Assets/Art/Basement/RitualExpansion/Materials/Charcoal_residue.mat
+index d592b78..66125d3 100644
+--- a/Assets/Art/Basement/RitualExpansion/Materials/Charcoal_residue.mat
++++ b/Assets/Art/Basement/RitualExpansion/Materials/Charcoal_residue.mat
+@@ -15,6 +15,7 @@ Material:
+   - _METALLICSPECGLOSSMAP
+   - _NORMALMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/RitualExpansion/Materials/Ritual_iron.mat b/Assets/Art/Basement/RitualExpansion/Materials/Ritual_iron.mat
+index c12485b..a098f76 100644
+--- a/Assets/Art/Basement/RitualExpansion/Materials/Ritual_iron.mat
++++ b/Assets/Art/Basement/RitualExpansion/Materials/Ritual_iron.mat
+@@ -15,6 +15,7 @@ Material:
+   - _METALLICSPECGLOSSMAP
+   - _NORMALMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/RitualExpansion/Materials/Smudged_blood.mat b/Assets/Art/Basement/RitualExpansion/Materials/Smudged_blood.mat
+index 4534f8b..7729514 100644
+--- a/Assets/Art/Basement/RitualExpansion/Materials/Smudged_blood.mat
++++ b/Assets/Art/Basement/RitualExpansion/Materials/Smudged_blood.mat
+@@ -15,6 +15,7 @@ Material:
+   - _METALLICSPECGLOSSMAP
+   - _NORMALMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/RitualExpansion/Materials/Trampled_ritual_concrete.mat b/Assets/Art/Basement/RitualExpansion/Materials/Trampled_ritual_concrete.mat
+index d3771b7..76a5f9d 100644
+--- a/Assets/Art/Basement/RitualExpansion/Materials/Trampled_ritual_concrete.mat
++++ b/Assets/Art/Basement/RitualExpansion/Materials/Trampled_ritual_concrete.mat
+@@ -15,6 +15,7 @@ Material:
+   - _METALLICSPECGLOSSMAP
+   - _NORMALMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/Surface/Materials/04008345e19e15e48a7024749aa8ff9b_Stone.mat b/Assets/Art/Basement/Surface/Materials/04008345e19e15e48a7024749aa8ff9b_Stone.mat
+index 6f24b6b..e2fdf0f 100644
+--- a/Assets/Art/Basement/Surface/Materials/04008345e19e15e48a7024749aa8ff9b_Stone.mat
++++ b/Assets/Art/Basement/Surface/Materials/04008345e19e15e48a7024749aa8ff9b_Stone.mat
+@@ -11,7 +11,8 @@ Material:
+   m_Shader: {fileID: 4800000, guid: 36756308e0f7bbc42946bae05e4d098c, type: 3}
+   m_Parent: {fileID: 0}
+   m_ModifiedSerializedProperties: 0
+-  m_ValidKeywords: []
++  m_ValidKeywords:
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/Surface/Materials/1a47d355a91188c48a5db52685e7cb25_Concrete.mat b/Assets/Art/Basement/Surface/Materials/1a47d355a91188c48a5db52685e7cb25_Concrete.mat
+index ba09d61..44ff27e 100644
+--- a/Assets/Art/Basement/Surface/Materials/1a47d355a91188c48a5db52685e7cb25_Concrete.mat
++++ b/Assets/Art/Basement/Surface/Materials/1a47d355a91188c48a5db52685e7cb25_Concrete.mat
+@@ -14,6 +14,7 @@ Material:
+   m_ValidKeywords:
+   - _METALLICSPECGLOSSMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/Surface/Materials/20b061e2b5155a64d98898c8e2018252_Metal.mat b/Assets/Art/Basement/Surface/Materials/20b061e2b5155a64d98898c8e2018252_Metal.mat
+index 82ba524..826f973 100644
+--- a/Assets/Art/Basement/Surface/Materials/20b061e2b5155a64d98898c8e2018252_Metal.mat
++++ b/Assets/Art/Basement/Surface/Materials/20b061e2b5155a64d98898c8e2018252_Metal.mat
+@@ -11,7 +11,8 @@ Material:
+   m_Shader: {fileID: 4800000, guid: 36756308e0f7bbc42946bae05e4d098c, type: 3}
+   m_Parent: {fileID: 0}
+   m_ModifiedSerializedProperties: 0
+-  m_ValidKeywords: []
++  m_ValidKeywords:
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/Surface/Materials/2c0e21ee21deea242871854fcdcfd317_Concrete.mat b/Assets/Art/Basement/Surface/Materials/2c0e21ee21deea242871854fcdcfd317_Concrete.mat
+index 956e3e0..6e2af88 100644
+--- a/Assets/Art/Basement/Surface/Materials/2c0e21ee21deea242871854fcdcfd317_Concrete.mat
++++ b/Assets/Art/Basement/Surface/Materials/2c0e21ee21deea242871854fcdcfd317_Concrete.mat
+@@ -14,6 +14,7 @@ Material:
+   m_ValidKeywords:
+   - _METALLICSPECGLOSSMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/Surface/Materials/34d50000649600b429903df07c862515_Metal.mat b/Assets/Art/Basement/Surface/Materials/34d50000649600b429903df07c862515_Metal.mat
+index 590dd37..397907d 100644
+--- a/Assets/Art/Basement/Surface/Materials/34d50000649600b429903df07c862515_Metal.mat
++++ b/Assets/Art/Basement/Surface/Materials/34d50000649600b429903df07c862515_Metal.mat
+@@ -11,7 +11,8 @@ Material:
+   m_Shader: {fileID: 4800000, guid: 36756308e0f7bbc42946bae05e4d098c, type: 3}
+   m_Parent: {fileID: 0}
+   m_ModifiedSerializedProperties: 0
+-  m_ValidKeywords: []
++  m_ValidKeywords:
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/Surface/Materials/3d530cbe2886ab645b7d19ffde48feac_Metal.mat b/Assets/Art/Basement/Surface/Materials/3d530cbe2886ab645b7d19ffde48feac_Metal.mat
+index 1c195b5..d891685 100644
+--- a/Assets/Art/Basement/Surface/Materials/3d530cbe2886ab645b7d19ffde48feac_Metal.mat
++++ b/Assets/Art/Basement/Surface/Materials/3d530cbe2886ab645b7d19ffde48feac_Metal.mat
+@@ -11,7 +11,8 @@ Material:
+   m_Shader: {fileID: 4800000, guid: 36756308e0f7bbc42946bae05e4d098c, type: 3}
+   m_Parent: {fileID: 0}
+   m_ModifiedSerializedProperties: 0
+-  m_ValidKeywords: []
++  m_ValidKeywords:
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/Surface/Materials/404f94e67ac3e8a4d8234c2e37f927eb_Stone.mat b/Assets/Art/Basement/Surface/Materials/404f94e67ac3e8a4d8234c2e37f927eb_Stone.mat
+index 8d494d2..5e3639f 100644
+--- a/Assets/Art/Basement/Surface/Materials/404f94e67ac3e8a4d8234c2e37f927eb_Stone.mat
++++ b/Assets/Art/Basement/Surface/Materials/404f94e67ac3e8a4d8234c2e37f927eb_Stone.mat
+@@ -11,7 +11,8 @@ Material:
+   m_Shader: {fileID: 4800000, guid: 36756308e0f7bbc42946bae05e4d098c, type: 3}
+   m_Parent: {fileID: 0}
+   m_ModifiedSerializedProperties: 0
+-  m_ValidKeywords: []
++  m_ValidKeywords:
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/Surface/Materials/4fba0da6b3a6a4c4c8b6f4fe0e9b2bdd_Metal.mat b/Assets/Art/Basement/Surface/Materials/4fba0da6b3a6a4c4c8b6f4fe0e9b2bdd_Metal.mat
+index e005cd3..faa0ccb 100644
+--- a/Assets/Art/Basement/Surface/Materials/4fba0da6b3a6a4c4c8b6f4fe0e9b2bdd_Metal.mat
++++ b/Assets/Art/Basement/Surface/Materials/4fba0da6b3a6a4c4c8b6f4fe0e9b2bdd_Metal.mat
+@@ -11,7 +11,8 @@ Material:
+   m_Shader: {fileID: 4800000, guid: 36756308e0f7bbc42946bae05e4d098c, type: 3}
+   m_Parent: {fileID: 0}
+   m_ModifiedSerializedProperties: 0
+-  m_ValidKeywords: []
++  m_ValidKeywords:
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/Surface/Materials/7f5c0d22fba2e1e4faa8a55af71c64df_Concrete.mat b/Assets/Art/Basement/Surface/Materials/7f5c0d22fba2e1e4faa8a55af71c64df_Concrete.mat
+index aa0723f..cf0d212 100644
+--- a/Assets/Art/Basement/Surface/Materials/7f5c0d22fba2e1e4faa8a55af71c64df_Concrete.mat
++++ b/Assets/Art/Basement/Surface/Materials/7f5c0d22fba2e1e4faa8a55af71c64df_Concrete.mat
+@@ -14,6 +14,7 @@ Material:
+   m_ValidKeywords:
+   - _METALLICSPECGLOSSMAP
+   - _OCCLUSIONMAP
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/Surface/Materials/8c4883dca238f02499d0ac9133791291_Metal.mat b/Assets/Art/Basement/Surface/Materials/8c4883dca238f02499d0ac9133791291_Metal.mat
+index 05dac89..d528c8f 100644
+--- a/Assets/Art/Basement/Surface/Materials/8c4883dca238f02499d0ac9133791291_Metal.mat
++++ b/Assets/Art/Basement/Surface/Materials/8c4883dca238f02499d0ac9133791291_Metal.mat
+@@ -11,7 +11,8 @@ Material:
+   m_Shader: {fileID: 4800000, guid: 36756308e0f7bbc42946bae05e4d098c, type: 3}
+   m_Parent: {fileID: 0}
+   m_ModifiedSerializedProperties: 0
+-  m_ValidKeywords: []
++  m_ValidKeywords:
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/Surface/Materials/91b0ca9d9e9e2c64fb6111bdb78af57b_Stone.mat b/Assets/Art/Basement/Surface/Materials/91b0ca9d9e9e2c64fb6111bdb78af57b_Stone.mat
+index 301e419..b620ecf 100644
+--- a/Assets/Art/Basement/Surface/Materials/91b0ca9d9e9e2c64fb6111bdb78af57b_Stone.mat
++++ b/Assets/Art/Basement/Surface/Materials/91b0ca9d9e9e2c64fb6111bdb78af57b_Stone.mat
+@@ -11,7 +11,8 @@ Material:
+   m_Shader: {fileID: 4800000, guid: 36756308e0f7bbc42946bae05e4d098c, type: 3}
+   m_Parent: {fileID: 0}
+   m_ModifiedSerializedProperties: 0
+-  m_ValidKeywords: []
++  m_ValidKeywords:
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/Surface/Materials/cad6dfa3f63e19141aae9a000b64014e_Metal.mat b/Assets/Art/Basement/Surface/Materials/cad6dfa3f63e19141aae9a000b64014e_Metal.mat
+index 38e95cf..f9e6632 100644
+--- a/Assets/Art/Basement/Surface/Materials/cad6dfa3f63e19141aae9a000b64014e_Metal.mat
++++ b/Assets/Art/Basement/Surface/Materials/cad6dfa3f63e19141aae9a000b64014e_Metal.mat
+@@ -11,7 +11,8 @@ Material:
+   m_Shader: {fileID: 4800000, guid: 36756308e0f7bbc42946bae05e4d098c, type: 3}
+   m_Parent: {fileID: 0}
+   m_ModifiedSerializedProperties: 0
+-  m_ValidKeywords: []
++  m_ValidKeywords:
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/Surface/Materials/e7fa3338c0b9a7b4f84b2d90ade66a5b_Metal.mat b/Assets/Art/Basement/Surface/Materials/e7fa3338c0b9a7b4f84b2d90ade66a5b_Metal.mat
+index a00602d..0090fe6 100644
+--- a/Assets/Art/Basement/Surface/Materials/e7fa3338c0b9a7b4f84b2d90ade66a5b_Metal.mat
++++ b/Assets/Art/Basement/Surface/Materials/e7fa3338c0b9a7b4f84b2d90ade66a5b_Metal.mat
+@@ -11,7 +11,8 @@ Material:
+   m_Shader: {fileID: 4800000, guid: 36756308e0f7bbc42946bae05e4d098c, type: 3}
+   m_Parent: {fileID: 0}
+   m_ModifiedSerializedProperties: 0
+-  m_ValidKeywords: []
++  m_ValidKeywords:
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/Art/Basement/Surface/Materials/f7b028d21f5c59845ab2df2b73c6b410_Metal.mat b/Assets/Art/Basement/Surface/Materials/f7b028d21f5c59845ab2df2b73c6b410_Metal.mat
+index 4a44b40..1327bea 100644
+--- a/Assets/Art/Basement/Surface/Materials/f7b028d21f5c59845ab2df2b73c6b410_Metal.mat
++++ b/Assets/Art/Basement/Surface/Materials/f7b028d21f5c59845ab2df2b73c6b410_Metal.mat
+@@ -11,7 +11,8 @@ Material:
+   m_Shader: {fileID: 4800000, guid: 36756308e0f7bbc42946bae05e4d098c, type: 3}
+   m_Parent: {fileID: 0}
+   m_ModifiedSerializedProperties: 0
+-  m_ValidKeywords: []
++  m_ValidKeywords:
++  - _TC_SHARED_MASK
+   m_InvalidKeywords: []
+   m_LightmapFlags: 4
+   m_EnableInstancingVariants: 1
+diff --git a/Assets/TotalChaos/Editor/TotalChaosMaterialConverter.cs b/Assets/TotalChaos/Editor/TotalChaosMaterialConverter.cs
+index c421c7b..14ed2ab 100644
+--- a/Assets/TotalChaos/Editor/TotalChaosMaterialConverter.cs
++++ b/Assets/TotalChaos/Editor/TotalChaosMaterialConverter.cs
+@@ -70,6 +70,7 @@ public static Material Convert(Material source, TotalChaosSurfacePreset preset,
+             new Vector4(.25f, preset == TotalChaosSurfacePreset.Metal ? .12f : .04f, .65f, 1));
+         material.SetColor("_BaseColor", preset == TotalChaosSurfacePreset.Metal ? new Color(.65f,.67f,.63f) : preset == TotalChaosSurfacePreset.Wood ? new Color(1.35f,1.4f,1.32f) : new Color(.7f,.73f,.69f));
+         material.enableInstancing = true;
++        TotalChaosMaterialGUI.UpdateSharedMaskKeyword(material);
+         AssetDatabase.CreateAsset(material, path);
+         // Store a direct reference by GUID; filename is enough for reversal without a second material copy.
+         File.WriteAllText(outputRoot + "/Originals/" + guid + "_" + preset + ".json", JsonUtility.ToJson(new Origin { materialGuid = guid, source = sourcePath }, true));
+@@ -158,6 +159,18 @@ public override void ValidateMaterial(Material material)
+             !Mathf.Approximately(material.GetFloat("_DetailNormalMapScale"), 1);
+         Keyword(material, "_DETAIL_MULX2", detail && !scaled);
+         Keyword(material, "_DETAIL_SCALED", detail && scaled);
++        UpdateSharedMaskKeyword(material);
++    }
++    // All three slots sample the same base UV in LitInput; their individual ST
++    // values are unused. Identical texture objects also share sampler settings.
++    public static void UpdateSharedMaskKeyword(Material material)
++    {
++        if (!material || !material.shader || material.shader.name != "UniDoom/TotalChaosInspiredSurface") return;
++        var mask = material.GetTexture("_MetallicGlossMap");
++        Keyword(material, "_TC_SHARED_MASK", mask &&
++            material.IsKeywordEnabled("_METALLICSPECGLOSSMAP") &&
++            !material.IsKeywordEnabled("_SPECULAR_SETUP") &&
++            material.GetTexture("_OcclusionMap") == mask && material.GetTexture("_DirtMap") == mask);
+     }
+     static void Keyword(Material material, string key, bool active) { if (active) material.EnableKeyword(key); else material.DisableKeyword(key); }
+ }
+diff --git a/Assets/TotalChaos/Shaders/TotalChaosInspiredSurface.shader b/Assets/TotalChaos/Shaders/TotalChaosInspiredSurface.shader
+index 90bdebb..f1c3b5d 100644
+--- a/Assets/TotalChaos/Shaders/TotalChaosInspiredSurface.shader
++++ b/Assets/TotalChaos/Shaders/TotalChaosInspiredSurface.shader
+@@ -129,6 +129,7 @@ Shader "UniDoom/TotalChaosInspiredSurface"
+             #pragma shader_feature_local_fragment _ _ALPHAPREMULTIPLY_ON _ALPHAMODULATE_ON
+             #pragma shader_feature_local_fragment _EMISSION
+             #pragma shader_feature_local_fragment _METALLICSPECGLOSSMAP
++            #pragma shader_feature_local_fragment _TC_SHARED_MASK
+             #pragma shader_feature_local_fragment _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+             #pragma shader_feature_local_fragment _OCCLUSIONMAP
+             #pragma shader_feature_local_fragment _SPECULARHIGHLIGHTS_OFF
+@@ -273,6 +274,7 @@ Shader "UniDoom/TotalChaosInspiredSurface"
+             //#pragma shader_feature_local_fragment _ALPHAPREMULTIPLY_ON
+             #pragma shader_feature_local_fragment _EMISSION
+             #pragma shader_feature_local_fragment _METALLICSPECGLOSSMAP
++            #pragma shader_feature_local_fragment _TC_SHARED_MASK
+             #pragma shader_feature_local_fragment _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+             #pragma shader_feature_local_fragment _OCCLUSIONMAP
+             #pragma shader_feature_local _PARALLAXMAP
+@@ -446,6 +448,7 @@ Shader "UniDoom/TotalChaosInspiredSurface"
+             // Metallic workflow only; _SpecColor stores surface controls.
+             #pragma shader_feature_local_fragment _EMISSION
+             #pragma shader_feature_local_fragment _METALLICSPECGLOSSMAP
++            #pragma shader_feature_local_fragment _TC_SHARED_MASK
+             #pragma shader_feature_local_fragment _ALPHATEST_ON
+             #pragma shader_feature_local_fragment _ _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+             #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
+diff --git a/Assets/TotalChaos/Shaders/TotalChaosSurfaceInput.hlsl b/Assets/TotalChaos/Shaders/TotalChaosSurfaceInput.hlsl
+index 3bd6d3a..ddd2f53 100644
+--- a/Assets/TotalChaos/Shaders/TotalChaosSurfaceInput.hlsl
++++ b/Assets/TotalChaos/Shaders/TotalChaosSurfaceInput.hlsl
+@@ -8,13 +8,62 @@
+ TEXTURE2D(_DirtMap);
+ SAMPLER(sampler_DirtMap);
+ 
++// URP 17.5 LitInput equivalent for materials whose metallic, occlusion and dirt
++// slots reference the SAME texture. Keep native precision, UVs and feature math.
++// Derived from URP LitInput.hlsl; Unity Companion License, see LICENSE-Unity.md.
++#if defined(_TC_SHARED_MASK) && defined(_METALLICSPECGLOSSMAP) && !defined(_SPECULAR_SETUP)
++inline void InitializeTotalChaosSharedMaskSurface(float2 uv, float4 mask, out SurfaceData surface)
++{
++    half4 albedoAlpha = SampleAlbedoAlpha(uv, TEXTURE2D_ARGS(_BaseMap, sampler_BaseMap));
++    surface.alpha = Alpha(albedoAlpha.a, _BaseColor, _Cutoff);
++    surface.albedo = albedoAlpha.rgb * _BaseColor.rgb;
++    surface.albedo = AlphaModulate(surface.albedo, surface.alpha);
++    half4 specGloss = half4(mask);
++    surface.metallic = specGloss.r;
++    surface.specular = half3(0.0h, 0.0h, 0.0h);
++#if defined(_SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A)
++    surface.smoothness = albedoAlpha.a * _Smoothness;
++#else
++    surface.smoothness = specGloss.a * _Smoothness;
++#endif
++    surface.normalTS = SampleNormal(uv, TEXTURE2D_ARGS(_BumpMap, sampler_BumpMap), _BumpScale);
++#if defined(_OCCLUSIONMAP)
++    half occlusion = mask.g;
++    surface.occlusion = LerpWhiteTo(occlusion, _OcclusionStrength);
++#else
++    surface.occlusion = half(1.0);
++#endif
++    surface.emission = SampleEmission(uv, _EmissionColor.rgb, TEXTURE2D_ARGS(_EmissionMap, sampler_EmissionMap));
++#if defined(_CLEARCOAT) || defined(_CLEARCOATMAP)
++    half2 clearCoat = SampleClearCoat(uv);
++    surface.clearCoatMask = clearCoat.r;
++    surface.clearCoatSmoothness = clearCoat.g;
++#else
++    surface.clearCoatMask = half(0.0);
++    surface.clearCoatSmoothness = half(0.0);
++#endif
++#if defined(_DETAIL)
++    half detailMask = SAMPLE_TEXTURE2D(_DetailMask, sampler_DetailMask, uv).a;
++    float2 detailUv = uv * _DetailAlbedoMap_ST.xy + _DetailAlbedoMap_ST.zw;
++    surface.albedo = ApplyDetailAlbedo(detailUv, surface.albedo, detailMask);
++    surface.normalTS = ApplyDetailNormal(detailUv, surface.normalTS, detailMask);
++#endif
++}
++#endif
++
+ inline void InitializeStandardLitSurfaceData(float2 uv, out SurfaceData surface)
+ {
++#if defined(_TC_SHARED_MASK) && defined(_METALLICSPECGLOSSMAP) && !defined(_SPECULAR_SETUP)
++    float4 mask = SAMPLE_TEXTURE2D(_MetallicGlossMap, sampler_MetallicGlossMap, uv);
++    InitializeTotalChaosSharedMaskSurface(uv, mask, surface);
++    half cavity = 1.0h - mask.g;
++#else
+     InitializeTotalChaosNativeLitSurface(uv, surface);
++    half cavity = 1.0h - SAMPLE_TEXTURE2D(_DirtMap, sampler_DirtMap, uv).g;
++#endif
+     // Reuse the unused metallic-workflow specular vector to keep every native
+     // pass's UnityPerMaterial layout identical and preserve SRP batching.
+     half4 controls = _SpecColor; // cavity dirt, cavity wetness, saturation, contrast
+-    half cavity = 1.0h - SAMPLE_TEXTURE2D(_DirtMap, sampler_DirtMap, uv).g;
+     half dirt = saturate(cavity * controls.r);
+     half wet = saturate(cavity * controls.g);
+     surface.albedo *= lerp(1.0h, 0.68h, dirt);
+diff --git a/Assets/prefabs/Scenario/Basement.prefab b/Assets/prefabs/Scenario/Basement.prefab
+index ef349e4..c073157 100644
+--- a/Assets/prefabs/Scenario/Basement.prefab
++++ b/Assets/prefabs/Scenario/Basement.prefab
+@@ -582,7 +582,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 53416922164368291}
+-  m_Mesh: {fileID: 4300000, guid: 12aca202b2524c84e99b378cc98f3359, type: 2}
++  m_Mesh: {fileID: 4300000, guid: ebd6db4fc608dde4a9fbae5a34725211, type: 2}
+ --- !u!23 &7005492002862269916
+ MeshRenderer:
+   m_ObjectHideFlags: 0
+@@ -1120,7 +1120,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 99733739439679235}
+-  m_Mesh: {fileID: 4300000, guid: a86c0737fce377944bee36b528614e1e, type: 2}
++  m_Mesh: {fileID: 4300000, guid: 05e43156537c01641b537d2bbfc407d6, type: 2}
+ --- !u!65 &7095007747542014212
+ BoxCollider:
+   m_ObjectHideFlags: 0
+@@ -2524,7 +2524,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 379482812627012235}
+-  m_Mesh: {fileID: 4300000, guid: be4c6a3159b025b46b5b5d42c0224ff3, type: 2}
++  m_Mesh: {fileID: 4300000, guid: 145803c39e91d6646a0ba9ca584ec57e, type: 2}
+ --- !u!65 &7683153146745034630
+ BoxCollider:
+   m_ObjectHideFlags: 0
+@@ -5540,7 +5540,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 977981030474387628}
+-  m_Mesh: {fileID: 4300000, guid: bea5e91e606e24145a1ef5ae70901481, type: 2}
++  m_Mesh: {fileID: 4300000, guid: 81dd0fcb9978a3242ae77f7078f7466f, type: 2}
+ --- !u!65 &8363745986575136029
+ BoxCollider:
+   m_ObjectHideFlags: 0
+@@ -5955,7 +5955,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 1116347503998494120}
+-  m_Mesh: {fileID: 4300000, guid: 1e7eee0f4efd08e42a8cbe2ef454a225, type: 2}
++  m_Mesh: {fileID: 4300000, guid: 7a1b9ea9314282848a135d61f60a7ec2, type: 2}
+ --- !u!23 &3688768103909946140
+ MeshRenderer:
+   m_ObjectHideFlags: 0
+@@ -7714,7 +7714,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 1499636347107077582}
+-  m_Mesh: {fileID: 4300000, guid: acf036c1549621e42916c56c0dce5430, type: 2}
++  m_Mesh: {fileID: 4300000, guid: 0a7c2026b7f8f2b4e8f6889a933ceaf3, type: 2}
+ --- !u!23 &8596415749509838730
+ MeshRenderer:
+   m_ObjectHideFlags: 0
+@@ -10627,7 +10627,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 2228609524542819332}
+-  m_Mesh: {fileID: 4300000, guid: 1b4666355fe29f140955c7fd1424ab16, type: 2}
++  m_Mesh: {fileID: 4300000, guid: 144abd44793750e4ab289753cc9f53d7, type: 2}
+ --- !u!65 &5501523022662024822
+ BoxCollider:
+   m_ObjectHideFlags: 0
+@@ -11142,7 +11142,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 2327380414832087917}
+-  m_Mesh: {fileID: 4300000, guid: da969c83dbe230d43a1172080df47d37, type: 2}
++  m_Mesh: {fileID: 4300000, guid: 144abd44793750e4ab289753cc9f53d7, type: 2}
+ --- !u!65 &6863596486133675569
+ BoxCollider:
+   m_ObjectHideFlags: 0
+@@ -12451,7 +12451,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 2528671928257162249}
+-  m_Mesh: {fileID: 4300000, guid: e2ed003c5d4b6dc4cba5745afa6ca3e4, type: 2}
++  m_Mesh: {fileID: 4300000, guid: 1c2ddae4cbb6ffd4ba2e10d40ffb62f9, type: 2}
+ --- !u!65 &8095939261747354371
+ BoxCollider:
+   m_ObjectHideFlags: 0
+@@ -13298,7 +13298,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 2823727668330281463}
+-  m_Mesh: {fileID: 4300000, guid: 72a4d232bd6d79b4b985fc8ef5b8cffe, type: 2}
++  m_Mesh: {fileID: 4300000, guid: 144abd44793750e4ab289753cc9f53d7, type: 2}
+ --- !u!65 &7576461450648479879
+ BoxCollider:
+   m_ObjectHideFlags: 0
+@@ -15212,7 +15212,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 3015126875120844839}
+-  m_Mesh: {fileID: 4300000, guid: 1b67c4b5a0c4a8849a912876df6af163, type: 2}
++  m_Mesh: {fileID: 4300000, guid: ebd6db4fc608dde4a9fbae5a34725211, type: 2}
+ --- !u!23 &6171475870439086451
+ MeshRenderer:
+   m_ObjectHideFlags: 0
+@@ -17639,7 +17639,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 3510933228971923265}
+-  m_Mesh: {fileID: 4300000, guid: 568502bb2dab2604fa53a3d81deeb73a, type: 2}
++  m_Mesh: {fileID: 4300000, guid: bb8e6aa06e2b8874a9441ba6acd7d9a9, type: 2}
+ --- !u!23 &7126991071078439949
+ MeshRenderer:
+   m_ObjectHideFlags: 0
+@@ -19617,7 +19617,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 4099578486504944170}
+-  m_Mesh: {fileID: 4300000, guid: 70772a36be229a14faf8735ecee0d0e0, type: 2}
++  m_Mesh: {fileID: 4300000, guid: 81dd0fcb9978a3242ae77f7078f7466f, type: 2}
+ --- !u!65 &8671625339236002765
+ BoxCollider:
+   m_ObjectHideFlags: 0
+@@ -24578,7 +24578,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 4831491673056934541}
+-  m_Mesh: {fileID: 4300000, guid: ed401c862e3998840b3bcd710475828a, type: 2}
++  m_Mesh: {fileID: 4300000, guid: 144abd44793750e4ab289753cc9f53d7, type: 2}
+ --- !u!65 &4898105732599683188
+ BoxCollider:
+   m_ObjectHideFlags: 0
+@@ -25895,7 +25895,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 4983530603014066414}
+-  m_Mesh: {fileID: 4300000, guid: 371db24b2b979e2448a33244931c1af5, type: 2}
++  m_Mesh: {fileID: 4300000, guid: 72b98e58759ef424d8afc605116eeebd, type: 2}
+ --- !u!65 &8862141112767115047
+ BoxCollider:
+   m_ObjectHideFlags: 0
+@@ -31827,7 +31827,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 6120221615619697465}
+-  m_Mesh: {fileID: 4300000, guid: d24aec69b6011114d993e93ae05ac3f3, type: 2}
++  m_Mesh: {fileID: 4300000, guid: 81dd0fcb9978a3242ae77f7078f7466f, type: 2}
+ --- !u!65 &640089859711638555
+ BoxCollider:
+   m_ObjectHideFlags: 0
+@@ -33043,7 +33043,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 6380022570640600777}
+-  m_Mesh: {fileID: 4300000, guid: a32dd20ed45b4014489b755d7db2db2a, type: 2}
++  m_Mesh: {fileID: 4300000, guid: 2fbd7cc801ee3cf429152a5c65b78ddb, type: 2}
+ --- !u!65 &81577544296316743
+ BoxCollider:
+   m_ObjectHideFlags: 0
+@@ -34991,7 +34991,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 6935027669198701066}
+-  m_Mesh: {fileID: 4300000, guid: 1a4152384bbc3a346a620939dabd01d6, type: 2}
++  m_Mesh: {fileID: 4300000, guid: 9a77d1adf0aa66147b8e02103a04465c, type: 2}
+ --- !u!23 &5017970890832658177
+ MeshRenderer:
+   m_ObjectHideFlags: 0
+@@ -36598,7 +36598,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 7195092520332256153}
+-  m_Mesh: {fileID: 4300000, guid: 5b857ede1cb4e294fabc65947d542817, type: 2}
++  m_Mesh: {fileID: 4300000, guid: a14e1a140977e404983ad12a5cfcc1e7, type: 2}
+ --- !u!65 &4149657334908897400
+ BoxCollider:
+   m_ObjectHideFlags: 0
+@@ -36800,7 +36800,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 7219025445080597826}
+-  m_Mesh: {fileID: 4300000, guid: 8bd406172044b02469abbea870244b7a, type: 2}
++  m_Mesh: {fileID: 4300000, guid: 144abd44793750e4ab289753cc9f53d7, type: 2}
+ --- !u!65 &6705079928888973785
+ BoxCollider:
+   m_ObjectHideFlags: 0
+@@ -40963,7 +40963,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 8106595712368225886}
+-  m_Mesh: {fileID: 4300000, guid: a6d1e316ee702084590c47bf6ce590e9, type: 2}
++  m_Mesh: {fileID: 4300000, guid: a0b49d014d53bd64c9dda4b98824759e, type: 2}
+ --- !u!65 &4897515510770188939
+ BoxCollider:
+   m_ObjectHideFlags: 0
+@@ -45511,7 +45511,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 9039672175859023562}
+-  m_Mesh: {fileID: 4300000, guid: 68d2a930f598cd44489e2024d325de82, type: 2}
++  m_Mesh: {fileID: 4300000, guid: ebd6db4fc608dde4a9fbae5a34725211, type: 2}
+ --- !u!23 &8980776878518242287
+ MeshRenderer:
+   m_ObjectHideFlags: 0
+@@ -45723,7 +45723,7 @@ MeshFilter:
+   m_PrefabInstance: {fileID: 0}
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 9051886230246350883}
+-  m_Mesh: {fileID: 4300000, guid: 6e6e8c2faa5ccc94faf0f50d780bb09e, type: 2}
++  m_Mesh: {fileID: 4300000, guid: b934e30a291f4a443a6ae2e0523dab71, type: 2}
+ --- !u!65 &5771317710579274996
+ BoxCollider:
+   m_ObjectHideFlags: 0
