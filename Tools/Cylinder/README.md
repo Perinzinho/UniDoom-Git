@@ -1,6 +1,14 @@
 # Cylinder — pátio circular abandonado
 
-## Revisão atual: atmosfera da skill e portas padronizadas
+## Atualizações recentes
+
+- [Rádio detalhado, placas PNG e vestígios nas paredes](MacabreRevision/README.md): modelos gratuitos do Poly Haven, PNGs do OpenMoji, inscrições incorporadas ao atlas, variedade na cantina e validação em Play Mode.
+- [Cantina e identificação das portas](CanteenDoors/README.md): entrada maior, sala de aula à direita, biblioteca à esquerda e diretoria atrás.
+- [Materiais, modelos e spawnpoints](DetailRevision/README.md): superfícies PBR, iluminação derivada da sala de aula e seis spawnpoints de inimigos.
+
+Os registros abaixo descrevem as bases anteriores dessas revisões.
+
+## Base: atmosfera da skill e portas padronizadas
 
 A atmosfera segue a [skill Total Chaos Maps](../TotalChaosSkill/README.md), com
 névoa regional, luz escassa, lâmpadas defeituosas e textura Point em 128 px.
