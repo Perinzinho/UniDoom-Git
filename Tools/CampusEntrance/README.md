@@ -1,5 +1,9 @@
 # Entrada UniDoom — revisão por referência, 16/10/2026
 
+Revisão posterior: [altura dos objetos, muros e portões fechados, noite, gramado nas janelas e abandono leve](NightRevision/README.md).
+
+Revisão mais recente: [fechamento completo das vistas das janelas e postes mais fortes na entrada](ImmersionRevision/README.md).
+
 Refatoração de `EntranceGarden.prefab` e `EntranceHallway.prefab`, Unity 6000.5.7f1 / URP 17.5.0. O usuário escolheu ampliar a área externa e remover os muros altos. A imagem anexada orienta arquitetura e circulação; o prompt mestre e a skill `total-chaos-visual-direction` orientam materiais, abandono e iluminação.
 
 ## Resultado
