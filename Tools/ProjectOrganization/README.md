@@ -1,5 +1,7 @@
 # Organização do projeto Unity — 15/10/2026
 
+> Continuação em 16/10/2026: [centralização de 94 recursos que passaram a ser compartilhados pelas revisões posteriores](2026-10-16/README.md). Consulte esse relatório para o estado atual; os números e snapshots abaixo registram a rodada original.
+
 O [plano revisado pelo usuário](PLAN.md) foi executado. Os cenários estão reunidos em `Assets/_Project/Scenes`, os recursos compartilhados e de sistemas em `Assets/_Project/Global`, e as ferramentas mantidas em `Assets/_Project/Editor/Tools`.
 
 ## Resultado
