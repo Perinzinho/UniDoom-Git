@@ -11,8 +11,15 @@ def resolve(path):
     if _mapping is None:
         data = json.loads((ROOT / 'Tools/ProjectOrganization/path-map.json').read_text(encoding='utf-8'))
         _mapping = {m['source']: m['destination'] for m in data['mappings']}
+        for batch in sorted((ROOT / 'Tools/ProjectOrganization').glob('????-??-??/path-map.json')):
+            later = json.loads(batch.read_text(encoding='utf-8'))
+            _mapping.update({m['source']: m['destination'] for m in later['mappings']})
     path = Path(path)
     relative = path.relative_to(ROOT).as_posix()
     suffix = '.meta' if relative.endswith('.meta') else ''
     key = relative[:-5] if suffix else relative
-    return ROOT / (_mapping.get(key, key) + suffix)
+    seen = set()
+    while key in _mapping and key not in seen:
+        seen.add(key)
+        key = _mapping[key]
+    return ROOT / (key + suffix)

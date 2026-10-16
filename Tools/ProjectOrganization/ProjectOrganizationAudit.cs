@@ -12,7 +12,21 @@ using Object = UnityEngine.Object;
 // Read-only inspection: never saves scenes, prefabs or importer settings.
 public static class ProjectOrganizationAudit
 {
-    const string Output = "Tools/ProjectOrganization/";
+    const string DefaultOutput = "Tools/ProjectOrganization/";
+    static readonly string Output = GetOutput();
+    static string GetOutput()
+    {
+        var args = Environment.GetCommandLineArgs();
+        int index = Array.IndexOf(args, "-organizationOutput");
+        if (index < 0) return DefaultOutput;
+        if (index + 1 >= args.Length) throw new ArgumentException("Missing organization output directory");
+        string path = args[index + 1].Replace('\\', '/').TrimEnd('/') + "/";
+        string root = Path.GetFullPath(DefaultOutput);
+        if (!Path.GetFullPath(path).StartsWith(root, StringComparison.OrdinalIgnoreCase))
+            throw new ArgumentException("Organization reports must remain under " + DefaultOutput);
+        Directory.CreateDirectory(path);
+        return path;
+    }
     [Serializable] public class Entry
     {
         public string guid, path, type;
@@ -155,7 +169,8 @@ public static class ProjectOrganizationAudit
         var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions {
             scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray(),
             target = BuildTarget.StandaloneWindows64,
-            locationPathName = ".utmp/ProjectOrganization/Build/UniDoom.exe",
+            locationPathName = Output == DefaultOutput ? ".utmp/ProjectOrganization/Build/UniDoom.exe" :
+                ".utmp/ProjectOrganization/" + Path.GetFileName(Output.TrimEnd('/')) + "/Build/UniDoom.exe",
             options = BuildOptions.Development
         });
         File.WriteAllText(Output + "build-result.json", "{\"result\":\"" + report.summary.result + "\",\"errors\":" + report.summary.totalErrors + ",\"warnings\":" + report.summary.totalWarnings + "}");

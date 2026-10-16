@@ -1,5 +1,7 @@
 # Quarentena do projeto
 
+Em 16/10/2026 foram preservadas seis pastas vazias adicionais em `2026-10-16/EmptyFolders`, com seus metas. Nenhum asset adicional foi descartado nessa rodada. Caminhos originais e motivos estão em `../Tools/ProjectOrganization/2026-10-16/empty-folders.json`; a reversão correspondente é própria dessa rodada.
+
 Os arquivos aqui estão fora de `Assets/` e não são importados pela Unity nem incluídos automaticamente no build. Nada foi excluído definitivamente.
 
 Em `2026-10-15/Assets/` estão os quatro geradores de mapas arquivados por escolha explícita do usuário e 30 meshes sem consumidores, comprovadamente equivalentes a meshes mantidas. Cada arquivo acompanha seu `.meta` original.
