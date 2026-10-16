@@ -11,6 +11,9 @@ public class PlayerShooting : MonoBehaviour
 
     void Update()
     {
+        if (UniDoom.UI.DoorReloadScreen.IsReloading || UniDoom.UI.MouseSensitivityMenu.IsOpen)
+            return;
+
         if (gun == null)
             return;
 

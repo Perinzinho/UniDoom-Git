@@ -19,7 +19,19 @@ public class OpenDoorWithKey : MonoBehaviour
     [Min(0f)]
     [SerializeField] private float closeDelay = 0.3f;
 
+    [Header("Tela de Reload / Aquecimento de Shaders")]
+    [Tooltip("Exibe a tela de reload e warmup de shaders quando o jogador passar pela porta.")]
+    [SerializeField] private bool enableShaderReload = true;
+    [Tooltip("Momento em que a tela de reload é acionada.")]
+    [SerializeField] private DoorReloadTriggerMode reloadMode = DoorReloadTriggerMode.WhenPassingThrough;
+    [Tooltip("Nome do setor ou sala exibido na tela de reload.")]
+    [SerializeField] private string sectorName = "NOVO SETOR";
+    [Tooltip("Tempo mínimo em segundos entre ativações da tela nesta porta.")]
+    [SerializeField] private float reloadCooldown = 5f;
+
     private readonly HashSet<Collider> nearbyPlayers = new HashSet<Collider>();
+    private readonly Dictionary<Collider, float> playerEntrySides = new Dictionary<Collider, float>();
+    private float lastReloadTime = -999f;
     private Vector3 closedCenter;
     private Transform hinge;
     private BoxCollider proximityTrigger;
@@ -27,6 +39,13 @@ public class OpenDoorWithKey : MonoBehaviour
     private float closeTimer;
     private bool unlocked;
     private float openingDirection = 1f;
+
+public enum DoorReloadTriggerMode
+{
+    WhenPassingThrough, // Quando o player cruza o vão da porta
+    WhenDoorOpens,      // Assim que a porta destranca e começa a abrir
+    Both                // Em ambos os casos
+}
 
     private void Awake()
     {
@@ -83,12 +102,20 @@ public class OpenDoorWithKey : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         nearbyPlayers.Remove(other);
+        playerEntrySides.Remove(other);
     }
 
     private void TrackPlayer(Collider other)
     {
         if (other.GetComponentInParent<PlayerPickupKey>() != null)
+        {
             nearbyPlayers.Add(other);
+            if (!playerEntrySides.ContainsKey(other))
+            {
+                float side = transform.InverseTransformPoint(other.transform.position).x - closedCenter.x;
+                playerEntrySides[other] = side;
+            }
+        }
     }
 
     private void Update()
@@ -121,7 +148,39 @@ public class OpenDoorWithKey : MonoBehaviour
                 openingDirection = side >= 0f ? -1f : 1f;
                 break;
             }
+
+            // Disparo ao abrir a porta
+            if (enableShaderReload && (reloadMode == DoorReloadTriggerMode.WhenDoorOpens || reloadMode == DoorReloadTriggerMode.Both))
+            {
+                TryTriggerReload();
+            }
         }
+
+        // Disparo ao passar/cruzar o vão da porta
+        if (enableShaderReload && (reloadMode == DoorReloadTriggerMode.WhenPassingThrough || reloadMode == DoorReloadTriggerMode.Both))
+        {
+            if (openProgress > 0.35f || shouldOpen)
+            {
+                foreach (Collider other in nearbyPlayers)
+                {
+                    if (other == null) continue;
+                    float currentSide = transform.InverseTransformPoint(other.transform.position).x - closedCenter.x;
+                    if (playerEntrySides.TryGetValue(other, out float initialSide))
+                    {
+                        // Se iniciou em um dos lados e agora cruzou com folga mínima
+                        if (Mathf.Abs(initialSide) > 0.15f && Mathf.Abs(currentSide) > 0.15f && Mathf.Sign(initialSide) != Mathf.Sign(currentSide))
+                        {
+                            if (TryTriggerReload())
+                            {
+                                playerEntrySides[other] = currentSide;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         if (shouldOpen)
             closeTimer = closeDelay;
         else
@@ -136,6 +195,14 @@ public class OpenDoorWithKey : MonoBehaviour
             float easedProgress = Mathf.SmoothStep(0f, 1f, openProgress);
             hinge.localRotation = Quaternion.Euler(0f, openingDirection * openAngle * easedProgress, 0f);
         }
+    }
+
+    private bool TryTriggerReload()
+    {
+        if (Time.time < lastReloadTime + reloadCooldown) return false;
+        lastReloadTime = Time.time;
+        UniDoom.UI.DoorReloadScreen.TriggerReload(sectorName);
+        return true;
     }
 
     private bool HasRequiredKey(PlayerPickupKey player)
@@ -157,6 +224,7 @@ public class OpenDoorWithKey : MonoBehaviour
     private void OnDisable()
     {
         nearbyPlayers.Clear();
+        playerEntrySides.Clear();
         openProgress = 0f;
         closeTimer = 0f;
         if (hinge != null) hinge.localRotation = Quaternion.identity;
