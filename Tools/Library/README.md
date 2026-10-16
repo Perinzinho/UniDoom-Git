@@ -1,4 +1,4 @@
-> Versão atual: [obstáculos, Key02, spawns e porta do Cylinder](EncounterRevision/README.md). Revisões anteriores: [mesas e iluminação](LayoutRevision/README.md), [acabamento universitário](CampusFinish/README.md) e [abandono](DecayRevision/README.md). Abaixo fica o histórico da primeira composição.
+> Versão atual: [passagens estreitas, 16 inimigos e apagão da Key02](PressureRevision/README.md). Revisões anteriores: [primeiros obstáculos e porta do Cylinder](EncounterRevision/README.md), [mesas e iluminação](LayoutRevision/README.md), [acabamento universitário](CampusFinish/README.md) e [abandono](DecayRevision/README.md). Abaixo fica o histórico da primeira composição.
 
 # Library — biblioteca abandonada
 

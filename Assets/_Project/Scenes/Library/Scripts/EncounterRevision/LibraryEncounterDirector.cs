@@ -19,6 +19,10 @@ public sealed class LibraryEncounterDirector : MonoBehaviour
     public GameObject objectiveKey;
     public Wave[] waves;
     [Min(.1f)] public float spawnInterval=1.4f;
+    [Header("Key02 power failure")]
+    public Light[] blackoutLights;
+    public Renderer[] blackoutTubes;
+    [Min(.1f)] public float blackoutDuration=8;
     readonly HashSet<int> activated=new HashSet<int>();
     readonly List<GameObject> spawned=new List<GameObject>();
     Transform player;
@@ -27,6 +31,11 @@ public sealed class LibraryEncounterDirector : MonoBehaviour
     public int ActivatedWaves=>activated.Count;
     public int PendingSpawns=>pendingSpawns;
     public bool ObjectiveCollected { get; private set; }
+    public bool BlackoutActive { get; private set; }
+    bool[] lightStates;
+    MaterialPropertyBlock[] tubeStates;
+    MaterialPropertyBlock darkTube;
+    float blackoutEndsAt;
 
     void Start()
     {
@@ -44,7 +53,11 @@ public sealed class LibraryEncounterDirector : MonoBehaviour
     void Update()
     {
         if(!player||waves==null)return;
-        if(!objectiveKey)ObjectiveCollected=true;
+        if(!objectiveKey&&!ObjectiveCollected)
+        {
+            ObjectiveCollected=true;
+            BeginBlackout();
+        }
         var local=transform.InverseTransformPoint(player.position);
         for(int i=0;i<waves.Length;i++)
         {
@@ -73,7 +86,39 @@ public sealed class LibraryEncounterDirector : MonoBehaviour
             pendingSpawns--;yield return new WaitForSeconds(spawnInterval);
         }
     }
-    void OnDisable(){StopAllCoroutines();pendingSpawns=0;}
+    void BeginBlackout()
+    {
+        if(blackoutLights==null||blackoutLights.Length==0)return;
+        lightStates=new bool[blackoutLights.Length];
+        for(int i=0;i<lightStates.Length;i++)if(blackoutLights[i])lightStates[i]=blackoutLights[i].enabled;
+        tubeStates=new MaterialPropertyBlock[blackoutTubes==null?0:blackoutTubes.Length];
+        for(int i=0;i<tubeStates.Length;i++)
+        {
+            tubeStates[i]=new MaterialPropertyBlock();
+            if(blackoutTubes[i])blackoutTubes[i].GetPropertyBlock(tubeStates[i]);
+        }
+        darkTube=new MaterialPropertyBlock();
+        darkTube.SetColor("_EmissionColor",Color.black);
+        darkTube.SetColor("_BaseColor",new Color(.055f,.06f,.065f));
+        blackoutEndsAt=Time.time+blackoutDuration;
+        BlackoutActive=true;
+    }
+    void LateUpdate()
+    {
+        if(!BlackoutActive)return;
+        if(Time.time>=blackoutEndsAt){RestoreCircuit();return;}
+        // Run after the existing flicker updates; no shared material is modified.
+        foreach(var light in blackoutLights)if(light)light.enabled=false;
+        for(int i=0;i<tubeStates.Length;i++)if(blackoutTubes[i])blackoutTubes[i].SetPropertyBlock(darkTube);
+    }
+    void RestoreCircuit()
+    {
+        if(!BlackoutActive)return;
+        for(int i=0;i<lightStates.Length;i++)if(blackoutLights[i])blackoutLights[i].enabled=lightStates[i];
+        for(int i=0;i<tubeStates.Length;i++)if(blackoutTubes[i])blackoutTubes[i].SetPropertyBlock(tubeStates[i]);
+        BlackoutActive=false;
+    }
+    void OnDisable(){StopAllCoroutines();pendingSpawns=0;RestoreCircuit();}
 #if UNITY_EDITOR
     void OnDrawGizmosSelected()
     {
