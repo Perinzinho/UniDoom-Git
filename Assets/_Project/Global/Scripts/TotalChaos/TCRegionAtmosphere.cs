@@ -15,6 +15,8 @@ namespace TotalChaosMaps
         public Color fogColor = new Color(.09f,.098f,.086f);
         public Color ambient = new Color(.059f,.063f,.055f);
         public float fogDensity = .05f;
+        [Range(0, 1), Tooltip("Retain a fraction of the scene's directional light for outdoor regions.")]
+        public float directionalLightMultiplier;
         [Min(0), Tooltip("World-space transition outside the region; match the local Volume blend distance.")]
         public float blendDistance;
         [Tooltip("Optional floor reference for a passage whose geometry has scene overrides.")]
@@ -180,7 +182,7 @@ namespace TotalChaosMaps
             for(int rgb=0;rgb<3;rgb++)for(int coefficient=0;coefficient<9;coefficient++)
                 probe[rgb,coefficient]=Mathf.Lerp(originalProbe[rgb,coefficient],targetProbe[rgb,coefficient],weight);
             RenderSettings.ambientProbe=probe;
-            foreach(var pair in directionals)if(pair.Key)pair.Key.intensity=pair.Value*(1-weight);
+            foreach(var pair in directionals)if(pair.Key)pair.Key.intensity=pair.Value*Mathf.Lerp(1,selected.directionalLightMultiplier,weight);
             camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=Color.Lerp(originalBackground,selected.fogColor,weight);
             camera.GetUniversalAdditionalCameraData().renderPostProcessing=true;
             if(withGuideLamp)
