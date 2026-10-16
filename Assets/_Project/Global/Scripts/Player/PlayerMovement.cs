@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -11,6 +11,9 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 velocity;
     private Vector3 horizontalMove;
 
+    private bool movementEnabled = true;
+    public bool MovementEnabled { get => movementEnabled; set => movementEnabled = value; }
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -19,6 +22,12 @@ public class PlayerMovement : MonoBehaviour
     // Só calcula a direção, não move ainda
     public void MoveHorizontal()
     {
+        if (!movementEnabled || UniDoom.UI.DoorReloadScreen.IsReloading || UniDoom.UI.MouseSensitivityMenu.IsOpen)
+        {
+            horizontalMove = Vector3.zero;
+            return;
+        }
+
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
@@ -39,6 +48,14 @@ public class PlayerMovement : MonoBehaviour
     // Aplica gravidade e faz UM único Move com tudo junto
     public void ApplyGravity()
     {
+        if (controller == null) return;
+
+        if (UniDoom.UI.DoorReloadScreen.IsReloading)
+        {
+            velocity = Vector3.zero;
+            return;
+        }
+
         if (controller.isGrounded && velocity.y < 0f)
             velocity.y = groundedGravity;
         else
