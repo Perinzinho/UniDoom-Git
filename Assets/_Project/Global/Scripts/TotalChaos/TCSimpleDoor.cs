@@ -19,9 +19,15 @@ namespace TotalChaosMaps
         [Tooltip("0 = nunca fecha sozinha.")]
         public float autoCloseDelay = 3f;
 
+        [Header("Tela de Reload / Shaders")]
+        public bool triggerShaderReload = true;
+        public string sectorName = "SETOR";
+        public float reloadCooldown = 5f;
+
         Vector3 _closedPos, _openPos;
         bool _open, _unlocked;
         float _closeAt;
+        float _lastReloadTime = -999f;
 
         public bool IsLocked => !string.IsNullOrEmpty(keyId) && !_unlocked;
 
@@ -46,6 +52,13 @@ namespace TotalChaosMaps
         public void Open()
         {
             if (IsLocked) return;
+
+            if (triggerShaderReload && !_open && Time.time >= _lastReloadTime + reloadCooldown)
+            {
+                _lastReloadTime = Time.time;
+                UniDoom.UI.DoorReloadScreen.TriggerReload(sectorName);
+            }
+
             _open = true;
             _closeAt = Time.time + autoCloseDelay;
         }
