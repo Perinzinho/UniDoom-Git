@@ -1,4 +1,4 @@
-> Versão atual: [revisão de abandono e quarentena](DecayRevision/README.md). O restante deste documento registra a primeira composição, substituída pela nova referência.
+> Versão atual: [obstáculos, Key02, spawns e porta do Cylinder](EncounterRevision/README.md). Revisões anteriores: [mesas e iluminação](LayoutRevision/README.md), [acabamento universitário](CampusFinish/README.md) e [abandono](DecayRevision/README.md). Abaixo fica o histórico da primeira composição.
 
 # Library — biblioteca abandonada
 
