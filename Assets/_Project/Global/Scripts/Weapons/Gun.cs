@@ -1,6 +1,5 @@
 using UnityEngine;
 using System;
-using System.Runtime.InteropServices.WindowsRuntime;
 
 public abstract class Gun : MonoBehaviour
 {
@@ -25,6 +24,7 @@ public abstract class Gun : MonoBehaviour
     }
 
     public event Action OnShoot;
+    private bool warnedMissingCamera;
 
     // Novos eventos: repassam o que acontece no Recharging para quem escuta o Gun.
     public event Action OnReloadStarted;
@@ -81,6 +81,8 @@ public abstract class Gun : MonoBehaviour
             return;
                 
         }
+
+        if (!CanShoot()) return;
 
         Shoot();
         ConsumeAmmo();
@@ -160,6 +162,27 @@ public abstract class Gun : MonoBehaviour
         reserveAmmo -= ammoToReload;
 
         OnAmmoChanged?.Invoke();
+    }
+
+    protected virtual bool CanShoot() => true;
+
+    protected bool TryResolvePlayerCamera(ref Camera playerCamera)
+    {
+        // The equipped gun survives scene travel, while the scene camera does not.
+        // Also covers guns instantiated before the camera becomes available.
+        if (playerCamera == null || !playerCamera.isActiveAndEnabled)
+            playerCamera = Camera.main;
+        if (playerCamera != null && playerCamera.isActiveAndEnabled)
+        {
+            warnedMissingCamera = false;
+            return true;
+        }
+        if (!warnedMissingCamera)
+        {
+            DebugUI.LogWarning($"{GetType().Name}: no active player camera found.");
+            warnedMissingCamera = true;
+        }
+        return false;
     }
 
     protected abstract void Shoot();

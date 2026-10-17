@@ -28,16 +28,12 @@ public class Pistol : Gun
     }
 
 
+    protected override bool CanShoot() => TryResolvePlayerCamera(ref playerCamera);
+
     // Implementation of abstract Shoot defined in Gun.
     protected override void Shoot()
     {
         DebugUI.Log("Pistol fired!");
-
-        if (playerCamera == null)
-        {
-            DebugUI.LogWarning("Pistol: no camera assigned.");
-            return;
-        }
 
         
         // Create a ray starting at camera position and going forward.

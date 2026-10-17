@@ -2,6 +2,7 @@ using UnityEngine;
 
 /// <summary>Camera-facing zombie frames, shared by ordinary enemies and navigation variants.</summary>
 [RequireComponent(typeof(SpriteRenderer))]
+[DefaultExecutionOrder(10000)]
 public sealed class EnemySpriteAnimator : MonoBehaviour
 {
     [SerializeField] Enemy enemy;
@@ -95,23 +96,24 @@ public sealed class EnemySpriteAnimator : MonoBehaviour
     void LateUpdate()
     {
         if (enemy == null) return;
-        if (viewCamera == null) viewCamera = Camera.main;
+        if (viewCamera == null || !viewCamera.isActiveAndEnabled) viewCamera = Camera.main;
         if (viewCamera != null)
         {
             Vector3 toCamera = viewCamera.transform.position - enemy.transform.position;
             toCamera.y = 0;
-            Vector3 heading = enemy.transform.forward;
+            Vector3 heading = enemy.FacingDirection;
             heading.y = 0;
             if (toCamera.sqrMagnitude > .001f)
             {
-                ShowingBack = Vector3.Dot(heading, toCamera) < 0;
                 facing = Vector3.Dot(heading.normalized, toCamera.normalized);
+                // Avoid front/back flicker when a wandering zombie is seen almost side-on.
+                if (facing > .12f) ShowingBack = false;
+                else if (facing < -.12f) ShowingBack = true;
                 side = Vector3.Dot(Vector3.Cross(Vector3.up, heading.normalized), toCamera.normalized);
                 transform.rotation = Quaternion.LookRotation(-toCamera);
             }
         }
-        // The existing enemy may pitch toward the player's height. Keep the sprite upright.
-        transform.position = enemy.transform.position + Vector3.up * (footOffset.y * enemy.transform.lossyScale.y);
+        transform.position = enemy.transform.TransformPoint(footOffset);
         Vector3 displacement = enemy.transform.position - lastPosition;
         displacement.y = 0;
         lastPosition = enemy.transform.position;
