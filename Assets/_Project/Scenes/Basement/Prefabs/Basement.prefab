@@ -45027,6 +45027,7 @@ Transform:
   - {fileID: 7940275223974732951}
   - {fileID: 6407975742560641470}
   - {fileID: 7699426335328544030}
+  - {fileID: 3629054277138442223}
   m_Father: {fileID: 5893676580959095657}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8966005432246249443
@@ -65693,3 +65694,79 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &2147609381596054842
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3629054277138442223}
+  - component: {fileID: 4645060440832569725}
+  - component: {fileID: 1580531724331711991}
+  m_Layer: 0
+  m_Name: Director boss encounter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3629054277138442223
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2147609381596054842}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1969459624773545304}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4645060440832569725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2147609381596054842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b235cddc876e2fd4b9da9e870e356a04, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::DirectorBossEncounter
+  activationVolume: {fileID: 1580531724331711991}
+  spawnPoint: {fileID: 8868652829359843022}
+  bossPrefab: {fileID: 8358504726919946664, guid: ae2013f7272db994abc757acae2fb087, type: 3}
+  playerHeightMultiplier: 1.9
+  onEncounterStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  onEncounterCompleted:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!65 &1580531724331711991
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2147609381596054842}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 39.8, y: 9, z: 34}
+  m_Center: {x: -10, y: 4.5, z: 9.27}
