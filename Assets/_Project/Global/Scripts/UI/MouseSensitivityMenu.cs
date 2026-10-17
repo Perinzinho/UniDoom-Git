@@ -19,7 +19,7 @@ namespace UniDoom.UI
         public static MouseSensitivityMenu Instance { get; private set; }
 
         /// <summary>Indica se o menu está atualmente aberto.</summary>
-        public static bool IsOpen => Instance != null && Instance.isMenuOpen;
+        public static bool IsOpen => Instance != null && (Instance.isMenuOpen || Instance.pauseHeld);
 
         /// <summary>Sensibilidade atual do mouse (multiplicador de 0.1x a 3.0x).</summary>
         public static float CurrentSensitivity => Instance != null ? Instance.sensitivity : 1f;
@@ -53,6 +53,13 @@ namespace UniDoom.UI
 
         private RectTransform collapsedBadge;
         private RectTransform expandedPanel;
+        private RectTransform pauseLayer;
+        private TMP_Text pausedLocation;
+        private bool pauseHeld;
+        private float previousTimeScale;
+        private bool previousAudioPause, previousCursorVisible;
+        private CursorLockMode previousCursorLock;
+        private readonly Dictionary<CinemachineInputAxisController, bool> pausedCameraStates = new();
         private CanvasGroup panelCanvasGroup;
 
         private TMP_Text badgeValueText;
@@ -83,6 +90,13 @@ namespace UniDoom.UI
 
         private TMP_FontAsset customFont;
         private TMP_FontAsset bodyFont;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics()
+        {
+            Instance = null;
+            registeredBaseGains.Clear();
+        }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void AutoInitialize()
@@ -121,6 +135,21 @@ namespace UniDoom.UI
             SetMenuOpenImmediate(false);
         }
 
+        private void OnDisable()
+        {
+            if (Instance != this) return;
+            if (transitionRoutine != null) StopCoroutine(transitionRoutine);
+            transitionRoutine = null;
+            SetMenuOpenImmediate(false);
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance != this) return;
+            ReleasePause();
+            Instance = null;
+        }
+
         private void Update()
         {
             // Atalho exclusivo ESC (compatível com Legacy e New Input System)
@@ -147,7 +176,7 @@ namespace UniDoom.UI
             }
 
             // Garante cursor destravado e visível enquanto o menu estiver aberto
-            if (isMenuOpen)
+            if (pauseHeld)
             {
                 if (Cursor.lockState != CursorLockMode.None)
                 {
@@ -164,6 +193,7 @@ namespace UniDoom.UI
             }
 
             EnsureControllersRegistered();
+            if (pauseHeld) FreezeCameraInputs(true);
         }
 
         private void EnsureEventSystem()
@@ -201,8 +231,9 @@ namespace UniDoom.UI
 
         public void SetMenuOpen(bool open)
         {
-            if (isMenuOpen == open) return;
+            if (isMenuOpen == open || DoorReloadScreen.IsReloading) return;
             isMenuOpen = open;
+            if (open) AcquirePause();
 
             if (transitionRoutine != null)
                 StopCoroutine(transitionRoutine);
@@ -213,6 +244,8 @@ namespace UniDoom.UI
         private void SetMenuOpenImmediate(bool open)
         {
             isMenuOpen = open;
+            if (open) AcquirePause();
+            if (pauseLayer != null) pauseLayer.gameObject.SetActive(open);
 
             if (collapsedBadge != null)
                 collapsedBadge.gameObject.SetActive(!open);
@@ -232,13 +265,10 @@ namespace UniDoom.UI
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                FreezeCameraInputs(true);
             }
             else
             {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-                FreezeCameraInputs(false);
+                ReleasePause();
                 SavePreferences();
             }
 
@@ -250,15 +280,17 @@ namespace UniDoom.UI
             if (open)
             {
                 if (collapsedBadge != null) collapsedBadge.gameObject.SetActive(false);
+                if (pauseLayer != null) pauseLayer.gameObject.SetActive(true);
+                RefreshPauseLocation();
                 if (expandedPanel != null) expandedPanel.gameObject.SetActive(true);
 
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                FreezeCameraInputs(true);
                 UpdateDisplay();
 
-                float duration = 0.18f;
+                float duration = 0.22f;
                 float elapsed = 0f;
+                float startingAlpha = panelCanvasGroup != null ? panelCanvasGroup.alpha : 0f;
                 while (elapsed < duration)
                 {
                     elapsed += Time.unscaledDeltaTime;
@@ -267,11 +299,11 @@ namespace UniDoom.UI
 
                     if (panelCanvasGroup != null)
                     {
-                        panelCanvasGroup.alpha = smoothT;
+                        panelCanvasGroup.alpha = Mathf.Lerp(startingAlpha, 1f, smoothT);
                     }
                     if (expandedPanel != null)
                     {
-                        float scale = Mathf.Lerp(0.98f, 1f, smoothT);
+                        float scale = Mathf.Lerp(1.12f, 1.15f, smoothT);
                         expandedPanel.localScale = new Vector3(scale, scale, 1f);
                     }
                     yield return null;
@@ -283,12 +315,14 @@ namespace UniDoom.UI
                     panelCanvasGroup.interactable = true;
                     panelCanvasGroup.blocksRaycasts = true;
                 }
-                if (expandedPanel != null) expandedPanel.localScale = Vector3.one;
+                if (expandedPanel != null) expandedPanel.localScale = Vector3.one * 1.15f;
             }
             else
             {
-                float duration = 0.12f;
+                float duration = 0.16f;
                 float elapsed = 0f;
+                float startingAlpha = panelCanvasGroup != null ? panelCanvasGroup.alpha : 1f;
+                if (panelCanvasGroup != null) panelCanvasGroup.interactable = false;
                 while (elapsed < duration)
                 {
                     elapsed += Time.unscaledDeltaTime;
@@ -297,7 +331,7 @@ namespace UniDoom.UI
 
                     if (panelCanvasGroup != null)
                     {
-                        panelCanvasGroup.alpha = 1f - smoothT;
+                        panelCanvasGroup.alpha = Mathf.Lerp(startingAlpha, 0f, smoothT);
                     }
                     yield return null;
                 }
@@ -309,25 +343,74 @@ namespace UniDoom.UI
                     panelCanvasGroup.blocksRaycasts = false;
                 }
 
+                if (pauseLayer != null) pauseLayer.gameObject.SetActive(false);
                 if (expandedPanel != null) expandedPanel.gameObject.SetActive(false);
                 if (collapsedBadge != null) collapsedBadge.gameObject.SetActive(true);
 
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-                FreezeCameraInputs(false);
+                ReleasePause();
                 SavePreferences();
             }
 
             transitionRoutine = null;
         }
 
+        private void AcquirePause()
+        {
+            if (pauseHeld) return;
+            previousTimeScale = Time.timeScale;
+            previousAudioPause = AudioListener.pause;
+            previousCursorLock = Cursor.lockState;
+            previousCursorVisible = Cursor.visible;
+            pauseHeld = true;
+            Time.timeScale = 0f;
+            AudioListener.pause = true;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            FreezeCameraInputs(true);
+        }
+
+        private void ReleasePause()
+        {
+            if (!pauseHeld) return;
+            Time.timeScale = previousTimeScale;
+            AudioListener.pause = previousAudioPause;
+            Cursor.lockState = previousCursorLock;
+            Cursor.visible = previousCursorVisible;
+            FreezeCameraInputs(false);
+            pauseHeld = false;
+        }
+
         private void FreezeCameraInputs(bool freeze)
         {
-            var controllers = FindObjectsByType<CinemachineInputAxisController>();
-            foreach (var ctrl in controllers)
+            if (freeze)
             {
-                if (ctrl != null) ctrl.enabled = !freeze;
+                foreach (var controller in FindObjectsByType<CinemachineInputAxisController>())
+                {
+                    if (!pausedCameraStates.ContainsKey(controller)) pausedCameraStates[controller] = controller.enabled;
+                    controller.enabled = false;
+                }
             }
+            else
+            {
+                foreach (var state in pausedCameraStates) if (state.Key != null) state.Key.enabled = state.Value;
+                pausedCameraStates.Clear();
+            }
+        }
+
+        private void RefreshPauseLocation()
+        {
+            if (pausedLocation == null) return;
+            string scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            pausedLocation.text = scene switch
+            {
+                "Cylinder" => "BLOCO UNIVERSITÁRIO",
+                "Library" => "BIBLIOTECA",
+                "ClassRoom" => "SALA DE AULA",
+                "DirectorRoom" => "DIRETORIA",
+                "EntranceGarden" => "CORREDOR DE ENTRADA",
+                "Basement" => "SUBSOLO",
+                _ => scene.ToUpperInvariant()
+            };
         }
 
         public void SetSensitivity(float newSens)
@@ -376,17 +459,17 @@ namespace UniDoom.UI
             if (sensitivity <= 0.65f)
             {
                 catColor = textPrimary;
-                catText = "PRECISÃO / SNIPER";
+                catText = "PRECISÃO";
             }
             else if (sensitivity <= 1.25f)
             {
                 catColor = textMuted;
-                catText = "PADRÃO / TÁTICO";
+                catText = "PADRÃO";
             }
             else if (sensitivity <= 1.95f)
             {
                 catColor = amberHeader; // Amber
-                catText = "ÁGIL / COMBATE";
+                catText = "ÁGIL";
             }
             else
             {
@@ -545,7 +628,60 @@ namespace UniDoom.UI
             graphicRaycaster.blockingObjects = GraphicRaycaster.BlockingObjects.None;
 
             BuildCollapsedBadge();
+            BuildPauseLayer();
             BuildExpandedPanel();
+        }
+
+        private void BuildPauseLayer()
+        {
+            pauseLayer = CreateUIElement("PauseLayer", transform).GetComponent<RectTransform>();
+            pauseLayer.anchorMin = Vector2.zero;
+            pauseLayer.anchorMax = Vector2.one;
+            pauseLayer.sizeDelta = Vector2.zero;
+            panelCanvasGroup = pauseLayer.gameObject.AddComponent<CanvasGroup>();
+
+            var darkness = CreateUIElement("Stillness", pauseLayer).GetComponent<RectTransform>();
+            darkness.anchorMin = Vector2.zero;
+            darkness.anchorMax = Vector2.one;
+            darkness.sizeDelta = Vector2.zero;
+            var shade = darkness.gameObject.AddComponent<Image>();
+            shade.color = new Color(.012f, .014f, .012f, .88f);
+            shade.raycastTarget = true;
+            var veil = CreateUIElement("Peripheral shadows", pauseLayer).GetComponent<RectTransform>();
+            veil.anchorMin = Vector2.zero;
+            veil.anchorMax = Vector2.one;
+            veil.sizeDelta = Vector2.zero;
+            veil.gameObject.AddComponent<HorrorTransitionVeil>().raycastTarget = false;
+
+            var caption = CreateUIElement("Pause caption", pauseLayer).GetComponent<RectTransform>();
+            caption.anchorMin = caption.anchorMax = new Vector2(.12f, .55f);
+            caption.pivot = new Vector2(0f, 1f);
+            caption.sizeDelta = new Vector2(570, 280);
+
+            var eyebrow = PauseLabel("Location", caption, 15, amberHeader, 0, 28);
+            pausedLocation = eyebrow;
+            var title = PauseLabel("Paused", caption, 78, textPrimary, -40, 110);
+            title.text = "PAUSADO";
+            title.fontStyle = FontStyles.Bold;
+            title.characterSpacing = 6;
+            if (customFont != null) title.font = customFont;
+            var hint = PauseLabel("Hint", caption, 18, textMuted, -150, 35);
+            hint.text = "Ajuste a sensibilidade do seu olhar.";
+
+            CreateStyledButton("ResumeGame", caption, new Vector2(0, 1), new Vector2(0, 1),
+                new Vector2(165, -225), new Vector2(330, 52), "CONTINUAR  [ESC]", 18,
+                new Color(.16f, .08f, .055f, 1f), textPrimary, () => SetMenuOpen(false));
+        }
+
+        private TMP_Text PauseLabel(string name, Transform parent, float size, Color color, float y, float height)
+        {
+            var label = CreateText(name, parent, size, color, TextAlignmentOptions.Left);
+            var rect = label.rectTransform;
+            rect.anchorMin = rect.anchorMax = new Vector2(0, 1);
+            rect.pivot = new Vector2(0, 1);
+            rect.anchoredPosition = new Vector2(0, y);
+            rect.sizeDelta = new Vector2(570, height);
+            return label;
         }
 
         // Compact control plate at the upper-left corner
@@ -628,15 +764,15 @@ namespace UniDoom.UI
         // Painel Principal Expandido
         private void BuildExpandedPanel()
         {
-            var panelObj = CreateUIElement("ExpandedPanel", transform);
+            var panelObj = CreateUIElement("ExpandedPanel", pauseLayer);
             expandedPanel = panelObj.GetComponent<RectTransform>();
-            expandedPanel.anchorMin = new Vector2(0f, 1f);
-            expandedPanel.anchorMax = new Vector2(0f, 1f);
-            expandedPanel.pivot = new Vector2(0f, 1f);
-            expandedPanel.anchoredPosition = new Vector2(28, -26);
+            expandedPanel.anchorMin = new Vector2(.69f, .5f);
+            expandedPanel.anchorMax = new Vector2(.69f, .5f);
+            expandedPanel.pivot = new Vector2(.5f, .5f);
+            expandedPanel.anchoredPosition = Vector2.zero;
+            expandedPanel.localScale = Vector3.one * 1.15f;
             expandedPanel.sizeDelta = new Vector2(430, 460);
 
-            panelCanvasGroup = panelObj.AddComponent<CanvasGroup>();
 
             var panelBg = panelObj.AddComponent<Image>();
 
@@ -711,9 +847,10 @@ namespace UniDoom.UI
             var titleText = CreateText("Title", headerObj.transform, 16, amberHeader, TextAlignmentOptions.Left);
             var tRect = titleText.rectTransform;
             tRect.anchorMin = new Vector2(0f, 0.5f);
-            tRect.anchorMax = new Vector2(1f, 0.5f);
+            tRect.anchorMax = new Vector2(0f, 0.5f);
+            tRect.pivot = new Vector2(0f, .5f);
             tRect.anchoredPosition = new Vector2(22, 5);
-            tRect.sizeDelta = new Vector2(-70, 22);
+            tRect.sizeDelta = new Vector2(350, 26);
             titleText.text = "SENSIBILIDADE";
             if (customFont != null) titleText.font = customFont;
             titleText.fontSize = 24f;
@@ -723,14 +860,15 @@ namespace UniDoom.UI
             var subText = CreateText("SubTitle", headerObj.transform, 11, textMuted, TextAlignmentOptions.Left);
             var stRect = subText.rectTransform;
             stRect.anchorMin = new Vector2(0f, 0.5f);
-            stRect.anchorMax = new Vector2(1f, 0.5f);
+            stRect.anchorMax = new Vector2(0f, 0.5f);
+            stRect.pivot = new Vector2(0f, .5f);
             stRect.anchoredPosition = new Vector2(22, -12);
-            stRect.sizeDelta = new Vector2(-70, 16);
+            stRect.sizeDelta = new Vector2(350, 16);
             subText.text = "UNIDOOM  /  AJUSTES DE CONTROLE";
 
             // Botão Fechar [X] estilizado
             CreateStyledButton("CloseBtn", headerObj.transform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f),
-                new Vector2(-16, 0), new Vector2(32, 32), "X", 15, buttonBgNormal, textPrimary,
+                new Vector2(-24, 0), new Vector2(32, 32), "X", 15, buttonBgNormal, textPrimary,
                 () => SetMenuOpen(false));
         }
 
@@ -785,7 +923,7 @@ namespace UniDoom.UI
             btRect.anchorMin = Vector2.zero;
             btRect.anchorMax = Vector2.one;
             btRect.sizeDelta = Vector2.zero;
-            categoryBadgeText.text = "PADRÃO / TÁTICO";
+            categoryBadgeText.text = "PADRÃO";
             categoryBadgeText.fontStyle = FontStyles.Bold;
 
             // Barra de LED Segmentada (10 segmentos)
@@ -883,7 +1021,7 @@ namespace UniDoom.UI
 
             var handleObj = CreateUIElement("Handle", handleArea.transform);
             var hRect = handleObj.GetComponent<RectTransform>();
-            hRect.sizeDelta = new Vector2(26, 36);
+            hRect.sizeDelta = new Vector2(20, 4);
 
             sliderHandleImg = handleObj.AddComponent<Image>();
 
@@ -1045,19 +1183,21 @@ namespace UniDoom.UI
             var title = CreateText("Title", rowObj.transform, 14, textPrimary, TextAlignmentOptions.Left);
             var tRect = title.rectTransform;
             tRect.anchorMin = new Vector2(0f, 0.5f);
-            tRect.anchorMax = new Vector2(1f, 0.5f);
-            tRect.anchoredPosition = new Vector2(16, 5);
-            tRect.sizeDelta = new Vector2(-160, 20);
+            tRect.anchorMax = new Vector2(0f, 0.5f);
+            tRect.pivot = new Vector2(0f, .5f);
+            tRect.anchoredPosition = new Vector2(14, 7);
+            tRect.sizeDelta = new Vector2(205, 22);
             title.text = "Inverter Eixo Vertical";
             title.fontStyle = FontStyles.Bold;
 
             var desc = CreateText("Desc", rowObj.transform, 11, textMuted, TextAlignmentOptions.Left);
             var dRect = desc.rectTransform;
             dRect.anchorMin = new Vector2(0f, 0.5f);
-            dRect.anchorMax = new Vector2(1f, 0.5f);
-            dRect.anchoredPosition = new Vector2(16, -11);
-            dRect.sizeDelta = new Vector2(-160, 16);
-            desc.text = "Inverte a direção para cima/baixo (Look Y)";
+            dRect.anchorMax = new Vector2(0f, 0.5f);
+            dRect.pivot = new Vector2(0f, .5f);
+            dRect.anchoredPosition = new Vector2(14, -11);
+            dRect.sizeDelta = new Vector2(205, 16);
+            desc.text = "Olhar para cima / baixo";
 
             // Mechanical switch on the right
             var switchPill = CreateUIElement("SwitchPill", rowObj.transform);
@@ -1091,8 +1231,9 @@ namespace UniDoom.UI
             var stRect = invertYStatusText.rectTransform;
             stRect.anchorMin = new Vector2(1f, 0.5f);
             stRect.anchorMax = new Vector2(1f, 0.5f);
-            stRect.anchoredPosition = new Vector2(-74, 0);
-            stRect.sizeDelta = new Vector2(80, 20);
+            stRect.pivot = new Vector2(1f, .5f);
+            stRect.anchoredPosition = new Vector2(-78, 0);
+            stRect.sizeDelta = new Vector2(102, 20);
             invertYStatusText.text = invertY ? "[ ATIVO ]" : "[ DESATIVADO ]";
 
             invertYToggle.onValueChanged.AddListener((val) => SetInvertY(val));
@@ -1107,17 +1248,17 @@ namespace UniDoom.UI
 
             // Botão Salvar e Fechar com destaque Doom Red
             CreateStyledButton("CloseConfirmBtn", parent, new Vector2(1f, 0f), new Vector2(1f, 0f),
-                new Vector2(-105, 40), new Vector2(174, 38), "CONCLUIR [ESC]", 13, doomRed, textPrimary,
+                new Vector2(-105, 40), new Vector2(174, 38), "VOLTAR AO JOGO", 13, doomRed, textPrimary,
                 () => SetMenuOpen(false));
 
             // Dica de rodapé em fonte monospace sutil
-            var hint = CreateText("FooterHint", parent, 12, textMuted, TextAlignmentOptions.Center);
+            var hint = CreateText("FooterHint", parent, 10, textMuted, TextAlignmentOptions.Center);
             var hRect = hint.rectTransform;
             hRect.anchorMin = new Vector2(0.5f, 0f);
             hRect.anchorMax = new Vector2(0.5f, 0f);
             hRect.pivot = new Vector2(0.5f, 0f);
-            hRect.anchoredPosition = new Vector2(0, 10);
-            hRect.sizeDelta = new Vector2(380, 18);
+            hRect.anchoredPosition = new Vector2(0, 4);
+            hRect.sizeDelta = new Vector2(380, 14);
             hint.text = "ESC  /  RETORNAR AO JOGO";
         }
 
