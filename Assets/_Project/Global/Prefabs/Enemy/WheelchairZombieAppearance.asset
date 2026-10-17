@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19f679841a8340b0aa672348dbdae807, type: 3}
+  m_Name: WheelchairZombieAppearance
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpriteAppearance
+  material: {fileID: 2100000, guid: 41d187534528d334993d0e2cfa8093cd, type: 2}
+  idleFrames:
+  - {fileID: 1707640103, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: 770859362, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: 1332255033, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: -3920563, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  sideWalkFrames:
+  - {fileID: 1972446415, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: -1013028524, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: 1614699125, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: -1212289501, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: -1858423599, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: -407897827, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: -353145842, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: 1463260082, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  leftWalkFrames:
+  - {fileID: -1957745120, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: -1202366486, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: 1566075199, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: 1912106364, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  rightWalkFrames:
+  - {fileID: 1811193558, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: 1314498038, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: -1224035763, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: 1337055443, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  backWalkFrames:
+  - {fileID: -1977323054, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: 261303871, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: -875404768, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: 99255465, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  attackFrames:
+  - {fileID: -1837240247, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: -934414819, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: 1278877149, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: -1302816944, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: -719709632, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: -469811410, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  painFrames:
+  - {fileID: -1676455293, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: -1826016796, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: -1701981765, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  deathFrames:
+  - {fileID: -1936247485, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: -209416611, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: -2064145507, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: -1838502310, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: 149450622, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: -1715105003, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  - {fileID: -1179166164, guid: 8fb846092301fd349bd0df728c90fee3, type: 3}
+  visualScale: 1.5
+  colliderHeight: 2.35
+  colliderRadius: 0.7
+  idleFramesPerSecond: 4
+  walkFramesPerSecond: 9
+  attackDuration: 0.65
+  painDuration: 0.32
+  deathDuration: 1.5

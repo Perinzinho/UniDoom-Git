@@ -1,0 +1,171 @@
+using System;
+using UnityEngine;
+using UnityEngine.Events;
+
+/// <summary>The Director's health, collision-aware pursuit and telegraphed claw attack.</summary>
+[RequireComponent(typeof(CharacterController))]
+public sealed class DirectorBoss : MonoBehaviour, IDamageable
+{
+    [Header("Combat")]
+    [SerializeField, Min(1)] float maxHealth = 1600;
+    [SerializeField, Min(0)] float moveSpeed = 3.65f;
+    [SerializeField, Min(0)] float attackDamage = 28;
+    [SerializeField, Min(.1f)] float attackRange = 2.7f;
+    [SerializeField, Min(.1f)] float attackWindup = .7f;
+    [SerializeField, Min(.1f)] float attackRecovery = 1.1f;
+    [SerializeField, Min(0)] float awakeningDuration = 1.1f;
+    [Header("Presentation")]
+    [SerializeField] DirectorBossAnimator presentation;
+    public UnityEvent onDefeated = new UnityEvent();
+    public UnityEvent onDeathAnimationFinished = new UnityEvent();
+
+    public float CurrentHealth { get; private set; }
+    public float MaxHealth => maxHealth;
+    public bool IsDead { get; private set; }
+    public bool DeathAnimationFinished { get; private set; }
+    public bool IsAttacking { get; private set; }
+    public float AttackProgress => !IsAttacking ? 0 : Time.time - attackStarted < attackWindup
+        ? .5f * Mathf.Clamp01((Time.time - attackStarted) / attackWindup)
+        : .5f + .5f * Mathf.Clamp01((Time.time - attackStarted - attackWindup) / attackRecovery);
+    public float AwakeningProgress => Mathf.Clamp01((Time.time - bornAt) / Mathf.Max(.01f, awakeningDuration));
+    public event Action<float, float> HealthChanged;
+    public event Action Defeated;
+
+    CharacterController controller;
+    Transform target;
+    IDamageable targetLife;
+    Camera viewCamera;
+    float bornAt, attackStarted, nextAttack, verticalSpeed;
+    bool strikeDelivered;
+    readonly RaycastHit[] hits = new RaycastHit[24];
+    static readonly float[] SteeringAngles = { 0, 35, -35, 70, -70, 110, -110 };
+
+    void Awake()
+    {
+        controller = GetComponent<CharacterController>();
+        if (presentation == null) presentation = GetComponentInChildren<DirectorBossAnimator>();
+        CurrentHealth = maxHealth;
+        bornAt = Time.time;
+    }
+
+    public void SetTarget(Transform player)
+    {
+        target = player;
+        targetLife = player != null ? player.GetComponentInParent<IDamageable>() : null;
+    }
+
+    void Start()
+    {
+        if (target == null)
+        {
+            var player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null) SetTarget(player.transform);
+        }
+        viewCamera = Camera.main;
+    }
+
+    void Update()
+    {
+        if (IsDead) return;
+        Vector3 movement = Vector3.zero;
+        // PlayerMovement currently remains active at zero HP. Keep tracking that player;
+        // health controls whether an attack can hurt them, not whether the boss can walk.
+        bool hasTarget = target != null && target.gameObject.activeInHierarchy;
+        bool aliveTarget = hasTarget && targetLife != null && !targetLife.IsDead;
+        if (AwakeningProgress >= 1 && hasTarget)
+        {
+            Vector3 delta = target.position - transform.position;
+            delta.y = 0;
+            if (IsAttacking)
+            {
+                if (!strikeDelivered && Time.time - attackStarted >= attackWindup)
+                {
+                    strikeDelivered = true;
+                    if (aliveTarget && delta.magnitude <= attackRange + .35f && HasLineOfSight())
+                        targetLife.TakeDamage(attackDamage, gameObject);
+                }
+                if (Time.time - attackStarted >= attackWindup + attackRecovery)
+                    IsAttacking = false;
+            }
+            else if (delta.magnitude <= attackRange && HasLineOfSight())
+            {
+                if (aliveTarget && Time.time >= nextAttack)
+                {
+                    IsAttacking = true;
+                    strikeDelivered = false;
+                    attackStarted = Time.time;
+                    nextAttack = Time.time + attackWindup + attackRecovery + .25f;
+                }
+            }
+            else movement = Steer(delta.normalized) * moveSpeed;
+        }
+        verticalSpeed = controller.isGrounded ? -2 : Mathf.Max(-25, verticalSpeed + Physics.gravity.y * Time.deltaTime);
+        if (controller.enabled) controller.Move((movement + Vector3.up * verticalSpeed) * Time.deltaTime);
+        if (presentation != null) presentation.IsWalking = movement.sqrMagnitude > .01f;
+    }
+
+    Vector3 Steer(Vector3 desired)
+    {
+        // Capsule casts respect walls and furniture even when the room has no baked NavMesh.
+        float scale = Mathf.Max(transform.lossyScale.x, transform.lossyScale.z);
+        float radius = controller.radius * scale * .85f;
+        Vector3 bottom = transform.position + Vector3.up * (radius + .3f);
+        Vector3 top = transform.position + Vector3.up * (controller.height * transform.lossyScale.y - radius);
+        float bestScore = float.NegativeInfinity;
+        Vector3 best = Vector3.zero;
+        foreach (float angle in SteeringAngles)
+        {
+            Vector3 direction = Quaternion.AngleAxis(angle, Vector3.up) * desired;
+            float clearance = 1.4f;
+            int count = Physics.CapsuleCastNonAlloc(bottom, top, radius, direction, hits, clearance, ~0, QueryTriggerInteraction.Ignore);
+            for (int i = 0; i < count; i++)
+            {
+                Transform hit = hits[i].transform;
+                if (hit.IsChildOf(transform) || (target != null && (hit == target || hit.IsChildOf(target)))) continue;
+                clearance = Mathf.Min(clearance, hits[i].distance);
+            }
+            float score = Vector3.Dot(desired, direction) + clearance * 2;
+            if (clearance > .18f && score > bestScore) { bestScore = score; best = direction; }
+        }
+        return best;
+    }
+
+    bool HasLineOfSight()
+    {
+        if (target == null) return false;
+        Vector3 origin = transform.position + Vector3.up * (controller.height * transform.lossyScale.y * .42f);
+        Vector3 destination = viewCamera != null && viewCamera.transform.IsChildOf(target)
+            ? viewCamera.transform.position : target.position;
+        Vector3 delta = destination - origin;
+        int count = Physics.RaycastNonAlloc(origin, delta.normalized, hits, delta.magnitude, ~0, QueryTriggerInteraction.Ignore);
+        for (int i = 0; i < count; i++)
+        {
+            Transform hit = hits[i].transform;
+            if (hit.IsChildOf(transform) || hit == target || hit.IsChildOf(target)) continue;
+            return false;
+        }
+        return true;
+    }
+
+    public void TakeDamage(float amount, GameObject source = null)
+    {
+        if (IsDead || amount <= 0 || float.IsNaN(amount) || float.IsInfinity(amount)) return;
+        CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
+        HealthChanged?.Invoke(CurrentHealth, maxHealth);
+        if (CurrentHealth > 0) { if (presentation != null) presentation.FlashHit(); return; }
+        IsDead = true;
+        IsAttacking = false;
+        foreach (var collider in GetComponentsInChildren<Collider>()) collider.enabled = false;
+        if (presentation != null) presentation.PlayDeath();
+        else FinishDeathAnimation();
+        Defeated?.Invoke();
+        onDefeated.Invoke();
+    }
+
+    public void FinishDeathAnimation()
+    {
+        if (!IsDead || DeathAnimationFinished) return;
+        DeathAnimationFinished = true;
+        onDeathAnimationFinished.Invoke();
+    }
+}
