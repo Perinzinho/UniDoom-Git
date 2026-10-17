@@ -43,6 +43,7 @@ public class Enemy : MonoBehaviour, IDamageable
     private static readonly int ColorId = Shader.PropertyToID("_Color");
 
     public bool IsDead { get; private set; }
+    public event System.Action Attacked;
 
     private void Awake()
     {
@@ -97,6 +98,7 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         if (IsDead || target == null || Time.time - lastAttackTime < attackCooldown) return;
         lastAttackTime = Time.time;
+        Attacked?.Invoke();
 
         if (target.TryGetComponent<IDamageable>(out var damageableTarget))
         {
