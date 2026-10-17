@@ -36495,6 +36495,7 @@ Transform:
   - {fileID: 7064747070951270558}
   - {fileID: 1614834393607685809}
   - {fileID: 58753558479897146}
+  - {fileID: 1652905078864569727}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &709129840094503896
@@ -336030,6 +336031,78 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3168050024485460943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6491946858669781906
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4557134335766870413}
+  - component: {fileID: 551311916541518081}
+  - component: {fileID: 3393865583494916219}
+  m_Layer: 0
+  m_Name: Door - ToCylinder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4557134335766870413
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6491946858669781906}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: -1}
+  m_LocalPosition: {x: -36.141212, y: 3.3901708, z: 22.300001}
+  m_LocalScale: {x: 1.0956863, y: 1.8129255, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1652905078864569727}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &551311916541518081
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6491946858669781906}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.55, y: 2.6, z: 0.65}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3393865583494916219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6491946858669781906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2432109e0c44e1749872594917148e9d, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::UniDoom.Utils.SceneTransitionDoor
+  destinationScene: Cylinder
+  destinationSpawnId: FromLibrary
+  destinationLabel: CILINDRO
+  requiresKey01: 0
+  requiresKey02: 0
+  requiresKey03: 0
 --- !u!1 &6492431052845649490
 GameObject:
   m_ObjectHideFlags: 0
@@ -420090,6 +420163,10 @@ MonoBehaviour:
   openAngle: 95
   animationDuration: 0.6
   closeDelay: 0.3
+  enableShaderReload: 0
+  reloadMode: 0
+  sectorName: NOVO SETOR
+  reloadCooldown: 5
 --- !u!1 &8075534643200193370
 GameObject:
   m_ObjectHideFlags: 0
@@ -422169,6 +422246,7 @@ MonoBehaviour:
   fogColor: {r: 0.095, g: 0.11, b: 0.12, a: 1}
   ambient: {r: 0.09, g: 0.105, b: 0.12, a: 1}
   fogDensity: 0.012
+  directionalLightMultiplier: 0
   blendDistance: 0.8
   floorReference: {fileID: 0}
   floorClearHeight: 5.2
@@ -438704,6 +438782,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5606253553635928658}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8434533244450124101
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6712360134302719125}
+  - component: {fileID: 2257008139183107143}
+  m_Layer: 0
+  m_Name: Arrival - FromCylinder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6712360134302719125
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8434533244450124101}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -1, z: 0, w: 0.00000004371139}
+  m_LocalPosition: {x: -36.141212, y: 2.99314, z: 20.400002}
+  m_LocalScale: {x: 1.0956863, y: 1.8129255, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1652905078864569727}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2257008139183107143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8434533244450124101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce7f422863e19b14ba28983ea170382f, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::UniDoom.Utils.SceneArrivalPoint
+  spawnId: FromCylinder
 --- !u!1 &8435533620199500213
 GameObject:
   m_ObjectHideFlags: 0
@@ -468305,6 +468428,39 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5852592175290967081}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &9001003999178733435
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1652905078864569727}
+  m_Layer: 0
+  m_Name: Scene transitions
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1652905078864569727
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9001003999178733435}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4557134335766870413}
+  - {fileID: 6712360134302719125}
+  m_Father: {fileID: 1420356484721759852}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9001304420651649504
 GameObject:

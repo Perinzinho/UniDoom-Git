@@ -2,483 +2,348 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Cinemachine;
 using UnityEngine;
-using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UniDoom.Utils;
 
 namespace UniDoom.UI
 {
-    /// <summary>
-    /// Tela de reload e aquecimento de shaders exibida durante passagens por portas ou transições de áreas.
-    /// Bloqueia comandos do jogador temporariamente para evitar falhas ou quedas de taxa de quadros (hitches)
-    /// enquanto o pipeline de renderização compila e carrega os shaders na GPU.
-    /// </summary>
+    /// <summary>Persistent loading cover shared by local door warmups and asynchronous scene travel.</summary>
     public class DoorReloadScreen : MonoBehaviour
     {
         public static DoorReloadScreen Instance { get; private set; }
-
-        /// <summary>Indica se a tela de reload está atualmente ativa.</summary>
         public static bool IsReloading => Instance != null && Instance.isReloading;
 
-        [Header("Configurações de Transição")]
-        [Tooltip("Duração do fade-in (aparecimento) em segundos.")]
-        [SerializeField] private float fadeInDuration = 0.25f;
-
-        [Tooltip("Duração do fade-out (desaparecimento) em segundos.")]
-        [SerializeField] private float fadeOutDuration = 0.35f;
-
-        [Tooltip("Tempo mínimo em que a tela fica visível para garantir leitura e carregamento suave.")]
-        [SerializeField] private float minDisplayDuration = 1.1f;
-
-        [Header("Aquecimento de Shaders")]
-        [Tooltip("Chama Shader.WarmupAllShaders() durante a transição.")]
-        [SerializeField] private bool warmupAllShaders = true;
-
-        [Tooltip("Varre e aquece materiais de todos os Renderers na cena.")]
-        [SerializeField] private bool warmupSceneMaterials = true;
-
-        [Header("Controle e Depuração")]
-        [Tooltip("Permite testar a tela pressionando a tecla F8 no Play Mode.")]
+        [Header("Transição")]
+        [SerializeField, Min(0f)] private float fadeInDuration = 0.45f;
+        [SerializeField, Min(0f)] private float fadeOutDuration = 0.65f;
+        [SerializeField, Min(0f)] private float minDisplayDuration = 1.6f;
+        [Header("Aquecimento de shaders")]
+        [Tooltip("Coleção opcional de variantes usadas pelo jogo. O aquecimento global é evitado no URP.")]
+        [SerializeField] private ShaderVariantCollection shaderVariants;
+        [Header("Prévia")]
         [SerializeField] private bool enableDebugKey = true;
         [SerializeField] private KeyCode debugKey = KeyCode.F8;
-
-        [Header("Personalização Visual")]
+        [Header("Aparência")]
         [SerializeField] private TMP_FontAsset customFont;
-        [SerializeField] private Color backgroundColor = new Color(0.04f, 0.045f, 0.06f, 0.98f);
-        [SerializeField] private Color accentColor = new Color(0.9f, 0.22f, 0.16f, 1f); // Doom Red
-        [SerializeField] private Color headerTagColor = new Color(1f, 0.72f, 0.12f, 1f); // Amber / Warning
-        [SerializeField] private Color barBgColor = new Color(0.11f, 0.12f, 0.16f, 1f);
+        [SerializeField] private Color headerTagColor = new Color(.65f, .47f, .24f, 1f);
 
-        // Referências de UI construídas dinamicamente
         private Canvas canvas;
         private CanvasGroup canvasGroup;
-        private Image progressBarFill;
-        private TMP_Text headerTagText;
-        private TMP_Text titleText;
-        private TMP_Text subtitleText;
-        private TMP_Text percentText;
-        private TMP_Text statusDetailText;
-        private TMP_Text blinkingIndicatorText;
+        [Header("Atmosfera da passagem")]
+        [SerializeField] private Texture2D passageImage;
+        [SerializeField] private AudioClip passageAmbience;
+        [SerializeField, Range(0f, 1f)] private float ambienceVolume = .16f;
+        private RawImage passageView;
+        private AudioSource ambienceSource;
+        private readonly Image[] passageMarks = new Image[3];
+        private TMP_Text titleText, subtitleText, statusDetailText;
+        private float transitionBegan, loadingProgress;
+        private TMP_FontAsset bodyFont;
+        private bool isReloading;
+        private float savedTimeScale;
+        private PlayerMovement frozenPlayer;
+        private bool savedMovement;
+        private readonly Dictionary<CinemachineInputAxisController, bool> inputStates = new();
 
-        private bool isReloading = false;
-        private Coroutine activeReloadRoutine;
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics() => Instance = null;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void AutoInitialize()
         {
-            if (Instance == null)
-            {
-                var existing = FindAnyObjectByType<DoorReloadScreen>();
-                if (existing != null)
-                {
-                    Instance = existing;
-                }
-                else
-                {
-                    var host = new GameObject("[DoorReloadScreen]");
-                    Instance = host.AddComponent<DoorReloadScreen>();
-                }
-            }
+            if (Instance != null) return;
+            var existing = FindAnyObjectByType<DoorReloadScreen>();
+            if (existing != null) Instance = existing;
+            else new GameObject("[DoorReloadScreen]").AddComponent<DoorReloadScreen>();
         }
 
         private void Awake()
         {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
+            if (Instance != null && Instance != this) { Destroy(gameObject); return; }
             Instance = this;
             DontDestroyOnLoad(gameObject);
-
             ResolveFont();
             BuildUIHierarchy();
-            SetScreenVisible(false, 0f);
+            SetScreenVisible(false, 0);
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance != this) return;
+            if (isReloading) RestorePlayer();
+            Instance = null;
         }
 
         private void Update()
         {
             if (enableDebugKey && Input.GetKeyDown(debugKey) && !isReloading)
+                TriggerReload("SETOR DESCONHECIDO");
+            if (!isReloading) return;
+            float elapsed = Time.unscaledTime - transitionBegan;
+            float breath = .5f + .5f * Mathf.Sin(elapsed * .8f);
+            passageView.color = new Color(.94f, .91f, .86f, .88f + .04f * breath);
+            FitPassageImage(1.025f + elapsed * .0006f + .004f * breath);
+            for (int i = 0; i < passageMarks.Length; i++)
             {
-                TriggerReload("SETOR DE TESTE (F8)");
+                float pulse = .5f + .5f * Mathf.Sin(elapsed * 1.6f - i * .8f);
+                var mark = passageMarks[i];
+                var tint = headerTagColor;
+                tint.a = loadingProgress >= (i + 1) / 3f ? .7f : .18f + .18f * pulse;
+                mark.color = tint;
             }
+            if (ambienceSource != null)
+                ambienceSource.volume = ambienceVolume * canvasGroup.alpha;
         }
 
         private void ResolveFont()
         {
+            bodyFont = TMP_Settings.defaultFontAsset;
             if (customFont != null) return;
-
-            // Tenta encontrar Pixelta SDF ou a fonte padrão do TextMeshPro
-            var loadedFonts = Resources.FindObjectsOfTypeAll<TMP_FontAsset>();
-            foreach (var f in loadedFonts)
-            {
-                if (f != null && f.name.Contains("Pixelta", StringComparison.OrdinalIgnoreCase))
-                {
-                    customFont = f;
-                    return;
-                }
-            }
-
-            if (TMP_Settings.defaultFontAsset != null)
-            {
-                customFont = TMP_Settings.defaultFontAsset;
-            }
+            foreach (var font in Resources.FindObjectsOfTypeAll<TMP_FontAsset>())
+                if (font != null && font.name.IndexOf("Pixelta", StringComparison.OrdinalIgnoreCase) >= 0)
+                { customFont = font; return; }
+            customFont = TMP_Settings.defaultFontAsset;
         }
 
-        /// <summary>
-        /// Dispara a tela de reload e warmup de shaders com um nome de setor opcional e callback de conclusão.
-        /// </summary>
+        // Existing callers remain compatible. A busy screen never invokes callbacks prematurely.
         public static void TriggerReload(string sectorName = "NOVO SETOR", Action onComplete = null)
         {
             if (Instance == null) AutoInitialize();
-            if (Instance == null)
-            {
-                onComplete?.Invoke();
-                return;
-            }
-
             Instance.StartReloadTransition(sectorName, onComplete);
         }
 
         public void StartReloadTransition(string sectorName, Action onComplete)
         {
-            if (isReloading)
-            {
-                onComplete?.Invoke();
-                return;
-            }
-
-            if (activeReloadRoutine != null)
-                StopCoroutine(activeReloadRoutine);
-
-            activeReloadRoutine = StartCoroutine(ReloadRoutine(sectorName, onComplete));
+            if (isReloading) return;
+            StartCoroutine(ReloadRoutine(sectorName, null, null, onComplete));
         }
 
-        private IEnumerator ReloadRoutine(string sectorName, Action onComplete)
+        public static bool TryLoadScene(string sceneName, string spawnId, string label = null)
+        {
+            if (IsReloading) return false;
+            if (string.IsNullOrWhiteSpace(sceneName) || string.IsNullOrWhiteSpace(spawnId) ||
+                !Application.CanStreamedLevelBeLoaded(sceneName))
+            {
+                Debug.LogError($"[DoorReloadScreen] Destino inválido ou ausente do Build Settings: '{sceneName}' / '{spawnId}'.");
+                return false;
+            }
+            if (Instance == null) AutoInitialize();
+            Instance.StartCoroutine(Instance.ReloadRoutine(
+                string.IsNullOrWhiteSpace(label) ? sceneName : label, sceneName, spawnId, null));
+            return true;
+        }
+
+        private IEnumerator ReloadRoutine(string sectorName, string sceneName, string spawnId, Action onComplete)
         {
             isReloading = true;
-            FreezePlayer(true);
-
-            if (!string.IsNullOrEmpty(sectorName))
-                subtitleText.text = $"// DESTINO: {sectorName.ToUpperInvariant()}";
-            else
-                subtitleText.text = "// PREPARANDO NOVO AMBIENTE";
-
-            statusDetailText.text = "Iniciando compilação de shaders...";
-            percentText.text = "0%";
-            progressBarFill.fillAmount = 0f;
-
-            // 1. Fade-in
-            float elapsed = 0f;
-            while (elapsed < fadeInDuration)
+            FreezePlayer();
+            transitionBegan = Time.unscaledTime;
+            if (ambienceSource.clip != null && ambienceVolume > 0f) ambienceSource.Play();
+            bool success = false;
+            try
             {
-                elapsed += Time.unscaledDeltaTime;
-                float t = Mathf.Clamp01(elapsed / Mathf.Max(0.01f, fadeInDuration));
-                SetScreenVisible(true, t);
-                yield return null;
-            }
-            SetScreenVisible(true, 1f);
-
-            float startTime = Time.realtimeSinceStartup;
-
-            // 2. Aquecimento de Shaders da Unity
-            if (warmupAllShaders)
-            {
-                statusDetailText.text = "Compilando variantes ativas (Shader.WarmupAllShaders)...";
-                percentText.text = "25%";
-                progressBarFill.fillAmount = 0.25f;
-                yield return null;
-
-                try
+                titleText.text = string.IsNullOrWhiteSpace(sectorName) ? "SETOR DESCONHECIDO" : sectorName.ToUpperInvariant();
+                subtitleText.text = "ALÉM DA PORTA";
+                SetProgress(0, "A porta se fecha...");
+                for (float elapsed = 0; elapsed < fadeInDuration; elapsed += Time.unscaledDeltaTime)
                 {
-                    Shader.WarmupAllShaders();
+                    SetScreenVisible(true, Mathf.Clamp01(elapsed / Mathf.Max(.01f, fadeInDuration)));
+                    yield return null;
                 }
-                catch (Exception e)
-                {
-                    Debug.LogWarning($"[DoorReloadScreen] WarmupAllShaders: {e.Message}");
-                }
-
+                SetScreenVisible(true, 1);
+                // Render the opaque cover before loading or warming any shaders.
                 yield return null;
-            }
-
-            // 3. Varredura e aquecimento de Renderers e Materiais da cena
-            if (warmupSceneMaterials)
-            {
-                statusDetailText.text = "Aquecendo materiais e iluminação dos setores...";
-                var renderers = FindObjectsByType<Renderer>(FindObjectsInactive.Include);
-                int total = renderers.Length;
-
-                for (int i = 0; i < total; i++)
+                float started = Time.realtimeSinceStartup;
+                string error = null;
+                if (sceneName != null)
                 {
-                    var rend = renderers[i];
-                    if (rend != null)
+                    AsyncOperation load = null;
+                    try { load = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single); }
+                    catch (Exception e) { error = e.Message; }
+                    if (load == null) error = error ?? "A Unity não iniciou o carregamento.";
+                    else
                     {
-                        var mats = rend.sharedMaterials;
-                        if (mats != null)
+                        while (!load.isDone)
                         {
-                            for (int m = 0; m < mats.Length; m++)
-                            {
-                                var mat = mats[m];
-                                if (mat != null && mat.shader != null)
-                                {
-                                    // Acessa propriedades e passes para forçar o driver gráfico a registrar as variantes
-                                    int passCount = mat.passCount;
-                                    string sName = mat.shader.name;
-                                    int q = mat.renderQueue;
-                                }
-                            }
+                            SetProgress(Mathf.Lerp(.05f, .85f, Mathf.Clamp01(load.progress / .9f)), "Atravessando...");
+                            yield return null;
                         }
-                    }
-
-                    // Atualiza a barra de forma fluida a cada lote
-                    if (i % 20 == 0 || i == total - 1)
-                    {
-                        float progress = Mathf.Lerp(0.35f, 0.90f, (float)(i + 1) / Mathf.Max(1, total));
-                        progressBarFill.fillAmount = progress;
-                        percentText.text = $"{Mathf.RoundToInt(progress * 100f)}%";
+                        // GameManager.Start (when starting directly in a scene) and physics get a frame to settle.
+                        yield return null;
+                        if (!SceneArrivalPoint.TryPlacePlayer(SceneManager.GetActiveScene(), spawnId))
+                            error = $"Ponto de chegada '{spawnId}' ou player não encontrado em '{sceneName}'.";
+                        SetProgress(.88f, "Do outro lado...");
                         yield return null;
                     }
                 }
+                if (error == null && shaderVariants != null)
+                {
+                    SetProgress(.92f, "Do outro lado...");
+                    yield return null;
+                    try { shaderVariants.WarmUp(); }
+                    catch (Exception e) { Debug.LogWarning($"[DoorReloadScreen] Shader warmup: {e.Message}"); }
+                }
+                while (Time.realtimeSinceStartup - started < minDisplayDuration) yield return null;
+                if (error != null)
+                {
+                    Debug.LogError("[DoorReloadScreen] " + error);
+                    subtitleText.text = "PASSAGEM INTERROMPIDA";
+                    statusDetailText.text = "Não foi possível concluir a passagem.";
+                    yield return new WaitForSecondsRealtime(2f);
+                }
+                else
+                {
+                    SetProgress(1, string.Empty);
+                    success = true;
+                    yield return new WaitForSecondsRealtime(.15f);
+                }
+                for (float elapsed = 0; elapsed < fadeOutDuration; elapsed += Time.unscaledDeltaTime)
+                {
+                    SetScreenVisible(true, 1f - Mathf.Clamp01(elapsed / Mathf.Max(.01f, fadeOutDuration)));
+                    yield return null;
+                }
             }
-
-            progressBarFill.fillAmount = 0.96f;
-            percentText.text = "96%";
-            statusDetailText.text = "Sincronizando pipeline e buffers...";
-            yield return null;
-
-            // Garante o tempo mínimo de exibição para permitir que o driver termine o upload na GPU
-            while (Time.realtimeSinceStartup - startTime < minDisplayDuration)
+            finally
             {
-                yield return null;
+                SetScreenVisible(false, 0);
+                ambienceSource.Stop();
+                ambienceSource.volume = 0f;
+                RestorePlayer();
+                isReloading = false;
             }
+            if (success) onComplete?.Invoke();
+        }
 
-            progressBarFill.fillAmount = 1f;
-            percentText.text = "100%";
-            statusDetailText.text = "[OK] Shaders carregados com sucesso!";
-            if (blinkingIndicatorText != null) blinkingIndicatorText.text = "[ PRONTO ]";
-            yield return new WaitForSecondsRealtime(0.15f);
+        private void SetProgress(float progress, string status)
+        {
+            loadingProgress = Mathf.Clamp01(progress);
+            statusDetailText.text = status;
+        }
 
-            // 4. Fade-out
-            elapsed = 0f;
-            while (elapsed < fadeOutDuration)
-            {
-                elapsed += Time.unscaledDeltaTime;
-                float t = Mathf.Clamp01(1f - (elapsed / Mathf.Max(0.01f, fadeOutDuration)));
-                SetScreenVisible(true, t);
-                yield return null;
-            }
+        private void FreezePlayer()
+        {
+            savedTimeScale = Time.timeScale;
+            Time.timeScale = 0;
+            frozenPlayer = GameManager.SessionPlayer;
+            if (frozenPlayer == null) frozenPlayer = FindAnyObjectByType<PlayerMovement>();
+            if (frozenPlayer != null) { savedMovement = frozenPlayer.MovementEnabled; frozenPlayer.MovementEnabled = false; }
+            inputStates.Clear();
+            foreach (var input in FindObjectsByType<CinemachineInputAxisController>())
+            { inputStates[input] = input.enabled; input.enabled = false; }
+        }
 
-            SetScreenVisible(false, 0f);
-            FreezePlayer(false);
-            isReloading = false;
-            activeReloadRoutine = null;
-
-            onComplete?.Invoke();
+        private void RestorePlayer()
+        {
+            Time.timeScale = savedTimeScale;
+            if (frozenPlayer != null) frozenPlayer.MovementEnabled = savedMovement;
+            foreach (var state in inputStates) if (state.Key != null) state.Key.enabled = state.Value;
+            inputStates.Clear();
         }
 
         private void SetScreenVisible(bool active, float alpha)
         {
-            if (canvas != null)
-            {
-                canvas.enabled = active || alpha > 0.001f;
-            }
-            if (canvasGroup != null)
-            {
-                canvasGroup.alpha = alpha;
-                canvasGroup.blocksRaycasts = active && alpha > 0.05f;
-                canvasGroup.interactable = active && alpha > 0.05f;
-            }
+            canvas.enabled = active;
+            canvasGroup.alpha = alpha;
+            canvasGroup.blocksRaycasts = active;
+            canvasGroup.interactable = false;
         }
 
-        private void FreezePlayer(bool freeze)
-        {
-            // Bloqueia movimentação horizontal e gravidade no PlayerMovement
-            var movement = FindAnyObjectByType<PlayerMovement>();
-            if (movement != null)
-            {
-                movement.MovementEnabled = !freeze;
-            }
-
-            // Desativa entrada do Cinemachine no mouse para evitar rotação brusca durante o reload
-            var cinemachineControllers = FindObjectsByType<Unity.Cinemachine.CinemachineInputAxisController>();
-            foreach (var ctrl in cinemachineControllers)
-            {
-                if (ctrl != null) ctrl.enabled = !freeze;
-            }
-        }
-
-        #region UI Construction
         private void BuildUIHierarchy()
         {
-            // Canvas Raiz
             canvas = gameObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = 9990;
-
+            canvas.sortingOrder = 32760;
             var scaler = gameObject.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920, 1080);
-            scaler.matchWidthOrHeight = 0.5f;
-
+            scaler.matchWidthOrHeight = .5f;
             gameObject.AddComponent<GraphicRaycaster>();
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
+            // Resources keep the automatically-created screen available from every playable scene.
+            if (passageImage == null) passageImage = Resources.Load<Texture2D>("Textures/UI/Transitions/AbandonedDoor");
+            if (passageAmbience == null) passageAmbience = Resources.Load<AudioClip>("Audio/UI/Transitions/ThresholdDrone");
+            ambienceSource = gameObject.AddComponent<AudioSource>();
+            ambienceSource.playOnAwake = false;
+            ambienceSource.loop = true;
+            ambienceSource.spatialBlend = 0f;
+            ambienceSource.volume = 0f;
+            ambienceSource.clip = passageAmbience;
 
-            // 1. Fundo escuro atmosférico fullscreen
-            var bgObj = CreateUIElement("DarkBackdrop", transform);
-            var bgRect = bgObj.GetComponent<RectTransform>();
-            bgRect.anchorMin = Vector2.zero;
-            bgRect.anchorMax = Vector2.one;
-            bgRect.sizeDelta = Vector2.zero;
-            var bgImage = bgObj.AddComponent<Image>();
-            bgImage.color = backgroundColor;
-            bgImage.raycastTarget = false;
+            var background = Rect("Blackout", transform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            background.gameObject.AddComponent<Image>().color = Color.black;
+            var imageRect = Rect("The other side", background, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            passageView = imageRect.gameObject.AddComponent<RawImage>();
+            passageView.texture = passageImage;
+            passageView.color = new Color(.94f, .91f, .86f, .9f);
+            passageView.raycastTarget = false;
+            if (passageImage == null) passageView.enabled = false;
+            var veil = Rect("Peripheral darkness", background, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            veil.gameObject.AddComponent<HorrorTransitionVeil>().raycastTarget = false;
 
-            // 2. Linhas de corte / framing industrial estilo Doom (topo e rodapé)
-            CreateDecorativeBar("TopBar", transform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(0, 0), new Vector2(0, 4), accentColor);
-            CreateDecorativeBar("BottomBar", transform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(0, 0), new Vector2(0, 4), accentColor);
-
-            // 3. Painel Central da Interface
-            var panelObj = CreateUIElement("CenterPanel", transform);
-            var panelRect = panelObj.GetComponent<RectTransform>();
-            panelRect.anchorMin = new Vector2(0.5f, 0.5f);
-            panelRect.anchorMax = new Vector2(0.5f, 0.5f);
-            panelRect.pivot = new Vector2(0.5f, 0.5f);
-            panelRect.sizeDelta = new Vector2(680, 320);
-
-            var panelBg = panelObj.AddComponent<Image>();
-            panelBg.color = new Color(0.08f, 0.09f, 0.12f, 0.94f);
-
-            var panelOutline = panelObj.AddComponent<Outline>();
-            panelOutline.effectColor = new Color(0.25f, 0.12f, 0.12f, 1f);
-            panelOutline.effectDistance = new Vector2(2, -2);
-
-            // Header Tag (Amber)
-            headerTagText = CreateText("HeaderTag", panelObj.transform, 18, headerTagColor, TextAlignmentOptions.Left);
-            var headerRect = headerTagText.rectTransform;
-            headerRect.anchorMin = new Vector2(0f, 1f);
-            headerRect.anchorMax = new Vector2(1f, 1f);
-            headerRect.pivot = new Vector2(0f, 1f);
-            headerRect.anchoredPosition = new Vector2(30, -22);
-            headerRect.sizeDelta = new Vector2(-60, 26);
-            headerTagText.text = "/// PROTOCOLO DE TRANSIÇÃO // RECARREGANDO RECURSOS ///";
-
-            // Título Principal
-            titleText = CreateText("Title", panelObj.transform, 34, Color.white, TextAlignmentOptions.Left);
-            var titleRect = titleText.rectTransform;
-            titleRect.anchorMin = new Vector2(0f, 1f);
-            titleRect.anchorMax = new Vector2(1f, 1f);
-            titleRect.pivot = new Vector2(0f, 1f);
-            titleRect.anchoredPosition = new Vector2(30, -56);
-            titleRect.sizeDelta = new Vector2(-60, 42);
-            titleText.text = "CARREGANDO SHADERS";
+            var caption = Rect("Quiet destination", transform, new Vector2(.08f,.11f), new Vector2(.08f,.11f), Vector2.zero, new Vector2(900,100));
+            caption.pivot = new Vector2(0,0);
+            subtitleText = Label("Threshold", caption, "AL\u00c9M DA PORTA", 15, headerTagColor, new Vector2(0,0), new Vector2(800,24));
+            titleText = Label("Destination", caption, "SETOR DESCONHECIDO", 42, new Color(.76f,.73f,.65f), new Vector2(0,-30), new Vector2(900,62));
             titleText.fontStyle = FontStyles.Bold;
+            if (customFont != null) titleText.font = customFont;
+            titleText.enableAutoSizing = true;
+            titleText.fontSizeMin = 24;
+            titleText.fontSizeMax = 42;
+            titleText.characterSpacing = 5f;
 
-            // Subtítulo / Nome do setor
-            subtitleText = CreateText("Subtitle", panelObj.transform, 17, new Color(0.75f, 0.78f, 0.85f), TextAlignmentOptions.Left);
-            var subRect = subtitleText.rectTransform;
-            subRect.anchorMin = new Vector2(0f, 1f);
-            subRect.anchorMax = new Vector2(1f, 1f);
-            subRect.pivot = new Vector2(0f, 1f);
-            subRect.anchoredPosition = new Vector2(30, -100);
-            subRect.sizeDelta = new Vector2(-60, 26);
-            subtitleText.text = "// PREPARANDO NOVO AMBIENTE";
-
-            // Barra de Progresso - Fundo
-            var barBgObj = CreateUIElement("ProgressBarBg", panelObj.transform);
-            var barBgRect = barBgObj.GetComponent<RectTransform>();
-            barBgRect.anchorMin = new Vector2(0.5f, 0.5f);
-            barBgRect.anchorMax = new Vector2(0.5f, 0.5f);
-            barBgRect.pivot = new Vector2(0.5f, 0.5f);
-            barBgRect.anchoredPosition = new Vector2(0, -15);
-            barBgRect.sizeDelta = new Vector2(620, 26);
-
-            var barBgImage = barBgObj.AddComponent<Image>();
-            barBgImage.color = barBgColor;
-
-            var barOutline = barBgObj.AddComponent<Outline>();
-            barOutline.effectColor = new Color(0.3f, 0.35f, 0.45f, 0.6f);
-            barOutline.effectDistance = new Vector2(1, -1);
-
-            // Barra de Progresso - Preenchimento (Filled)
-            var barFillObj = CreateUIElement("ProgressBarFill", barBgObj.transform);
-            var barFillRect = barFillObj.GetComponent<RectTransform>();
-            barFillRect.anchorMin = Vector2.zero;
-            barFillRect.anchorMax = Vector2.one;
-            barFillRect.sizeDelta = new Vector2(-4, -4);
-            barFillRect.anchoredPosition = Vector2.zero;
-
-            progressBarFill = barFillObj.AddComponent<Image>();
-            progressBarFill.color = accentColor;
-            progressBarFill.type = Image.Type.Filled;
-            progressBarFill.fillMethod = Image.FillMethod.Horizontal;
-            progressBarFill.fillOrigin = (int)Image.OriginHorizontal.Left;
-            progressBarFill.fillAmount = 0f;
-
-            // Porcentagem no lado direito
-            percentText = CreateText("PercentText", panelObj.transform, 18, Color.white, TextAlignmentOptions.Right);
-            var pRect = percentText.rectTransform;
-            pRect.anchorMin = new Vector2(0f, 0.5f);
-            pRect.anchorMax = new Vector2(1f, 0.5f);
-            pRect.pivot = new Vector2(1f, 0.5f);
-            pRect.anchoredPosition = new Vector2(-30, 15);
-            pRect.sizeDelta = new Vector2(-60, 24);
-            percentText.text = "0%";
-            percentText.fontStyle = FontStyles.Bold;
-
-            // Detalhe / Log do Warmup
-            statusDetailText = CreateText("StatusDetail", panelObj.transform, 16, new Color(0.6f, 0.65f, 0.72f), TextAlignmentOptions.Left);
-            var statRect = statusDetailText.rectTransform;
-            statRect.anchorMin = new Vector2(0f, 0f);
-            statRect.anchorMax = new Vector2(1f, 0f);
-            statRect.pivot = new Vector2(0f, 0f);
-            statRect.anchoredPosition = new Vector2(30, 48);
-            statRect.sizeDelta = new Vector2(-60, 26);
-            statusDetailText.text = "Inicializando componentes gráficos...";
-
-            // Indicador piscante / status
-            blinkingIndicatorText = CreateText("Blinker", panelObj.transform, 15, accentColor, TextAlignmentOptions.Right);
-            var blinkRect = blinkingIndicatorText.rectTransform;
-            blinkRect.anchorMin = new Vector2(0f, 0f);
-            blinkRect.anchorMax = new Vector2(1f, 0f);
-            blinkRect.pivot = new Vector2(1f, 0f);
-            blinkRect.anchoredPosition = new Vector2(-30, 48);
-            blinkRect.sizeDelta = new Vector2(-60, 26);
-            blinkingIndicatorText.text = "[ COMPILANDO ]";
-            blinkingIndicatorText.fontStyle = FontStyles.Bold;
+            var activity = Rect("Waiting in the dark", transform, new Vector2(.92f,.11f), new Vector2(.92f,.11f), Vector2.zero, new Vector2(360,65));
+            activity.pivot = new Vector2(1,0);
+            statusDetailText = Label("Status", activity, "Atravessando...", 17, new Color(.46f,.43f,.36f), new Vector2(0,-18), new Vector2(360,32));
+            statusDetailText.alignment = TextAlignmentOptions.Right;
+            for (int i = 0; i < passageMarks.Length; i++)
+            {
+                var tick = Rect("Quiet pulse " + i, activity, Vector2.one, Vector2.one, new Vector2(-4 - (2-i)*16, 0), new Vector2(8,2));
+                passageMarks[i] = tick.gameObject.AddComponent<Image>();
+                passageMarks[i].color = headerTagColor;
+                passageMarks[i].raycastTarget = false;
+            }
         }
 
-        private GameObject CreateUIElement(string name, Transform parent)
+        private void FitPassageImage(float zoom)
         {
-            var go = new GameObject(name, typeof(RectTransform));
-            go.transform.SetParent(parent, false);
-            return go;
+            if (passageImage == null || passageView == null) return;
+            var imageRect = passageView.rectTransform;
+            var size = ((RectTransform)imageRect.parent).rect.size;
+            if (size.x <= 0 || size.y <= 0) return;
+            float imageAspect = (float)passageImage.width / passageImage.height;
+            float screenAspect = size.x / size.y;
+            // Preserve the entire doorway on ultrawide views; its dark edges blend into the blackout.
+            imageRect.anchorMin = imageRect.anchorMax = new Vector2(.5f, .5f);
+            imageRect.sizeDelta = screenAspect > imageAspect
+                ? new Vector2(size.y * imageAspect, size.y)
+                : new Vector2(size.x, size.x / imageAspect);
+            float visible = 1f / Mathf.Clamp(zoom, 1f, 1.08f);
+            passageView.uvRect = new Rect((1-visible)*.5f, (1-visible)*.5f, visible, visible);
         }
 
-        private void CreateDecorativeBar(string name, Transform parent, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot, Vector2 pos, Vector2 size, Color color)
+        private RectTransform Rect(string name, Transform parent, Vector2 min, Vector2 max, Vector2 position, Vector2 size)
         {
-            var bar = CreateUIElement(name, parent);
-            var rt = bar.GetComponent<RectTransform>();
-            rt.anchorMin = anchorMin;
-            rt.anchorMax = anchorMax;
-            rt.pivot = pivot;
-            rt.anchoredPosition = pos;
-            rt.sizeDelta = size;
-            var img = bar.AddComponent<Image>();
-            img.color = color;
+            var rect = new GameObject(name, typeof(RectTransform)).GetComponent<RectTransform>();
+            rect.SetParent(parent, false);
+            rect.anchorMin = min; rect.anchorMax = max;
+            rect.anchoredPosition = position; rect.sizeDelta = size;
+            return rect;
         }
 
-        private TMP_Text CreateText(string name, Transform parent, float fontSize, Color color, TextAlignmentOptions alignment)
+        private TMP_Text Label(string name, Transform parent, string value, float size, Color color, Vector2 position, Vector2 bounds)
         {
-            var go = CreateUIElement(name, parent);
-            var tmp = go.AddComponent<TextMeshProUGUI>();
-            if (customFont != null) tmp.font = customFont;
-            tmp.fontSize = fontSize;
-            tmp.color = color;
-            tmp.alignment = alignment;
-            tmp.raycastTarget = false;
-            return tmp;
+            var rect = Rect(name, parent, new Vector2(0,1), new Vector2(0,1), position, bounds);
+            rect.pivot = new Vector2(0,1);
+            var text = rect.gameObject.AddComponent<TextMeshProUGUI>();
+            if (bodyFont != null) text.font = bodyFont;
+            text.text = value; text.fontSize = size; text.color = color;
+            text.alignment = TextAlignmentOptions.Left;
+            text.raycastTarget = false;
+            text.richText = false;
+            return text;
         }
-        #endregion
     }
 }

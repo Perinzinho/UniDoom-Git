@@ -14,6 +14,17 @@ public class PlayerMovement : MonoBehaviour
     private bool movementEnabled = true;
     public bool MovementEnabled { get => movementEnabled; set => movementEnabled = value; }
 
+    public void Teleport(Vector3 position, Quaternion rotation)
+    {
+        if (controller == null) controller = GetComponent<CharacterController>();
+        bool wasEnabled = controller != null && controller.enabled;
+        if (wasEnabled) controller.enabled = false;
+        transform.SetPositionAndRotation(position, rotation);
+        velocity = Vector3.zero;
+        horizontalMove = Vector3.zero;
+        if (wasEnabled) controller.enabled = true;
+    }
+
     void Start()
     {
         controller = GetComponent<CharacterController>();

@@ -11,10 +11,8 @@ using Unity.Cinemachine;
 namespace UniDoom.UI
 {
     /// <summary>
-    /// Menu interativo de sensibilidade do mouse com estética Sci-Fi/Doom premium.
-    /// Posicionado no canto superior esquerdo, acionado exclusivamente pela tecla ESC ou pelo widget HUD.
-    /// Possui cantos arredondados suavizados (9-slice), barra de LED dinâmica, slider arrastável,
-    /// presets táteis e animações suaves de abertura.
+    /// Mouse controls styled to match the industrial horror loading screen.
+    /// ESC and the HUD badge open the panel; preferences and camera bindings remain shared.
     /// </summary>
     public class MouseSensitivityMenu : MonoBehaviour
     {
@@ -35,16 +33,19 @@ namespace UniDoom.UI
         [SerializeField] private float sensitivity = 1.0f;
         [SerializeField] private bool invertY = false;
 
-        [Header("Paleta de Cores (Sci-Fi Dark / Doom Red)")]
-        [SerializeField] private Color panelBgColor = new Color(0.045f, 0.052f, 0.070f, 0.97f);
-        [SerializeField] private Color cardInnerBg = new Color(0.075f, 0.085f, 0.115f, 0.95f);
-        [SerializeField] private Color doomRed = new Color(0.92f, 0.18f, 0.14f, 1f);
-        [SerializeField] private Color doomRedGlow = new Color(1f, 0.28f, 0.22f, 0.9f);
-        [SerializeField] private Color borderRed = new Color(0.55f, 0.12f, 0.10f, 0.9f);
-        [SerializeField] private Color amberHeader = new Color(1f, 0.74f, 0.15f, 1f);
-        [SerializeField] private Color buttonBgNormal = new Color(0.11f, 0.13f, 0.18f, 1f);
-        [SerializeField] private Color buttonBgHover = new Color(0.18f, 0.22f, 0.30f, 1f);
-        [SerializeField] private Color textMuted = new Color(0.55f, 0.60f, 0.70f, 1f);
+        [Header("Paleta industrial / tela de carregamento")]
+        [SerializeField] private Color panelBgColor = new Color(.045f, .043f, .035f, .98f);
+        [SerializeField] private Color cardInnerBg = new Color(.025f, .026f, .023f, 1f);
+        [SerializeField] private Color doomRed = new Color(.65f, .13f, .075f, 1f);
+        [SerializeField] private Color doomRedGlow = new Color(.76f, .22f, .12f, 1f);
+        [SerializeField] private Color borderRed = new Color(.25f, .20f, .13f, 1f);
+        [SerializeField] private Color amberHeader = new Color(.65f, .47f, .24f, 1f);
+        [SerializeField] private Color buttonBgNormal = new Color(.10f, .09f, .075f, 1f);
+        [SerializeField] private Color buttonBgHover = new Color(.18f, .15f, .10f, 1f);
+        [SerializeField] private Color textMuted = new Color(.64f, .60f, .49f, 1f);
+        private static readonly Color textPrimary = new Color(.83f, .80f, .69f, 1f);
+
+        private Color HoverTint => new Color(1f + buttonBgHover.r, 1f + buttonBgHover.g, 1f + buttonBgHover.b, 1f);
 
         private Canvas canvas;
         private CanvasScaler canvasScaler;
@@ -80,10 +81,8 @@ namespace UniDoom.UI
         private Coroutine transitionRoutine;
         private static readonly Dictionary<CinemachineInputAxisController, List<float>> registeredBaseGains = new Dictionary<CinemachineInputAxisController, List<float>>();
 
-        private static Sprite roundedBoxSprite;
-        private static Sprite roundedPillSprite;
-        private static Sprite circleSprite;
         private TMP_FontAsset customFont;
+        private TMP_FontAsset bodyFont;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void AutoInitialize()
@@ -114,7 +113,6 @@ namespace UniDoom.UI
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            InitSprites();
             LoadPreferences();
             ResolveFont();
             EnsureEventSystem();
@@ -161,8 +159,8 @@ namespace UniDoom.UI
             // Pulso sutil no LED indicador do widget minimizado
             if (!isMenuOpen && badgeLedDot != null)
             {
-                float pulse = 0.5f + 0.5f * Mathf.Sin(Time.unscaledTime * 4.5f);
-                badgeLedDot.color = Color.Lerp(doomRed * 0.6f, doomRedGlow, pulse);
+                float pulse = 0.5f + 0.5f * Mathf.Sin(Time.unscaledTime * 2f);
+                badgeLedDot.color = Color.Lerp(doomRed * 0.75f, doomRed, pulse);
             }
 
             EnsureControllersRegistered();
@@ -273,7 +271,7 @@ namespace UniDoom.UI
                     }
                     if (expandedPanel != null)
                     {
-                        float scale = Mathf.Lerp(0.92f, 1f, smoothT);
+                        float scale = Mathf.Lerp(0.98f, 1f, smoothT);
                         expandedPanel.localScale = new Vector3(scale, scale, 1f);
                     }
                     yield return null;
@@ -377,23 +375,23 @@ namespace UniDoom.UI
             string catText;
             if (sensitivity <= 0.65f)
             {
-                catColor = new Color(0.2f, 0.8f, 1f, 1f); // Cyan
-                catText = "● PRECISÃO / SNIPER";
+                catColor = textPrimary;
+                catText = "PRECISÃO / SNIPER";
             }
             else if (sensitivity <= 1.25f)
             {
-                catColor = new Color(0.3f, 0.95f, 0.4f, 1f); // Emerald
-                catText = "● PADRÃO / TÁTICO";
+                catColor = textMuted;
+                catText = "PADRÃO / TÁTICO";
             }
             else if (sensitivity <= 1.95f)
             {
                 catColor = amberHeader; // Amber
-                catText = "● ÁGIL / COMBATE";
+                catText = "ÁGIL / COMBATE";
             }
             else
             {
                 catColor = doomRedGlow; // Flame red
-                catText = "● RÁPIDO / OVERCLOCK";
+                catText = "MUITO RÁPIDO";
             }
 
             if (categoryBadgeText != null)
@@ -414,7 +412,7 @@ namespace UniDoom.UI
                 if (ledSegments[i] != null)
                 {
                     bool isLit = i < litCount;
-                    ledSegments[i].color = isLit ? catColor : new Color(0.12f, 0.14f, 0.18f, 0.8f);
+                    ledSegments[i].color = isLit ? catColor : buttonBgNormal;
                 }
             }
 
@@ -428,14 +426,14 @@ namespace UniDoom.UI
                 }
                 if (presetButtonTexts[i] != null)
                 {
-                    presetButtonTexts[i].color = isMatching ? Color.white : textMuted;
+                    presetButtonTexts[i].color = isMatching ? textPrimary : textMuted;
                 }
             }
 
             // Atualiza visual do switch Invert Y
             if (invertYSwitchBg != null)
             {
-                invertYSwitchBg.color = invertY ? new Color(0.2f, 0.75f, 0.35f, 0.9f) : new Color(0.18f, 0.20f, 0.26f, 0.9f);
+                invertYSwitchBg.color = invertY ? doomRed : buttonBgNormal;
             }
             if (invertYSwitchKnob != null)
             {
@@ -444,7 +442,7 @@ namespace UniDoom.UI
             if (invertYStatusText != null)
             {
                 invertYStatusText.text = invertY ? "[ ATIVO ]" : "[ DESATIVADO ]";
-                invertYStatusText.color = invertY ? new Color(0.3f, 0.95f, 0.4f, 1f) : textMuted;
+                invertYStatusText.color = invertY ? amberHeader : textMuted;
             }
         }
 
@@ -510,68 +508,10 @@ namespace UniDoom.UI
             }
         }
 
-        #region Procedural Sprites & UI Construction
-        private static void InitSprites()
-        {
-            if (roundedBoxSprite == null)
-                roundedBoxSprite = GenerateSlicedBoxSprite(32, 8);
-
-            if (roundedPillSprite == null)
-                roundedPillSprite = GenerateSlicedBoxSprite(32, 16);
-
-            if (circleSprite == null)
-                circleSprite = GenerateCircleSprite(24);
-        }
-
-        private static Sprite GenerateSlicedBoxSprite(int size, int radius)
-        {
-            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
-            tex.filterMode = FilterMode.Bilinear;
-            Color[] pixels = new Color[size * size];
-
-            for (int y = 0; y < size; y++)
-            {
-                for (int x = 0; x < size; x++)
-                {
-                    int cx = (x < radius) ? radius : (x >= size - radius) ? size - radius - 1 : x;
-                    int cy = (y < radius) ? radius : (y >= size - radius) ? size - radius - 1 : y;
-                    float dist = Vector2.Distance(new Vector2(x, y), new Vector2(cx, cy));
-                    float alpha = Mathf.Clamp01(radius - dist + 0.5f);
-                    pixels[y * size + x] = new Color(1f, 1f, 1f, alpha);
-                }
-            }
-
-            tex.SetPixels(pixels);
-            tex.Apply();
-            return Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), 100f, 0,
-                SpriteMeshType.FullRect, new Vector4(radius, radius, radius, radius));
-        }
-
-        private static Sprite GenerateCircleSprite(int size)
-        {
-            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
-            tex.filterMode = FilterMode.Bilinear;
-            Color[] pixels = new Color[size * size];
-            float radius = (size - 1) * 0.5f;
-            Vector2 center = new Vector2(radius, radius);
-
-            for (int y = 0; y < size; y++)
-            {
-                for (int x = 0; x < size; x++)
-                {
-                    float dist = Vector2.Distance(new Vector2(x, y), center);
-                    float alpha = Mathf.Clamp01(radius - dist + 0.5f);
-                    pixels[y * size + x] = new Color(1f, 1f, 1f, alpha);
-                }
-            }
-
-            tex.SetPixels(pixels);
-            tex.Apply();
-            return Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f));
-        }
-
+        #region UI Construction
         private void ResolveFont()
         {
+            bodyFont = TMP_Settings.defaultFontAsset;
             if (customFont != null) return;
 
             var loadedFonts = Resources.FindObjectsOfTypeAll<TMP_FontAsset>();
@@ -608,7 +548,7 @@ namespace UniDoom.UI
             BuildExpandedPanel();
         }
 
-        // Widget HUD minimalista e moderno no topo esquerdo
+        // Compact control plate at the upper-left corner
         private void BuildCollapsedBadge()
         {
             var badgeObj = CreateUIElement("CollapsedBadge", transform);
@@ -620,8 +560,8 @@ namespace UniDoom.UI
             collapsedBadge.sizeDelta = new Vector2(236, 42);
 
             var badgeBg = badgeObj.AddComponent<Image>();
-            badgeBg.sprite = roundedPillSprite;
-            badgeBg.type = Image.Type.Sliced;
+
+            badgeBg.type = Image.Type.Simple;
             badgeBg.color = panelBgColor;
             badgeBg.raycastTarget = true;
 
@@ -632,9 +572,9 @@ namespace UniDoom.UI
             var btn = badgeObj.AddComponent<Button>();
             btn.targetGraphic = badgeBg;
             var c = btn.colors;
-            c.normalColor = panelBgColor;
-            c.highlightedColor = new Color(0.16f, 0.18f, 0.24f, 1f);
-            c.pressedColor = new Color(0.24f, 0.10f, 0.10f, 1f);
+            c.normalColor = Color.white;
+            c.highlightedColor = HoverTint;
+            c.pressedColor = new Color(.7f, .65f, .55f);
             btn.colors = c;
             btn.onClick.AddListener(ToggleMenu);
 
@@ -647,12 +587,12 @@ namespace UniDoom.UI
             lRect.anchoredPosition = new Vector2(20, 0);
             lRect.sizeDelta = new Vector2(10, 10);
             badgeLedDot = ledObj.AddComponent<Image>();
-            badgeLedDot.sprite = circleSprite;
+
             badgeLedDot.color = doomRed;
             badgeLedDot.raycastTarget = false;
 
             // Texto do valor
-            badgeValueText = CreateText("Label", badgeObj.transform, 15, Color.white, TextAlignmentOptions.Left);
+            badgeValueText = CreateText("Label", badgeObj.transform, 15, textPrimary, TextAlignmentOptions.Left);
             var vRect = badgeValueText.rectTransform;
             vRect.anchorMin = new Vector2(0f, 0f);
             vRect.anchorMax = new Vector2(1f, 1f);
@@ -671,8 +611,8 @@ namespace UniDoom.UI
             tRect.sizeDelta = new Vector2(56, 26);
 
             var tagBg = tagObj.AddComponent<Image>();
-            tagBg.sprite = roundedPillSprite;
-            tagBg.type = Image.Type.Sliced;
+
+            tagBg.type = Image.Type.Simple;
             tagBg.color = new Color(doomRed.r, doomRed.g, doomRed.b, 0.25f);
             tagBg.raycastTarget = false;
 
@@ -699,8 +639,8 @@ namespace UniDoom.UI
             panelCanvasGroup = panelObj.AddComponent<CanvasGroup>();
 
             var panelBg = panelObj.AddComponent<Image>();
-            panelBg.sprite = roundedBoxSprite;
-            panelBg.type = Image.Type.Sliced;
+
+            panelBg.type = Image.Type.Simple;
             panelBg.color = panelBgColor;
             panelBg.raycastTarget = true;
 
@@ -708,8 +648,25 @@ namespace UniDoom.UI
             panelOutline.effectColor = borderRed;
             panelOutline.effectDistance = new Vector2(2, -2);
 
-            // Linha de acento neon no topo do painel
-            var accentBarObj = CreateUIElement("AccentNeonBar", panelObj.transform);
+            var wear = CreateUIElement("SurfaceWear", panelObj.transform);
+            var wearRect = wear.GetComponent<RectTransform>();
+            wearRect.anchorMin = Vector2.zero;
+            wearRect.anchorMax = Vector2.one;
+            wearRect.sizeDelta = Vector2.zero;
+            wear.AddComponent<HorrorLoadingBackdrop>().raycastTarget = false;
+
+            var rail = CreateUIElement("OxideRail", panelObj.transform);
+            var railRect = rail.GetComponent<RectTransform>();
+            railRect.anchorMin = Vector2.zero;
+            railRect.anchorMax = new Vector2(0f, 1f);
+            railRect.anchoredPosition = new Vector2(2f, 0f);
+            railRect.sizeDelta = new Vector2(4f, -2f);
+            var railImage = rail.AddComponent<Image>();
+            railImage.color = doomRed;
+            railImage.raycastTarget = false;
+
+            // Worn amber edge, matching the loading screen
+            var accentBarObj = CreateUIElement("OxideTopEdge", panelObj.transform);
             var aRect = accentBarObj.GetComponent<RectTransform>();
             aRect.anchorMin = new Vector2(0f, 1f);
             aRect.anchorMax = new Vector2(1f, 1f);
@@ -717,9 +674,9 @@ namespace UniDoom.UI
             aRect.anchoredPosition = new Vector2(0, -2);
             aRect.sizeDelta = new Vector2(-16, 3);
             var aImg = accentBarObj.AddComponent<Image>();
-            aImg.sprite = roundedPillSprite;
-            aImg.type = Image.Type.Sliced;
-            aImg.color = doomRed;
+
+            aImg.type = Image.Type.Simple;
+            aImg.color = amberHeader * .6f;
             aImg.raycastTarget = false;
 
             // 1. Barra de Título Superior
@@ -757,7 +714,10 @@ namespace UniDoom.UI
             tRect.anchorMax = new Vector2(1f, 0.5f);
             tRect.anchoredPosition = new Vector2(22, 5);
             tRect.sizeDelta = new Vector2(-70, 22);
-            titleText.text = "/// CALIBRAÇÃO DE SENSIBILIDADE";
+            titleText.text = "SENSIBILIDADE";
+            if (customFont != null) titleText.font = customFont;
+            titleText.fontSize = 24f;
+            titleText.color = textPrimary;
             titleText.fontStyle = FontStyles.Bold;
 
             var subText = CreateText("SubTitle", headerObj.transform, 11, textMuted, TextAlignmentOptions.Left);
@@ -766,11 +726,11 @@ namespace UniDoom.UI
             stRect.anchorMax = new Vector2(1f, 0.5f);
             stRect.anchoredPosition = new Vector2(22, -12);
             stRect.sizeDelta = new Vector2(-70, 16);
-            subText.text = "UNIDADE: MULTIPLICADOR DE EIXO // FPS COMBAT";
+            subText.text = "UNIDOOM  /  AJUSTES DE CONTROLE";
 
             // Botão Fechar [X] estilizado
             CreateStyledButton("CloseBtn", headerObj.transform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f),
-                new Vector2(-16, 0), new Vector2(32, 32), "✕", 15, new Color(0.25f, 0.12f, 0.12f, 1f), Color.white,
+                new Vector2(-16, 0), new Vector2(32, 32), "X", 15, buttonBgNormal, textPrimary,
                 () => SetMenuOpen(false));
         }
 
@@ -785,17 +745,17 @@ namespace UniDoom.UI
             cRect.sizeDelta = new Vector2(-36, 118);
 
             var cardBg = cardObj.AddComponent<Image>();
-            cardBg.sprite = roundedBoxSprite;
-            cardBg.type = Image.Type.Sliced;
+
+            cardBg.type = Image.Type.Simple;
             cardBg.color = cardInnerBg;
             cardBg.raycastTarget = false;
 
             var outline = cardObj.AddComponent<Outline>();
-            outline.effectColor = new Color(0.20f, 0.24f, 0.32f, 0.5f);
+            outline.effectColor = borderRed;
             outline.effectDistance = new Vector2(1, -1);
 
             // Número Digital Grande
-            valueReadoutText = CreateText("ValueReadout", cardObj.transform, 44, Color.white, TextAlignmentOptions.Center);
+            valueReadoutText = CreateText("ValueReadout", cardObj.transform, 44, textPrimary, TextAlignmentOptions.Center);
             var vrRect = valueReadoutText.rectTransform;
             vrRect.anchorMin = new Vector2(0.5f, 1f);
             vrRect.anchorMax = new Vector2(0.5f, 1f);
@@ -815,17 +775,17 @@ namespace UniDoom.UI
             bRect.sizeDelta = new Vector2(190, 22);
 
             categoryBadgeBg = badgeObj.AddComponent<Image>();
-            categoryBadgeBg.sprite = roundedPillSprite;
-            categoryBadgeBg.type = Image.Type.Sliced;
-            categoryBadgeBg.color = new Color(0.2f, 0.8f, 1f, 0.15f);
+
+            categoryBadgeBg.type = Image.Type.Simple;
+            categoryBadgeBg.color = new Color(amberHeader.r, amberHeader.g, amberHeader.b, .15f);
             categoryBadgeBg.raycastTarget = false;
 
-            categoryBadgeText = CreateText("BadgeText", badgeObj.transform, 12, Color.white, TextAlignmentOptions.Center);
+            categoryBadgeText = CreateText("BadgeText", badgeObj.transform, 12, textPrimary, TextAlignmentOptions.Center);
             var btRect = categoryBadgeText.rectTransform;
             btRect.anchorMin = Vector2.zero;
             btRect.anchorMax = Vector2.one;
             btRect.sizeDelta = Vector2.zero;
-            categoryBadgeText.text = "● PADRÃO / TÁTICO";
+            categoryBadgeText.text = "PADRÃO / TÁTICO";
             categoryBadgeText.fontStyle = FontStyles.Bold;
 
             // Barra de LED Segmentada (10 segmentos)
@@ -853,9 +813,9 @@ namespace UniDoom.UI
                 srt.sizeDelta = new Vector2(segW, segH);
 
                 var img = seg.AddComponent<Image>();
-                img.sprite = roundedPillSprite;
-                img.type = Image.Type.Sliced;
-                img.color = new Color(0.12f, 0.14f, 0.18f, 0.8f);
+
+                img.type = Image.Type.Simple;
+                img.color = buttonBgNormal;
                 img.raycastTarget = false;
                 ledSegments[i] = img;
             }
@@ -865,7 +825,7 @@ namespace UniDoom.UI
         {
             // Botão [-]
             CreateStyledButton("StepDown", parent, new Vector2(0f, 1f), new Vector2(0f, 1f),
-                new Vector2(38, posY), new Vector2(36, 36), "−", 22, buttonBgNormal, Color.white,
+                new Vector2(38, posY), new Vector2(36, 36), "−", 22, buttonBgNormal, textPrimary,
                 () => SetSensitivity(sensitivity - 0.05f));
 
             // Slider Container (área arrastável ampla)
@@ -879,13 +839,13 @@ namespace UniDoom.UI
 
             // Trilha de Fundo
             var trackBg = sliderObj.AddComponent<Image>();
-            trackBg.sprite = roundedPillSprite;
-            trackBg.type = Image.Type.Sliced;
-            trackBg.color = new Color(0.10f, 0.12f, 0.16f, 1f);
+
+            trackBg.type = Image.Type.Simple;
+            trackBg.color = buttonBgNormal;
             trackBg.raycastTarget = true;
 
             var trackOutline = sliderObj.AddComponent<Outline>();
-            trackOutline.effectColor = new Color(0.24f, 0.28f, 0.36f, 0.7f);
+            trackOutline.effectColor = borderRed;
             trackOutline.effectDistance = new Vector2(1, -1);
 
             sensitivitySlider = sliderObj.AddComponent<Slider>();
@@ -908,8 +868,8 @@ namespace UniDoom.UI
             sliderFillRect.sizeDelta = Vector2.zero;
 
             sliderFillImg = fillObj.AddComponent<Image>();
-            sliderFillImg.sprite = roundedPillSprite;
-            sliderFillImg.type = Image.Type.Sliced;
+
+            sliderFillImg.type = Image.Type.Simple;
             sliderFillImg.color = doomRed;
             sliderFillImg.raycastTarget = false;
             sensitivitySlider.fillRect = sliderFillRect;
@@ -926,9 +886,9 @@ namespace UniDoom.UI
             hRect.sizeDelta = new Vector2(26, 36);
 
             sliderHandleImg = handleObj.AddComponent<Image>();
-            sliderHandleImg.sprite = roundedPillSprite;
-            sliderHandleImg.type = Image.Type.Sliced;
-            sliderHandleImg.color = Color.white;
+
+            sliderHandleImg.type = Image.Type.Simple;
+            sliderHandleImg.color = textPrimary;
             sliderHandleImg.raycastTarget = true;
 
             // Núcleo de cor central no handle
@@ -938,8 +898,8 @@ namespace UniDoom.UI
             hcRect.anchorMax = new Vector2(0.5f, 0.5f);
             hcRect.sizeDelta = new Vector2(6, 18);
             var hcImg = handleCore.AddComponent<Image>();
-            hcImg.sprite = roundedPillSprite;
-            hcImg.type = Image.Type.Sliced;
+
+            hcImg.type = Image.Type.Simple;
             hcImg.color = doomRed;
             hcImg.raycastTarget = false;
 
@@ -957,7 +917,7 @@ namespace UniDoom.UI
 
             // Botão [+]
             CreateStyledButton("StepUp", parent, new Vector2(1f, 1f), new Vector2(1f, 1f),
-                new Vector2(-38, posY), new Vector2(36, 36), "+", 22, buttonBgNormal, Color.white,
+                new Vector2(-38, posY), new Vector2(36, 36), "+", 22, buttonBgNormal, textPrimary,
                 () => SetSensitivity(sensitivity + 0.05f));
 
             // Marcadores de referência numérica embaixo do slider
@@ -1001,7 +961,7 @@ namespace UniDoom.UI
             float btnW = 90f;
             float spacing = 10f;
             string[] presetLabels = { "0.5x", "1.0x", "1.5x", "2.0x" };
-            string[] subLabels = { "LENTO", "PADRÃO", "ÁGIL", "INSANO" };
+            string[] subLabels = { "LENTO", "PADRÃO", "ÁGIL", "RÁPIDO" };
 
             for (int i = 0; i < presetValues.Length; i++)
             {
@@ -1017,27 +977,27 @@ namespace UniDoom.UI
                 rt.sizeDelta = new Vector2(btnW, 36);
 
                 var img = btnObj.AddComponent<Image>();
-                img.sprite = roundedBoxSprite;
-                img.type = Image.Type.Sliced;
+
+                img.type = Image.Type.Simple;
                 img.color = buttonBgNormal;
                 img.raycastTarget = true;
                 presetButtonBgs[i] = img;
 
                 var outline = btnObj.AddComponent<Outline>();
-                outline.effectColor = new Color(0.24f, 0.28f, 0.36f, 0.6f);
+                outline.effectColor = borderRed;
                 outline.effectDistance = new Vector2(1, -1);
 
                 var btn = btnObj.AddComponent<Button>();
                 btn.targetGraphic = img;
                 var cols = btn.colors;
-                cols.normalColor = buttonBgNormal;
-                cols.highlightedColor = buttonBgHover;
-                cols.pressedColor = doomRed;
+                cols.normalColor = Color.white;
+                cols.highlightedColor = HoverTint;
+                cols.pressedColor = new Color(.7f, .65f, .55f);
                 btn.colors = cols;
                 btn.onClick.AddListener(() => SetSensitivity(pVal));
                 presetButtons[i] = btn;
 
-                var text = CreateText("ValText", btnObj.transform, 14, Color.white, TextAlignmentOptions.Center);
+                var text = CreateText("ValText", btnObj.transform, 14, textPrimary, TextAlignmentOptions.Center);
                 var tRect = text.rectTransform;
                 tRect.anchorMin = new Vector2(0f, 0.5f);
                 tRect.anchorMax = new Vector2(1f, 0.5f);
@@ -1068,13 +1028,13 @@ namespace UniDoom.UI
             rRect.sizeDelta = new Vector2(-36, 46);
 
             var rowBg = rowObj.AddComponent<Image>();
-            rowBg.sprite = roundedBoxSprite;
-            rowBg.type = Image.Type.Sliced;
+
+            rowBg.type = Image.Type.Simple;
             rowBg.color = cardInnerBg;
             rowBg.raycastTarget = true;
 
             var outline = rowObj.AddComponent<Outline>();
-            outline.effectColor = new Color(0.20f, 0.24f, 0.32f, 0.5f);
+            outline.effectColor = borderRed;
             outline.effectDistance = new Vector2(1, -1);
 
             invertYToggle = rowObj.AddComponent<Toggle>();
@@ -1082,7 +1042,7 @@ namespace UniDoom.UI
             invertYToggle.targetGraphic = rowBg;
 
             // Ícone e Título da linha
-            var title = CreateText("Title", rowObj.transform, 14, Color.white, TextAlignmentOptions.Left);
+            var title = CreateText("Title", rowObj.transform, 14, textPrimary, TextAlignmentOptions.Left);
             var tRect = title.rectTransform;
             tRect.anchorMin = new Vector2(0f, 0.5f);
             tRect.anchorMax = new Vector2(1f, 0.5f);
@@ -1099,7 +1059,7 @@ namespace UniDoom.UI
             dRect.sizeDelta = new Vector2(-160, 16);
             desc.text = "Inverte a direção para cima/baixo (Look Y)";
 
-            // Switch Pill moderno no lado direito
+            // Mechanical switch on the right
             var switchPill = CreateUIElement("SwitchPill", rowObj.transform);
             var spRect = switchPill.GetComponent<RectTransform>();
             spRect.anchorMin = new Vector2(1f, 0.5f);
@@ -1109,9 +1069,9 @@ namespace UniDoom.UI
             spRect.sizeDelta = new Vector2(50, 26);
 
             invertYSwitchBg = switchPill.AddComponent<Image>();
-            invertYSwitchBg.sprite = roundedPillSprite;
-            invertYSwitchBg.type = Image.Type.Sliced;
-            invertYSwitchBg.color = invertY ? new Color(0.2f, 0.75f, 0.35f, 0.9f) : new Color(0.18f, 0.20f, 0.26f, 0.9f);
+
+            invertYSwitchBg.type = Image.Type.Simple;
+            invertYSwitchBg.color = invertY ? doomRed : buttonBgNormal;
             invertYSwitchBg.raycastTarget = false;
 
             var knobObj = CreateUIElement("Knob", switchPill.transform);
@@ -1122,8 +1082,8 @@ namespace UniDoom.UI
             invertYSwitchKnob.anchoredPosition = new Vector2(invertY ? 12f : -12f, 0f);
 
             var knobImg = knobObj.AddComponent<Image>();
-            knobImg.sprite = circleSprite;
-            knobImg.color = Color.white;
+
+            knobImg.color = textPrimary;
             knobImg.raycastTarget = false;
 
             // Status Text
@@ -1142,23 +1102,23 @@ namespace UniDoom.UI
         {
             // Botão Redefinir
             CreateStyledButton("ResetBtn", parent, new Vector2(0f, 0f), new Vector2(0f, 0f),
-                new Vector2(105, 40), new Vector2(174, 38), "↺ REDEFINIR (1.0x)", 13, new Color(0.15f, 0.17f, 0.23f, 1f), Color.white,
+                new Vector2(105, 40), new Vector2(174, 38), "REDEFINIR (1.0x)", 13, buttonBgNormal, textPrimary,
                 () => { SetSensitivity(1.0f); SetInvertY(false); });
 
             // Botão Salvar e Fechar com destaque Doom Red
             CreateStyledButton("CloseConfirmBtn", parent, new Vector2(1f, 0f), new Vector2(1f, 0f),
-                new Vector2(-105, 40), new Vector2(174, 38), "✓ CONCLUIR [ESC]", 13, doomRed, Color.white,
+                new Vector2(-105, 40), new Vector2(174, 38), "CONCLUIR [ESC]", 13, doomRed, textPrimary,
                 () => SetMenuOpen(false));
 
             // Dica de rodapé em fonte monospace sutil
-            var hint = CreateText("FooterHint", parent, 11, textMuted, TextAlignmentOptions.Center);
+            var hint = CreateText("FooterHint", parent, 12, textMuted, TextAlignmentOptions.Center);
             var hRect = hint.rectTransform;
             hRect.anchorMin = new Vector2(0.5f, 0f);
             hRect.anchorMax = new Vector2(0.5f, 0f);
             hRect.pivot = new Vector2(0.5f, 0f);
             hRect.anchoredPosition = new Vector2(0, 10);
             hRect.sizeDelta = new Vector2(380, 18);
-            hint.text = "// PRESSIONE ESC A QUALQUER MOMENTO PARA RETORNAR AO JOGO";
+            hint.text = "ESC  /  RETORNAR AO JOGO";
         }
 
         private GameObject CreateUIElement(string name, Transform parent)
@@ -1172,7 +1132,7 @@ namespace UniDoom.UI
         {
             var go = CreateUIElement(name, parent);
             var tmp = go.AddComponent<TextMeshProUGUI>();
-            if (customFont != null) tmp.font = customFont;
+            if (bodyFont != null) tmp.font = bodyFont;
             tmp.fontSize = fontSize;
             tmp.color = color;
             tmp.alignment = alignment;
@@ -1192,23 +1152,23 @@ namespace UniDoom.UI
             rt.sizeDelta = size;
 
             var img = btnObj.AddComponent<Image>();
-            img.sprite = roundedBoxSprite;
-            img.type = Image.Type.Sliced;
+
+            img.type = Image.Type.Simple;
             img.color = bgColor;
             img.raycastTarget = true;
 
             var outline = btnObj.AddComponent<Outline>();
-            outline.effectColor = new Color(0.25f, 0.30f, 0.40f, 0.5f);
+            outline.effectColor = borderRed;
             outline.effectDistance = new Vector2(1, -1);
 
             var btn = btnObj.AddComponent<Button>();
             btn.targetGraphic = img;
 
             var colors = btn.colors;
-            colors.normalColor = bgColor;
-            colors.highlightedColor = Color.Lerp(bgColor, Color.white, 0.25f);
-            colors.pressedColor = doomRed;
-            colors.selectedColor = bgColor;
+            colors.normalColor = Color.white;
+            colors.highlightedColor = HoverTint;
+            colors.pressedColor = new Color(.7f, .65f, .55f);
+            colors.selectedColor = Color.white;
             btn.colors = colors;
 
             if (onClick != null) btn.onClick.AddListener(onClick);

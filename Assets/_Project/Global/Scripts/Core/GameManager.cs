@@ -3,6 +3,34 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    private static GameManager session;
+    public static PlayerMovement SessionPlayer { get; private set; }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetSession()
+    {
+        session = null;
+        SessionPlayer = null;
+    }
+
+    private void Awake()
+    {
+        if (session != null && session != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        session = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        if (session != this) return;
+        session = null;
+        SessionPlayer = null;
+    }
+
     [Header("Player")]
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private Transform spawnPoint;
@@ -17,9 +45,12 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        if (session != this) return;
         GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
+        player.transform.SetParent(transform, true);
+        SessionPlayer = player.GetComponent<PlayerMovement>();
 
-        Instantiate(weaponPrefab);
+        if (weaponPrefab != null) Instantiate(weaponPrefab, transform);
         SpawnCrosshair();
         SpawnHUD();
         ConnectWeapon(player);
@@ -35,7 +66,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        Instantiate(crosshairPrefab);
+        Instantiate(crosshairPrefab, transform);
     }
 
     private void SpawnHUD()
@@ -46,7 +77,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        hudInstance = Instantiate(HUDPrefab);
+        hudInstance = Instantiate(HUDPrefab, transform);
     }
 
     private void ConnectWeapon(GameObject player)
@@ -96,7 +127,7 @@ public class GameManager : MonoBehaviour
 
     private void SpawnKeyUI(GameObject player)
     {
-        GameObject keyInstance = Instantiate(KeysPrefab);
+        GameObject keyInstance = Instantiate(KeysPrefab, transform);
 
         KeysUI keysUI = keyInstance.GetComponentInChildren<KeysUI>();
         player.GetComponentInChildren<PlayerPickupKey>().SetKeysUI(keysUI);
