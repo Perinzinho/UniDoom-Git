@@ -36,17 +36,13 @@ public class Shotgun : Gun
     }
 
 
+    protected override bool CanShoot() => TryResolvePlayerCamera(ref playerCamera);
+
     // Implements abstract Shoot defined in Gun.
     protected override void Shoot()
     {
         DebugUI.Log("Shotgun fired!");
         SFXManager.Instance.PlayShotgunShootSound();
-
-        if (playerCamera == null)
-        {
-            DebugUI.LogWarning("Shotgun: no camera assigned.");
-            return;
-        }
 
 
         // Repeat shooting process according to pellet count.
