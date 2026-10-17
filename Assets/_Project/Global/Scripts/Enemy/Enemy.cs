@@ -65,6 +65,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void Update()
     {
+        if (Time.timeScale <= 0f) return;
         if (isFlashing && Time.time >= hitFlashEndsAt)
             RestoreHitColors();
 

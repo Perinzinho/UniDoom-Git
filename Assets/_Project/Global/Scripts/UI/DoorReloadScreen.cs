@@ -59,7 +59,7 @@ namespace UniDoom.UI
             new DestinationArtwork("EntranceGarden")
         };
         private static readonly string[] DebugSectors =
-            { "CILINDRO", "BIBLIOTECA", "SALA DE AULA", "DIRETORIA", "CORREDOR DE ENTRADA" };
+            { "BLOCO UNIVERSITÁRIO", "BIBLIOTECA", "SALA DE AULA", "DIRETORIA", "CORREDOR DE ENTRADA" };
         private readonly Dictionary<string, Texture2D> destinationImages = new(StringComparer.OrdinalIgnoreCase);
         private Texture2D activePassageImage;
         private int debugDestinationIndex;
@@ -141,19 +141,20 @@ namespace UniDoom.UI
         // Existing callers remain compatible. A busy screen never invokes callbacks prematurely.
         public static void TriggerReload(string sectorName = "NOVO SETOR", Action onComplete = null)
         {
+            if (MouseSensitivityMenu.IsOpen) return;
             if (Instance == null) AutoInitialize();
             Instance.StartReloadTransition(sectorName, onComplete);
         }
 
         public void StartReloadTransition(string sectorName, Action onComplete)
         {
-            if (isReloading) return;
+            if (isReloading || MouseSensitivityMenu.IsOpen) return;
             StartCoroutine(ReloadRoutine(sectorName, null, null, onComplete));
         }
 
         public static bool TryLoadScene(string sceneName, string spawnId, string label = null)
         {
-            if (IsReloading) return false;
+            if (IsReloading || MouseSensitivityMenu.IsOpen) return false;
             if (string.IsNullOrWhiteSpace(sceneName) || string.IsNullOrWhiteSpace(spawnId) ||
                 !Application.CanStreamedLevelBeLoaded(sceneName))
             {
@@ -166,7 +167,17 @@ namespace UniDoom.UI
             return true;
         }
 
-        private IEnumerator ReloadRoutine(string sectorName, string sceneName, string spawnId, Action onComplete)
+        public static bool TryRespawnScene(string scenePath, Action restoreCheckpoint)
+        {
+            if (IsReloading || MouseSensitivityMenu.IsOpen || restoreCheckpoint == null ||
+                string.IsNullOrWhiteSpace(scenePath) || !Application.CanStreamedLevelBeLoaded(scenePath)) return false;
+            if (Instance == null) AutoInitialize();
+            Instance.StartCoroutine(Instance.ReloadRoutine("RETORNANDO", scenePath, null, null, restoreCheckpoint));
+            return true;
+        }
+
+        private IEnumerator ReloadRoutine(string sectorName, string sceneName, string spawnId, Action onComplete,
+            Action restoreCheckpoint = null)
         {
             isReloading = true;
             FreezePlayer();
@@ -204,7 +215,8 @@ namespace UniDoom.UI
                         }
                         // GameManager.Start (when starting directly in a scene) and physics get a frame to settle.
                         yield return null;
-                        if (!SceneArrivalPoint.TryPlacePlayer(SceneManager.GetActiveScene(), spawnId))
+                        if (restoreCheckpoint != null) restoreCheckpoint();
+                        else if (!SceneArrivalPoint.TryPlacePlayer(SceneManager.GetActiveScene(), spawnId))
                             error = $"Ponto de chegada '{spawnId}' ou player não encontrado em '{sceneName}'.";
                         SetProgress(.88f, "Do outro lado...");
                         yield return null;
@@ -262,7 +274,7 @@ namespace UniDoom.UI
                 : System.IO.Path.GetFileNameWithoutExtension(destination).Trim().ToUpperInvariant();
             switch (destination)
             {
-                case "HUB": case "CILINDRO": destination = "CYLINDER"; break;
+                case "HUB": case "CILINDRO": case "BLOCO UNIVERSITÁRIO": destination = "CYLINDER"; break;
                 case "BIBLIOTECA": destination = "LIBRARY"; break;
                 case "SALA DE AULA": destination = "CLASSROOM"; break;
                 case "DIRETORIA": destination = "DIRECTORROOM"; break;

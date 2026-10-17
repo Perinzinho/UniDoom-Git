@@ -21,16 +21,7 @@ namespace UniDoom.Utils
                 foreach (var point in root.GetComponentsInChildren<SceneArrivalPoint>())
                     if (point.spawnId == id)
                     {
-                        player.Teleport(point.transform.position, point.transform.rotation);
-                        foreach (var aim in player.GetComponentsInChildren<CinemachinePanTilt>(true))
-                        {
-                            aim.ReferenceFrame = CinemachinePanTilt.ReferenceFrames.World;
-                            aim.PanAxis.Value = point.transform.eulerAngles.y;
-                            aim.TiltAxis.Value = 0f;
-                        }
-                        foreach (var camera in player.GetComponentsInChildren<CinemachineCamera>(true))
-                            camera.PreviousStateIsValid = false;
-                        Physics.SyncTransforms();
+                        PlacePlayer(player, point.transform.position, point.transform.rotation);
                         return true;
                     }
             // A misconfigured ID must not strand a persistent player at the previous scene's coordinates.
@@ -38,6 +29,20 @@ namespace UniDoom.Utils
                 if (root.name == "SpawnPoint")
                     player.Teleport(root.transform.position, root.transform.rotation);
             return false;
+        }
+
+        public static void PlacePlayer(PlayerMovement player, Vector3 position, Quaternion rotation)
+        {
+            player.Teleport(position, rotation);
+            foreach (var aim in player.GetComponentsInChildren<CinemachinePanTilt>(true))
+            {
+                aim.ReferenceFrame = CinemachinePanTilt.ReferenceFrames.World;
+                aim.PanAxis.Value = rotation.eulerAngles.y;
+                aim.TiltAxis.Value = 0f;
+            }
+            foreach (var camera in player.GetComponentsInChildren<CinemachineCamera>(true))
+                camera.PreviousStateIsValid = false;
+            Physics.SyncTransforms();
         }
 
         private void OnDrawGizmosSelected()
