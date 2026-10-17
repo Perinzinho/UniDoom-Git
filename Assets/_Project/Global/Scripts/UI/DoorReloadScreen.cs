@@ -36,6 +36,33 @@ namespace UniDoom.UI
         [SerializeField] private Texture2D passageImage;
         [SerializeField] private AudioClip passageAmbience;
         [SerializeField, Range(0f, 1f)] private float ambienceVolume = .16f;
+        [Serializable]
+        private sealed class DestinationArtwork
+        {
+            public string sceneName;
+            public string resourcePath;
+
+            public DestinationArtwork(string scene)
+            {
+                sceneName = scene;
+                resourcePath = "Textures/UI/Transitions/" + scene;
+            }
+        }
+
+        [Tooltip("Imagem de cada destino. Os caminhos são relativos às pastas Resources dos cenários.")]
+        [SerializeField] private DestinationArtwork[] destinationArtworks =
+        {
+            new DestinationArtwork("Cylinder"),
+            new DestinationArtwork("Library"),
+            new DestinationArtwork("ClassRoom"),
+            new DestinationArtwork("DirectorRoom"),
+            new DestinationArtwork("EntranceGarden")
+        };
+        private static readonly string[] DebugSectors =
+            { "CILINDRO", "BIBLIOTECA", "SALA DE AULA", "DIRETORIA", "CORREDOR DE ENTRADA" };
+        private readonly Dictionary<string, Texture2D> destinationImages = new(StringComparer.OrdinalIgnoreCase);
+        private Texture2D activePassageImage;
+        private int debugDestinationIndex;
         private RawImage passageView;
         private AudioSource ambienceSource;
         private readonly Image[] passageMarks = new Image[3];
@@ -80,7 +107,10 @@ namespace UniDoom.UI
         private void Update()
         {
             if (enableDebugKey && Input.GetKeyDown(debugKey) && !isReloading)
-                TriggerReload("SETOR DESCONHECIDO");
+            {
+                TriggerReload(DebugSectors[debugDestinationIndex]);
+                debugDestinationIndex = (debugDestinationIndex + 1) % DebugSectors.Length;
+            }
             if (!isReloading) return;
             float elapsed = Time.unscaledTime - transitionBegan;
             float breath = .5f + .5f * Mathf.Sin(elapsed * .8f);
@@ -145,6 +175,7 @@ namespace UniDoom.UI
             bool success = false;
             try
             {
+                SelectDestinationArtwork(sceneName, sectorName);
                 titleText.text = string.IsNullOrWhiteSpace(sectorName) ? "SETOR DESCONHECIDO" : sectorName.ToUpperInvariant();
                 subtitleText.text = "ALÉM DA PORTA";
                 SetProgress(0, "A porta se fecha...");
@@ -223,6 +254,42 @@ namespace UniDoom.UI
             statusDetailText.text = status;
         }
 
+        private void SelectDestinationArtwork(string sceneName, string sectorName)
+        {
+            // Actual travel always uses the scene ID; labels are only aliases for local/F8 previews.
+            string destination = string.IsNullOrWhiteSpace(sceneName) ? sectorName : sceneName;
+            destination = string.IsNullOrWhiteSpace(destination) ? string.Empty
+                : System.IO.Path.GetFileNameWithoutExtension(destination).Trim().ToUpperInvariant();
+            switch (destination)
+            {
+                case "HUB": case "CILINDRO": destination = "CYLINDER"; break;
+                case "BIBLIOTECA": destination = "LIBRARY"; break;
+                case "SALA DE AULA": destination = "CLASSROOM"; break;
+                case "DIRETORIA": destination = "DIRECTORROOM"; break;
+                case "ENTRANCEHALLWAY": case "CORREDOR DE ENTRADA": destination = "ENTRANCEGARDEN"; break;
+            }
+
+            // Reset to the shared image on every request, so an unknown destination cannot show the previous room.
+            activePassageImage = passageImage;
+            if (destinationArtworks != null)
+                foreach (var artwork in destinationArtworks)
+                {
+                    if (artwork == null || !string.Equals(artwork.sceneName, destination, StringComparison.OrdinalIgnoreCase)
+                        || string.IsNullOrWhiteSpace(artwork.resourcePath)) continue;
+                    if (!destinationImages.TryGetValue(artwork.resourcePath, out var image))
+                    {
+                        image = Resources.Load<Texture2D>(artwork.resourcePath);
+                        destinationImages[artwork.resourcePath] = image;
+                        if (image == null) Debug.LogWarning($"[DoorReloadScreen] Imagem de destino ausente: {artwork.resourcePath}");
+                    }
+                    if (image != null) activePassageImage = image;
+                    break;
+                }
+            passageView.texture = activePassageImage;
+            passageView.enabled = activePassageImage != null;
+            FitPassageImage(1.025f);
+        }
+
         private void FreezePlayer()
         {
             savedTimeScale = Time.timeScale;
@@ -264,6 +331,7 @@ namespace UniDoom.UI
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
             // Resources keep the automatically-created screen available from every playable scene.
             if (passageImage == null) passageImage = Resources.Load<Texture2D>("Textures/UI/Transitions/AbandonedDoor");
+            activePassageImage = passageImage;
             if (passageAmbience == null) passageAmbience = Resources.Load<AudioClip>("Audio/UI/Transitions/ThresholdDrone");
             ambienceSource = gameObject.AddComponent<AudioSource>();
             ambienceSource.playOnAwake = false;
@@ -309,11 +377,11 @@ namespace UniDoom.UI
 
         private void FitPassageImage(float zoom)
         {
-            if (passageImage == null || passageView == null) return;
+            if (activePassageImage == null || passageView == null) return;
             var imageRect = passageView.rectTransform;
             var size = ((RectTransform)imageRect.parent).rect.size;
             if (size.x <= 0 || size.y <= 0) return;
-            float imageAspect = (float)passageImage.width / passageImage.height;
+            float imageAspect = (float)activePassageImage.width / activePassageImage.height;
             float screenAspect = size.x / size.y;
             // Preserve the entire doorway on ultrawide views; its dark edges blend into the blackout.
             imageRect.anchorMin = imageRect.anchorMax = new Vector2(.5f, .5f);
