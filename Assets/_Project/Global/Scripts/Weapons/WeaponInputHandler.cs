@@ -11,7 +11,7 @@ public class WeaponInputHandler : MonoBehaviour
     // Executed every frame to check player input.
     private void Update()
     {
-        if (UniDoom.UI.DoorReloadScreen.IsReloading || UniDoom.UI.MouseSensitivityMenu.IsOpen)
+        if (UniDoom.UI.DeathScreen.IsVisible || UniDoom.UI.DoorReloadScreen.IsReloading || UniDoom.UI.MouseSensitivityMenu.IsOpen)
             return;
 
         if (currentGun == null)

@@ -22,7 +22,7 @@ public class PlayerMovement : MonoBehaviour
     // Só calcula a direção, não move ainda
     public void MoveHorizontal()
     {
-        if (!movementEnabled || UniDoom.UI.DoorReloadScreen.IsReloading || UniDoom.UI.MouseSensitivityMenu.IsOpen)
+        if (!movementEnabled || UniDoom.UI.DeathScreen.IsVisible || UniDoom.UI.DoorReloadScreen.IsReloading || UniDoom.UI.MouseSensitivityMenu.IsOpen)
         {
             horizontalMove = Vector3.zero;
             return;
@@ -48,9 +48,9 @@ public class PlayerMovement : MonoBehaviour
     // Aplica gravidade e faz UM único Move com tudo junto
     public void ApplyGravity()
     {
-        if (controller == null) return;
+        if (controller == null || !controller.enabled) return;
 
-        if (UniDoom.UI.DoorReloadScreen.IsReloading)
+        if (!movementEnabled || UniDoom.UI.DeathScreen.IsVisible || UniDoom.UI.DoorReloadScreen.IsReloading)
         {
             velocity = Vector3.zero;
             return;
@@ -63,5 +63,11 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 finalMove = horizontalMove + Vector3.up * velocity.y;
         controller.Move(finalMove * Time.deltaTime);
+    }
+
+    public void ResetMotion()
+    {
+        velocity = Vector3.zero;
+        horizontalMove = Vector3.zero;
     }
 }
