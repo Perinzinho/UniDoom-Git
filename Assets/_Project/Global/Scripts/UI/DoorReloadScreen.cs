@@ -131,6 +131,7 @@ namespace UniDoom.UI
         /// </summary>
         public static void TriggerReload(string sectorName = "NOVO SETOR", Action onComplete = null)
         {
+            if (DeathScreen.IsVisible) return;
             if (Instance == null) AutoInitialize();
             if (Instance == null)
             {
@@ -297,14 +298,14 @@ namespace UniDoom.UI
             var movement = FindAnyObjectByType<PlayerMovement>();
             if (movement != null)
             {
-                movement.MovementEnabled = !freeze;
+                movement.MovementEnabled = !freeze && !DeathScreen.IsVisible;
             }
 
             // Desativa entrada do Cinemachine no mouse para evitar rotação brusca durante o reload
             var cinemachineControllers = FindObjectsByType<Unity.Cinemachine.CinemachineInputAxisController>();
             foreach (var ctrl in cinemachineControllers)
             {
-                if (ctrl != null) ctrl.enabled = !freeze;
+                if (ctrl != null) ctrl.enabled = !freeze && !DeathScreen.IsVisible && !MouseSensitivityMenu.IsOpen;
             }
         }
 

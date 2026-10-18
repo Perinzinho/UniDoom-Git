@@ -125,6 +125,7 @@ namespace UniDoom.UI
 
         private void Update()
         {
+            if (DeathScreen.IsVisible) return;
             // Atalho exclusivo ESC (compatível com Legacy e New Input System)
             bool escPressed = false;
             try
@@ -203,6 +204,7 @@ namespace UniDoom.UI
 
         public void SetMenuOpen(bool open)
         {
+            if (open && DeathScreen.IsVisible) return;
             if (isMenuOpen == open) return;
             isMenuOpen = open;
 
@@ -210,6 +212,15 @@ namespace UniDoom.UI
                 StopCoroutine(transitionRoutine);
 
             transitionRoutine = StartCoroutine(TransitionMenuRoutine(open));
+        }
+
+        public bool CloseForDeath()
+        {
+            if (!isMenuOpen && transitionRoutine == null) return false;
+            if (transitionRoutine != null) StopCoroutine(transitionRoutine);
+            transitionRoutine = null;
+            SetMenuOpenImmediate(false);
+            return true;
         }
 
         private void SetMenuOpenImmediate(bool open)
