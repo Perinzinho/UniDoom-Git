@@ -167,17 +167,7 @@ namespace UniDoom.UI
             return true;
         }
 
-        public static bool TryRespawnScene(string scenePath, Action restoreCheckpoint)
-        {
-            if (IsReloading || MouseSensitivityMenu.IsOpen || restoreCheckpoint == null ||
-                string.IsNullOrWhiteSpace(scenePath) || !Application.CanStreamedLevelBeLoaded(scenePath)) return false;
-            if (Instance == null) AutoInitialize();
-            Instance.StartCoroutine(Instance.ReloadRoutine("RETORNANDO", scenePath, null, null, restoreCheckpoint));
-            return true;
-        }
-
-        private IEnumerator ReloadRoutine(string sectorName, string sceneName, string spawnId, Action onComplete,
-            Action restoreCheckpoint = null)
+        private IEnumerator ReloadRoutine(string sectorName, string sceneName, string spawnId, Action onComplete)
         {
             isReloading = true;
             FreezePlayer();
@@ -215,8 +205,7 @@ namespace UniDoom.UI
                         }
                         // GameManager.Start (when starting directly in a scene) and physics get a frame to settle.
                         yield return null;
-                        if (restoreCheckpoint != null) restoreCheckpoint();
-                        else if (!SceneArrivalPoint.TryPlacePlayer(SceneManager.GetActiveScene(), spawnId))
+                        if (!SceneArrivalPoint.TryPlacePlayer(SceneManager.GetActiveScene(), spawnId))
                             error = $"Ponto de chegada '{spawnId}' ou player não encontrado em '{sceneName}'.";
                         SetProgress(.88f, "Do outro lado...");
                         yield return null;

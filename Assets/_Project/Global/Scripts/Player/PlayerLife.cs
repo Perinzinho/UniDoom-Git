@@ -6,7 +6,6 @@ public class PlayerLife : MonoBehaviour, IDamageable
     [Header("Health Settings")]
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private int currentHealth;
-    private float protectedUntil;
 
     public int MaxHealth => maxHealth;
     public int CurrentHealth => currentHealth;
@@ -23,7 +22,6 @@ public class PlayerLife : MonoBehaviour, IDamageable
 
     public void Heal(int amount)
     {
-        if (IsDead) return;
         int before = currentHealth;
         currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
 
@@ -35,8 +33,6 @@ public class PlayerLife : MonoBehaviour, IDamageable
 
     public void TakeDamage(int amount)
     {
-        if (IsDead || amount <= 0 || Time.timeScale <= 0f || Time.time < protectedUntil ||
-            UniDoom.UI.DoorReloadScreen.IsReloading) return;
         int before = currentHealth;
         currentHealth = Mathf.Max(currentHealth - amount, 0);
 
@@ -60,12 +56,5 @@ public class PlayerLife : MonoBehaviour, IDamageable
     {
         Debug.Log("Player morreu!");
         OnDeath?.Invoke();
-    }
-
-    public void RestoreAfterRespawn()
-    {
-        currentHealth = maxHealth;
-        protectedUntil = Time.time + 2f;
-        OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 }
