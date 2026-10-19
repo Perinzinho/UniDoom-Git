@@ -6,6 +6,7 @@ public class AmmoPickup : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (UniDoom.UI.DeathScreen.IsVisible) return;
         DebugUI.Log($"Trigger detected with: {other.name}, tag: {other.tag}");
         if (!other.CompareTag("Player"))
             return;

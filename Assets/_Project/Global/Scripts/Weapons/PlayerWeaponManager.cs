@@ -35,7 +35,7 @@ public class PlayerWeaponManager : MonoBehaviour
 
     public bool TryPickup(WeaponPickup pickup)
     {
-        if (pickup == null || !pickup.CanBePickedUpBy(this))
+        if (UniDoom.UI.DeathScreen.IsVisible || pickup == null || !pickup.CanBePickedUpBy(this))
             return false;
 
         // Validate before consuming the pickup or removing the equipped weapon.

@@ -141,20 +141,20 @@ namespace UniDoom.UI
         // Existing callers remain compatible. A busy screen never invokes callbacks prematurely.
         public static void TriggerReload(string sectorName = "NOVO SETOR", Action onComplete = null)
         {
-            if (MouseSensitivityMenu.IsOpen) return;
+            if (MouseSensitivityMenu.IsOpen || DeathScreen.IsVisible) return;
             if (Instance == null) AutoInitialize();
             Instance.StartReloadTransition(sectorName, onComplete);
         }
 
         public void StartReloadTransition(string sectorName, Action onComplete)
         {
-            if (isReloading || MouseSensitivityMenu.IsOpen) return;
+            if (isReloading || MouseSensitivityMenu.IsOpen || DeathScreen.IsVisible) return;
             StartCoroutine(ReloadRoutine(sectorName, null, null, onComplete));
         }
 
         public static bool TryLoadScene(string sceneName, string spawnId, string label = null)
         {
-            if (IsReloading || MouseSensitivityMenu.IsOpen) return false;
+            if (IsReloading || MouseSensitivityMenu.IsOpen || DeathScreen.IsVisible) return false;
             if (string.IsNullOrWhiteSpace(sceneName) || string.IsNullOrWhiteSpace(spawnId) ||
                 !Application.CanStreamedLevelBeLoaded(sceneName))
             {

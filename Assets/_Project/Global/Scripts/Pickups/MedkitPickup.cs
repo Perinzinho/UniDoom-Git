@@ -7,6 +7,7 @@ public class MedkitPickup : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (UniDoom.UI.DeathScreen.IsVisible) return;
         Debug.Log("Trigger com: " + other.gameObject.name + " | Tag: " + other.tag);
 
         if (other.CompareTag("Player"))
@@ -18,7 +19,7 @@ public class MedkitPickup : MonoBehaviour
             {
                 Debug.Log("PlayerLife encontrado! Vida atual: " + playerLife.CurrentHealth);
 
-                if (playerLife.CurrentHealth < playerLife.MaxHealth)
+                if (!playerLife.IsDead && playerLife.CurrentHealth < playerLife.MaxHealth)
                 {
                     Debug.Log("Curando " + healAmount + " de vida!");
                     playerLife.Heal(healAmount);
