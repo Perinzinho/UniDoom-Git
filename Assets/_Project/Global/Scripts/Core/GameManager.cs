@@ -49,10 +49,6 @@ public class GameManager : MonoBehaviour
         GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
         player.transform.SetParent(transform, true);
         SessionPlayer = player.GetComponent<PlayerMovement>();
-        var respawn = player.GetComponent<PlayerRespawn>();
-        if (respawn == null) respawn = player.AddComponent<PlayerRespawn>();
-        respawn.Initialize(UnityEngine.SceneManagement.SceneManager.GetActiveScene().path,
-            spawnPoint.position, spawnPoint.rotation);
 
         if (weaponPrefab != null) Instantiate(weaponPrefab, transform);
         SpawnCrosshair();
