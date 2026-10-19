@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4643979354317665424}
   - component: {fileID: -3970026450246699927}
   - component: {fileID: 6743295283283433834}
+  - component: {fileID: 6247054962193998091}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -167,6 +168,23 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
+--- !u!114 &6247054962193998091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 45991328570233237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ab56124df014ef4a65f101499bd1f70, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyLootDrop
+  ammoPickupPrefab: {fileID: 8215064285211661319, guid: 061c6b081bf8cef428673a14a9ee94e0, type: 3}
+  medkitPickupPrefab: {fileID: 8215064285211661319, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
+  maxAmmoDropChance: 0.65
+  maxMedkitDropChance: 0.65
+  targetMagazines: 3
 --- !u!1 &7262144293816762462
 GameObject:
   m_ObjectHideFlags: 0
