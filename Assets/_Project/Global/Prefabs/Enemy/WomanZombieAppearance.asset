@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19f679841a8340b0aa672348dbdae807, type: 3}
+  m_Name: WomanZombieAppearance
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpriteAppearance
+  material: {fileID: 2100000, guid: a1813a17d5c74280a0d4ebf20af419aa, type: 2}
+  idleFrames:
+  - {fileID: -548129635, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  frontWalkFrames:
+  - {fileID: -548129635, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: -1026988652, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: -387280093, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: 2074392360, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: -893645161, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: -1732566812, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: -1387227017, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: -655346547, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  sideWalkFrames: []
+  leftWalkFrames: []
+  rightWalkFrames: []
+  backWalkFrames:
+  - {fileID: -1990963741, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: 206075885, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: -1878211720, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: -1870238239, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: 1583827611, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: -1837178925, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: -868717052, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: 42540116, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  attackFrames: []
+  painFrames: []
+  deathFrames:
+  - {fileID: -1936198883, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: 2035872036, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: -1069814003, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: -70483007, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: 1558821040, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: 911721369, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: 1456487182, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  - {fileID: -915267048, guid: 42670862da8cad143be6bd1e1b60dd1f, type: 3}
+  visualScale: 1
+  colliderHeight: 1.95
+  colliderRadius: 0.5
+  idleFramesPerSecond: 1
+  walkFramesPerSecond: 9
+  attackDuration: 0.65
+  painDuration: 0.32
+  deathDuration: 1.35

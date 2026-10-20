@@ -131,7 +131,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   maxHealth: 100
+  hitFlashDuration: 0.15
   moveSpeed: 3
+  sightRange: 12
+  fieldOfView: 120
+  eyeHeight: 0.55
+  obstacleLayers:
+    serializedVersion: 2
+    m_Bits: 4294967291
+  perceptionInterval: 0.15
+  searchDuration: 4
+  patrolSpeed: 1
+  patrolRadius: 6
+  patrolWait: {x: 0.8, y: 2.5}
+  pathUpdateInterval: 0.25
+  turnSpeed: 180
   attackDamage: 10
   attackRange: 1.5
   attackCooldown: 1
@@ -178,7 +192,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9ab56124df014ef4a65f101499bd1f70, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyLootDrop
   ammoPickupPrefab: {fileID: 8215064285211661319, guid: 061c6b081bf8cef428673a14a9ee94e0, type: 3}
   medkitPickupPrefab: {fileID: 8215064285211661319, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
@@ -289,7 +303,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7463b419ed6d4667a4f0ff62642d76ad, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpriteAnimator
   enemy: {fileID: -3970026450246699927}
   frontWalkFrames:
@@ -321,5 +335,8 @@ MonoBehaviour:
   - {fileID: 2010697705, guid: abb29c89f7b24a10baf8274430d09190, type: 3}
   walkFramesPerSecond: 9
   deathDuration: 1.35
-  alternateAppearance: {fileID: 11400000, guid: 0f8430517412ea346bf2b1eb1f3c8be5, type: 2}
-  alternateChance: 0.15
+  alternateAppearance: {fileID: 0}
+  alternateAppearances:
+  - {fileID: 11400000, guid: 0f8430517412ea346bf2b1eb1f3c8be5, type: 2}
+  - {fileID: 11400000, guid: b2924b28e6d85391b1e5fc031bf520bb, type: 2}
+  alternateChance: 0.66

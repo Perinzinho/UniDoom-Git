@@ -6,6 +6,7 @@ public sealed class EnemySpriteAppearance : ScriptableObject
 {
     public Material material;
     public Sprite[] idleFrames;
+    public Sprite[] frontWalkFrames;
     public Sprite[] sideWalkFrames;
     public Sprite[] leftWalkFrames;
     public Sprite[] rightWalkFrames;
