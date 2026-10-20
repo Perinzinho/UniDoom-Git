@@ -70,8 +70,9 @@ MonoBehaviour:
   destinationSpawnId: FromCylinder
   destinationLabel: DIRETORIA
   requiresKey01: 0
-  requiresKey02: 0
+  requiresKey02: 1
   requiresKey03: 0
+  physicalDoor: {fileID: 8800000000000000102}
 --- !u!1 &2373943633475282325
 GameObject:
   m_ObjectHideFlags: 0
@@ -303,9 +304,10 @@ MonoBehaviour:
   destinationScene: Library
   destinationSpawnId: FromCylinder
   destinationLabel: BIBLIOTECA
-  requiresKey01: 0
+  requiresKey01: 1
   requiresKey02: 0
   requiresKey03: 0
+  physicalDoor: {fileID: 8800000000000000101}
 --- !u!1 &5929528627903941868
 GameObject:
   m_ObjectHideFlags: 0
@@ -863,3 +865,25 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5908632182997266568, guid: 8d328296f0e5b0144941fa850d799fae, type: 3}
   m_PrefabInstance: {fileID: 3439126137557946326}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8800000000000000101 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2556222298451414983, guid: 8d328296f0e5b0144941fa850d799fae, type: 3}
+  m_PrefabInstance: {fileID: 3439126137557946326}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc21b52bf5e0767499abbdb59529c2ac, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::OpenDoorWithKey
+--- !u!114 &8800000000000000102 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7294666947805928001, guid: 8d328296f0e5b0144941fa850d799fae, type: 3}
+  m_PrefabInstance: {fileID: 3439126137557946326}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc21b52bf5e0767499abbdb59529c2ac, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::OpenDoorWithKey

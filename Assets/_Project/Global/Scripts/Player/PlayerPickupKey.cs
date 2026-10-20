@@ -15,9 +15,20 @@ public class PlayerPickupKey : MonoBehaviour
     {
         PlayerLife life = GetComponent<PlayerLife>();
         if ((life != null && life.IsDead) || UniDoom.UI.DeathScreen.IsVisible) return;
-        if (other.CompareTag("Key01") && !key01) { key01 = true; Collect(0, other); }
-        else if (other.CompareTag("Key02") && !key02) { key02 = true; Collect(1, other); }
-        else if (other.CompareTag("Key03") && !key03) { key03 = true; Collect(2, other); }
+        int index;
+        bool owned;
+        if (other.CompareTag("Key01")) { index = 0; owned = key01; key01 = true; }
+        else if (other.CompareTag("Key02")) { index = 1; owned = key02; key02 = true; }
+        else if (other.CompareTag("Key03")) { index = 2; owned = key03; key03 = true; }
+        else return;
+
+        if (!owned) Collect(index, other);
+        else
+        {
+            // Returning to a room recreates its pickups, but must not move the saved checkpoint.
+            other.enabled = false;
+            Destroy(other.gameObject);
+        }
     }
 
     private void Collect(int index, Collider key)

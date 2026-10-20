@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace UniDoom.Utils
@@ -10,6 +11,8 @@ namespace UniDoom.Utils
         [SerializeField] private string destinationSpawnId;
         [SerializeField] private string destinationLabel;
         [SerializeField] private bool requiresKey01, requiresKey02, requiresKey03;
+        [SerializeField] private OpenDoorWithKey physicalDoor;
+        private readonly HashSet<Collider> waitingPlayers = new HashSet<Collider>();
 
         public string DestinationScene => destinationScene;
         public string DestinationSpawnId => destinationSpawnId;
@@ -17,6 +20,24 @@ namespace UniDoom.Utils
         private void Reset() => GetComponent<BoxCollider>().isTrigger = true;
 
         private void OnTriggerEnter(Collider other)
+        {
+            // Arrivals during a scene load are deliberately not queued: they must leave first.
+            if (UI.DoorReloadScreen.IsReloading) return;
+            if (other.GetComponentInParent<PlayerMovement>() == null) return;
+            waitingPlayers.Add(other);
+            TryTransition(other);
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            // A key can be collected or a physical door can finish opening while already inside.
+            if (waitingPlayers.Contains(other)) TryTransition(other);
+        }
+
+        private void OnTriggerExit(Collider other) => waitingPlayers.Remove(other);
+        private void OnDisable() => waitingPlayers.Clear();
+
+        private void TryTransition(Collider other)
         {
             var player = other.GetComponentInParent<PlayerMovement>();
             if (player == null || UI.DoorReloadScreen.IsReloading) return;
@@ -26,8 +47,10 @@ namespace UniDoom.Utils
             if ((requiresKey01 && (keys == null || !keys.key01)) ||
                 (requiresKey02 && (keys == null || !keys.key02)) ||
                 (requiresKey03 && (keys == null || !keys.key03))) return;
+            if (physicalDoor != null && !physicalDoor.IsOpen) return;
 
-            UI.DoorReloadScreen.TryLoadScene(destinationScene, destinationSpawnId, destinationLabel);
+            if (UI.DoorReloadScreen.TryLoadScene(destinationScene, destinationSpawnId, destinationLabel))
+                waitingPlayers.Clear();
         }
 
         private void OnDrawGizmosSelected()
