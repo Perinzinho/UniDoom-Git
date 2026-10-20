@@ -40,6 +40,8 @@ public class OpenDoorWithKey : MonoBehaviour
     private bool unlocked;
     private float openingDirection = 1f;
 
+    public bool IsOpen => unlocked && openProgress >= .8f;
+
 public enum DoorReloadTriggerMode
 {
     WhenPassingThrough, // Quando o player cruza o vão da porta
@@ -107,7 +109,9 @@ public enum DoorReloadTriggerMode
 
     private void TrackPlayer(Collider other)
     {
-        if (other.GetComponentInParent<PlayerPickupKey>() != null)
+        PlayerPickupKey player = other.GetComponentInParent<PlayerPickupKey>();
+        PlayerLife life = player != null ? player.GetComponent<PlayerLife>() : null;
+        if (player != null && (life == null || !life.IsDead))
         {
             nearbyPlayers.Add(other);
             if (!playerEntrySides.ContainsKey(other))
@@ -122,6 +126,14 @@ public enum DoorReloadTriggerMode
     {
         // Teleportes e colliders desabilitados/destruídos podem não enviar OnTriggerExit.
         nearbyPlayers.RemoveWhere(IsOutsideTrigger);
+        // Remove remembered crossing sides too, so returning after a teleport starts a fresh crossing.
+        if (playerEntrySides.Count > nearbyPlayers.Count)
+        {
+            var stalePlayers = new List<Collider>();
+            foreach (Collider other in playerEntrySides.Keys)
+                if (!nearbyPlayers.Contains(other)) stalePlayers.Add(other);
+            foreach (Collider other in stalePlayers) playerEntrySides.Remove(other);
+        }
 
         if (!unlocked)
         {
@@ -207,10 +219,9 @@ public enum DoorReloadTriggerMode
 
     private bool HasRequiredKey(PlayerPickupKey player)
     {
-        return (!requiresKey01 && !requiresKey02 && !requiresKey03) ||
-            (requiresKey01 && player.key01) ||
-            (requiresKey02 && player.key02) ||
-            (requiresKey03 && player.key03);
+        return (!requiresKey01 || player.key01) &&
+            (!requiresKey02 || player.key02) &&
+            (!requiresKey03 || player.key03);
     }
 
     private bool IsOutsideTrigger(Collider other)

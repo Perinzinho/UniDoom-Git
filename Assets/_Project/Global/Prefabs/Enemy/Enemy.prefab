@@ -134,6 +134,7 @@ MonoBehaviour:
   hitFlashDuration: 0.15
   moveSpeed: 3
   sightRange: 12
+  loseSightRange: 16
   fieldOfView: 120
   eyeHeight: 0.55
   obstacleLayers:
@@ -179,9 +180,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 80
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &6247054962193998091
 MonoBehaviour:
   m_ObjectHideFlags: 0

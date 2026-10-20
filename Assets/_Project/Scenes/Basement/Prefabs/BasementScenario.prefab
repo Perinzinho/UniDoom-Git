@@ -1019,6 +1019,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8800000000000003101}
+  - {fileID: 8800000000000003001}
   - {fileID: 4496264091556669945}
   - {fileID: 4970936769979191219}
   - {fileID: 6507159122945828591}
@@ -1090,7 +1092,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6318899405212657097, guid: a6d30893aa935334a8d77242fdbc3c2b, type: 3}
       propertyPath: requiresKey03
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7396312656383930257, guid: a6d30893aa935334a8d77242fdbc3c2b, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -1138,6 +1140,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8916376282298156629, guid: a6d30893aa935334a8d77242fdbc3c2b, type: 3}
       propertyPath: m_Center.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6318899405212657097, guid: a6d30893aa935334a8d77242fdbc3c2b, type: 3}
+      propertyPath: enableShaderReload
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -3276,3 +3282,132 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1902416706716180825, guid: 29573391a8065934c96646bc09b52bcc, type: 3}
   m_PrefabInstance: {fileID: 8047787130888348304}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8800000000000003000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8800000000000003001}
+  - component: {fileID: 8800000000000003002}
+  m_Layer: 0
+  m_Name: Arrival - FromDirectorRoom
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8800000000000003001
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8800000000000003000}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.70067203, z: 0, w: 0.7134836}
+  m_LocalPosition: {x: 32.913338, y: 2.8055282, z: -5.9609995}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6031092126279245998}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8800000000000003002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8800000000000003000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce7f422863e19b14ba28983ea170382f, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::UniDoom.Utils.SceneArrivalPoint
+  spawnId: FromDirectorRoom
+--- !u!1 &8800000000000003100
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8800000000000003101}
+  - component: {fileID: 8800000000000003102}
+  - component: {fileID: 8800000000000003103}
+  m_Layer: 0
+  m_Name: Door - ToDirectorRoom
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8800000000000003101
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8800000000000003100}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 30.95, y: 3, z: -5.988176}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6031092126279245998}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &8800000000000003102
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8800000000000003100}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.4, y: 3.4, z: 2.8}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8800000000000003103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8800000000000003100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2432109e0c44e1749872594917148e9d, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::UniDoom.Utils.SceneTransitionDoor
+  physicalDoor: {fileID: 8800000000000003200}
+  destinationScene: DirectorRoom
+  destinationSpawnId: FromBasement
+  destinationLabel: DIRETORIA
+  requiresKey01: 0
+  requiresKey02: 0
+  requiresKey03: 1
+--- !u!114 &8800000000000003200 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6318899405212657097, guid: a6d30893aa935334a8d77242fdbc3c2b, type: 3}
+  m_PrefabInstance: {fileID: 96213553299751036}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc21b52bf5e0767499abbdb59529c2ac, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::OpenDoorWithKey
