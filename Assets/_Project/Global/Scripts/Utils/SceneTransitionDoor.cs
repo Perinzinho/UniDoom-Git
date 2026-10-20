@@ -30,7 +30,7 @@ namespace UniDoom.Utils
 
         private void OnTriggerStay(Collider other)
         {
-            // A key can be collected or a physical door can finish opening while already inside.
+            // A key can be collected or a physical door can unlock while already inside.
             if (waitingPlayers.Contains(other)) TryTransition(other);
         }
 
@@ -47,7 +47,9 @@ namespace UniDoom.Utils
             if ((requiresKey01 && (keys == null || !keys.key01)) ||
                 (requiresKey02 && (keys == null || !keys.key02)) ||
                 (requiresKey03 && (keys == null || !keys.key03))) return;
-            if (physicalDoor != null && !physicalDoor.IsOpen) return;
+            // The player can cross a rotating door before its animation reaches 80%.
+            // Waiting for IsOpen lets them leave this volume and fall outside the room.
+            if (physicalDoor != null && !physicalDoor.IsUnlocked) return;
 
             if (UI.DoorReloadScreen.TryLoadScene(destinationScene, destinationSpawnId, destinationLabel))
                 waitingPlayers.Clear();
