@@ -167,7 +167,24 @@ namespace UniDoom.UI
             return true;
         }
 
-        private IEnumerator ReloadRoutine(string sectorName, string sceneName, string spawnId, Action onComplete)
+        public static IEnumerator PlayCheckpointTransition(string scenePath, IEnumerator restoreCheckpoint)
+        {
+            if (Instance == null) AutoInitialize();
+            string destination = System.IO.Path.GetFileNameWithoutExtension(scenePath);
+            string label = destination switch
+            {
+                "EntranceGarden" => "JARDIM DO CAMPUS",
+                "Cylinder" => "BLOCO UNIVERSIT\u00c1RIO",
+                "Library" => "BIBLIOTECA",
+                "ClassRoom" => "SALA DE AULA",
+                "DirectorRoom" => "DIRETORIA",
+                _ => destination
+            };
+            yield return Instance.ReloadRoutine(label, null, null, null, scenePath, restoreCheckpoint);
+        }
+
+        private IEnumerator ReloadRoutine(string sectorName, string sceneName, string spawnId, Action onComplete,
+            string checkpointScene = null, IEnumerator restoreCheckpoint = null)
         {
             isReloading = true;
             FreezePlayer();
@@ -176,7 +193,7 @@ namespace UniDoom.UI
             bool success = false;
             try
             {
-                SelectDestinationArtwork(sceneName, sectorName);
+                SelectDestinationArtwork(checkpointScene ?? sceneName, sectorName);
                 titleText.text = string.IsNullOrWhiteSpace(sectorName) ? "SETOR DESCONHECIDO" : sectorName.ToUpperInvariant();
                 subtitleText.text = "ALÉM DA PORTA";
                 SetProgress(0, "A porta se fecha...");
@@ -190,6 +207,13 @@ namespace UniDoom.UI
                 yield return null;
                 float started = Time.realtimeSinceStartup;
                 string error = null;
+                if (restoreCheckpoint != null)
+                {
+                    subtitleText.text = "RETORNO AO CHECKPOINT";
+                    SetProgress(.1f, "Retornando ao ponto de retorno...");
+                    yield return restoreCheckpoint;
+                    SetProgress(.88f, "Do outro lado...");
+                }
                 if (sceneName != null)
                 {
                     AsyncOperation load = null;

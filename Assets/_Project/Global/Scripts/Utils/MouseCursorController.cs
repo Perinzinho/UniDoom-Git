@@ -5,8 +5,13 @@ public class MouseCursorController : MonoBehaviour
 
     void Start()
     {
-    Cursor.lockState = CursorLockMode.Locked;
-    Cursor.visible = false; // hides the OS cursor, the crosshair is now 100% UI
+        if (UniDoom.UI.GameMenus.Instance != null)
+            UniDoom.UI.GameMenus.Instance.ApplyCursorState();
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
 }

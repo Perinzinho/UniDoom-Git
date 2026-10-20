@@ -39,6 +39,13 @@ public class PlayerRespawn : MonoBehaviour
         controller = GetComponent<CharacterController>();
         cameraAxes = GetComponentsInChildren<CinemachinePanTilt>(true);
         savedLook = new Vector2[cameraAxes.Length];
+        // Cinemachine uses world pan: the prefab's zero would ignore the spawn's facing.
+        foreach (var aim in cameraAxes)
+        {
+            aim.ReferenceFrame = CinemachinePanTilt.ReferenceFrames.World;
+            aim.PanAxis.Value = transform.eulerAngles.y;
+            aim.TiltAxis.Value = 0f;
+        }
         CapturePose(); // Instantiate has already applied GameManager's initial spawn pose.
         var ui = new GameObject("Death & Checkpoint UI", typeof(RectTransform));
         DontDestroyOnLoad(ui);
@@ -80,6 +87,7 @@ public class PlayerRespawn : MonoBehaviour
     private void HandleDeath()
     {
         if (ownsPause) return;
+        GameMenus.Instance?.CloseForDeath();
         previousCursorLock = Cursor.lockState;
         previousCursorVisible = Cursor.visible;
         if (MouseSensitivityMenu.Instance != null && MouseSensitivityMenu.Instance.CloseForDeath())
@@ -118,6 +126,11 @@ public class PlayerRespawn : MonoBehaviour
 
     private static void UnlockCursor()
     {
+        if (GameMenus.Instance != null)
+        {
+            GameMenus.Instance.ApplyCursorState();
+            return;
+        }
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
@@ -129,9 +142,32 @@ public class PlayerRespawn : MonoBehaviour
         StartCoroutine(RespawnRoutine());
     }
 
+    public void RestartCheckpoint()
+    {
+        if (respawning || DoorReloadScreen.IsReloading) return;
+        if (!ownsPause) HandleDeath();
+        respawning = true;
+        StartCoroutine(RespawnRoutine());
+    }
+
+    public void PrepareForMainMenu()
+    {
+        StopAllCoroutines();
+        if (screen != null) screen.HideDeath();
+        ResumeWorld();
+        respawning = false;
+    }
+
     private IEnumerator RespawnRoutine()
     {
-        yield return screen.FadeToBlack();
+        bool restored = false;
+        yield return DoorReloadScreen.PlayCheckpointTransition(RespawnScenePath, RestoreCheckpoint(() => restored = true));
+        if (restored) ResumeWorld();
+        respawning = false;
+    }
+
+    private IEnumerator RestoreCheckpoint(System.Action onRestored)
+    {
         if (SceneManager.GetActiveScene().path != RespawnScenePath)
         {
             AsyncOperation load = null;
@@ -148,7 +184,6 @@ public class PlayerRespawn : MonoBehaviour
             {
                 Debug.LogError($"[PlayerRespawn] Não foi possível retornar ao checkpoint. {loadError}");
                 screen.ShowDeath();
-                respawning = false;
                 yield break;
             }
             while (!load.isDone) yield return null;
@@ -174,10 +209,9 @@ public class PlayerRespawn : MonoBehaviour
         Physics.SyncTransforms();
         controller.enabled = wasEnabled;
         life.Revive(respawnProtection);
-        yield return screen.FadeFromBlack();
+        life.RestoreHealth();
         screen.HideDeath();
-        ResumeWorld();
-        respawning = false;
+        onRestored();
     }
 
     private void ResumeWorld()
@@ -190,8 +224,12 @@ public class PlayerRespawn : MonoBehaviour
         foreach (var input in frozenInputs)
             if (input != null) input.enabled = !DoorReloadScreen.IsReloading && !MouseSensitivityMenu.IsOpen;
         frozenInputs.Clear();
-        Cursor.lockState = previousCursorLock;
-        Cursor.visible = previousCursorVisible;
+        if (GameMenus.Instance != null) GameMenus.Instance.ApplyCursorState();
+        else
+        {
+            Cursor.lockState = previousCursorLock;
+            Cursor.visible = previousCursorVisible;
+        }
     }
 
     private void OnDisable()
