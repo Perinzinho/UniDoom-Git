@@ -40,6 +40,7 @@ public class OpenDoorWithKey : MonoBehaviour
     private bool unlocked;
     private float openingDirection = 1f;
 
+    public bool IsUnlocked => unlocked;
     public bool IsOpen => unlocked && openProgress >= .8f;
 
 public enum DoorReloadTriggerMode
