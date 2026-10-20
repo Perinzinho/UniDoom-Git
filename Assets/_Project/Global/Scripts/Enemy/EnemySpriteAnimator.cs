@@ -12,6 +12,7 @@ public sealed class EnemySpriteAnimator : MonoBehaviour
     [SerializeField, Min(1)] float walkFramesPerSecond = 9;
     [SerializeField, Min(.1f)] float deathDuration = 1.35f;
     [SerializeField] EnemySpriteAppearance alternateAppearance;
+    [SerializeField] EnemySpriteAppearance[] alternateAppearances;
     [SerializeField, Range(0, 1)] float alternateChance = .15f;
 
     public EnemySpriteAppearance Appearance { get; private set; }
@@ -35,12 +36,18 @@ public sealed class EnemySpriteAnimator : MonoBehaviour
         {
             lastPosition = enemy.transform.position;
             // Roll once per instance. All spawners and prefab variants inherit the same mixture.
-            if (alternateAppearance != null && Random.value < alternateChance)
+            if (Random.value < alternateChance)
             {
-                Appearance = alternateAppearance;
+                Appearance = PickAlternateAppearance();
+            }
+            if (Appearance != null)
+            {
                 transform.localScale *= Appearance.visualScale;
                 spriteRenderer.sharedMaterial = Appearance.material;
-                if (Appearance.idleFrames.Length > 0) spriteRenderer.sprite = Appearance.idleFrames[0];
+                Sprite[] initialFrames = HasFrames(Appearance.idleFrames)
+                    ? Appearance.idleFrames
+                    : Appearance.frontWalkFrames;
+                if (HasFrames(initialFrames)) spriteRenderer.sprite = initialFrames[0];
                 deathFrames = Appearance.deathFrames;
                 deathDuration = Appearance.deathDuration;
                 var capsule = enemy.GetComponent<CapsuleCollider>();
@@ -62,6 +69,20 @@ public sealed class EnemySpriteAnimator : MonoBehaviour
                 }
             }
         }
+    }
+
+    EnemySpriteAppearance PickAlternateAppearance()
+    {
+        if (alternateAppearances != null && alternateAppearances.Length > 0)
+        {
+            int start = Random.Range(0, alternateAppearances.Length);
+            for (int offset = 0; offset < alternateAppearances.Length; offset++)
+            {
+                EnemySpriteAppearance candidate = alternateAppearances[(start + offset) % alternateAppearances.Length];
+                if (candidate != null) return candidate;
+            }
+        }
+        return alternateAppearance;
     }
 
     void OnEnable()
@@ -156,22 +177,33 @@ public sealed class EnemySpriteAnimator : MonoBehaviour
             SetFrame(Appearance.attackFrames);
             return;
         }
-        Sprite[] frames = Appearance.idleFrames;
-        if (facing < -.7f) frames = Appearance.backWalkFrames;
+        Sprite[] frontFrames = HasFrames(Appearance.frontWalkFrames)
+            ? Appearance.frontWalkFrames
+            : Appearance.idleFrames;
+        Sprite[] frames = walking ? frontFrames : Appearance.idleFrames;
+        if (!HasFrames(frames)) frames = frontFrames;
+        if (facing < -.7f && HasFrames(Appearance.backWalkFrames)) frames = Appearance.backWalkFrames;
         else if (facing < .7f)
         {
-            if (Mathf.Abs(facing) < .35f)
+            if (Mathf.Abs(facing) < .35f && HasFrames(Appearance.sideWalkFrames))
             {
                 frames = Appearance.sideWalkFrames;
                 // The source side-walk strip faces left.
                 spriteRenderer.flipX = side < 0;
             }
-            else frames = side > 0 ? Appearance.leftWalkFrames : Appearance.rightWalkFrames;
+            else
+            {
+                Sprite[] diagonalFrames = side > 0 ? Appearance.leftWalkFrames : Appearance.rightWalkFrames;
+                if (HasFrames(diagonalFrames)) frames = diagonalFrames;
+            }
         }
         walkClock += Time.deltaTime * (walking ? Appearance.walkFramesPerSecond : Appearance.idleFramesPerSecond);
-        FrameIndex = walking || frames == Appearance.idleFrames ? Mathf.FloorToInt(walkClock) % Mathf.Max(1, frames.Length) : 0;
+        FrameIndex = walking || frames == Appearance.idleFrames
+            ? Mathf.FloorToInt(walkClock) % Mathf.Max(1, frames.Length)
+            : 0;
         SetFrame(frames);
     }
+    static bool HasFrames(Sprite[] frames) => frames != null && frames.Length > 0;
     void SetFrame(Sprite[] frames)
     {
         if (frames != null && frames.Length > 0)
