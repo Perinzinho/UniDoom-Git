@@ -4,6 +4,8 @@ Shader "UniDoom/Characters/Zombie Sprite"
     {
         [PerRendererData] _MainTex("Original sprite sheet", 2D) = "white" {}
         [NoScaleOffset] _SilhouetteTex("Imported silhouette mask", 2D) = "white" {}
+        [Toggle] _UseSilhouetteMask("Use imported silhouette mask", Float) = 1
+        _BlackThreshold("Black background threshold", Range(0, 0.1)) = 0.012
         _Color("Tint", Color) = (1,1,1,1)
     }
     SubShader
@@ -24,6 +26,8 @@ Shader "UniDoom/Characters/Zombie Sprite"
             TEXTURE2D(_SilhouetteTex); SAMPLER(sampler_SilhouetteTex);
             CBUFFER_START(UnityPerMaterial)
                 half4 _Color;
+                half _UseSilhouetteMask;
+                half _BlackThreshold;
             CBUFFER_END
             struct Attributes
             {
@@ -57,7 +61,9 @@ Shader "UniDoom/Characters/Zombie Sprite"
             {
                 half4 color = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
                 // A separate import mask preserves dark details inside the original JPEG.
-                clip(SAMPLE_TEXTURE2D(_SilhouetteTex, sampler_SilhouetteTex, i.uv).r - .5);
+                half importedMask = SAMPLE_TEXTURE2D(_SilhouetteTex, sampler_SilhouetteTex, i.uv).r;
+                half blackKeyMask = max(color.r, max(color.g, color.b)) - _BlackThreshold;
+                clip(lerp(blackKeyMask, importedMask - .5, step(.5, _UseSilhouetteMask)));
                 color *= i.color;
                 color.rgb = MixFog(color.rgb, i.fog);
                 return color;
