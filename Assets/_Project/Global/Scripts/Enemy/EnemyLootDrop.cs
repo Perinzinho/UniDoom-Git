@@ -15,6 +15,10 @@ public class EnemyLootDrop : MonoBehaviour
     [Header("Ammo Target")]
     [SerializeField, Min(1)] private int targetMagazines = 3;
 
+    [Header("Resource Priority")]
+    [Tooltip("Resources at or below this fraction are low. Ammo takes priority when both are low.")]
+    [SerializeField, Range(0.01f, 0.99f)] private float lowResourceThreshold = 0.3f;
+
     private Enemy enemy;
 
     private void Awake()
@@ -45,17 +49,19 @@ public class EnemyLootDrop : MonoBehaviour
         PlayerWeaponManager weapons = player.GetComponent<PlayerWeaponManager>();
         Gun gun = weapons != null ? weapons.CurrentGun : null;
 
-        float medkitChance = 0f;
+        float healthRatio = 1f;
         if (medkitPickupPrefab != null && life.MaxHealth > 0)
-            medkitChance = CalculateChance(life.CurrentHealth, life.MaxHealth, maxMedkitDropChance);
+            healthRatio = (float)life.CurrentHealth / life.MaxHealth;
 
-        float ammoChance = 0f;
+        float ammoRatio = 1f;
         if (ammoPickupPrefab != null && gun != null && gun.MagazineSize > 0)
         {
-            int targetAmmo = gun.MagazineSize * Mathf.Max(1, targetMagazines);
-            int availableAmmo = gun.CurrentAmmo + gun.ReserveAmmo;
-            ammoChance = CalculateChance(availableAmmo, targetAmmo, maxAmmoDropChance);
+            float targetAmmo = (float)gun.MagazineSize * Mathf.Max(1, targetMagazines);
+            float availableAmmo = (float)gun.CurrentAmmo + gun.ReserveAmmo;
+            ammoRatio = availableAmmo / targetAmmo;
         }
+
+        CalculateDropChances(healthRatio, ammoRatio, out float ammoChance, out float medkitChance);
 
         bool dropMedkit = Random.value < medkitChance;
         bool dropAmmo = Random.value < ammoChance;
@@ -72,9 +78,20 @@ public class EnemyLootDrop : MonoBehaviour
             Instantiate(ammoPickupPrefab, dropPosition + side, Quaternion.identity);
     }
 
-    private static float CalculateChance(int available, int target, float maximumChance)
+    private void CalculateDropChances(float healthRatio, float ammoRatio,
+        out float ammoChance, out float medkitChance)
     {
-        float shortage = 1f - Mathf.Clamp01((float)available / target);
-        return shortage * Mathf.Clamp01(maximumChance);
+        healthRatio = Mathf.Clamp01(healthRatio);
+        ammoRatio = Mathf.Clamp01(ammoRatio);
+        ammoChance = (1f - ammoRatio) * Mathf.Clamp01(maxAmmoDropChance);
+        medkitChance = (1f - healthRatio) * Mathf.Clamp01(maxMedkitDropChance);
+
+        // Keep gradual shortage-based chances, but make the priority at least twice as likely.
+        // Check ammo first so it wins when both resources are low.
+        float threshold = Mathf.Clamp01(lowResourceThreshold);
+        if (ammoRatio <= threshold && ammoChance > 0f)
+            medkitChance = Mathf.Min(medkitChance, ammoChance * 0.5f);
+        else if (healthRatio <= threshold && medkitChance > 0f)
+            ammoChance = Mathf.Min(ammoChance, medkitChance * 0.5f);
     }
 }
