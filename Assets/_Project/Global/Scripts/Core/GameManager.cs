@@ -6,6 +6,14 @@ public class GameManager : MonoBehaviour
     private static GameManager session;
     public static PlayerMovement SessionPlayer { get; private set; }
 
+    public static void EndSession()
+    {
+        var previous = session;
+        session = null;
+        SessionPlayer = null;
+        if (previous != null) Destroy(previous.gameObject);
+    }
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetSession()
     {

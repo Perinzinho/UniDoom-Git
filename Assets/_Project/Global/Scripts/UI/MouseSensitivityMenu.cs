@@ -19,7 +19,8 @@ namespace UniDoom.UI
         public static MouseSensitivityMenu Instance { get; private set; }
 
         /// <summary>Indica se o menu está atualmente aberto.</summary>
-        public static bool IsOpen => Instance != null && (Instance.isMenuOpen || Instance.pauseHeld);
+        public static bool IsOpen => GameMenus.BlocksGameplay || (Instance != null && (Instance.isMenuOpen || Instance.pauseHeld));
+        public bool InvertY => invertY;
 
         /// <summary>Sensibilidade atual do mouse (multiplicador de 0.1x a 3.0x).</summary>
         public static float CurrentSensitivity => Instance != null ? Instance.sensitivity : 1f;
@@ -152,6 +153,13 @@ namespace UniDoom.UI
 
         private void Update()
         {
+            if (GameMenus.Instance != null)
+            {
+                // The approved menus own presentation and pause; keep this shared camera/preferences service.
+                if (canvas != null) canvas.enabled = false;
+                EnsureControllersRegistered();
+                return;
+            }
             if (DeathScreen.IsVisible) return;
             // Atalho exclusivo ESC (compatível com Legacy e New Input System)
             bool escPressed = false;
@@ -227,11 +235,17 @@ namespace UniDoom.UI
 
         public void ToggleMenu()
         {
+            if (GameMenus.Instance != null) { GameMenus.Instance.OpenPause(); return; }
             SetMenuOpen(!isMenuOpen);
         }
 
         public void SetMenuOpen(bool open)
         {
+            if (GameMenus.Instance != null)
+            {
+                if (open) GameMenus.Instance.OpenOptions(); else GameMenus.Instance.Back();
+                return;
+            }
             if (open && DeathScreen.IsVisible) return;
             if (isMenuOpen == open || DoorReloadScreen.IsReloading) return;
             isMenuOpen = open;
