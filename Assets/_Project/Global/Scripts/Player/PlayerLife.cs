@@ -69,4 +69,10 @@ public class PlayerLife : MonoBehaviour, IDamageable
         invulnerableUntil = Time.time + Mathf.Max(0f, protectionSeconds);
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
+
+    public void RestoreHealth()
+    {
+        currentHealth = maxHealth;
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
 }
