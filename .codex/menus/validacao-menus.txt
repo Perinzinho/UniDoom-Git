@@ -1,0 +1,36 @@
+PASS: Main menu opens automatically
+PASS: Main menu freezes world and blocks gameplay
+PASS: Main menu has exactly New Game, Options, Credits, Quit; no Continue
+PASS: Initial menu selects New Game for keyboard/gamepad navigation
+PASS: Keyboard/gamepad navigation moves from New Game to Options
+PASS: New Game loads a clean playable session
+PASS: Movement restored after New Game
+PASS: New session has no collected keys
+PASS: Pause freezes simulation and audio
+PASS: Options opens from pause
+PASS: Sensitivity slider updates shared camera preferences
+PASS: Invert Y toggle updates shared preferences
+PASS: Master-volume slider updates audio
+PASS: Options slider fills remain inside their tracks
+PASS: Closing options returns to paused game
+PASS: Return to main opens confirmation from pause
+PASS: Cancel preserves paused session
+PASS: Restart checkpoint from pause completes and resumes world
+PASS: Death opens new death screen and freezes simulation
+PASS: Death screen has no key list
+PASS: Death screen has no yellow return-point caption
+PASS: Retry enables after death transition delay
+PASS: Return to main opens confirmation from death
+PASS: Confirmation warns that progress will not be saved
+PASS: Confirmation defaults to Cancel
+PASS: Cancel returns to death without altering session
+PASS: Retry restores gameplay and time scale
+PASS: Retry restores full health
+PASS: Checkpoint retry preserves collected keys
+PASS: Retry returns player to checkpoint pose
+PASS: Confirmed return ends session and opens main menu
+PASS: World remains frozen on main menu after ending session
+PASS: Credits button opens credits
+PASS: Credits Back returns to main menu
+PASS: Options also opens from main menu
+Quit button uses Application.Quit in a player and exits Play Mode in the Editor.
