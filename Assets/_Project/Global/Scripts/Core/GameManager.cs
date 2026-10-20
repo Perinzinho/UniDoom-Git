@@ -5,6 +5,8 @@ public class GameManager : MonoBehaviour
 {
     private static GameManager session;
     public static PlayerMovement SessionPlayer { get; private set; }
+    public static CharacterController SessionPlayerControllerPrefab => session != null
+        ? session.PlayerControllerPrefab : null;
 
     public static void EndSession()
     {
@@ -41,6 +43,8 @@ public class GameManager : MonoBehaviour
 
     [Header("Player")]
     [SerializeField] private GameObject playerPrefab;
+    public CharacterController PlayerControllerPrefab => playerPrefab != null
+        ? playerPrefab.GetComponent<CharacterController>() : null;
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private GameObject weaponPrefab;
 
