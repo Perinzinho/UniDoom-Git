@@ -212,11 +212,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DirectorBoss
   maxHealth: 1600
   moveSpeed: 3.65
-  attackDamage: 28
+  attackDamage: 30
   attackRange: 2.7
   attackWindup: 0.7
   attackRecovery: 1.1
   awakeningDuration: 1.1
+  paperProjectilePrefab: {fileID: 114001, guid: ed75fa4f6b17412faf2b0248315f3727, type: 3}
+  paperCooldownMin: 5
+  paperCooldownMax: 9
+  paperRange: 30
+  paperWindup: 0.85
+  paperRecovery: 0.65
   presentation: {fileID: 4291670019619473722}
   onDefeated:
     m_PersistentCalls:
@@ -1568,6 +1574,15 @@ MonoBehaviour:
   - {fileID: -2000432072, guid: 1d2e063cad3b3184fa483d9d733f293c, type: 3}
   - {fileID: -1824264680, guid: 1d2e063cad3b3184fa483d9d733f293c, type: 3}
   - {fileID: -2031617758, guid: 1d2e063cad3b3184fa483d9d733f293c, type: 3}
+  paperCastFrames:
+  - {fileID: 21300000, guid: 1ddea5cc489847f59e939970ffce4d1e, type: 3}
+  - {fileID: 21300001, guid: 1ddea5cc489847f59e939970ffce4d1e, type: 3}
+  - {fileID: 21300002, guid: 1ddea5cc489847f59e939970ffce4d1e, type: 3}
+  - {fileID: 21300003, guid: 1ddea5cc489847f59e939970ffce4d1e, type: 3}
+  - {fileID: 21300004, guid: 1ddea5cc489847f59e939970ffce4d1e, type: 3}
+  - {fileID: 21300005, guid: 1ddea5cc489847f59e939970ffce4d1e, type: 3}
+  - {fileID: 21300006, guid: 1ddea5cc489847f59e939970ffce4d1e, type: 3}
+  - {fileID: 21300007, guid: 1ddea5cc489847f59e939970ffce4d1e, type: 3}
   deathFrames:
   - {fileID: -607942832, guid: 1d2e063cad3b3184fa483d9d733f293c, type: 3}
   - {fileID: 1243926510, guid: 1d2e063cad3b3184fa483d9d733f293c, type: 3}
