@@ -138826,6 +138826,8 @@ Transform:
   m_LocalScale: {x: 1, y: 5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8902000000000000031}
+  - {fileID: 8901000000000000021}
   - {fileID: 6544422352432222490}
   - {fileID: 1972080068580356903}
   - {fileID: 6994786385926894723}
@@ -166348,3 +166350,127 @@ MonoBehaviour:
   speed: 2.5
   dropoutChancePerSecond: 0.15
   synchronizeEmission: 1
+--- !u!1001 &8901000000000000020
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6147461068941608674}
+    m_Modifications:
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.34
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8215064285211661319, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_Name
+      value: Caixa de municao - Atrio
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+--- !u!4 &8901000000000000021 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+  m_PrefabInstance: {fileID: 8901000000000000020}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &8902000000000000030
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6147461068941608674}
+    m_Modifications:
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.455
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8215064285211661319, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_Name
+      value: Caixa de municao - Circulacao central do redondo
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+--- !u!4 &8902000000000000031 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+  m_PrefabInstance: {fileID: 8902000000000000030}
+  m_PrefabAsset: {fileID: 0}
