@@ -7,6 +7,7 @@ public sealed class DirectorBossAnimator : MonoBehaviour
     [SerializeField] DirectorBoss boss;
     [SerializeField] Sprite[] walkFrames;
     [SerializeField] Sprite[] attackFrames;
+    [SerializeField] Sprite[] paperCastFrames;
     [SerializeField] Sprite[] deathFrames;
     [SerializeField, Min(1)] float walkFramesPerSecond = 5;
     [SerializeField, Min(.1f)] float deathDuration = 2.8f;
@@ -46,7 +47,10 @@ public sealed class DirectorBossAnimator : MonoBehaviour
         }
         else
         {
-            if (boss.IsAttacking) SetFrame(attackFrames, Mathf.FloorToInt(boss.AttackProgress * attackFrames.Length));
+            if (boss.IsCastingPaper && paperCastFrames != null && paperCastFrames.Length > 0)
+                SetFrame(paperCastFrames, Mathf.FloorToInt(boss.PaperCastProgress * paperCastFrames.Length));
+            else if (boss.IsAttacking && attackFrames != null)
+                SetFrame(attackFrames, Mathf.FloorToInt(boss.AttackProgress * attackFrames.Length));
             else SetFrame(walkFrames, IsWalking && walkFrames != null && walkFrames.Length > 0
                 ? Mathf.FloorToInt(Time.time * walkFramesPerSecond) % walkFrames.Length : 0);
             spriteRenderer.color = Time.time < flashUntil ? new Color(1, .3f, .25f, 1) :

@@ -54,6 +54,7 @@ GameObject:
   - component: {fileID: 6100776350431300381}
   - component: {fileID: 11400010}
   - component: {fileID: 11400011}
+  - component: {fileID: 11400030}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -633,6 +634,7 @@ MonoBehaviour:
   magazineSize: 10
   currentAmmo: 10
   reserveAmmo: 30
+  maxReserveAmmo: 30
   damage: 20
   range: 100
   playerCamera: {fileID: 0}
@@ -676,3 +678,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerWeaponManager
   initialWeapon: {fileID: 11400000, guid: aa8e4a71b76f0a97faeef4cd31da2ae0, type: 2}
   weaponHolder: {fileID: 853459716173810053}
+--- !u!114 &11400030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4233473681101587877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 009c5aafcadb4a5a96144fc4f7ce6aa6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDamageFeedback
+  duration: 1

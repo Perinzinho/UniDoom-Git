@@ -1,39 +1,32 @@
 using UnityEngine;
 
+[DisallowMultipleComponent]
 public class MedkitPickup : MonoBehaviour
 {
     [Header("Heal Settings")]
     [SerializeField] private int healAmount = 50;
+    private bool consumed;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (UniDoom.UI.DeathScreen.IsVisible) return;
-        Debug.Log("Trigger com: " + other.gameObject.name + " | Tag: " + other.tag);
+        TryCollect(other);
+    }
 
-        if (other.CompareTag("Player"))
-        {
-            Debug.Log("Player detectado!");
+    public bool TryCollect(Collider other)
+    {
+        if (consumed || other == null || healAmount <= 0 || UniDoom.UI.DeathScreen.IsVisible)
+            return false;
 
-            PlayerLife playerLife = other.GetComponent<PlayerLife>();
-            if (playerLife != null)
-            {
-                Debug.Log("PlayerLife encontrado! Vida atual: " + playerLife.CurrentHealth);
+        PlayerLife life = other.GetComponentInParent<PlayerLife>();
+        if (life == null || !life.CompareTag("Player") || life.IsDead || life.CurrentHealth >= life.MaxHealth)
+            return false;
 
-                if (!playerLife.IsDead && playerLife.CurrentHealth < playerLife.MaxHealth)
-                {
-                    Debug.Log("Curando " + healAmount + " de vida!");
-                    playerLife.Heal(healAmount);
-                    Destroy(gameObject);
-                }
-                else
-                {
-                    Debug.Log("Vida cheia, medkit não coletado.");
-                }
-            }
-            else
-            {
-                Debug.Log("PlayerLife NÃO encontrado no player!");
-            }
-        }
+        // The player's multiple colliders may enter during the same physics step.
+        consumed = true;
+        foreach (Collider trigger in GetComponents<Collider>())
+            trigger.enabled = false;
+        life.Heal(healAmount);
+        Destroy(gameObject);
+        return true;
     }
 }

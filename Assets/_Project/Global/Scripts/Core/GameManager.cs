@@ -142,6 +142,7 @@ public class GameManager : MonoBehaviour
         GameObject keyInstance = Instantiate(KeysPrefab, transform);
 
         KeysUI keysUI = keyInstance.GetComponentInChildren<KeysUI>();
+        keysUI.SetPlayer(player.GetComponent<PlayerRespawn>());
         player.GetComponentInChildren<PlayerPickupKey>().SetKeysUI(keysUI);
     }
 }

@@ -40,7 +40,7 @@ public sealed class LibraryEncounterDirector : MonoBehaviour
     void Start()
     {
         var found=GameObject.FindGameObjectWithTag("Player");
-        if(found&&found.GetComponent<PlayerPickupKey>())player=found.transform;
+        if(found)BindPlayer(found.GetComponent<PlayerPickupKey>());
     }
 
     void OnTriggerEnter(Collider other)=>Track(other);
@@ -48,7 +48,14 @@ public sealed class LibraryEncounterDirector : MonoBehaviour
     void Track(Collider other)
     {
         var pickup=other.GetComponentInParent<PlayerPickupKey>();
-        if(pickup&&pickup.CompareTag("Player"))player=pickup.transform;
+        if(pickup&&pickup.CompareTag("Player"))BindPlayer(pickup);
+    }
+    void BindPlayer(PlayerPickupKey pickup)
+    {
+        if(!pickup||player)return;
+        player=pickup.transform;
+        // A return visit with Key02 must not replay the collection blackout.
+        ObjectiveCollected=pickup.key02;
     }
     void Update()
     {

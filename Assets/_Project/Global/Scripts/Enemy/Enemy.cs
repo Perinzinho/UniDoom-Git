@@ -19,6 +19,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     [Header("Vision")]
     [SerializeField, Min(.5f)] private float sightRange = 12f;
+    [SerializeField, Min(.5f)] private float loseSightRange = 16f;
     [SerializeField, Range(1f, 360f)] private float fieldOfView = 120f;
     [SerializeField, Min(0f)] private float eyeHeight = .55f;
     [SerializeField] private LayerMask obstacleLayers = Physics.DefaultRaycastLayers;
@@ -42,17 +43,20 @@ public class Enemy : MonoBehaviour, IDamageable
 
     [Header("Events (optional, for other scripts to listen)")]
     [FormerlySerializedAs("OnVidaAlterada")]
-    public UnityEvent<float, float> OnHealthChanged; // (current, max)
+    public UnityEvent<float, float> OnHealthChanged = new UnityEvent<float, float>(); // (current, max)
     [FormerlySerializedAs("OnMorte")]
-    public UnityEvent<GameObject> OnDeath;          // killer
+    public UnityEvent<GameObject> OnDeath = new UnityEvent<GameObject>(); // killer
 
     private Transform target;
     private PlayerLife targetLife;
+    private CharacterController targetController;
     private NavMeshAgent agent;
     private NavMeshPath patrolPath;
     private Vector3 patrolOrigin, patrolDestination, lastSeenPosition, desiredDirection;
-    private float desiredSpeed, nextPerception, nextTargetSearch, lastSeenAt, nextPathUpdate, waitUntil;
+    private float desiredSpeed, nextPerception, nextTargetSearch, searchEndsAt, nextPathUpdate, waitUntil;
     private float patrolDeadline;
+    private Vector3 progressPosition;
+    private float nextProgressCheck, steeringSide;
     private bool hasPatrolDestination;
     private readonly RaycastHit[] sightHits = new RaycastHit[32];
     private readonly RaycastHit[] movementHits = new RaycastHit[16];
@@ -75,9 +79,8 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         get
         {
-            // Rigidbody/agent rotation can lag behind a turn. A chasing sprite looks at its target.
-            Vector3 direction = State == BehaviourState.Chasing && target != null
-                ? target.position - transform.position : transform.forward;
+            // Presentation and perception must agree, including during turns and searches.
+            Vector3 direction = transform.forward;
             direction.y = 0f;
             return direction.sqrMagnitude > .001f ? direction.normalized : transform.forward;
         }
@@ -92,6 +95,8 @@ public class Enemy : MonoBehaviour, IDamageable
         agent = GetComponent<NavMeshAgent>();
         patrolPath = new NavMeshPath();
         patrolOrigin = transform.position;
+        progressPosition = transform.position;
+        steeringSide = Random.value < .5f ? -1f : 1f;
         nextPerception = Time.time + Random.Range(0f, perceptionInterval);
         hitRenderers = GetComponentsInChildren<Renderer>();
         originalPropertyBlocks = new MaterialPropertyBlock[hitRenderers.Length];
@@ -103,6 +108,13 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        if (agent != null && agent.enabled)
+        {
+            // Navigation is the sole owner of the transform on baked surfaces.
+            if (body != null) { body.isKinematic = true; body.useGravity = false; }
+            agent.updateRotation = false;
+            agent.angularSpeed = turnSpeed;
+        }
         FindTarget();
     }
 
@@ -120,14 +132,13 @@ public class Enemy : MonoBehaviour, IDamageable
             if (target != null && (targetLife == null || !targetLife.IsDead) && CanSeeTarget())
             {
                 lastSeenPosition = target.position;
-                lastSeenAt = Time.time;
                 ChangeState(BehaviourState.Chasing);
             }
             else if (State == BehaviourState.Chasing) ChangeState(BehaviourState.Searching);
         }
 
         if (target == null || (targetLife != null && targetLife.IsDead) ||
-            (State == BehaviourState.Searching && Time.time - lastSeenAt >= searchDuration))
+            (State == BehaviourState.Searching && Time.time >= searchEndsAt))
             ChangeState(BehaviourState.Wandering);
 
         if (State == BehaviourState.Wandering) Wander();
@@ -137,6 +148,11 @@ public class Enemy : MonoBehaviour, IDamageable
             StopMoving();
             Face(target.position - transform.position, Time.deltaTime);
             TryAttack();
+        }
+        else if (State == BehaviourState.Searching && HorizontalDistance(transform.position, lastSeenPosition) < .5f)
+        {
+            StopMoving();
+            Face(Quaternion.Euler(0f, 60f * Time.deltaTime, 0f) * transform.forward, Time.deltaTime);
         }
         else MoveTo(lastSeenPosition, moveSpeed, .35f);
     }
@@ -150,14 +166,18 @@ public class Enemy : MonoBehaviour, IDamageable
         var found = player != null ? player.gameObject : GameObject.FindGameObjectWithTag("Player");
         target = found != null ? found.transform : null;
         targetLife = found != null ? found.GetComponent<PlayerLife>() : null;
+        targetController = found != null ? found.GetComponent<CharacterController>() : null;
     }
 
     private bool CanSeeTarget()
     {
         Vector3 toTarget = target.position - transform.position;
-        if (toTarget.sqrMagnitude > sightRange * sightRange) return false;
+        bool chasing = State == BehaviourState.Chasing;
+        float range = chasing ? Mathf.Max(sightRange, loseSightRange) : sightRange;
+        if (toTarget.sqrMagnitude > range * range) return false;
         toTarget.y = 0f;
-        if (toTarget.sqrMagnitude > .001f &&
+        // Once acquired, a visible target can run around the enemy without cancelling pursuit.
+        if (!chasing && toTarget.sqrMagnitude > .001f &&
             Vector3.Angle(transform.forward, toTarget) > fieldOfView * .5f) return false;
         return HasClearSight();
     }
@@ -166,12 +186,15 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         if (target == null) return false;
         Vector3 eye = transform.position + Vector3.up * eyeHeight;
-        Vector3 direction = target.position + Vector3.up * .3f - eye;
+        Vector3 aim = targetController != null ? targetController.bounds.center : target.position;
+        Vector3 direction = aim - eye;
+        if (direction.sqrMagnitude < .0001f) return true;
         int count = Physics.RaycastNonAlloc(eye, direction.normalized, sightHits, direction.magnitude,
             obstacleLayers, QueryTriggerInteraction.Ignore);
         if (count == sightHits.Length) return false;
         for (int i = 0; i < count; i++)
-            if (!sightHits[i].transform.IsChildOf(transform) && !sightHits[i].transform.IsChildOf(target))
+            if (!sightHits[i].transform.IsChildOf(transform) && !sightHits[i].transform.IsChildOf(target) &&
+                sightHits[i].collider.GetComponentInParent<Enemy>() == null)
                 return false;
         return true;
     }
@@ -180,14 +203,24 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         if (State == state) return;
         State = state;
+        if (state == BehaviourState.Searching) searchEndsAt = Time.time + searchDuration;
         nextPathUpdate = 0f;
         hasPatrolDestination = false;
         waitUntil = 0f;
+        progressPosition = transform.position;
+        nextProgressCheck = Time.time + 1.5f;
         StopMoving();
     }
 
     private void Wander()
     {
+        if (hasPatrolDestination && Time.time >= nextProgressCheck)
+        {
+            // Abandon unreachable furniture corners rather than walking in place indefinitely.
+            if (HorizontalDistance(transform.position, progressPosition) < .15f) patrolDeadline = Time.time;
+            progressPosition = transform.position;
+            nextProgressCheck = Time.time + 1.5f;
+        }
         if (hasPatrolDestination &&
             (HorizontalDistance(transform.position, patrolDestination) < .4f || Time.time >= patrolDeadline))
         {
@@ -222,6 +255,8 @@ public class Enemy : MonoBehaviour, IDamageable
             patrolDestination = candidate;
             hasPatrolDestination = true;
             patrolDeadline = Time.time + Mathf.Max(4f, patrolRadius * 3f / Mathf.Max(.1f, patrolSpeed));
+            progressPosition = transform.position;
+            nextProgressCheck = Time.time + 1.5f;
             return true;
         }
         return false;
@@ -241,10 +276,12 @@ public class Enemy : MonoBehaviour, IDamageable
             agent.speed = speed;
             agent.stoppingDistance = stoppingDistance;
             agent.isStopped = false;
+            Face(agent.desiredVelocity, Time.deltaTime);
             if (Time.time >= nextPathUpdate)
             {
                 nextPathUpdate = Time.time + pathUpdateInterval;
-                agent.SetDestination(destination);
+                if (!agent.SetDestination(destination) && State == BehaviourState.Wandering)
+                    patrolDeadline = Time.time;
             }
             return;
         }
@@ -260,7 +297,11 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         desiredDirection = Vector3.zero;
         desiredSpeed = 0f;
-        if (UsingAgent) { agent.isStopped = true; agent.ResetPath(); }
+        if (UsingAgent)
+        {
+            agent.isStopped = true;
+            if (agent.hasPath || agent.pathPending) agent.ResetPath();
+        }
         if (body != null && !body.isKinematic)
             body.linearVelocity = new Vector3(0f, body.linearVelocity.y, 0f);
     }
@@ -273,10 +314,22 @@ public class Enemy : MonoBehaviour, IDamageable
         {
             if (!CanWalk(direction))
             {
-                // Try both sides of furniture instead of pushing straight through a collider.
-                Vector3 left = Quaternion.Euler(0, -60f, 0) * direction;
-                Vector3 right = Quaternion.Euler(0, 60f, 0) * direction;
-                direction = CanWalk(left) ? left : CanWalk(right) ? right : Vector3.zero;
+                // Keep a preferred side so successive physics ticks do not alternate left/right.
+                Vector3 detour = Vector3.zero;
+                for (int angle = 30; angle <= 90; angle += 30)
+                {
+                    Vector3 candidate = Quaternion.Euler(0f, steeringSide * angle, 0f) * direction;
+                    if (!CanWalk(candidate)) continue;
+                    detour = candidate;
+                    break;
+                }
+                if (detour == Vector3.zero)
+                {
+                    steeringSide = -steeringSide;
+                    Vector3 candidate = Quaternion.Euler(0f, steeringSide * 90f, 0f) * direction;
+                    if (CanWalk(candidate)) detour = candidate;
+                }
+                direction = detour;
                 if (direction == Vector3.zero && State == BehaviourState.Wandering) patrolDeadline = Time.time;
             }
             Face(direction, Time.fixedDeltaTime);
@@ -284,12 +337,16 @@ public class Enemy : MonoBehaviour, IDamageable
         if (body != null && !body.isKinematic)
             body.linearVelocity = direction * desiredSpeed + Vector3.up * body.linearVelocity.y;
         else if (direction.sqrMagnitude > .001f)
-            transform.position += direction * desiredSpeed * Time.fixedDeltaTime;
+        {
+            Vector3 position = transform.position + direction * desiredSpeed * Time.fixedDeltaTime;
+            if (body != null) body.MovePosition(position);
+            else transform.position = position;
+        }
     }
 
     private bool CanWalk(Vector3 direction)
     {
-        float radius = capsule != null ? Mathf.Max(.05f, capsule.bounds.extents.x - .03f) : .4f;
+        float radius = capsule != null ? Mathf.Max(.05f, Mathf.Max(capsule.bounds.extents.x, capsule.bounds.extents.z) - .03f) : .4f;
         float halfHeight = capsule != null ? Mathf.Max(radius, capsule.bounds.extents.y - .03f) : .9f;
         Vector3 center = capsule != null ? capsule.bounds.center : transform.position;
         float distance = Mathf.Max(.3f, desiredSpeed * Time.fixedDeltaTime + .1f);
@@ -304,15 +361,23 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private bool TryGround(Vector3 position, out Vector3 grounded)
     {
-        float height = capsule != null ? capsule.bounds.extents.y : 1f;
-        if (Physics.Raycast(position + Vector3.up * .4f, Vector3.down, out var hit, height + 1f,
-            obstacleLayers, QueryTriggerInteraction.Ignore) && hit.normal.y >= .65f)
-        {
-            grounded = hit.point + Vector3.up * height;
-            return true;
-        }
+        float footOffset = capsule != null ? transform.position.y - capsule.bounds.min.y : 1f;
+        Vector3 origin = position + Vector3.up * .4f;
+        int count = Physics.RaycastNonAlloc(origin, Vector3.down, movementHits, footOffset + .9f,
+            obstacleLayers, QueryTriggerInteraction.Ignore);
+        float nearest = float.PositiveInfinity;
         grounded = position;
-        return false;
+        for (int i = 0; i < count; i++)
+        {
+            var hit = movementHits[i];
+            if (hit.transform.IsChildOf(transform) || hit.collider.GetComponentInParent<IDamageable>() != null ||
+                hit.normal.y < .65f || hit.distance >= nearest) continue;
+            // Do not use tabletops as a floor or walk over ledges taller than a small step.
+            if (Mathf.Abs(hit.point.y - (position.y - footOffset)) > .35f) continue;
+            nearest = hit.distance;
+            grounded = hit.point + Vector3.up * footOffset;
+        }
+        return nearest < float.PositiveInfinity;
     }
 
     private void Face(Vector3 direction, float deltaTime)

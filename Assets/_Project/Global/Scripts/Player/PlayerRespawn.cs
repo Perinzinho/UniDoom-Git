@@ -10,7 +10,12 @@ using UniDoom.UI;
 [RequireComponent(typeof(PlayerLife), typeof(CharacterController))]
 public class PlayerRespawn : MonoBehaviour
 {
+    private const int StartingLives = 3;
+    public event System.Action<int> OnLivesChanged;
     [SerializeField, Min(0f)] private float respawnProtection = 2f;
+
+    public int RemainingLives { get; private set; } = StartingLives;
+    public bool HasLives => RemainingLives > 0;
 
     public int CheckpointKeyIndex { get; private set; } = -1;
     public Vector3 RespawnPosition { get; private set; }
@@ -86,7 +91,17 @@ public class PlayerRespawn : MonoBehaviour
 
     private void HandleDeath()
     {
+        EnterDeath(true);
+    }
+
+    private void EnterDeath(bool consumeLife)
+    {
         if (ownsPause) return;
+        if (consumeLife)
+        {
+            RemainingLives = Mathf.Max(0, RemainingLives - 1);
+            OnLivesChanged?.Invoke(RemainingLives);
+        }
         GameMenus.Instance?.CloseForDeath();
         previousCursorLock = Cursor.lockState;
         previousCursorVisible = Cursor.visible;
@@ -137,15 +152,15 @@ public class PlayerRespawn : MonoBehaviour
 
     public void TryRespawn()
     {
-        if (!life.IsDead || respawning || DoorReloadScreen.IsReloading || !screen.CanRespawn) return;
+        if (!life.IsDead || !HasLives || respawning || DoorReloadScreen.IsReloading || !screen.CanRespawn) return;
         respawning = true;
         StartCoroutine(RespawnRoutine());
     }
 
     public void RestartCheckpoint()
     {
-        if (respawning || DoorReloadScreen.IsReloading) return;
-        if (!ownsPause) HandleDeath();
+        if (!HasLives || respawning || DoorReloadScreen.IsReloading) return;
+        if (!ownsPause) EnterDeath(false);
         respawning = true;
         StartCoroutine(RespawnRoutine());
     }

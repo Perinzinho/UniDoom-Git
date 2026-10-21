@@ -43,14 +43,15 @@ public class Shotgun : Gun
     {
         DebugUI.Log("Shotgun fired!");
         SFXManager.Instance.PlayShotgunShootSound();
+        Ray aimRay = CrosshairAim.CreateRay(playerCamera);
 
 
         // Repeat shooting process according to pellet count.
         // If pellets = 8, this loop runs 8 times, creating 8 Raycasts in one shot.
         for (int i = 0; i < pellets; i++)
         {
-            // Start with camera forward direction.
-            Vector3 direction = playerCamera.transform.forward;
+            // Centre the pellet spread on the visible reticle.
+            Vector3 direction = aimRay.direction;
 
 
             // Add random horizontal spread.
@@ -65,7 +66,7 @@ public class Shotgun : Gun
 
             // Create the Ray representing one pellet.
             Ray ray = new Ray(
-                playerCamera.transform.position,
+                aimRay.origin,
                 direction.normalized
             );
 
