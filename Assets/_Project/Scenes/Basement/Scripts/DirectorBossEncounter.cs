@@ -36,6 +36,43 @@ public sealed class DirectorBossEncounter : MonoBehaviour
     public bool Contains(Vector3 position) => activationVolume != null &&
         new Bounds(activationVolume.center, activationVolume.size).Contains(activationVolume.transform.InverseTransformPoint(position));
 
+    // Temporary map selector: relocate the scene's start before the player is instantiated.
+    public bool TryConfigurePlayerStart(Transform start, CharacterController playerController)
+    {
+        if (start == null || activationVolume == null || spawnPoint == null || playerController == null) return false;
+        Vector3 scale = playerController.transform.lossyScale;
+        float radius = playerController.radius * Mathf.Max(Mathf.Abs(scale.x), Mathf.Abs(scale.z));
+        float height = Mathf.Max(playerController.height * Mathf.Abs(scale.y), radius * 2);
+        float clearance = Mathf.Max(.1f, playerController.skinWidth * Mathf.Abs(scale.y));
+        Vector3 centerOffset = Vector3.Scale(playerController.center, scale);
+        Physics.SyncTransforms();
+        Vector3 entry = activationVolume.center;
+        entry.z -= activationVolume.size.z * .5f - 3f;
+        entry.y = activationVolume.center.y;
+        for (int row = 0; row < 4; row++)
+            for (int column = 0; column < 5; column++)
+            {
+                // Search the entrance side of the boss room, away from the boss's own spawn.
+                float lateral = column == 0 ? 0 : ((column + 1) / 2) * 2f * (column % 2 == 0 ? -1 : 1);
+                Vector3 candidate = activationVolume.transform.TransformPoint(entry + new Vector3(lateral, 0, row * 2));
+                if (!Physics.Raycast(candidate, Vector3.down, out var floor, activationVolume.size.y + 2,
+                    ~0, QueryTriggerInteraction.Ignore) || floor.normal.y < .7f) continue;
+                if (Physics.GetIgnoreLayerCollision(playerController.gameObject.layer, floor.collider.gameObject.layer)) continue;
+                if (!Contains(floor.point + Vector3.up)) continue;
+                // Check and place the real, scaled capsule with its feet above the floor.
+                if (Physics.CheckCapsule(floor.point + Vector3.up * (clearance + radius),
+                    floor.point + Vector3.up * (clearance + height - radius),
+                    radius, ~0, QueryTriggerInteraction.Ignore)) continue;
+                Vector3 direction = spawnPoint.position - floor.point;
+                direction.y = 0;
+                Quaternion rotation = direction.sqrMagnitude > .001f ? Quaternion.LookRotation(direction) : Quaternion.identity;
+                start.SetPositionAndRotation(floor.point + Vector3.up * (height * .5f + clearance) - rotation * centerOffset,
+                    rotation);
+                return true;
+            }
+        return false;
+    }
+
     public void BeginEncounter()
     {
         if (Started || !enabled || player == null) return;

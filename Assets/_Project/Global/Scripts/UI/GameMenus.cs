@@ -15,7 +15,7 @@ namespace UniDoom.UI
     /// <summary>Shared main, pause, death, options and confirmation screens. Progress lasts for the current run.</summary>
     public sealed class GameMenus : MonoBehaviour
     {
-        public enum Screen { Gameplay, Main, Pause, Death, Options, Credits, Confirm }
+        public enum Screen { Gameplay, Main, Pause, Death, Options, Credits, Confirm, MapSelect }
         public static GameMenus Instance { get; private set; }
         public static bool BlocksGameplay => Instance != null && (Instance.CurrentScreen != Screen.Gameplay || Instance.busy);
         public Screen CurrentScreen { get; private set; }
@@ -25,7 +25,8 @@ namespace UniDoom.UI
         Canvas canvas;
         RawImage backdrop;
         Image shade, fade;
-        GameObject main, pause, death, options, credits, confirmation;
+        GameObject main, pause, death, options, credits, confirmation, mapSelection;
+        Button chooseMap, mapFirst;
         Button mainFirst, pauseFirst, deathRetry, deathBack, optionsBack, creditsBack, cancel;
         Slider sensitivity, volume;
         Toggle invertY, fullscreen;
@@ -142,6 +143,7 @@ namespace UniDoom.UI
                 case Screen.Pause: Resume(); break;
                 case Screen.Options: PlayerPrefs.Save(); SetScreen(optionsOrigin); break;
                 case Screen.Credits: SetScreen(Screen.Main); break;
+                case Screen.MapSelect: SetScreen(Screen.Main); Select(chooseMap); break;
                 case Screen.Confirm: SetScreen(confirmOrigin); break;
             }
         }
@@ -207,14 +209,24 @@ namespace UniDoom.UI
 
         public void StartNewGame()
         {
-            if (busy) return;
-            string firstScene = SceneUtility.GetScenePathByBuildIndex(0);
-            if (string.IsNullOrEmpty(firstScene) || !Application.CanStreamedLevelBeLoaded(firstScene))
-            { error.text = "A cena inicial não está disponível no Build Settings."; return; }
-            StartCoroutine(NewGame(firstScene));
+            StartNewGameAtScene(SceneUtility.GetScenePathByBuildIndex(0));
         }
 
-        IEnumerator NewGame(string scene)
+        void OpenMapSelection()
+        {
+            if (busy || CurrentScreen != Screen.Main) return;
+            SetScreen(Screen.MapSelect);
+        }
+
+        void StartNewGameAtScene(string scene, bool startAtBoss = false)
+        {
+            if (busy) return;
+            if (string.IsNullOrEmpty(scene) || !Application.CanStreamedLevelBeLoaded(scene))
+            { error.text = "O mapa não está disponível no Build Settings."; return; }
+            StartCoroutine(NewGame(scene, startAtBoss));
+        }
+
+        IEnumerator NewGame(string scene, bool startAtBoss)
         {
             busy = true;
             for (float t = 0; t < .2f; t += Time.unscaledDeltaTime) { SetFade(t / .2f); yield return null; }
@@ -225,8 +237,32 @@ namespace UniDoom.UI
             GameManager.EndSession();
             yield return null;
             AsyncOperation load = null;
-            try { load = SceneManager.LoadSceneAsync(scene); }
-            catch (Exception e) { Debug.LogException(e); }
+            bool startConfigured = !startAtBoss;
+            void ConfigureStart(Scene loaded, LoadSceneMode mode)
+            {
+                if (!startAtBoss || loaded.path != scene) return;
+                Transform start = null;
+                DirectorBossEncounter encounter = null;
+                // Awake has already moved the manager into DontDestroyOnLoad.
+                CharacterController playerController = GameManager.SessionPlayerControllerPrefab;
+                foreach (var root in loaded.GetRootGameObjects())
+                {
+                    if (root.name == "SpawnPoint") start = root.transform;
+                    if (encounter == null) encounter = root.GetComponentInChildren<DirectorBossEncounter>();
+                    var manager = root.GetComponent<GameManager>();
+                    if (manager != null) playerController = manager.PlayerControllerPrefab;
+                }
+                // sceneLoaded runs before GameManager.Start creates the player and checkpoint.
+                startConfigured = start != null && encounter != null && encounter.TryConfigurePlayerStart(start, playerController);
+            }
+            SceneManager.sceneLoaded += ConfigureStart;
+            try
+            {
+                try { load = SceneManager.LoadSceneAsync(scene); }
+                catch (Exception e) { Debug.LogException(e); }
+                if (load != null) while (!load.isDone) yield return null;
+            }
+            finally { SceneManager.sceneLoaded -= ConfigureStart; }
             if (load == null)
             {
                 busy = false;
@@ -236,8 +272,16 @@ namespace UniDoom.UI
                 error.text = "Não foi possível iniciar o jogo. Tente novamente.";
                 yield break;
             }
-            while (!load.isDone) yield return null;
             yield return null;
+            if (!startConfigured)
+            {
+                busy = false;
+                SetFade(0);
+                SetScreen(Screen.Main);
+                AcquirePause();
+                error.text = "Não foi encontrado um ponto livre na arena do boss.";
+                yield break;
+            }
             SetScreen(Screen.Gameplay);
             Time.timeScale = 1;
             AudioListener.pause = false;
@@ -333,7 +377,8 @@ namespace UniDoom.UI
             options.SetActive(screen == Screen.Options);
             credits.SetActive(screen == Screen.Credits);
             confirmation.SetActive(screen == Screen.Confirm);
-            bool mainBackground = screen == Screen.Main || screen == Screen.Credits ||
+            mapSelection.SetActive(screen == Screen.MapSelect);
+            bool mainBackground = screen == Screen.Main || screen == Screen.Credits || screen == Screen.MapSelect ||
                 (screen == Screen.Options && optionsOrigin == Screen.Main);
             backdrop.gameObject.SetActive(mainBackground);
             shade.gameObject.SetActive(screen != Screen.Gameplay);
@@ -343,7 +388,7 @@ namespace UniDoom.UI
             EnsureEvents();
             Select(screen switch { Screen.Main => mainFirst, Screen.Pause => pauseFirst,
                 Screen.Death => deathRetry, Screen.Options => optionsBack, Screen.Credits => creditsBack,
-                Screen.Confirm => cancel, _ => null });
+                Screen.Confirm => cancel, Screen.MapSelect => mapFirst, _ => null });
         }
 
         static void Select(Selectable control)
@@ -393,13 +438,16 @@ namespace UniDoom.UI
             layout.anchoredPosition = Vector2.zero;
             main = Page("Main"); pause = Page("Pause"); death = Page("Death");
             options = Page("Options"); credits = Page("Credits"); confirmation = Page("Confirm");
+            mapSelection = Page("Temporary map selection");
             StandardHeader(main, 0);
             mainFirst = MenuStyle.Button(main.transform, "NewGame", "NOVO JOGO", 164, 505, 640, StartNewGame);
-            var mainOptions = MenuStyle.Button(main.transform, "Options", "OPÇÕES", 164, 595, 640, OpenOptions);
-            var creditButton = MenuStyle.Button(main.transform, "Credits", "CRÉDITOS", 164, 685, 640, () => SetScreen(Screen.Credits));
-            var quit = MenuStyle.Button(main.transform, "Quit", "SAIR", 164, 775, 640, Quit);
-            MenuStyle.Link(mainFirst, mainOptions, creditButton, quit);
+            chooseMap = MenuStyle.Button(main.transform, "TemporaryMapSelect", "ESCOLHER MAPA (TEMP.)", 164, 595, 640, OpenMapSelection);
+            var mainOptions = MenuStyle.Button(main.transform, "Options", "OPÇÕES", 164, 685, 640, OpenOptions);
+            var creditButton = MenuStyle.Button(main.transform, "Credits", "CRÉDITOS", 164, 775, 640, () => SetScreen(Screen.Credits));
+            var quit = MenuStyle.Button(main.transform, "Quit", "SAIR", 164, 865, 640, Quit);
+            MenuStyle.Link(mainFirst, chooseMap, mainOptions, creditButton, quit);
             Footer(main);
+            BuildMapSelection();
             StandardHeader(pause, 1);
             pauseFirst = MenuStyle.Button(pause.transform, "Resume", "CONTINUAR   [ESC]", 164, 505, 640, Resume);
             var pauseOptions = MenuStyle.Button(pause.transform, "Options", "OPÇÕES", 164, 595, 640, OpenOptions);
@@ -456,6 +504,54 @@ namespace UniDoom.UI
         }
         static void Footer(GameObject page) => MenuStyle.Text("Navigation", page.transform,
             "↑ ↓  NAVEGAR     ENTER  CONFIRMAR", 165, 985, 1000, 45, 21, MenuStyle.Muted);
+
+        // Temporary shortcut: use the same fresh-session loading flow as New Game.
+        void BuildMapSelection()
+        {
+            MenuStyle.Text("Title", mapSelection.transform, "ESCOLHER MAPA", 165, 135, 1400, 100, 72, MenuStyle.Paper);
+            MenuStyle.Text("Hint", mapSelection.transform, "Selecione onde começar uma nova partida.", 165, 245, 1400, 45, 26, MenuStyle.Muted);
+            var controls = new List<Selectable>();
+            for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+            {
+                string scene = SceneUtility.GetScenePathByBuildIndex(i);
+                if (string.IsNullOrEmpty(scene)) continue;
+                string sceneName = System.IO.Path.GetFileNameWithoutExtension(scene);
+                string label = sceneName switch
+                {
+                    "EntranceGarden" => "JARDIM DE ENTRADA",
+                    "SampleScene" => "CAMPUS COMPLETO",
+                    "Cylinder" => "CILINDRO",
+                    "Library" => "BIBLIOTECA",
+                    "ClassRoom" => "SALA DE AULA",
+                    "DirectorRoom" => "SALA DO DIRETOR",
+                    "Basement" => "PORÃO — PRÉ-ARENA",
+                    _ => sceneName
+                };
+                var button = MenuStyle.Button(mapSelection.transform, "Map_" + sceneName, label,
+                    165 + controls.Count % 2 * 830, 320 + controls.Count / 2 * 110, 760, () => StartNewGameAtScene(scene), 40);
+                if (mapFirst == null) mapFirst = button;
+                controls.Add(button);
+                if (sceneName == "Basement")
+                    controls.Add(MenuStyle.Button(mapSelection.transform, "Map_BasementBoss", "PORÃO — ARENA DO BOSS",
+                        165 + controls.Count % 2 * 830, 320 + controls.Count / 2 * 110, 760,
+                        () => StartNewGameAtScene(scene, true), 40));
+            }
+            var back = MenuStyle.Button(mapSelection.transform, "Back", "VOLTAR   [ESC]", 165, 885, 1000, Back, 40);
+            if (mapFirst == null) mapFirst = back;
+            controls.Add(back);
+            MenuStyle.Link(controls.ToArray());
+            for (int i = 0; i < controls.Count - 1; i++)
+            {
+                int rowStart = i / 2 * 2;
+                var navigation = new Navigation { mode = Navigation.Mode.Explicit,
+                    selectOnUp = i >= 2 ? controls[i - 2] : back,
+                    selectOnDown = i + 2 < controls.Count - 1 ? controls[i + 2] : back,
+                    selectOnLeft = i % 2 == 1 ? controls[i - 1] : null,
+                    selectOnRight = i % 2 == 0 && rowStart + 1 < controls.Count - 1 ? controls[i + 1] : null };
+                controls[i].navigation = navigation;
+            }
+            Footer(mapSelection);
+        }
 
         void BuildOptions()
         {
