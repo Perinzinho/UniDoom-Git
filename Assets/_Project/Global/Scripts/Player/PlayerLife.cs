@@ -13,6 +13,7 @@ public class PlayerLife : MonoBehaviour, IDamageable
     private float invulnerableUntil;
 
     public event Action<int, int> OnHealthChanged;
+    public event Action<int> OnDamaged;
     public event Action OnDeath;
 
     private void Awake()
@@ -45,6 +46,7 @@ public class PlayerLife : MonoBehaviour, IDamageable
         {
             OnHealthChanged?.Invoke(currentHealth, maxHealth);
 
+            OnDamaged?.Invoke(before - currentHealth);
             if (currentHealth <= 0)
             {
                 Die();
