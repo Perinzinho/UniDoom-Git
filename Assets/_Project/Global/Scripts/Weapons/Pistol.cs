@@ -36,11 +36,8 @@ public class Pistol : Gun
         DebugUI.Log("Pistol fired!");
 
         
-        // Create a ray starting at camera position and going forward.
-        Ray ray = new Ray(
-            playerCamera.transform.position,
-            playerCamera.transform.forward
-        );
+        // Fire through the same lowered viewport point used by the reticle.
+        Ray ray = CrosshairAim.CreateRay(playerCamera);
 
 
         // Cast the ray and check if it hit any collider.

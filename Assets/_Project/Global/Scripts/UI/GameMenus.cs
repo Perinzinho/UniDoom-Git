@@ -30,7 +30,7 @@ namespace UniDoom.UI
         Button mainFirst, pauseFirst, deathRetry, deathBack, optionsBack, creditsBack, cancel;
         Slider sensitivity, volume;
         Toggle invertY, fullscreen;
-        TMP_Text sensitivityValue, volumeValue, confirmText, error;
+        TMP_Text sensitivityValue, volumeValue, confirmText, error, deathHint;
         Screen optionsOrigin, confirmOrigin;
         Action confirmAction;
         PlayerRespawn deadPlayer;
@@ -88,10 +88,12 @@ namespace UniDoom.UI
             if (CurrentScreen == Screen.Death)
             {
                 bool ready = deathOwner != null && deathOwner.CanRespawn;
-                if (deathRetry.interactable != ready)
+                bool backReady = deathOwner != null && deathOwner.IsReady;
+                if (deathRetry.interactable != ready || deathBack.interactable != backReady)
                 {
-                    deathRetry.interactable = deathBack.interactable = ready;
-                    if (ready) Select(deathRetry);
+                    deathRetry.interactable = ready;
+                    deathBack.interactable = backReady;
+                    if (backReady) Select(ready ? deathRetry : deathBack);
                 }
             }
         }
@@ -163,6 +165,10 @@ namespace UniDoom.UI
         {
             deadPlayer = player;
             deathOwner = owner;
+            int lives = player != null ? player.RemainingLives : 0;
+            deathHint.text = lives > 0
+                ? $"Vidas restantes: {lives} / 3. Recomeçar no último ponto de retorno."
+                : "FIM DE JOGO — todas as vidas acabaram.";
             deathRetry.interactable = deathBack.interactable = false;
             SetScreen(Screen.Death);
         }
@@ -450,7 +456,7 @@ namespace UniDoom.UI
             MenuStyle.Link(pauseFirst, pauseOptions, restart, returnMain);
             Footer(pause);
             StandardHeader(death, 2);
-            MenuStyle.Text("Return hint", death.transform, "Recomeçar no último ponto de retorno.", 165, 450, 1000, 38, 23, MenuStyle.Muted);
+            deathHint = MenuStyle.Text("Return hint", death.transform, "", 165, 450, 1200, 38, 23, MenuStyle.Muted);
             deathRetry = MenuStyle.Button(death.transform, "Retry", "TENTAR NOVAMENTE", 164, 595, 640, RestartCheckpoint);
             deathBack = MenuStyle.Button(death.transform, "MainMenu", "VOLTAR AO MENU", 164, 685, 640, RequestMainMenu);
             MenuStyle.Link(deathRetry, deathBack);
