@@ -11,6 +11,7 @@ using UniDoom.UI;
 public class PlayerRespawn : MonoBehaviour
 {
     private const int StartingLives = 3;
+    public event System.Action<int> OnLivesChanged;
     [SerializeField, Min(0f)] private float respawnProtection = 2f;
 
     public int RemainingLives { get; private set; } = StartingLives;
@@ -96,7 +97,11 @@ public class PlayerRespawn : MonoBehaviour
     private void EnterDeath(bool consumeLife)
     {
         if (ownsPause) return;
-        if (consumeLife) RemainingLives = Mathf.Max(0, RemainingLives - 1);
+        if (consumeLife)
+        {
+            RemainingLives = Mathf.Max(0, RemainingLives - 1);
+            OnLivesChanged?.Invoke(RemainingLives);
+        }
         GameMenus.Instance?.CloseForDeath();
         previousCursorLock = Cursor.lockState;
         previousCursorVisible = Cursor.visible;
