@@ -41115,7 +41115,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8126341709788235066}
-  m_Mesh: {fileID: 4300000, guid: fee4750cbe9cdaf49a48d00f1f339f06, type: 2}
+  m_Mesh: {fileID: 4300000, guid: 068a15fa2d384f748b41b5e0e96f10e8, type: 2}
 --- !u!23 &5813444063744688405
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -47251,7 +47251,7 @@ PrefabInstance:
     - target: {fileID: 8737695904314063438, guid: d45874499b3ec694b80e34ed7bc87a70, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 4300000, guid: ec06326e2e3125541afb1b2faf6d89a3, type: 2}
+      objectReference: {fileID: 4300000, guid: 675786249bebaa142996d05e13c250d2, type: 2}
     - target: {fileID: 8922239341543089834, guid: d45874499b3ec694b80e34ed7bc87a70, type: 3}
       propertyPath: m_Range
       value: 8.5
@@ -47275,7 +47275,7 @@ PrefabInstance:
     - target: {fileID: 9055372665301803590, guid: d45874499b3ec694b80e34ed7bc87a70, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 4300000, guid: 68e7caa0c9ed8c84d922e2537cf16d14, type: 2}
+      objectReference: {fileID: 4300000, guid: bee90eb600c14ba4cbe60af40e8a603a, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -69698,6 +69698,8 @@ MonoBehaviour:
   openingOffset: {x: 0, y: 4.2, z: 0}
   openingDuration: 3.5
   mechanism: {fileID: 0}
+  passageLight: {fileID: 1026523426766549866}
+  revealedLightIntensity: 4
 --- !u!114 &9212217544682922633
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73413,9 +73415,9 @@ Light:
   m_Enabled: 1
   serializedVersion: 13
   m_Type: 2
-  m_Color: {r: 0.62, g: 0.77, b: 0.69, a: 1}
-  m_Intensity: 2
-  m_Range: 6
+  m_Color: {r: 0.95, g: 0.73, b: 0.43, a: 1}
+  m_Intensity: 4
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}

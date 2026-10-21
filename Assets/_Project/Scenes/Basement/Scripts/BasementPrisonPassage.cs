@@ -9,6 +9,8 @@ public sealed class BasementPrisonPassage : MonoBehaviour
     [SerializeField] Vector3 openingOffset = new Vector3(0, 4.2f, 0);
     [SerializeField, Min(.1f)] float openingDuration = 3.5f;
     [SerializeField] AudioSource mechanism;
+    [SerializeField] Light passageLight;
+    [SerializeField, Min(0)] float revealedLightIntensity = 4f;
 
     public bool Revealed { get; private set; }
     Vector3 closedPosition;
@@ -17,6 +19,7 @@ public sealed class BasementPrisonPassage : MonoBehaviour
     void Awake()
     {
         if (concealedPanel != null) closedPosition = concealedPanel.localPosition;
+        if (passageLight != null) passageLight.intensity = 0;
     }
 
     void OnEnable()
@@ -38,7 +41,7 @@ public sealed class BasementPrisonPassage : MonoBehaviour
         StopCoroutine(opening);
         opening = null;
         // A disabled/re-enabled passage must never leave a partial obstruction.
-        if (concealedPanel != null) concealedPanel.localPosition = closedPosition + openingOffset;
+        FinishOpening();
     }
 
     public void Reveal()
@@ -46,6 +49,7 @@ public sealed class BasementPrisonPassage : MonoBehaviour
         if (Revealed || concealedPanel == null || !isActiveAndEnabled) return;
         Revealed = true;
         if (mechanism != null) mechanism.Play();
+        if (passageLight != null) passageLight.enabled = true;
         opening = StartCoroutine(Open());
     }
 
@@ -57,9 +61,28 @@ public sealed class BasementPrisonPassage : MonoBehaviour
             elapsed += Time.deltaTime;
             float progress = Mathf.SmoothStep(0, 1, Mathf.Clamp01(elapsed / openingDuration));
             concealedPanel.localPosition = closedPosition + openingOffset * progress;
+            SetPassageLight(Mathf.Clamp01(elapsed / openingDuration * 2));
             yield return null;
         }
-        concealedPanel.localPosition = closedPosition + openingOffset;
+        FinishOpening();
         opening = null;
+    }
+
+    void FinishOpening()
+    {
+        if (concealedPanel != null)
+        {
+            concealedPanel.localPosition = closedPosition + openingOffset;
+            // The panel is fully inside the wall pocket; neither its mesh nor collision
+            // should remain over the opening after the animation finishes.
+            concealedPanel.gameObject.SetActive(false);
+        }
+        SetPassageLight(1);
+    }
+
+    void SetPassageLight(float progress)
+    {
+        if (passageLight != null)
+            passageLight.intensity = revealedLightIntensity * Mathf.SmoothStep(0, 1, progress);
     }
 }
