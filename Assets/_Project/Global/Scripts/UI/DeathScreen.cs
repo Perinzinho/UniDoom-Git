@@ -10,7 +10,8 @@ namespace UniDoom.UI
     {
         public static DeathScreen Instance { get; private set; }
         public static bool IsVisible => Instance != null && Instance.deathActive;
-        public bool CanRespawn => deathActive && !transitioning && Time.unscaledTime - openedAt >= 1.15f;
+        public bool IsReady => deathActive && !transitioning && Time.unscaledTime - openedAt >= 1.15f;
+        public bool CanRespawn => IsReady && player != null && player.HasLives;
 
         PlayerRespawn player;
         CanvasGroup toast;
