@@ -1777,6 +1777,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8902000000000000061}
+  - {fileID: 8901000000000000011}
   - {fileID: 1965296050306587333}
   - {fileID: 1168922995165100690}
   - {fileID: 4817243877189770622}
@@ -22610,4 +22612,128 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 3994769063742515252, guid: 523de099d9b59894ea8b828e400e0a7f, type: 3}
   m_PrefabInstance: {fileID: 9141096021238451586}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &8901000000000000010
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 557888665503020917}
+    m_Modifications:
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.28
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4.61538462
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8215064285211661319, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_Name
+      value: Caixa de municao - Corredor de entrada
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+--- !u!4 &8901000000000000011 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+  m_PrefabInstance: {fileID: 8901000000000000010}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &8902000000000000060
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 557888665503020917}
+    m_Modifications:
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 6.153846154
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8215064285211661319, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_Name
+      value: Caixa de municao - Meio do corredor de entrada
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+--- !u!4 &8902000000000000061 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+  m_PrefabInstance: {fileID: 8902000000000000060}
   m_PrefabAsset: {fileID: 0}
