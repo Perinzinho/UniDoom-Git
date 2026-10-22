@@ -50,7 +50,7 @@ public sealed class EnemySpriteAnimator : MonoBehaviour
                     ? Appearance.idleFrames
                     : Appearance.frontWalkFrames;
                 if (HasFrames(initialFrames)) spriteRenderer.sprite = initialFrames[0];
-                if (HasFrames(Appearance.deathFrames)) deathFrames = Appearance.deathFrames;
+                deathFrames = Appearance.deathFrames;
                 deathDuration = Appearance.deathDuration;
                 var capsule = enemy.GetComponent<CapsuleCollider>();
                 if (capsule != null)
@@ -157,6 +157,13 @@ public sealed class EnemySpriteAnimator : MonoBehaviour
             {
                 FrameIndex = Mathf.Min(deathFrames.Length - 1, Mathf.FloorToInt(progress * deathFrames.Length));
                 SetFrame(deathFrames);
+            }
+            else
+            {
+                // Sheets without a death strip keep their own character and collapse at the feet.
+                Vector3 scale = transform.localScale;
+                scale.y = Mathf.Lerp(Appearance != null ? Appearance.visualScale : 1f, .08f, progress);
+                transform.localScale = scale;
             }
             DeathFinished = progress >= 1;
         }
