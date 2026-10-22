@@ -12,6 +12,7 @@ namespace UniDoom.Utils
         [SerializeField] private string destinationLabel;
         [SerializeField] private bool requiresKey01, requiresKey02, requiresKey03;
         [SerializeField] private OpenDoorWithKey physicalDoor;
+        [SerializeField] private bool waitForPhysicalDoorToOpen;
         private readonly HashSet<Collider> waitingPlayers = new HashSet<Collider>();
 
         public string DestinationScene => destinationScene;
@@ -50,6 +51,7 @@ namespace UniDoom.Utils
             // The player can cross a rotating door before its animation reaches 80%.
             // Waiting for IsOpen lets them leave this volume and fall outside the room.
             if (physicalDoor != null && !physicalDoor.IsUnlocked) return;
+            if (waitForPhysicalDoorToOpen && physicalDoor != null && !physicalDoor.IsFullyOpen) return;
 
             if (UI.DoorReloadScreen.TryLoadScene(destinationScene, destinationSpawnId, destinationLabel))
                 waitingPlayers.Clear();

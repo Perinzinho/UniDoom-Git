@@ -7,6 +7,9 @@ public class OpenDoorWithKey : MonoBehaviour
     [SerializeField] private bool requiresKey01;
     [SerializeField] private bool requiresKey02;
     [SerializeField] private bool requiresKey03;
+    [Tooltip("Requires an explicit interaction instead of unlocking by proximity.")]
+    [SerializeField] private bool requiresManualActivation;
+    [SerializeField] private bool stayOpenAfterUnlock;
 
     [Header("Animação da porta")]
     [SerializeField] private Transform door;
@@ -18,6 +21,9 @@ public class OpenDoorWithKey : MonoBehaviour
     [SerializeField] private float animationDuration = 0.6f;
     [Min(0f)]
     [SerializeField] private float closeDelay = 0.3f;
+    [Tooltip("0 chooses the player's side; -1 or 1 keeps a one-way hinge consistent after returning to the room.")]
+    [Range(-1f, 1f)]
+    [SerializeField] private float fixedOpeningDirection;
 
     [Header("Tela de Reload / Aquecimento de Shaders")]
     [Tooltip("Exibe a tela de reload e warmup de shaders quando o jogador passar pela porta.")]
@@ -42,6 +48,21 @@ public class OpenDoorWithKey : MonoBehaviour
 
     public bool IsUnlocked => unlocked;
     public bool IsOpen => unlocked && openProgress >= .8f;
+    public bool IsFullyOpen => unlocked && openProgress >= .999f;
+
+    public bool TryUnlock(PlayerPickupKey player)
+    {
+        if (!isActiveAndEnabled || player == null || !HasRequiredKey(player)) return false;
+        PlayerLife life = player.GetComponent<PlayerLife>();
+        if (life != null && life.IsDead) return false;
+        if (!unlocked)
+        {
+            float side = transform.InverseTransformPoint(player.transform.position).x - closedCenter.x;
+            openingDirection = fixedOpeningDirection != 0 ? Mathf.Sign(fixedOpeningDirection) : (side >= 0f ? -1f : 1f);
+        }
+        unlocked = true;
+        return true;
+    }
 
 public enum DoorReloadTriggerMode
 {
@@ -136,7 +157,7 @@ public enum DoorReloadTriggerMode
             foreach (Collider other in stalePlayers) playerEntrySides.Remove(other);
         }
 
-        if (!unlocked)
+        if (!unlocked && !requiresManualActivation)
         {
             foreach (Collider other in nearbyPlayers)
             {
@@ -149,7 +170,7 @@ public enum DoorReloadTriggerMode
             }
         }
 
-        bool shouldOpen = unlocked && nearbyPlayers.Count > 0;
+        bool shouldOpen = unlocked && (stayOpenAfterUnlock || nearbyPlayers.Count > 0);
         if (shouldOpen && openProgress <= 0f)
         {
             // A direção só muda com a porta fechada, evitando saltos durante a passagem.
@@ -158,7 +179,7 @@ public enum DoorReloadTriggerMode
                 PlayerPickupKey player = other.GetComponentInParent<PlayerPickupKey>();
                 if (player == null) continue;
                 float side = transform.InverseTransformPoint(player.transform.position).x - closedCenter.x;
-                openingDirection = side >= 0f ? -1f : 1f;
+                openingDirection = fixedOpeningDirection != 0 ? Mathf.Sign(fixedOpeningDirection) : (side >= 0f ? -1f : 1f);
                 break;
             }
 
