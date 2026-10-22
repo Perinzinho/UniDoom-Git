@@ -37,7 +37,7 @@ public sealed class DirectorSecretPassage : MonoBehaviour
     {
         get
         {
-            if (GameplayBlocked) return string.Empty;
+            if (GameplayBlocked || DirectorRitualBook.HasInteractionFocus) return string.Empty;
             if (Revealed || opening != null) return string.Empty;
             if (Time.unscaledTime < messageUntil) return message;
             var keys = currentPlayer != null ? currentPlayer.GetComponent<PlayerPickupKey>() : null;
