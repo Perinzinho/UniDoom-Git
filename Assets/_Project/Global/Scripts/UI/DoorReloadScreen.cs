@@ -178,6 +178,10 @@ namespace UniDoom.UI
             {
                 SelectDestinationArtwork(sceneName, sectorName);
                 titleText.text = string.IsNullOrWhiteSpace(sectorName) ? "SETOR DESCONHECIDO" : sectorName.ToUpperInvariant();
+                if (string.Equals(sceneName, "Cylinder", StringComparison.OrdinalIgnoreCase) ||
+                    titleText.text == "BLOCO UNIVERSITÁRIO" || titleText.text == "CYLINDER" ||
+                    titleText.text == "CILINDRO" || titleText.text == "HUB")
+                    titleText.text = "REDONDO";
                 subtitleText.text = "ALÉM DA PORTA";
                 SetProgress(0, "A porta se fecha...");
                 for (float elapsed = 0; elapsed < fadeInDuration; elapsed += Time.unscaledDeltaTime)
