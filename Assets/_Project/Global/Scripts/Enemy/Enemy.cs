@@ -68,6 +68,9 @@ public class Enemy : MonoBehaviour, IDamageable
     private MaterialPropertyBlock hitPropertyBlock;
     private float hitFlashEndsAt;
     private bool isFlashing;
+    private EnemySpriteAnimator spriteAnimator;
+    private float projectileReleaseAt = -1f, attackEndsAt;
+    private EnemySpriteAppearance pendingProjectile;
 
     private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
     private static readonly int ColorId = Shader.PropertyToID("_Color");
@@ -93,6 +96,7 @@ public class Enemy : MonoBehaviour, IDamageable
         body = GetComponent<Rigidbody>();
         capsule = GetComponent<CapsuleCollider>();
         agent = GetComponent<NavMeshAgent>();
+        spriteAnimator = GetComponentInChildren<EnemySpriteAnimator>();
         patrolPath = new NavMeshPath();
         patrolOrigin = transform.position;
         progressPosition = transform.position;
@@ -125,6 +129,23 @@ public class Enemy : MonoBehaviour, IDamageable
             RestoreHitColors();
 
         if (IsDead) return;
+        if (pendingProjectile != null)
+        {
+            StopMoving();
+            if (target != null) Face(target.position - transform.position, Time.deltaTime);
+            if (projectileReleaseAt >= 0f && Time.time >= projectileReleaseAt)
+            {
+                projectileReleaseAt = -1f;
+                if (target != null && (targetLife == null || !targetLife.IsDead) && HasClearSight())
+                {
+                    Vector3 origin = transform.position + Vector3.up * eyeHeight;
+                    Vector3 aim = targetController != null ? targetController.bounds.center : target.position;
+                    EnemyFanProjectile.Launch(this, pendingProjectile, origin, aim - origin, attackDamage);
+                }
+            }
+            if (Time.time < attackEndsAt) return;
+            pendingProjectile = null;
+        }
         if (target == null && Time.time >= nextTargetSearch) FindTarget();
         if (Time.time >= nextPerception)
         {
@@ -143,7 +164,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
         if (State == BehaviourState.Wandering) Wander();
         else if (State == BehaviourState.Chasing &&
-                 Vector3.Distance(transform.position, target.position) <= attackRange && HasClearSight())
+                 Vector3.Distance(transform.position, target.position) <= EffectiveAttackRange && HasClearSight())
         {
             StopMoving();
             Face(target.position - transform.position, Time.deltaTime);
@@ -158,6 +179,10 @@ public class Enemy : MonoBehaviour, IDamageable
     }
 
     private bool UsingAgent => agent != null && agent.enabled && agent.isOnNavMesh;
+    private EnemySpriteAppearance RangedAppearance => spriteAnimator != null &&
+        spriteAnimator.Appearance != null && spriteAnimator.Appearance.projectileSprite != null
+        ? spriteAnimator.Appearance : null;
+    private float EffectiveAttackRange => RangedAppearance != null ? RangedAppearance.projectileAttackRange : attackRange;
 
     private void FindTarget()
     {
@@ -391,10 +416,19 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void TryAttack()
     {
+        EnemySpriteAppearance ranged = RangedAppearance;
         if (IsDead || target == null || (targetLife != null && targetLife.IsDead) ||
-            Time.time - lastAttackTime < attackCooldown) return;
+            Time.time - lastAttackTime < (ranged != null ? ranged.projectileCooldown : attackCooldown)) return;
         lastAttackTime = Time.time;
         Attacked?.Invoke();
+
+        if (ranged != null)
+        {
+            pendingProjectile = ranged;
+            projectileReleaseAt = Time.time + ranged.projectileReleaseDelay;
+            attackEndsAt = Time.time + Mathf.Max(ranged.attackDuration, ranged.projectileReleaseDelay);
+            return;
+        }
 
         if (target.TryGetComponent<IDamageable>(out var damageableTarget))
         {
@@ -460,6 +494,8 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void OnDisable()
     {
+        pendingProjectile = null;
+        projectileReleaseAt = -1f;
         StopMoving();
         RestoreHitColors();
     }
