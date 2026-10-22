@@ -22,4 +22,14 @@ public sealed class EnemySpriteAppearance : ScriptableObject
     [Min(.1f)] public float attackDuration = .65f;
     [Min(.1f)] public float painDuration = .32f;
     [Min(.1f)] public float deathDuration = 1.5f;
+
+    [Header("Optional ranged attack")]
+    public Sprite projectileSprite;
+    [Min(.5f)] public float projectileAttackRange = 9f;
+    [Min(.1f)] public float projectileCooldown = 2.4f;
+    [Min(0)] public float projectileReleaseDelay = .36f;
+    [Min(.1f)] public float projectileSpeed = 9f;
+    [Min(.1f)] public float projectileLifetime = 3f;
+    [Min(.01f)] public float projectileRadius = .16f;
+    [Min(.1f)] public float projectileScale = .6f;
 }

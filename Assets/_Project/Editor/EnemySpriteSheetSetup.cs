@@ -199,9 +199,15 @@ public static class EnemySpriteSheetSetup
             var serialized = new SerializedObject(animator);
             serialized.FindProperty("alternateAppearance").objectReferenceValue = null;
             SerializedProperty appearances = serialized.FindProperty("alternateAppearances");
-            appearances.arraySize = 2;
-            appearances.GetArrayElementAtIndex(0).objectReferenceValue = wheelchair;
-            appearances.GetArrayElementAtIndex(1).objectReferenceValue = woman;
+            var variants = new List<UnityEngine.Object> { wheelchair, woman };
+            for (int i = 0; i < appearances.arraySize; i++)
+            {
+                var existing = appearances.GetArrayElementAtIndex(i).objectReferenceValue;
+                if (existing != null && !variants.Contains(existing)) variants.Add(existing);
+            }
+            appearances.arraySize = variants.Count;
+            for (int i = 0; i < variants.Count; i++)
+                appearances.GetArrayElementAtIndex(i).objectReferenceValue = variants[i];
             serialized.FindProperty("alternateChance").floatValue = .66f;
             serialized.ApplyModifiedPropertiesWithoutUndo();
             PrefabUtility.SaveAsPrefabAsset(root, EnemyPrefabPath);
