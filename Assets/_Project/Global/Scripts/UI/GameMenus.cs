@@ -15,7 +15,7 @@ namespace UniDoom.UI
     /// <summary>Shared main, pause, death, options and confirmation screens. Progress lasts for the current run.</summary>
     public sealed class GameMenus : MonoBehaviour
     {
-        public enum Screen { Gameplay, Main, Pause, Death, Options, Credits, Confirm, MapSelect }
+        public enum Screen { Gameplay, Main, Pause, Death, Options, Credits, Confirm, MapSelect, GameOver }
         public static GameMenus Instance { get; private set; }
         public static bool BlocksGameplay => Instance != null && (Instance.CurrentScreen != Screen.Gameplay || Instance.busy);
         public Screen CurrentScreen { get; private set; }
@@ -25,7 +25,8 @@ namespace UniDoom.UI
         Canvas canvas;
         RawImage backdrop;
         Image shade, fade;
-        GameObject main, pause, death, options, credits, confirmation, mapSelection;
+        GameObject main, pause, death, options, credits, confirmation, mapSelection, gameOver;
+        Button gameOverRestart, gameOverBack;
         Button chooseMap, mapFirst;
         Button mainFirst, pauseFirst, deathRetry, deathBack, optionsBack, creditsBack, cancel;
         Slider sensitivity, volume;
@@ -96,6 +97,15 @@ namespace UniDoom.UI
                     if (backReady) Select(ready ? deathRetry : deathBack);
                 }
             }
+            if (CurrentScreen == Screen.GameOver)
+            {
+                bool ready = deathOwner != null && deathOwner.IsReady;
+                if (gameOverRestart.interactable != ready)
+                {
+                    gameOverRestart.interactable = gameOverBack.interactable = ready;
+                    if (ready) Select(gameOverRestart);
+                }
+            }
         }
 
         void LateUpdate()
@@ -121,7 +131,7 @@ namespace UniDoom.UI
 
         public void OpenOptions()
         {
-            if (busy || CurrentScreen == Screen.Death || CurrentScreen == Screen.Confirm) return;
+            if (busy || CurrentScreen == Screen.Death || CurrentScreen == Screen.GameOver || CurrentScreen == Screen.Confirm) return;
             if (CurrentScreen == Screen.Gameplay) OpenPause();
             optionsOrigin = CurrentScreen;
             if (MouseSensitivityMenu.Instance != null)
@@ -166,16 +176,21 @@ namespace UniDoom.UI
             deadPlayer = player;
             deathOwner = owner;
             int lives = player != null ? player.RemainingLives : 0;
-            deathHint.text = lives > 0
-                ? $"Vidas restantes: {lives} / 3. Recomeçar no último ponto de retorno."
-                : "FIM DE JOGO — todas as vidas acabaram.";
+            if (lives == 0)
+            {
+                gameOverRestart.interactable = gameOverBack.interactable = false;
+                SetScreen(Screen.GameOver);
+                return;
+            }
+            deathHint.text = $"Vidas restantes: {lives} / 3. Recomeçar no último ponto de retorno.";
             deathRetry.interactable = deathBack.interactable = false;
             SetScreen(Screen.Death);
         }
 
         public void HideDeath()
         {
-            if (CurrentScreen == Screen.Death || (CurrentScreen == Screen.Confirm && confirmOrigin == Screen.Death))
+            if (CurrentScreen == Screen.Death || CurrentScreen == Screen.GameOver ||
+                (CurrentScreen == Screen.Confirm && (confirmOrigin == Screen.Death || confirmOrigin == Screen.GameOver)))
                 SetScreen(Screen.Gameplay);
             deadPlayer = null;
             deathOwner = null;
@@ -185,7 +200,7 @@ namespace UniDoom.UI
 
         public void RequestMainMenu()
         {
-            if (busy || (CurrentScreen != Screen.Pause && CurrentScreen != Screen.Death)) return;
+            if (busy || (CurrentScreen != Screen.Pause && CurrentScreen != Screen.Death && CurrentScreen != Screen.GameOver)) return;
             Confirm("VOCÊ TEM CERTEZA?\n<size=30>Os dados não serão salvos.</size>", ReturnToMain);
         }
 
@@ -210,6 +225,12 @@ namespace UniDoom.UI
         public void StartNewGame()
         {
             StartNewGameAtScene(SceneUtility.GetScenePathByBuildIndex(0));
+        }
+
+        void RestartFromBeginning()
+        {
+            if (CurrentScreen != Screen.GameOver || deathOwner == null || !deathOwner.IsReady || DoorReloadScreen.IsReloading) return;
+            StartNewGame();
         }
 
         void OpenMapSelection()
@@ -294,7 +315,7 @@ namespace UniDoom.UI
 
         public void RestartCheckpoint()
         {
-            if (busy || DoorReloadScreen.IsReloading) return;
+            if (busy || DoorReloadScreen.IsReloading || CurrentScreen == Screen.GameOver) return;
             if (CurrentScreen == Screen.Death)
             { if (deathOwner != null && deathOwner.CanRespawn) deadPlayer?.TryRespawn(); return; }
             var player = GameManager.SessionPlayer;
@@ -374,21 +395,23 @@ namespace UniDoom.UI
             main.SetActive(screen == Screen.Main);
             pause.SetActive(screen == Screen.Pause);
             death.SetActive(screen == Screen.Death);
+            gameOver.SetActive(screen == Screen.GameOver);
             options.SetActive(screen == Screen.Options);
             credits.SetActive(screen == Screen.Credits);
             confirmation.SetActive(screen == Screen.Confirm);
             mapSelection.SetActive(screen == Screen.MapSelect);
             bool mainBackground = screen == Screen.Main || screen == Screen.Credits || screen == Screen.MapSelect ||
                 (screen == Screen.Options && optionsOrigin == Screen.Main);
-            backdrop.gameObject.SetActive(mainBackground);
+            bool gameOverBackground = screen == Screen.GameOver || (screen == Screen.Confirm && confirmOrigin == Screen.GameOver);
+            backdrop.gameObject.SetActive(mainBackground || gameOverBackground);
             shade.gameObject.SetActive(screen != Screen.Gameplay);
-            shade.color = new Color(0, 0, 0, mainBackground ? 0 : screen == Screen.Pause ? .1f : screen == Screen.Death ? .2f : .78f);
+            shade.color = new Color(0, 0, 0, mainBackground || screen == Screen.GameOver ? 0 : screen == Screen.Pause ? .1f : screen == Screen.Death ? .2f : .78f);
             error.text = "";
             if (screen == Screen.Gameplay) RestoreHUD(); else HideHUD();
             EnsureEvents();
             Select(screen switch { Screen.Main => mainFirst, Screen.Pause => pauseFirst,
                 Screen.Death => deathRetry, Screen.Options => optionsBack, Screen.Credits => creditsBack,
-                Screen.Confirm => cancel, Screen.MapSelect => mapFirst, _ => null });
+                Screen.Confirm => cancel, Screen.MapSelect => mapFirst, Screen.GameOver => gameOverRestart, _ => null });
         }
 
         static void Select(Selectable control)
@@ -439,6 +462,8 @@ namespace UniDoom.UI
             main = Page("Main"); pause = Page("Pause"); death = Page("Death");
             options = Page("Options"); credits = Page("Credits"); confirmation = Page("Confirm");
             mapSelection = Page("Temporary map selection");
+            gameOver = Page("Game Over");
+            BuildGameOver();
             StandardHeader(main, 0);
             mainFirst = MenuStyle.Button(main.transform, "NewGame", "NOVO JOGO", 164, 505, 640, StartNewGame);
             chooseMap = MenuStyle.Button(main.transform, "TemporaryMapSelect", "ESCOLHER MAPA (TEMP.)", 164, 595, 640, OpenMapSelection);
@@ -481,6 +506,35 @@ namespace UniDoom.UI
         }
 
         GameObject Page(string name) => MenuStyle.Rect(name, layout, 0, 0, 1920, 1080).gameObject;
+
+        void BuildGameOver()
+        {
+            // Reuse the approved transparent artwork for the title, rule and subtitle.
+            // Buttons remain real UI controls so focus, pointer and gamepad feedback work.
+            var region = new Rect(.16f, .17f, .68f, .47f);
+            Header(gameOver, "GameOverArtwork", region, region.x * 1920, region.y * 1080,
+                region.width * 1920, region.height * 1080);
+            gameOverRestart = GameOverButton("RestartFromBeginning", "COMEÇAR DO INÍCIO", 724, RestartFromBeginning);
+            gameOverBack = GameOverButton("MainMenu", "VOLTAR AO MENU", 838, RequestMainMenu);
+            MenuStyle.Link(gameOverRestart, gameOverBack);
+            var navigation = MenuStyle.Text("Navigation", gameOver.transform,
+                "↑ ↓  NAVEGAR     ENTER  CONFIRMAR", 360, 985, 1200, 45, 23, MenuStyle.Muted);
+            navigation.alignment = TextAlignmentOptions.Center;
+        }
+
+        Button GameOverButton(string name, string label, float y, UnityEngine.Events.UnityAction action)
+        {
+            var button = MenuStyle.Button(gameOver.transform, name, label, 548, y, 824, action, 62);
+            ((RectTransform)button.transform).sizeDelta = new Vector2(824, 100);
+            var text = button.transform.Find("Label").GetComponent<TMP_Text>();
+            text.rectTransform.anchoredPosition = new Vector2(40, 0);
+            text.rectTransform.sizeDelta = new Vector2(744 / .65f, 100);
+            text.alignment = TextAlignmentOptions.Center;
+            var marker = (RectTransform)button.transform.Find("Selection");
+            marker.anchoredPosition = new Vector2(140, 0);
+            marker.sizeDelta = new Vector2(30, 100);
+            return button;
+        }
         void StandardHeader(GameObject page, int index)
         {
             var region = index switch

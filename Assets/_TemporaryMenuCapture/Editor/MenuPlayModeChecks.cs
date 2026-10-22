@@ -23,7 +23,7 @@ public static class MenuPlayModeChecks
     static bool preferencesCaptured;
     static bool mainCaptured;
     static Vector3 checkpointPosition;
-    static int previousGameViewSize;
+    static GameViewPreviewState previewBefore;
 
     static MenuPlayModeChecks() { EditorApplication.update += Tick; }
 
@@ -117,11 +117,11 @@ public static class MenuPlayModeChecks
 
     static void SetCaptureSize()
     {
+        previewBefore = GameViewPreviewState.Capture();
         var assembly = typeof(Editor).Assembly;
         var type = assembly.GetType("UnityEditor.GameView");
         var window = EditorWindow.GetWindow(type);
         var selected = type.GetProperty("selectedSizeIndex", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-        previousGameViewSize = (int)selected.GetValue(window);
         var sizesType = assembly.GetType("UnityEditor.GameViewSizes");
         var sizes = sizesType.GetProperty("instance", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy).GetValue(null);
         var groupType = assembly.GetType("UnityEditor.GameViewSizeGroupType");
@@ -282,9 +282,7 @@ public static class MenuPlayModeChecks
         }
         if (preferencesCaptured) AudioListener.volume = volumeBefore;
         Application.runInBackground = runInBackgroundBefore;
-        var gameView = typeof(Editor).Assembly.GetType("UnityEditor.GameView");
-        gameView.GetProperty("selectedSizeIndex", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-            .SetValue(EditorWindow.GetWindow(gameView), previousGameViewSize);
+        previewBefore?.Restore();
         if (preferencesCaptured) PlayerPrefs.SetFloat("UniDoom_MasterVolume", volumeBefore);
         PlayerPrefs.Save();
         SessionState.SetBool(ActiveKey, false);

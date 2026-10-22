@@ -1,0 +1,75 @@
+PASS: Main menu starts normally
+PASS: New session begins alive with three lives
+PASS: New session restores gameplay and movement
+PASS: Death consumes exactly one life: 1
+PASS: Remaining lives use ordinary death screen with checkpoint retry
+PASS: Retry accepts pointer input
+PASS: Checkpoint restores life without resetting remaining lives
+PASS: Checkpoint retry preserves saved position and collected key
+PASS: Next fatal hit reaches death after protection expires
+PASS: Death consumes exactly one life: 2
+PASS: Remaining lives use ordinary death screen with checkpoint retry
+PASS: Retry accepts pointer input
+PASS: Checkpoint restores life without resetting remaining lives
+PASS: Checkpoint retry preserves saved position and collected key
+PASS: Next fatal hit reaches death after protection expires
+PASS: Death consumes exactly one life: 3
+PASS: Third death opens dedicated Game Over screen at zero lives
+PASS: Game Over freezes simulation and movement
+PASS: Game Over freezes camera input
+PASS: Game Over releases cursor for buttons
+PASS: Zero lives cannot retry checkpoint
+PASS: Direct checkpoint action cannot bypass Game Over
+PASS: Game Over has exactly Restart From Beginning and Main Menu
+PASS: Approved Game Over has no deleted sentence or key inventory
+PASS: Real game background fills the entire canvas edge to edge
+PASS: Game Over defaults to Restart From Beginning
+PASS: Visible restart button is reachable by pointer raycast
+PASS: Keyboard/gamepad navigation reaches Main Menu
+PASS: Escape cannot resume an exhausted session
+PASS: MainMenu accepts pointer input
+PASS: Return to menu asks confirmation and defaults to Cancel
+PASS: Cancel accepts pointer input
+PASS: Cancel returns to Game Over without reviving or changing lives
+PASS: RestartFromBeginning accepts pointer input
+PASS: Restart button starts new-game transition
+PASS: Restart replaces exhausted session with three lives and no saved checkpoint
+PASS: Restart clears collected keys and restores full health
+PASS: Restart begins in the game's first scene
+PASS: Restart restores gameplay, movement and locked hidden cursor
+PASS: Restart leaves one session and one player
+PASS: Death consumes exactly one life: 1
+PASS: Remaining lives use ordinary death screen with checkpoint retry
+PASS: Retry accepts pointer input
+PASS: Checkpoint restores life without resetting remaining lives
+PASS: Checkpoint retry preserves saved position and collected key
+PASS: Next fatal hit reaches death after protection expires
+PASS: Death consumes exactly one life: 2
+PASS: Remaining lives use ordinary death screen with checkpoint retry
+PASS: Retry accepts pointer input
+PASS: Checkpoint restores life without resetting remaining lives
+PASS: Checkpoint retry preserves saved position and collected key
+PASS: Next fatal hit reaches death after protection expires
+PASS: Death consumes exactly one life: 3
+PASS: Third death opens dedicated Game Over screen at zero lives
+PASS: Game Over freezes simulation and movement
+PASS: Game Over freezes camera input
+PASS: Game Over releases cursor for buttons
+PASS: Zero lives cannot retry checkpoint
+PASS: Direct checkpoint action cannot bypass Game Over
+PASS: Game Over has exactly Restart From Beginning and Main Menu
+PASS: Approved Game Over has no deleted sentence or key inventory
+PASS: Real game background fills the entire canvas edge to edge
+PASS: Game Over defaults to Restart From Beginning
+PASS: Visible restart button is reachable by pointer raycast
+PASS: Keyboard/gamepad navigation reaches Main Menu
+PASS: Escape cannot resume an exhausted session
+PASS: MainMenu accepts pointer input
+PASS: Return to menu asks confirmation and defaults to Cancel
+PASS: Cancel accepts pointer input
+PASS: Cancel returns to Game Over without reviving or changing lives
+PASS: MainMenu accepts pointer input
+PASS: ConfirmReturn accepts pointer input
+PASS: Confirmed return destroys exhausted session and opens main menu
+PASS: Main menu retains paused world and free cursor
+PASS: Menu flows preserve volume, sensitivity and inversion preferences
