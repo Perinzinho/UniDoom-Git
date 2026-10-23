@@ -25,6 +25,12 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] private LayerMask obstacleLayers = Physics.DefaultRaycastLayers;
     [SerializeField, Min(.05f)] private float perceptionInterval = .15f;
     [SerializeField, Min(.1f)] private float searchDuration = 4f;
+    [SerializeField, Min(.5f)] private float searchRadius = 3f;
+    [SerializeField, Min(.1f)] private float searchPause = .6f;
+
+    [Header("Group awareness")]
+    [SerializeField, Min(0f)] private float alertRadius = 7f;
+    [SerializeField, Min(.1f)] private float alertCooldown = 2f;
 
     [Header("Wandering")]
     [SerializeField, Min(0f)] private float patrolSpeed = 1f;
@@ -58,6 +64,10 @@ public class Enemy : MonoBehaviour, IDamageable
     private Vector3 progressPosition;
     private float nextProgressCheck, steeringSide;
     private bool hasPatrolDestination;
+    private Vector3 searchDestination;
+    private bool reachedLastSeenPosition;
+    private float searchWaitUntil, nextAlert;
+    private readonly Collider[] alertHits = new Collider[48];
     private readonly RaycastHit[] sightHits = new RaycastHit[32];
     private readonly RaycastHit[] movementHits = new RaycastHit[16];
     private CapsuleCollider capsule;
@@ -154,6 +164,7 @@ public class Enemy : MonoBehaviour, IDamageable
             {
                 lastSeenPosition = target.position;
                 ChangeState(BehaviourState.Chasing);
+                AlertNearby();
             }
             else if (State == BehaviourState.Chasing) ChangeState(BehaviourState.Searching);
         }
@@ -170,11 +181,7 @@ public class Enemy : MonoBehaviour, IDamageable
             Face(target.position - transform.position, Time.deltaTime);
             TryAttack();
         }
-        else if (State == BehaviourState.Searching && HorizontalDistance(transform.position, lastSeenPosition) < .5f)
-        {
-            StopMoving();
-            Face(Quaternion.Euler(0f, 60f * Time.deltaTime, 0f) * transform.forward, Time.deltaTime);
-        }
+        else if (State == BehaviourState.Searching) Search();
         else MoveTo(lastSeenPosition, moveSpeed, .35f);
     }
 
@@ -228,13 +235,86 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         if (State == state) return;
         State = state;
-        if (state == BehaviourState.Searching) searchEndsAt = Time.time + searchDuration;
+        if (state == BehaviourState.Searching)
+        {
+            searchEndsAt = Time.time + searchDuration;
+            searchDestination = lastSeenPosition;
+            reachedLastSeenPosition = false;
+            searchWaitUntil = 0f;
+        }
         nextPathUpdate = 0f;
         hasPatrolDestination = false;
         waitUntil = 0f;
         progressPosition = transform.position;
         nextProgressCheck = Time.time + 1.5f;
         StopMoving();
+    }
+
+    private void Search()
+    {
+        bool arrived = HorizontalDistance(transform.position, searchDestination) < .5f;
+        bool unreachable = UsingAgent && !agent.pathPending && agent.hasPath &&
+            agent.pathStatus != NavMeshPathStatus.PathComplete && agent.remainingDistance < .5f;
+        if (!arrived && !unreachable && Time.time >= nextProgressCheck)
+        {
+            unreachable = HorizontalDistance(transform.position, progressPosition) < .15f;
+            progressPosition = transform.position;
+            nextProgressCheck = Time.time + 1.5f;
+        }
+        if (!arrived && !unreachable && searchWaitUntil <= 0f)
+        {
+            MoveTo(searchDestination, moveSpeed, .35f);
+            return;
+        }
+        StopMoving();
+        if (!reachedLastSeenPosition)
+        {
+            reachedLastSeenPosition = true;
+            // Allow time to investigate after reaching the remembered location.
+            searchEndsAt = Time.time + searchDuration;
+        }
+        if (searchWaitUntil <= 0f) searchWaitUntil = Time.time + searchPause;
+        Face(Quaternion.Euler(0f, steeringSide * 90f * Time.deltaTime, 0f) * transform.forward, Time.deltaTime);
+        if (Time.time < searchWaitUntil) return;
+        searchWaitUntil = 0f;
+        for (int i = 0; i < 6; i++)
+        {
+            Vector2 offset = Random.insideUnitCircle * searchRadius;
+            Vector3 candidate = lastSeenPosition + new Vector3(offset.x, 0f, offset.y);
+            if (UsingAgent)
+            {
+                var filter = new NavMeshQueryFilter { agentTypeID = agent.agentTypeID, areaMask = agent.areaMask };
+                if (!NavMesh.SamplePosition(candidate, out var hit, 1f, filter) ||
+                    !agent.CalculatePath(hit.position, patrolPath) || patrolPath.status != NavMeshPathStatus.PathComplete)
+                    continue;
+                candidate = hit.position;
+            }
+            else if (!TryGround(candidate, out candidate)) continue;
+            if (HorizontalDistance(transform.position, candidate) < .75f) continue;
+            searchDestination = candidate;
+            nextPathUpdate = 0f;
+            progressPosition = transform.position;
+            nextProgressCheck = Time.time + 1.5f;
+            return;
+        }
+        searchWaitUntil = Time.time + searchPause;
+    }
+
+    private void AlertNearby()
+    {
+        if (alertRadius <= 0f || Time.time < nextAlert) return;
+        nextAlert = Time.time + alertCooldown;
+        int count = Physics.OverlapSphereNonAlloc(transform.position, alertRadius, alertHits,
+            Physics.AllLayers, QueryTriggerInteraction.Ignore);
+        for (int i = 0; i < count; i++)
+        {
+            Enemy ally = alertHits[i].GetComponentInParent<Enemy>();
+            if (ally == null || ally == this || !ally.isActiveAndEnabled || ally.IsDead ||
+                ally.State != BehaviourState.Wandering) continue;
+            // An alert shares a remembered position, never continuous tracking through walls.
+            ally.lastSeenPosition = lastSeenPosition;
+            ally.ChangeState(BehaviourState.Searching);
+        }
     }
 
     private void Wander()
@@ -449,6 +529,22 @@ public class Enemy : MonoBehaviour, IDamageable
         if (currentHealth <= 0f)
         {
             Die(source);
+        }
+        else if (source != null && source.GetComponentInParent<PlayerLife>() is PlayerLife attacker)
+        {
+            if (target == null) FindTarget();
+            lastSeenPosition = attacker.transform.position;
+            // A hit from behind supplies a clue without bypassing visual perception.
+            if (State != BehaviourState.Chasing)
+            {
+                ChangeState(BehaviourState.Searching);
+                searchDestination = lastSeenPosition;
+                reachedLastSeenPosition = false;
+                searchWaitUntil = 0f;
+                searchEndsAt = Time.time + searchDuration;
+                nextPathUpdate = 0f;
+            }
+            AlertNearby();
         }
     }
 
