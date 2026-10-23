@@ -111,6 +111,7 @@ namespace UniDoom.UI
         void LateUpdate()
         {
             if (CurrentScreen == Screen.Document && documentOwner == null) CloseDocument();
+            if (CurrentScreen == Screen.Document) FitDocument();
             if (ownsPause) { Time.timeScale = 0; AudioListener.pause = true; FreezePlayer(); }
             ApplyCursorState();
         }
