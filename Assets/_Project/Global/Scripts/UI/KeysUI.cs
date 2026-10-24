@@ -10,13 +10,18 @@ public class KeysUI : MonoBehaviour
 
     private void Awake()
     {
-        foreach (var icon in keyIcons)
+        for (int i = 0; i < keyIcons.Length; i++)
         {
+            var icon = keyIcons[i];
             icon.SetActive(false);
             var rect = icon.GetComponent<RectTransform>();
-            rect.anchoredPosition += Vector2.down * 42f;
+            rect.anchorMin = rect.anchorMax = new Vector2(0, 1);
+            rect.pivot = new Vector2(.5f, .5f);
+            rect.localScale = Vector3.one;
+            rect.sizeDelta = new Vector2(42, 42);
+            rect.anchoredPosition = new Vector2(53 + i * 54, -92);
         }
-        livesText = MenuStyle.Text("Remaining lives", transform, "VIDAS  3 / 3", 12, 6, 180, 30, 23, MenuStyle.Paper);
+        livesText = MenuStyle.Text("Remaining lives", transform, "VIDAS  3 / 3", 32, 28, 220, 36, 26, MenuStyle.Paper);
     }
 
     public void SetPlayer(PlayerRespawn newPlayer)

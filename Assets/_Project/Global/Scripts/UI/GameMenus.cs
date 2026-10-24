@@ -43,6 +43,11 @@ namespace UniDoom.UI
         readonly Dictionary<CinemachineInputAxisController, bool> cameraStates = new();
         readonly Dictionary<Canvas, bool> hudStates = new();
         readonly List<Sprite> artwork = new();
+        readonly List<(TMP_Text text, float size)> smallLabels = new();
+        Vector2 fittedCanvasSize;
+        Rect fittedSafeArea;
+        Screen fittedScreen;
+        bool fitted;
         const string VolumeKey = "UniDoom_MasterVolume";
         const string FullscreenKey = "UniDoom_Fullscreen";
 
@@ -110,6 +115,7 @@ namespace UniDoom.UI
 
         void LateUpdate()
         {
+            Fit();
             if (CurrentScreen == Screen.Document && documentOwner == null) CloseDocument();
             if (CurrentScreen == Screen.Document) FitDocument();
             if (ownsPause) { Time.timeScale = 0; AudioListener.pause = true; FreezePlayer(); }
@@ -418,6 +424,7 @@ namespace UniDoom.UI
                 Screen.Death => deathRetry, Screen.Options => optionsBack, Screen.Credits => creditsBack,
                 Screen.Confirm => cancel, Screen.MapSelect => mapFirst, Screen.GameOver => gameOverRestart,
                 Screen.Document => documentClose, _ => null });
+            Fit();
         }
 
         static void Select(Selectable control)
@@ -453,7 +460,7 @@ namespace UniDoom.UI
             var scaler = gameObject.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920, 1080);
-            scaler.matchWidthOrHeight = .5f;
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
             gameObject.AddComponent<GraphicRaycaster>();
             backdrop = MenuStyle.Rect("Real campus photograph", transform, 0, 0, 0, 0).gameObject.AddComponent<RawImage>();
             MenuStyle.Stretch(backdrop.rectTransform);
@@ -489,6 +496,8 @@ namespace UniDoom.UI
             Footer(pause);
             StandardHeader(death, 2);
             deathHint = MenuStyle.Text("Return hint", death.transform, "", 165, 450, 1200, 38, 23, MenuStyle.Muted);
+            deathHint.textWrappingMode = TextWrappingModes.Normal;
+            deathHint.rectTransform.sizeDelta = new Vector2(1200, 100);
             deathRetry = MenuStyle.Button(death.transform, "Retry", "TENTAR NOVAMENTE", 164, 595, 640, RestartCheckpoint);
             deathBack = MenuStyle.Button(death.transform, "MainMenu", "VOLTAR AO MENU", 164, 685, 640, RequestMainMenu);
             MenuStyle.Link(deathRetry, deathBack);
@@ -507,8 +516,11 @@ namespace UniDoom.UI
             cancel = MenuStyle.Button(confirmation.transform, "Cancel", "CANCELAR", 320, 750, 600, Back);
             MenuStyle.Link(cancel, confirm);
             error = MenuStyle.Text("Error", layout, "", 165, 1020, 1580, 50, 22, MenuStyle.Paper);
+            error.textWrappingMode = TextWrappingModes.Normal;
             fade = MenuStyle.Image("Transition", transform, 0, 0, 0, 0, Color.clear);
             MenuStyle.Stretch(fade.rectTransform);
+            foreach (var label in layout.GetComponentsInChildren<TMP_Text>(true))
+                if (label.fontSize <= 30) smallLabels.Add((label, label.fontSize));
             Fit();
         }
 
@@ -684,9 +696,36 @@ namespace UniDoom.UI
         void OnRectTransformDimensionsChange() { if (layout != null) Fit(); }
         void Fit()
         {
+            if (layout == null || canvas == null) return;
             var bounds = ((RectTransform)transform).rect;
             if (bounds.width <= 0 || bounds.height <= 0) return;
-            layout.localScale = Vector3.one * Mathf.Min(bounds.width / 1920, bounds.height / 1080);
+            Rect pixels = canvas.pixelRect, safePixels = UnityEngine.Screen.safeArea;
+            if (pixels.width <= 0 || pixels.height <= 0) return;
+            safePixels = Rect.MinMaxRect(Mathf.Max(pixels.xMin, safePixels.xMin), Mathf.Max(pixels.yMin, safePixels.yMin),
+                Mathf.Min(pixels.xMax, safePixels.xMax), Mathf.Min(pixels.yMax, safePixels.yMax));
+            if (safePixels.width <= 0 || safePixels.height <= 0) safePixels = pixels;
+            if (fitted && fittedCanvasSize == bounds.size && fittedSafeArea == safePixels && fittedScreen == CurrentScreen) return;
+            fitted = true;
+            fittedCanvasSize = bounds.size;
+            fittedSafeArea = safePixels;
+            fittedScreen = CurrentScreen;
+
+            var safe = new Rect(bounds.xMin + (safePixels.xMin - pixels.xMin) / pixels.width * bounds.width,
+                bounds.yMin + (safePixels.yMin - pixels.yMin) / pixels.height * bounds.height,
+                safePixels.width / pixels.width * bounds.width, safePixels.height / pixels.height * bounds.height);
+            // The main/pause/death controls fit a narrower composition on 4:3 and 5:4 monitors.
+            // Other pages keep their wider two-column layouts. Artwork and buttons retain their proportions.
+            bool compact = CurrentScreen == Screen.Main || CurrentScreen == Screen.Pause || CurrentScreen == Screen.Death;
+            Rect frame = MenuStyle.FitComposition(safe, compact, out Vector2 designSize);
+            layout.sizeDelta = designSize;
+            layout.anchoredPosition = frame.center - bounds.center;
+            float scale = frame.height / designSize.y;
+            layout.localScale = Vector3.one * scale;
+            if (deathHint != null) deathHint.rectTransform.sizeDelta = new Vector2(Mathf.Min(1200, designSize.x - 330), 100);
+            if (error != null) error.rectTransform.sizeDelta = new Vector2(designSize.x - 330, 50);
+            float pixelScale = Mathf.Max(.01f, canvas.scaleFactor * scale);
+            foreach (var label in smallLabels)
+                label.text.fontSize = Mathf.Clamp(14 / pixelScale, label.size, label.size * 1.5f);
             if (backdrop.texture == null) return;
             float screenAspect = bounds.width / bounds.height, imageAspect = (float)backdrop.texture.width / backdrop.texture.height;
             float uw = Mathf.Min(1, screenAspect / imageAspect), uh = Mathf.Min(1, imageAspect / screenAspect);
