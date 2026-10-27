@@ -59,7 +59,7 @@ namespace UniDoom.UI
             new DestinationArtwork("EntranceGarden")
         };
         private static readonly string[] DebugSectors =
-            { "BLOCO UNIVERSITÁRIO", "BIBLIOTECA", "SALA DE AULA", "DIRETORIA", "CORREDOR DE ENTRADA" };
+            { "REDONDO", "BIBLIOTECA", "SALA DE AULA", "DIRETORIA", "CORREDOR DE ENTRADA" };
         private readonly Dictionary<string, Texture2D> destinationImages = new(StringComparer.OrdinalIgnoreCase);
         private Texture2D activePassageImage;
         private int debugDestinationIndex;
@@ -287,7 +287,7 @@ namespace UniDoom.UI
                 : System.IO.Path.GetFileNameWithoutExtension(destination).Trim().ToUpperInvariant();
             switch (destination)
             {
-                case "HUB": case "CILINDRO": case "BLOCO UNIVERSITÁRIO": destination = "CYLINDER"; break;
+                case "HUB": case "CILINDRO": case "BLOCO UNIVERSITÁRIO": case "REDONDO": destination = "CYLINDER"; break;
                 case "BIBLIOTECA": destination = "LIBRARY"; break;
                 case "SALA DE AULA": destination = "CLASSROOM"; break;
                 case "DIRETORIA": destination = "DIRECTORROOM"; break;
