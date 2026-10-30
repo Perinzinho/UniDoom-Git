@@ -25,9 +25,10 @@ namespace UniDoom.UI
             var canvas = gameObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 32000;
-            var scaler = gameObject.AddComponent<CanvasScaler>();
+            var scaler = gameObject.AddComponent<GameplayCanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920, 1080);
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
             scaler.matchWidthOrHeight = .5f;
             var rect = MenuStyle.Rect("Checkpoint notification", transform, 0, 0, 640, 82);
             rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(.5f, 1);

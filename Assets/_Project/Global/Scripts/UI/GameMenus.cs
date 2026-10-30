@@ -455,7 +455,8 @@ namespace UniDoom.UI
             var scaler = gameObject.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920, 1080);
-            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+            scaler.matchWidthOrHeight = .5f;
             gameObject.AddComponent<GraphicRaycaster>();
             backdrop = MenuStyle.Rect("Real campus photograph", transform, 0, 0, 0, 0).gameObject.AddComponent<RawImage>();
             MenuStyle.Stretch(backdrop.rectTransform);
@@ -474,38 +475,38 @@ namespace UniDoom.UI
             BuildDocument();
             BuildGameOver();
             StandardHeader(main, 0);
-            mainFirst = MenuStyle.Button(main.transform, "NewGame", "NOVO JOGO", 164, 505, 640, StartNewGame);
-            chooseMap = MenuStyle.Button(main.transform, "TemporaryMapSelect", "ESCOLHER MAPA (TEMP.)", 164, 595, 640, OpenMapSelection);
-            var mainOptions = MenuStyle.Button(main.transform, "Options", "OPÇÕES", 164, 685, 640, OpenOptions);
-            var creditButton = MenuStyle.Button(main.transform, "Credits", "CRÉDITOS", 164, 775, 640, () => SetScreen(Screen.Credits));
-            var quit = MenuStyle.Button(main.transform, "Quit", "SAIR", 164, 865, 640, Quit);
+            mainFirst = ColumnButton(main, "NewGame", "NOVO JOGO", StartNewGame);
+            chooseMap = ColumnButton(main, "TemporaryMapSelect", "ESCOLHER MAPA (TEMP.)", OpenMapSelection);
+            var mainOptions = ColumnButton(main, "Options", "OPÇÕES", OpenOptions);
+            var creditButton = ColumnButton(main, "Credits", "CRÉDITOS", () => SetScreen(Screen.Credits));
+            var quit = ColumnButton(main, "Quit", "SAIR", Quit);
             MenuStyle.Link(mainFirst, chooseMap, mainOptions, creditButton, quit);
-            Footer(main);
+            ColumnFooter(main);
             BuildMapSelection();
             StandardHeader(pause, 1);
-            pauseFirst = MenuStyle.Button(pause.transform, "Resume", "CONTINUAR   [ESC]", 164, 505, 640, Resume);
-            var pauseOptions = MenuStyle.Button(pause.transform, "Options", "OPÇÕES", 164, 595, 640, OpenOptions);
-            var restart = MenuStyle.Button(pause.transform, "Restart", "REINICIAR CHECKPOINT", 164, 685, 640, RestartCheckpoint);
-            var returnMain = MenuStyle.Button(pause.transform, "MainMenu", "VOLTAR AO MENU", 164, 775, 640, RequestMainMenu);
+            pauseFirst = ColumnButton(pause, "Resume", "CONTINUAR   [ESC]", Resume);
+            var pauseOptions = ColumnButton(pause, "Options", "OPÇÕES", OpenOptions);
+            var restart = ColumnButton(pause, "Restart", "REINICIAR CHECKPOINT", RestartCheckpoint);
+            var returnMain = ColumnButton(pause, "MainMenu", "VOLTAR AO MENU", RequestMainMenu);
             MenuStyle.Link(pauseFirst, pauseOptions, restart, returnMain);
-            Footer(pause);
+            ColumnFooter(pause);
             StandardHeader(death, 2);
-            deathHint = MenuStyle.Text("Return hint", death.transform, "", 165, 450, 1200, 38, 23, MenuStyle.Muted);
+            deathHint = MenuStyle.Text("Return hint", death.transform, "", 0, 0, 660, 64, 21, MenuStyle.Muted);
             deathHint.textWrappingMode = TextWrappingModes.Normal;
-            deathHint.rectTransform.sizeDelta = new Vector2(1200, 100);
-            deathRetry = MenuStyle.Button(death.transform, "Retry", "TENTAR NOVAMENTE", 164, 595, 640, RestartCheckpoint);
-            deathBack = MenuStyle.Button(death.transform, "MainMenu", "VOLTAR AO MENU", 164, 685, 640, RequestMainMenu);
+            ColumnElement(deathHint.gameObject, 660, 64);
+            deathRetry = ColumnButton(death, "Retry", "TENTAR NOVAMENTE", RestartCheckpoint);
+            deathBack = ColumnButton(death, "MainMenu", "VOLTAR AO MENU", RequestMainMenu);
             MenuStyle.Link(deathRetry, deathBack);
-            Footer(death);
+            ColumnFooter(death);
             BuildOptions();
-            MenuStyle.Text("Heading", credits.transform, "CRÉDITOS", 200, 230, 1400, 100, 76, MenuStyle.Paper);
-            MenuStyle.Text("Game", credits.transform, "UNIDOOM", 205, 365, 1300, 70, 48, MenuStyle.Paper);
-            MenuStyle.Text("Project", credits.transform, "Projeto de jogo desenvolvido na Unity.", 205, 460, 1400, 60, 30, MenuStyle.Muted);
+            MenuStyle.Text("Heading", credits.transform, "CRÉDITOS", 200, 230, 1400, 100, 52, MenuStyle.Paper);
+            MenuStyle.Text("Game", credits.transform, "UNIDOOM", 205, 365, 1300, 70, 36, MenuStyle.Paper);
+            MenuStyle.Text("Project", credits.transform, "Projeto de jogo desenvolvido na Unity.", 205, 460, 1400, 60, 26, MenuStyle.Muted);
             // Credits reflect dependencies actually used; no invented contributor names.
             MenuStyle.Text("Packages", credits.transform, "Unity · Universal Render Pipeline · Cinemachine · TextMesh Pro", 205, 535, 1500, 60, 25, MenuStyle.Muted);
             creditsBack = MenuStyle.Button(credits.transform, "Back", "VOLTAR", 165, 800, 500, Back);
             MenuStyle.Link(creditsBack);
-            confirmText = MenuStyle.Text("Warning", confirmation.transform, "", 320, 300, 1350, 220, 66, MenuStyle.Paper);
+            confirmText = MenuStyle.Text("Warning", confirmation.transform, "", 320, 300, 1350, 220, 42, MenuStyle.Paper);
             confirmText.textWrappingMode = TextWrappingModes.Normal;
             var confirm = MenuStyle.Button(confirmation.transform, "ConfirmReturn", "VOLTAR AO MENU", 320, 650, 600, () => confirmAction?.Invoke());
             cancel = MenuStyle.Button(confirmation.transform, "Cancel", "CANCELAR", 320, 750, 600, Back);
@@ -519,34 +520,73 @@ namespace UniDoom.UI
             Fit();
         }
 
-        GameObject Page(string name) => MenuStyle.Rect(name, layout, 0, 0, 1920, 1080).gameObject;
+        GameObject Page(string name)
+        {
+            var page = MenuStyle.Rect(name, layout, 0, 0, 0, 0);
+            MenuStyle.Stretch(page);
+            return page.gameObject;
+        }
+
+        static void ConfigureColumn(GameObject page, float width, bool centered = false)
+        {
+            var rect = (RectTransform)page.transform;
+            rect.anchorMin = rect.anchorMax = new Vector2(centered ? .5f : 0, .5f);
+            rect.pivot = new Vector2(centered ? .5f : 0, .5f);
+            rect.anchoredPosition = new Vector2(centered ? 0 : 160, 0);
+            rect.sizeDelta = new Vector2(width, 0);
+            var group = page.AddComponent<VerticalLayoutGroup>();
+            group.childAlignment = centered ? TextAnchor.UpperCenter : TextAnchor.UpperLeft;
+            group.spacing = 12;
+            group.childControlWidth = group.childControlHeight = true;
+            group.childForceExpandWidth = group.childForceExpandHeight = false;
+            // The parent composition does not drive this column's height; no competing fitter.
+            page.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+        }
+
+        static void ColumnElement(GameObject element, float width, float height)
+        {
+            var sizing = element.AddComponent<LayoutElement>();
+            sizing.minWidth = sizing.preferredWidth = width;
+            sizing.minHeight = sizing.preferredHeight = height;
+            sizing.flexibleWidth = sizing.flexibleHeight = 0;
+        }
+
+        static Button ColumnButton(GameObject page, string name, string label, UnityEngine.Events.UnityAction action,
+            float width = 500, float size = 32)
+        {
+            var button = MenuStyle.Button(page.transform, name, label, 0, 0, width, action, size);
+            ColumnElement(button.gameObject, width, 64);
+            return button;
+        }
+
+        static void ColumnFooter(GameObject page, float width = 500, bool centered = false)
+        {
+            var text = MenuStyle.Text("Navigation", page.transform, "↑ ↓  NAVEGAR     ENTER  CONFIRMAR",
+                0, 0, width, 32, 19, MenuStyle.Muted);
+            if (centered) text.alignment = TextAlignmentOptions.Center;
+            ColumnElement(text.gameObject, width, 32);
+        }
 
         void BuildGameOver()
         {
-            // Reuse the approved transparent artwork for the title, rule and subtitle.
-            // Buttons remain real UI controls so focus, pointer and gamepad feedback work.
+            ConfigureColumn(gameOver, 760, true);
             var region = new Rect(.16f, .17f, .68f, .47f);
-            Header(gameOver, "GameOverArtwork", region, region.x * 1920, region.y * 1080,
-                region.width * 1920, region.height * 1080);
-            gameOverRestart = GameOverButton("RestartFromBeginning", "COMEÇAR DO INÍCIO", 724, RestartFromBeginning);
-            gameOverBack = GameOverButton("MainMenu", "VOLTAR AO MENU", 838, RequestMainMenu);
+            var heading = MenuStyle.Rect("Heading", gameOver.transform, 0, 0, 760, 296);
+            ColumnElement(heading.gameObject, 760, 296);
+            Header(heading.gameObject, "GameOverArtwork", region, 0, 0, 760, 296);
+            gameOverRestart = GameOverButton("RestartFromBeginning", "COMEÇAR DO INÍCIO", RestartFromBeginning);
+            gameOverBack = GameOverButton("MainMenu", "VOLTAR AO MENU", RequestMainMenu);
             MenuStyle.Link(gameOverRestart, gameOverBack);
-            var navigation = MenuStyle.Text("Navigation", gameOver.transform,
-                "↑ ↓  NAVEGAR     ENTER  CONFIRMAR", 360, 985, 1200, 45, 23, MenuStyle.Muted);
-            navigation.alignment = TextAlignmentOptions.Center;
+            ColumnFooter(gameOver, 760, true);
         }
 
-        Button GameOverButton(string name, string label, float y, UnityEngine.Events.UnityAction action)
+        Button GameOverButton(string name, string label, UnityEngine.Events.UnityAction action)
         {
-            var button = MenuStyle.Button(gameOver.transform, name, label, 548, y, 824, action, 62);
-            ((RectTransform)button.transform).sizeDelta = new Vector2(824, 100);
+            var button = ColumnButton(gameOver, name, label, action, 600, 34);
             var text = button.transform.Find("Label").GetComponent<TMP_Text>();
-            text.rectTransform.anchoredPosition = new Vector2(40, 0);
-            text.rectTransform.sizeDelta = new Vector2(744, 100);
+            text.rectTransform.offsetMin = new Vector2(40, 0);
+            text.rectTransform.offsetMax = new Vector2(-40, 0);
             text.alignment = TextAlignmentOptions.Center;
-            var marker = (RectTransform)button.transform.Find("Selection");
-            marker.anchoredPosition = new Vector2(10, 0);
-            marker.sizeDelta = new Vector2(30, 100);
             return button;
         }
         void StandardHeader(GameObject page, int index)
@@ -557,10 +597,21 @@ namespace UniDoom.UI
                 1 => new Rect(.06f, .36f, .42f, .29f),
                 _ => new Rect(.06f, .65f, .59f, .345f)
             };
-            // Identical scale and material treatment across every heading in the shared atlas.
-            Header(page, "MenuHeadings", region, 165, index == 2 ? 160 : 180,
-                700 * region.width / .42f, 240 * region.height / .31f);
-            MenuStyle.Image("Header rule", page.transform, 165, 438, 160, 3, MenuStyle.Rust);
+            float width = index == 2 ? 660 : 500;
+            float headingWidth = index == 2 ? 600 : index == 0 ? 440 : 420;
+            float headingHeight = index == 2 ? 176 : index == 0 ? 164 : 156;
+            ConfigureColumn(page, width);
+            var heading = MenuStyle.Rect("Heading", page.transform, 0, 0, width, headingHeight);
+            ColumnElement(heading.gameObject, width, headingHeight);
+            Header(heading.gameObject, "MenuHeadings", region, 0, 0, headingWidth, headingHeight);
+            var rule = MenuStyle.Rect("Header rule", page.transform, 0, 0, width, 2);
+            ColumnElement(rule.gameObject, width, 2);
+            MenuStyle.Image("Accent", rule, 0, 0, 100, 2, MenuStyle.Rust);
+            if (index != 2)
+            {
+                var gap = MenuStyle.Rect("Breathing space", page.transform, 0, 0, width, 8);
+                ColumnElement(gap.gameObject, width, 8);
+            }
         }
         void Header(GameObject page, string resource, Rect region, float x, float y, float w, float h)
         {
@@ -582,7 +633,7 @@ namespace UniDoom.UI
         // Temporary shortcut: use the same fresh-session loading flow as New Game.
         void BuildMapSelection()
         {
-            MenuStyle.Text("Title", mapSelection.transform, "ESCOLHER MAPA", 165, 135, 1400, 100, 72, MenuStyle.Paper);
+            MenuStyle.Text("Title", mapSelection.transform, "ESCOLHER MAPA", 165, 135, 1400, 100, 52, MenuStyle.Paper);
             MenuStyle.Text("Hint", mapSelection.transform, "Selecione onde começar uma nova partida.", 165, 245, 1400, 45, 26, MenuStyle.Muted);
             var controls = new List<Selectable>();
             for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
@@ -602,15 +653,15 @@ namespace UniDoom.UI
                     _ => sceneName
                 };
                 var button = MenuStyle.Button(mapSelection.transform, "Map_" + sceneName, label,
-                    165 + controls.Count % 2 * 830, 320 + controls.Count / 2 * 110, 760, () => StartNewGameAtScene(scene), 40);
+                    165 + controls.Count % 2 * 830, 320 + controls.Count / 2 * 110, 760, () => StartNewGameAtScene(scene), 32);
                 if (mapFirst == null) mapFirst = button;
                 controls.Add(button);
                 if (sceneName == "Basement")
                     controls.Add(MenuStyle.Button(mapSelection.transform, "Map_BasementBoss", "PORÃO — ARENA DO BOSS",
                         165 + controls.Count % 2 * 830, 320 + controls.Count / 2 * 110, 760,
-                        () => StartNewGameAtScene(scene, true), 40));
+                        () => StartNewGameAtScene(scene, true), 32));
             }
-            var back = MenuStyle.Button(mapSelection.transform, "Back", "VOLTAR   [ESC]", 165, 885, 1000, Back, 40);
+            var back = MenuStyle.Button(mapSelection.transform, "Back", "VOLTAR   [ESC]", 165, 885, 1000, Back, 34);
             if (mapFirst == null) mapFirst = back;
             controls.Add(back);
             MenuStyle.Link(controls.ToArray());
@@ -629,13 +680,13 @@ namespace UniDoom.UI
 
         void BuildOptions()
         {
-            MenuStyle.Text("Title", options.transform, "OPÇÕES", 205, 150, 1200, 105, 78, MenuStyle.Paper);
+            MenuStyle.Text("Title", options.transform, "OPÇÕES", 205, 150, 1200, 105, 52, MenuStyle.Paper);
             sensitivity = Slider("Sensibilidade do mouse", 320, .1f, 3, value =>
             { MouseSensitivityMenu.Instance?.SetSensitivity(value); UpdateOptionsLabels(); });
-            sensitivityValue = MenuStyle.Text("Sensitivity value", options.transform, "", 1260, 320, 300, 50, 29, MenuStyle.Amber);
+            sensitivityValue = MenuStyle.Text("Sensitivity value", options.transform, "", 1260, 320, 300, 50, 26, MenuStyle.Amber);
             volume = Slider("Volume geral", 455, 0, 1, value =>
             { AudioListener.volume = value; PlayerPrefs.SetFloat(VolumeKey, value); UpdateOptionsLabels(); });
-            volumeValue = MenuStyle.Text("Volume value", options.transform, "", 1260, 455, 300, 50, 29, MenuStyle.Amber);
+            volumeValue = MenuStyle.Text("Volume value", options.transform, "", 1260, 455, 300, 50, 26, MenuStyle.Amber);
             invertY = Toggle("Inverter eixo Y", 600, value => MouseSensitivityMenu.Instance?.SetInvertY(value));
             fullscreen = Toggle("Tela cheia", 690, value =>
             { ApplyFullscreen(value); PlayerPrefs.SetInt(FullscreenKey, value ? 1 : 0); });
@@ -645,7 +696,7 @@ namespace UniDoom.UI
 
         Slider Slider(string label, float y, float min, float max, UnityEngine.Events.UnityAction<float> change)
         {
-            MenuStyle.Text(label, options.transform, label, 205, y, 650, 50, 30, MenuStyle.Paper);
+            MenuStyle.Text(label, options.transform, label, 205, y, 650, 50, 26, MenuStyle.Paper);
             var root = MenuStyle.Rect(label + " slider", options.transform, 760, y, 450, 50);
             root.gameObject.AddComponent<Image>().color = Color.clear;
             var slider = root.gameObject.AddComponent<Slider>();
@@ -673,7 +724,7 @@ namespace UniDoom.UI
             bg.raycastTarget = true;
             var tick = MenuStyle.Image("Enabled", bg.transform, 8, 8, 24, 24, MenuStyle.Amber);
             toggle.targetGraphic = bg; toggle.graphic = tick;
-            var text = MenuStyle.Text("Label", root, label, 0, 0, 530, 55, 30, MenuStyle.Paper);
+            var text = MenuStyle.Text("Label", root, label, 0, 0, 530, 55, 26, MenuStyle.Paper);
             text.raycastTarget = true;
             toggle.onValueChanged.AddListener(change);
             return toggle;
@@ -741,13 +792,13 @@ namespace UniDoom.UI
                 safePixels.width / pixels.width * bounds.width, safePixels.height / pixels.height * bounds.height);
             // The main/pause/death controls fit a narrower composition on 4:3 and 5:4 monitors.
             // Other pages keep their wider two-column layouts. Artwork and buttons retain their proportions.
-            bool compact = CurrentScreen == Screen.Main || CurrentScreen == Screen.Pause || CurrentScreen == Screen.Death;
+            bool compact = CurrentScreen == Screen.Main || CurrentScreen == Screen.Pause ||
+                CurrentScreen == Screen.Death || CurrentScreen == Screen.GameOver;
             Rect frame = MenuStyle.FitComposition(safe, compact, out Vector2 designSize);
             layout.sizeDelta = designSize;
             layout.anchoredPosition = frame.center - bounds.center;
             float scale = frame.height / designSize.y;
             layout.localScale = Vector3.one * scale;
-            if (deathHint != null) deathHint.rectTransform.sizeDelta = new Vector2(Mathf.Min(1200, designSize.x - 330), 100);
             if (error != null) error.rectTransform.sizeDelta = new Vector2(designSize.x - 330, 50);
             float pixelScale = Mathf.Max(.01f, canvas.scaleFactor * scale);
             foreach (var label in smallLabels)

@@ -56,6 +56,7 @@ namespace UniDoom.UI
             text.font = TMP_Settings.defaultFontAsset;
             text.text = value;
             text.fontSize = size;
+            text.enableAutoSizing = false;
             text.color = color;
             text.alignment = TextAlignmentOptions.MidlineLeft;
             text.textWrappingMode = TextWrappingModes.NoWrap;
@@ -64,9 +65,9 @@ namespace UniDoom.UI
         }
 
         internal static Button Button(Transform parent, string name, string label, float x, float y,
-            float w, UnityAction action, float size = 46)
+            float w, UnityAction action, float size = 34, float height = 64)
         {
-            var bg = Image(name, parent, x, y, w, 76, Color.white);
+            var bg = Image(name, parent, x, y, w, height, Color.white);
             bg.raycastTarget = true;
             var button = bg.gameObject.AddComponent<Button>();
             button.targetGraphic = bg;
@@ -77,12 +78,12 @@ namespace UniDoom.UI
             colors.disabledColor = new Color(.07f, .06f, .05f, .25f);
             colors.fadeDuration = .1f;
             button.colors = colors;
-            var arrow = Text("Selection", bg.transform, "›", 10, 0, 30, 76, 58, Rust);
-            var text = Text("Label", bg.transform, label, 50, 0, w - 60, 76, size, Paper);
+            var arrow = Text("Selection", bg.transform, "›", 10, 0, 26, height, size + 8, Rust);
+            var text = Text("Label", bg.transform, label, 44, 0, w - 56, height, size, Paper);
+            Stretch(text.rectTransform);
+            text.rectTransform.offsetMin = new Vector2(44, 0);
+            text.rectTransform.offsetMax = new Vector2(-12, 0);
             text.fontStyle = FontStyles.Bold;
-            text.enableAutoSizing = true;
-            text.fontSizeMin = size * .75f;
-            text.fontSizeMax = size;
             var feedback = bg.gameObject.AddComponent<MenuButtonFeedback>();
             feedback.Marker = arrow.gameObject;
             feedback.Marker.SetActive(false);

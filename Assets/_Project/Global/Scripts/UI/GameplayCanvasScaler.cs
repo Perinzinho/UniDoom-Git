@@ -46,21 +46,16 @@ namespace UniDoom.UI
         protected override void HandleScaleWithScreenSize()
         {
             if (targetCanvas == null) return;
-            Vector2 pixels = targetCanvas.renderingDisplaySize;
-            if (targetCanvas.targetDisplay > 0 && targetCanvas.targetDisplay < Display.displays.Length)
-            {
-                var display = Display.displays[targetCanvas.targetDisplay];
-                pixels = new Vector2(display.renderingWidth, display.renderingHeight);
-            }
-            SetScaleFactor(CalculateScale(pixels, minimumScale));
-            SetReferencePixelsPerUnit(referencePixelsPerUnit);
+            // Honor the serialized Canvas Scaler reference resolution and width/height match.
+            base.HandleScaleWithScreenSize();
+            SetScaleFactor(Mathf.Max(Mathf.Max(.01f, minimumScale), targetCanvas.scaleFactor));
         }
 
-        public static float CalculateScale(Vector2 pixels, float minimum = .5f)
+        public static float CalculateScale(Vector2 pixels, float minimum = .5f, float match = 1f)
         {
-            // Height drives size; the width cap stops a weapon from dominating a narrow viewport.
-            // Text/reticle canvases have a readability floor; the weapon canvas uses zero.
-            float proportional = Mathf.Min(pixels.y / 1080f, pixels.x / 1440f);
+            float width = Mathf.Max(.01f, pixels.x / 1920f);
+            float height = Mathf.Max(.01f, pixels.y / 1080f);
+            float proportional = Mathf.Pow(2, Mathf.Lerp(Mathf.Log(width, 2), Mathf.Log(height, 2), Mathf.Clamp01(match)));
             return Mathf.Max(Mathf.Max(.01f, minimum), proportional);
         }
 
