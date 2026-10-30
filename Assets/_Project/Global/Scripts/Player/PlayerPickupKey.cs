@@ -1,10 +1,39 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerPickupKey : MonoBehaviour
 {
     public bool key01, key02, key03;
 
     private KeysUI keysUI;
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        RemoveOwnedKeys();
+    }
+
+    private void OnDisable() => SceneManager.sceneLoaded -= OnSceneLoaded;
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode) => RemoveOwnedKeys();
+
+    private void RemoveOwnedKeys()
+    {
+        // The player survives room changes; the room's pickups do not.
+        // Hide owned keys before the newly loaded room can render or run physics.
+        if (key01) RemoveKeysWithTag("Key01");
+        if (key02) RemoveKeysWithTag("Key02");
+        if (key03) RemoveKeysWithTag("Key03");
+    }
+
+    private void RemoveKeysWithTag(string tag)
+    {
+        foreach (GameObject key in GameObject.FindGameObjectsWithTag(tag))
+        {
+            key.SetActive(false);
+            Destroy(key);
+        }
+    }
 
     public void SetKeysUI(KeysUI ui)
     {
@@ -25,7 +54,7 @@ public class PlayerPickupKey : MonoBehaviour
         if (!owned) Collect(index, other);
         else
         {
-            // Returning to a room recreates its pickups, but must not move the saved checkpoint.
+            // Duplicate pickups must never move the saved checkpoint.
             other.enabled = false;
             Destroy(other.gameObject);
         }
