@@ -378,7 +378,7 @@ namespace UniDoom.UI
 
             var caption = Rect("Quiet destination", transform, new Vector2(.08f,.11f), new Vector2(.08f,.11f), Vector2.zero, new Vector2(900,100));
             caption.pivot = new Vector2(0,0);
-            subtitleText = Label("Threshold", caption, "AL\u00c9M DA PORTA", 15, headerTagColor, new Vector2(0,0), new Vector2(800,24));
+            subtitleText = Label("Threshold", caption, "AL\u00c9M DA PORTA", 18, headerTagColor, new Vector2(0,0), new Vector2(800,24));
             titleText = Label("Destination", caption, "SETOR DESCONHECIDO", 42, new Color(.76f,.73f,.65f), new Vector2(0,-30), new Vector2(900,62));
             titleText.fontStyle = FontStyles.Bold;
             if (customFont != null) titleText.font = customFont;
@@ -389,7 +389,7 @@ namespace UniDoom.UI
 
             var activity = Rect("Waiting in the dark", transform, new Vector2(.92f,.11f), new Vector2(.92f,.11f), Vector2.zero, new Vector2(360,65));
             activity.pivot = new Vector2(1,0);
-            statusDetailText = Label("Status", activity, "Atravessando...", 17, new Color(.46f,.43f,.36f), new Vector2(0,-18), new Vector2(360,32));
+            statusDetailText = Label("Status", activity, "Atravessando...", 20, new Color(.46f,.43f,.36f), new Vector2(0,-18), new Vector2(360,32));
             statusDetailText.alignment = TextAlignmentOptions.Right;
             for (int i = 0; i < passageMarks.Length; i++)
             {

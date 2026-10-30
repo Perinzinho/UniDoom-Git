@@ -78,9 +78,11 @@ namespace UniDoom.UI
             colors.fadeDuration = .1f;
             button.colors = colors;
             var arrow = Text("Selection", bg.transform, "›", 10, 0, 30, 76, 58, Rust);
-            var text = Text("Label", bg.transform, label, 50, 0, (w - 60) / .65f, 76, size, Paper);
+            var text = Text("Label", bg.transform, label, 50, 0, w - 60, 76, size, Paper);
             text.fontStyle = FontStyles.Bold;
-            text.rectTransform.localScale = new Vector3(.65f, 1, 1);
+            text.enableAutoSizing = true;
+            text.fontSizeMin = size * .75f;
+            text.fontSizeMax = size;
             var feedback = bg.gameObject.AddComponent<MenuButtonFeedback>();
             feedback.Marker = arrow.gameObject;
             feedback.Marker.SetActive(false);

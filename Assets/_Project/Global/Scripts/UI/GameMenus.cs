@@ -50,6 +50,7 @@ namespace UniDoom.UI
         bool fitted;
         const string VolumeKey = "UniDoom_MasterVolume";
         const string FullscreenKey = "UniDoom_Fullscreen";
+        Vector2Int windowedResolution = new(1600, 900);
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void ResetStatics() { Instance = null; }
@@ -66,7 +67,7 @@ namespace UniDoom.UI
             Instance = this;
             DontDestroyOnLoad(gameObject);
             AudioListener.volume = Mathf.Clamp01(PlayerPrefs.GetFloat(VolumeKey, 1));
-            if (PlayerPrefs.HasKey(FullscreenKey)) UnityEngine.Screen.fullScreen = PlayerPrefs.GetInt(FullscreenKey) == 1;
+            if (PlayerPrefs.HasKey(FullscreenKey)) ApplyFullscreen(PlayerPrefs.GetInt(FullscreenKey) == 1);
             Build();
             SceneManager.sceneLoaded += OnSceneLoaded;
             SetScreen(Screen.Main);
@@ -378,12 +379,6 @@ namespace UniDoom.UI
         void HideHUD()
         {
             // Hide gameplay HUD while preserving every canvas's previous enabled state.
-            if (DebugUI.Instance != null)
-                foreach (var debug in DebugUI.Instance.GetComponentsInChildren<Canvas>(true))
-                {
-                    if (!hudStates.ContainsKey(debug)) hudStates[debug] = debug.enabled;
-                    debug.enabled = false;
-                }
             if (GameManager.SessionPlayer == null) return;
             var root = GameManager.SessionPlayer.transform.root;
             foreach (var hud in root.GetComponentsInChildren<Canvas>(true))
@@ -547,10 +542,10 @@ namespace UniDoom.UI
             ((RectTransform)button.transform).sizeDelta = new Vector2(824, 100);
             var text = button.transform.Find("Label").GetComponent<TMP_Text>();
             text.rectTransform.anchoredPosition = new Vector2(40, 0);
-            text.rectTransform.sizeDelta = new Vector2(744 / .65f, 100);
+            text.rectTransform.sizeDelta = new Vector2(744, 100);
             text.alignment = TextAlignmentOptions.Center;
             var marker = (RectTransform)button.transform.Find("Selection");
-            marker.anchoredPosition = new Vector2(140, 0);
+            marker.anchoredPosition = new Vector2(10, 0);
             marker.sizeDelta = new Vector2(30, 100);
             return button;
         }
@@ -571,9 +566,15 @@ namespace UniDoom.UI
         {
             var sprite = MenuStyle.Artwork(resource, region);
             artwork.Add(sprite);
+            if (sprite != null)
+            {
+                float fit = Mathf.Min(w / sprite.rect.width, h / sprite.rect.height);
+                w = sprite.rect.width * fit;
+                h = sprite.rect.height * fit;
+            }
             var image = MenuStyle.Image("Approved artwork", page.transform, x, y, w, h, Color.white);
             image.sprite = sprite;
-            image.preserveAspect = false;
+            image.preserveAspect = true;
         }
         static void Footer(GameObject page) => MenuStyle.Text("Navigation", page.transform,
             "↑ ↓  NAVEGAR     ENTER  CONFIRMAR", 165, 985, 1000, 45, 21, MenuStyle.Muted);
@@ -637,7 +638,7 @@ namespace UniDoom.UI
             volumeValue = MenuStyle.Text("Volume value", options.transform, "", 1260, 455, 300, 50, 29, MenuStyle.Amber);
             invertY = Toggle("Inverter eixo Y", 600, value => MouseSensitivityMenu.Instance?.SetInvertY(value));
             fullscreen = Toggle("Tela cheia", 690, value =>
-            { UnityEngine.Screen.fullScreen = value; PlayerPrefs.SetInt(FullscreenKey, value ? 1 : 0); });
+            { ApplyFullscreen(value); PlayerPrefs.SetInt(FullscreenKey, value ? 1 : 0); });
             optionsBack = MenuStyle.Button(options.transform, "Back", "VOLTAR", 165, 850, 500, Back);
             MenuStyle.Link(sensitivity, volume, invertY, fullscreen, optionsBack);
         }
@@ -676,6 +677,31 @@ namespace UniDoom.UI
             text.raycastTarget = true;
             toggle.onValueChanged.AddListener(change);
             return toggle;
+        }
+
+        void ApplyFullscreen(bool enabled)
+        {
+#if UNITY_STANDALONE && !UNITY_EDITOR
+            var desktop = UnityEngine.Screen.currentResolution;
+            int desktopWidth = Mathf.Max(1, desktop.width);
+            int desktopHeight = Mathf.Max(1, desktop.height);
+            if (enabled)
+            {
+                if (!UnityEngine.Screen.fullScreen)
+                    windowedResolution = new Vector2Int(UnityEngine.Screen.width, UnityEngine.Screen.height);
+                UnityEngine.Screen.SetResolution(desktopWidth, desktopHeight, FullScreenMode.FullScreenWindow);
+            }
+            else
+            {
+                // Leave room for window borders and the taskbar when leaving native fullscreen.
+                float fit = Mathf.Min(1, Mathf.Min(desktopWidth * .9f / windowedResolution.x,
+                    desktopHeight * .9f / windowedResolution.y));
+                UnityEngine.Screen.SetResolution(Mathf.Max(1, Mathf.RoundToInt(windowedResolution.x * fit)),
+                    Mathf.Max(1, Mathf.RoundToInt(windowedResolution.y * fit)), FullScreenMode.Windowed);
+            }
+#else
+            UnityEngine.Screen.fullScreen = enabled;
+#endif
         }
 
         void UpdateOptionsLabels()

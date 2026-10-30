@@ -1,12 +1,15 @@
-using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UniDoom.UI;
 
 public class KeysUI : MonoBehaviour
 {
     [SerializeField] private GameObject[] keyIcons; // Key01, Key02, Key03
+    [SerializeField] private Sprite lifeSprite;
+    private const int LifeSlots = 3;
     private PlayerRespawn player;
-    private TMP_Text livesText;
+    private readonly Image[] lifeIcons = new Image[LifeSlots];
+    private readonly Outline[] lifeOutlines = new Outline[LifeSlots];
 
     private void Awake()
     {
@@ -21,7 +24,20 @@ public class KeysUI : MonoBehaviour
             rect.sizeDelta = new Vector2(42, 42);
             rect.anchoredPosition = new Vector2(53 + i * 54, -92);
         }
-        livesText = MenuStyle.Text("Remaining lives", transform, "VIDAS  3 / 3", 32, 28, 220, 36, 26, MenuStyle.Paper);
+        // Preserve the former label's top-left anchor, position and layout area.
+        var livesRoot = MenuStyle.Rect("Remaining lives", transform, 32, 28, 220, 36);
+        for (int i = 0; i < LifeSlots; i++)
+        {
+            // The existing anatomical sprite includes transparent padding around the heart.
+            var heart = MenuStyle.Image("Life " + (i + 1), livesRoot, i * 48 - 6, -12, 48, 62, Color.white);
+            heart.sprite = lifeSprite;
+            heart.preserveAspect = true;
+            lifeIcons[i] = heart;
+            lifeOutlines[i] = heart.gameObject.AddComponent<Outline>();
+            lifeOutlines[i].effectDistance = new Vector2(1, -1);
+            lifeOutlines[i].useGraphicAlpha = false;
+        }
+        UpdateLives(LifeSlots);
     }
 
     public void SetPlayer(PlayerRespawn newPlayer)
@@ -32,7 +48,17 @@ public class KeysUI : MonoBehaviour
         UpdateLives(player != null ? player.RemainingLives : 0);
     }
 
-    private void UpdateLives(int remaining) => livesText.text = $"VIDAS  {remaining} / 3";
+    private void UpdateLives(int remaining)
+    {
+        remaining = Mathf.Clamp(remaining, 0, LifeSlots);
+        for (int i = 0; i < LifeSlots; i++)
+        {
+            bool available = i < remaining;
+            lifeIcons[i].color = available ? Color.white : new Color(.10f, .10f, .10f, .7f);
+            lifeOutlines[i].effectColor = available
+                ? new Color(0, 0, 0, .85f) : new Color(.49f, .46f, .40f, .65f);
+        }
+    }
 
     private void OnDestroy()
     {

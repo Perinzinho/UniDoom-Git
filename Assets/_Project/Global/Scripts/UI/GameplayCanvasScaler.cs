@@ -25,7 +25,7 @@ namespace UniDoom.UI
             if (!Application.isPlaying || !respectSafeArea || safeRoot != null) return;
 
             // Keep the existing anchors and weapon offsets relative to a single inset frame.
-            // Start runs after Awake, including KeysUI's dynamically created lives label.
+            // Start runs after Awake, including KeysUI's dynamically created life icons.
             int children = transform.childCount;
             safeRoot = new GameObject("HUD safe area", typeof(RectTransform)).GetComponent<RectTransform>();
             safeRoot.SetParent(transform, false);
