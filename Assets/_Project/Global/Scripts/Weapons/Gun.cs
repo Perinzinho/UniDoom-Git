@@ -28,7 +28,6 @@ public abstract class Gun : MonoBehaviour
     }
 
     public event Action OnShoot;
-    private bool warnedMissingCamera;
 
     // Novos eventos: repassam o que acontece no Recharging para quem escuta o Gun.
     public event Action OnReloadStarted;
@@ -69,13 +68,11 @@ public abstract class Gun : MonoBehaviour
     {
         if (recharging != null && recharging.IsReloading)
         {
-            DebugUI.Log($"{name}: não pode atirar enquanto recarrega.");
             return;
         }
 
         if (!HasAmmo())
         {
-            DebugUI.Log($"{name}: sem munição no pente.");
             if (this is Pistol && SFXManager.Instance != null)
                 SFXManager.Instance.PlayEmptyShootSound();
 
@@ -98,7 +95,6 @@ public abstract class Gun : MonoBehaviour
     {
         if (recharging == null)
         {
-            DebugUI.LogWarning($"{name}: componente Recharging não encontrado.");
             return;
         }
 
@@ -107,13 +103,11 @@ public abstract class Gun : MonoBehaviour
 
         if (currentAmmo >= magazineSize)
         {
-            DebugUI.Log($"{name}: pente já está cheio.");
             return;
         }
 
         if (reserveAmmo <= 0)
         {
-            DebugUI.Log($"{name}: sem munição reserva.");
             return;
         }
 
@@ -131,7 +125,6 @@ public abstract class Gun : MonoBehaviour
     {
         currentAmmo--;
         OnAmmoChanged?.Invoke();
-        DebugUI.Log($"{name}: {currentAmmo}/{magazineSize} | Reserva: {reserveAmmo}");
     }
 
     public void AddAmmo(int amount)
@@ -141,13 +134,11 @@ public abstract class Gun : MonoBehaviour
 
         reserveAmmo += amount;
         OnAmmoChanged?.Invoke();
-        DebugUI.Log($"{name}: pegou {amount} munições. Reserva: {reserveAmmo}");
     }
 
     public void FinishReload()
     {
         TransferReloadAmmo(magazineSize);
-        DebugUI.Log($"{name}: recarga concluída. Pente: {currentAmmo}/{magazineSize} | Reserva: {reserveAmmo}");
     }
 
     public bool RefillAmmo()
@@ -194,13 +185,7 @@ public abstract class Gun : MonoBehaviour
             playerCamera = Camera.main;
         if (playerCamera != null && playerCamera.isActiveAndEnabled)
         {
-            warnedMissingCamera = false;
             return true;
-        }
-        if (!warnedMissingCamera)
-        {
-            DebugUI.LogWarning($"{GetType().Name}: no active player camera found.");
-            warnedMissingCamera = true;
         }
         return false;
     }

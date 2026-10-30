@@ -33,9 +33,6 @@ public class Pistol : Gun
     // Implementation of abstract Shoot defined in Gun.
     protected override void Shoot()
     {
-        DebugUI.Log("Pistol fired!");
-
-        
         // Fire through the same lowered viewport point used by the reticle.
         Ray ray = CrosshairAim.CreateRay(playerCamera);
 
@@ -43,11 +40,6 @@ public class Pistol : Gun
         // Cast the ray and check if it hit any collider.
         if (Physics.Raycast(ray, out RaycastHit hit, range))
         {
-            DebugUI.Log(
-                $"Pistol hit: {hit.collider.name} | Damage: {damage}"
-            );
-
-
             IDamageable damageable = hit.collider.GetComponentInParent<IDamageable>();
             if (damageable != null && !damageable.IsDead)
                 damageable.TakeDamage(damage, gameObject);

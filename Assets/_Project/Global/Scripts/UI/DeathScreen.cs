@@ -38,7 +38,7 @@ namespace UniDoom.UI
             MenuStyle.Image("Background", rect, 0, 0, 640, 82, new Color(.025f, .025f, .022f, .97f));
             MenuStyle.Image("Accent", rect, 0, 0, 3, 82, MenuStyle.Amber);
             toastLabel = MenuStyle.Text("Message", rect, "", 25, 8, 600, 36, 23, MenuStyle.Amber);
-            MenuStyle.Text("Detail", rect, "Seu ponto de retorno foi atualizado.", 25, 45, 600, 25, 17, MenuStyle.Paper);
+            MenuStyle.Text("Detail", rect, "Seu ponto de retorno foi atualizado.", 25, 45, 600, 25, 20, MenuStyle.Paper);
         }
 
         public void Bind(PlayerRespawn owner) => player = owner;

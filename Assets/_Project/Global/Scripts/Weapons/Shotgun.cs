@@ -41,7 +41,6 @@ public class Shotgun : Gun
     // Implements abstract Shoot defined in Gun.
     protected override void Shoot()
     {
-        DebugUI.Log("Shotgun fired!");
         SFXManager.Instance.PlayShotgunShootSound();
         Ray aimRay = CrosshairAim.CreateRay(playerCamera);
 
@@ -74,12 +73,6 @@ public class Shotgun : Gun
             // Check if this pellet hit any Collider within range.
             if (Physics.Raycast(ray, out RaycastHit hit, range))
             {
-                DebugUI.Log(
-                    $"Pellet hit: {hit.collider.name} | " +
-                    $"Damage: {damagePerPellet}"
-                );
-
-
                 IDamageable damageable = hit.collider.GetComponentInParent<IDamageable>();
                 if (damageable != null && !damageable.IsDead)
                     damageable.TakeDamage(damagePerPellet, gameObject);

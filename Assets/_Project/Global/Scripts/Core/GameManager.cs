@@ -74,7 +74,6 @@ public class GameManager : MonoBehaviour
     {
         if (crosshairPrefab == null)
         {
-            DebugUI.LogWarning($"{name}: crosshairPrefab não atribuído.");
             return;
         }
 
@@ -85,7 +84,6 @@ public class GameManager : MonoBehaviour
     {
         if (HUDPrefab == null)
         {
-            DebugUI.LogWarning($"{name}: HUDPrefab não atribuído.");
             return;
         }
 
@@ -118,7 +116,6 @@ public class GameManager : MonoBehaviour
 
         if (playerLife == null)
         {
-            DebugUI.LogWarning($"{name}: PlayerLife não encontrado no player.");
             return;
         }
 
@@ -129,12 +126,10 @@ public class GameManager : MonoBehaviour
 
         if (healthUI == null)
         {
-            DebugUI.LogWarning($"{name}: HealthUI não encontrado no HUD.");
             return;
         }
 
         healthUI.SetPlayer(playerLife);
-        DebugUI.Log("SetPlayer chamado no HealthUI.");
     }
 
     private void SpawnKeyUI(GameObject player)
