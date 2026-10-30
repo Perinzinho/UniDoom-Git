@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UniDoom.UI;
 
-/// <summary>The persistent desk prop opens the original ritual spread in the shared paused viewer.</summary>
+/// <summary>A persistent readable prop opens its original image in the shared paused viewer.</summary>
 [DisallowMultipleComponent]
 public sealed class DirectorRitualBook : MonoBehaviour
 {
@@ -11,6 +11,7 @@ public sealed class DirectorRitualBook : MonoBehaviour
     [SerializeField] Renderer pages;
     [SerializeField] Light attentionLight;
     [SerializeField, Min(.5f)] float interactionDistance = 2.8f;
+    [SerializeField] string interactionHint = "[E]  Examinar o livro";
 
     readonly RaycastHit[] hits = new RaycastHit[24];
     MaterialPropertyBlock pageProperties;
@@ -26,7 +27,7 @@ public sealed class DirectorRitualBook : MonoBehaviour
     {
         if (document == null || interactionTarget == null)
         {
-            Debug.LogError("The director's ritual book needs its document and interaction collider.", this);
+            Debug.LogError("The readable prop needs its document and interaction collider.", this);
             enabled = false;
             return;
         }
@@ -97,9 +98,9 @@ public sealed class DirectorRitualBook : MonoBehaviour
         var rect = new Rect(Screen.width * .25f, Screen.height * .79f, Screen.width * .5f, 45);
         var previous = GUI.color;
         GUI.color = new Color(0, 0, 0, .9f);
-        GUI.Label(new Rect(rect.x + 1, rect.y + 2, rect.width, rect.height), "[E]  Examinar o livro", hint);
+        GUI.Label(new Rect(rect.x + 1, rect.y + 2, rect.width, rect.height), interactionHint, hint);
         GUI.color = new Color(.88f, .83f, .69f);
-        GUI.Label(rect, "[E]  Examinar o livro", hint);
+        GUI.Label(rect, interactionHint, hint);
         GUI.color = previous;
     }
 }

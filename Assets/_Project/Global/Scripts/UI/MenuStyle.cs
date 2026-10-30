@@ -31,6 +31,16 @@ namespace UniDoom.UI
             rect.offsetMin = rect.offsetMax = Vector2.zero;
         }
 
+        internal static Rect FitComposition(Rect available, bool compact, out Vector2 designSize)
+        {
+            float width = compact ? Mathf.Lerp(1440, 1920,
+                Mathf.InverseLerp(4f / 3f, 16f / 9f, available.width / available.height)) : 1920;
+            designSize = new Vector2(width, 1080);
+            float scale = Mathf.Min(available.width / (width + 64), available.height / 1144);
+            Vector2 size = designSize * scale;
+            return new Rect(available.center - size * .5f, size);
+        }
+
         internal static Image Image(string name, Transform parent, float x, float y, float w, float h, Color tint)
         {
             var image = Rect(name, parent, x, y, w, h).gameObject.AddComponent<Image>();

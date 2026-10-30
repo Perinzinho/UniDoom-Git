@@ -14,6 +14,8 @@ namespace UniDoom.UI
         Button documentClose;
         Object documentOwner;
         RenderTexture documentSnapshot;
+        Vector2 documentCanvasSize;
+        Rect documentSafeArea;
 
         public bool IsReadingDocument => CurrentScreen == Screen.Document;
 
@@ -28,12 +30,8 @@ namespace UniDoom.UI
 
             documentOwner = owner;
             documentImage.texture = texture;
-            float height = 840;
-            float width = height * texture.width / texture.height;
-            if (width > 1760) { height *= 1760 / width; width = 1760; }
-            documentImage.rectTransform.sizeDelta = new Vector2(width, height);
-            documentImage.rectTransform.anchoredPosition = new Vector2(0, 18);
-            documentClose.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -height * .5f - 39);
+            Canvas.ForceUpdateCanvases();
+            FitDocument(true);
             documentClose.interactable = true;
             AcquirePause();
             CaptureDocumentBackdrop();
@@ -76,7 +74,9 @@ namespace UniDoom.UI
             documentBackdrop.transform.SetSiblingIndex(shade.transform.GetSiblingIndex());
             documentBackdrop.gameObject.SetActive(false);
 
-            document = Page("Document viewer");
+            // Reading uses the whole viewport instead of the menus' fixed 16:9 composition.
+            document = MenuStyle.Rect("Document viewer", transform, 0, 0, 0, 0).gameObject;
+            MenuStyle.Stretch((RectTransform)document.transform);
             documentImage = MenuStyle.Rect("Original document", document.transform, 0, 0, 1141, 840)
                 .gameObject.AddComponent<RawImage>();
             var imageRect = documentImage.rectTransform;
@@ -111,6 +111,37 @@ namespace UniDoom.UI
                 new Color(.88f, .83f, .71f));
             label.alignment = TextAlignmentOptions.Center;
             documentClose.onClick.AddListener(() => StartCoroutine(CloseDocumentAfterClick()));
+        }
+
+        void FitDocument(bool force = false)
+        {
+            if (documentImage == null || documentImage.texture == null || documentClose == null) return;
+            var canvasSize = ((RectTransform)transform).rect.size;
+            var safe = UnityEngine.Screen.safeArea;
+            int screenWidth = UnityEngine.Screen.width, screenHeight = UnityEngine.Screen.height;
+            if (canvasSize.x <= 0 || canvasSize.y <= 0 || screenWidth <= 0 || screenHeight <= 0) return;
+            if (!force && canvasSize == documentCanvasSize && safe == documentSafeArea) return;
+            documentCanvasSize = canvasSize;
+            documentSafeArea = safe;
+
+            var viewport = (RectTransform)document.transform;
+            viewport.anchorMin = new Vector2(safe.xMin / screenWidth, safe.yMin / screenHeight);
+            viewport.anchorMax = new Vector2(safe.xMax / screenWidth, safe.yMax / screenHeight);
+            viewport.offsetMin = viewport.offsetMax = Vector2.zero;
+            var available = Vector2.Scale(canvasSize, viewport.anchorMax - viewport.anchorMin);
+            float margin = Mathf.Clamp(Mathf.Min(available.x, available.y) * .025f, 12, 32);
+            float controlsScale = Mathf.Min(1, Mathf.Min(available.x / 360, available.y / 180));
+            float buttonHeight = 58 * controlsScale, gap = 12 * controlsScale;
+            float width = Mathf.Max(1, available.x - margin * 2);
+            float height = Mathf.Max(1, available.y - margin * 2 - buttonHeight - gap);
+            var texture = documentImage.texture;
+            float scale = Mathf.Min(width / texture.width, height / texture.height);
+            var imageSize = new Vector2(texture.width, texture.height) * scale;
+            documentImage.rectTransform.sizeDelta = imageSize;
+            documentImage.rectTransform.anchoredPosition = new Vector2(0, (buttonHeight + gap) * .5f);
+            var closeRect = (RectTransform)documentClose.transform;
+            closeRect.localScale = Vector3.one * controlsScale;
+            closeRect.anchoredPosition = new Vector2(0, -(imageSize.y + gap) * .5f);
         }
 
         void CaptureDocumentBackdrop()

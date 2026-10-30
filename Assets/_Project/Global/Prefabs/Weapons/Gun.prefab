@@ -177,9 +177,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6083246770188451648}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Script: {fileID: 11500000, guid: 03bf9de9f3e449e79f5f960812b7e86d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
+  m_EditorClassIdentifier: Assembly-CSharp::UniDoom.UI.GameplayCanvasScaler
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
@@ -191,6 +191,8 @@ MonoBehaviour:
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
   m_PresetInfoIsWorld: 0
+  minimumScale: 0
+  respectSafeArea: 1
 --- !u!114 &8822418386833620368
 MonoBehaviour:
   m_ObjectHideFlags: 0
