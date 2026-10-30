@@ -351,6 +351,7 @@ namespace UniDoom.UI
             var scaler = gameObject.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920, 1080);
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
             scaler.matchWidthOrHeight = .5f;
             gameObject.AddComponent<GraphicRaycaster>();
             canvasGroup = gameObject.AddComponent<CanvasGroup>();

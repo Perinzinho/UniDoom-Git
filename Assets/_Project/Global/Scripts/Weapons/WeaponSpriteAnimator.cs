@@ -21,9 +21,13 @@ public class WeaponSpriteAnimator : MonoBehaviour
     private Vector2 defaultHudPosition;
     private Vector2 defaultHudSize;
     private bool hasDefaultHudLayout;
+    private Vector2 requestedHudPosition, requestedHudSize, fittedParentSize;
+    private RectTransform fittedParent;
+    private bool hudLayoutDirty;
 
     void Start()
     {
+        if (!hasDefaultHudLayout) ApplyHudLayout(null);
         currentAnimation = idleFrames;
         currentFrameRate = idleFrameRate;
         if (currentAnimation != null && currentAnimation.Length > 0 && weaponImage != null)
@@ -84,13 +88,44 @@ public class WeaponSpriteAnimator : MonoBehaviour
             hasDefaultHudLayout = true;
         }
 
-        // Always start from the prefab position so switching weapons never accumulates offsets.
-        imageTransform.anchoredPosition = defaultHudPosition +
+        // Keep every animation frame inside the lower-right safe area, including reload hands.
+        imageTransform.anchorMin = imageTransform.anchorMax = imageTransform.pivot = new Vector2(1, 0);
+        weaponImage.preserveAspect = true;
+        weaponImage.raycastTarget = false;
+        requestedHudPosition = defaultHudPosition +
             (definition != null ? definition.HudOffset : Vector2.zero);
         Vector2 configuredSize = definition != null ? definition.HudSize : Vector2.zero;
-        imageTransform.sizeDelta = configuredSize.x > 0f && configuredSize.y > 0f
+        requestedHudSize = configuredSize.x > 0f && configuredSize.y > 0f
             ? configuredSize
             : defaultHudSize;
+        hudLayoutDirty = true;
+        FitHudLayout();
+    }
+
+    private void LateUpdate() => FitHudLayout();
+
+    private void FitHudLayout()
+    {
+        if (!hasDefaultHudLayout || weaponImage == null) return;
+        var imageRect = weaponImage.rectTransform;
+        var parent = imageRect.parent as RectTransform;
+        if (parent == null) return;
+        Vector2 available = parent.rect.size;
+        if (available.x <= 0 || available.y <= 0) return;
+        if (!hudLayoutDirty && fittedParent == parent && fittedParentSize == available) return;
+        fittedParent = parent;
+        fittedParentSize = available;
+        hudLayoutDirty = false;
+
+        // Reserve the centre for aiming and cap width independently on narrower monitors.
+        float scale = Mathf.Min(1, Mathf.Min(available.x * .36f / Mathf.Max(1, requestedHudSize.x),
+            available.y * .42f / Mathf.Max(1, requestedHudSize.y)));
+        Vector2 size = requestedHudSize * scale;
+        imageRect.sizeDelta = size;
+        float right = Mathf.Clamp(-requestedHudPosition.x, 16, Mathf.Max(16, available.x - size.x));
+        // The arms meet the bottom edge, but no part of the frame extends below it.
+        float bottom = Mathf.Clamp(requestedHudPosition.y, 0, Mathf.Max(0, available.y - size.y));
+        imageRect.anchoredPosition = new Vector2(-right, bottom);
     }
 
     void OnDisable()
