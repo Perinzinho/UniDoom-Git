@@ -96,6 +96,7 @@ public sealed class DirectorBossEncounter : MonoBehaviour
         SpawnedBoss.name = "Diretor UniDoom — Boss";
         SpawnedBoss.SetTarget(player);
         SpawnedBoss.onDeathAnimationFinished.AddListener(CompleteEncounter);
+        GameplayAudio.Instance?.StartBossMusic(SpawnedBoss);
         onEncounterStarted.Invoke();
     }
     bool FindSpawnPosition(CharacterController controller, float scale, out Vector3 position)
