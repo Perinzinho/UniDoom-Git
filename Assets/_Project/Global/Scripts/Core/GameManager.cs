@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 
     public static void EndSession()
     {
+        GameplayAudio.Instance?.EndSession();
         var previous = session;
         session = null;
         SessionPlayer = null;

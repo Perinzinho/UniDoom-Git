@@ -81,4 +81,21 @@ public class PlayerMovement : MonoBehaviour
         velocity = Vector3.zero;
         horizontalMove = Vector3.zero;
     }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (!movementEnabled || Mathf.Abs(hit.normal.y) > .65f ||
+            Vector3.Dot(horizontalMove, hit.normal) >= -.1f) return;
+        var audio = GameplayAudio.Instance;
+        if (audio == null) return;
+        var sealedDoor = hit.collider.GetComponent<LockedDoorSurface>();
+        if (sealedDoor != null && sealedDoor.Matches(hit.collider, hit.point))
+        {
+            audio.NotifyLockedDoorContact(sealedDoor);
+            return;
+        }
+        var door = hit.collider.GetComponentInParent<OpenDoorWithKey>();
+        if (door != null && door.BlocksPlayer(hit.collider, GetComponent<PlayerPickupKey>()))
+            audio.NotifyLockedDoorContact(door);
+    }
 }
