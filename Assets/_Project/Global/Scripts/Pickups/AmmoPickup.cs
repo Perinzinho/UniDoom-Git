@@ -42,6 +42,7 @@ public class AmmoPickup : MonoBehaviour
 
         // Destroy is deferred; multiple player colliders must not consume twice.
         consumed = true;
+        GameplayAudio.Instance?.PlayAmmoPickup();
         foreach (Collider trigger in GetComponents<Collider>())
             trigger.enabled = false;
         Destroy(gameObject);

@@ -50,6 +50,16 @@ public class OpenDoorWithKey : MonoBehaviour
     public bool IsOpen => unlocked && openProgress >= .8f;
     public bool IsFullyOpen => unlocked && openProgress >= .999f;
 
+    public bool BlocksPlayer(Collider surface, PlayerPickupKey player) => door != null &&
+        surface.transform.IsChildOf(door) && !unlocked &&
+        (!isActiveAndEnabled || requiresManualActivation || player == null || !HasRequiredKey(player));
+
+    public float SurfaceDistanceSquared(Vector3 position)
+    {
+        var panel = door != null ? door.GetComponent<BoxCollider>() : null;
+        return panel != null ? panel.bounds.SqrDistance(position) : float.PositiveInfinity;
+    }
+
     public bool TryUnlock(PlayerPickupKey player)
     {
         if (!isActiveAndEnabled || player == null || !HasRequiredKey(player)) return false;
@@ -173,6 +183,8 @@ public enum DoorReloadTriggerMode
         bool shouldOpen = unlocked && (stayOpenAfterUnlock || nearbyPlayers.Count > 0);
         if (shouldOpen && openProgress <= 0f)
         {
+            if (!UniDoom.UI.DoorReloadScreen.IsReloading && Time.timeScale > 0f)
+                GameplayAudio.Instance?.PlayDoorOpening();
             // A direção só muda com a porta fechada, evitando saltos durante a passagem.
             foreach (Collider other in nearbyPlayers)
             {

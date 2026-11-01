@@ -81,6 +81,7 @@ public class Enemy : MonoBehaviour, IDamageable
     private EnemySpriteAnimator spriteAnimator;
     private float projectileReleaseAt = -1f, attackEndsAt;
     private EnemySpriteAppearance pendingProjectile;
+    private bool nearbyCuePlayed;
 
     private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
     private static readonly int ColorId = Shader.PropertyToID("_Color");
@@ -139,6 +140,7 @@ public class Enemy : MonoBehaviour, IDamageable
             RestoreHitColors();
 
         if (IsDead) return;
+        UpdateNearbyAudio();
         if (pendingProjectile != null)
         {
             StopMoving();
@@ -186,6 +188,20 @@ public class Enemy : MonoBehaviour, IDamageable
     }
 
     private bool UsingAgent => agent != null && agent.enabled && agent.isOnNavMesh;
+
+    private void UpdateNearbyAudio()
+    {
+        var audio = GameplayAudio.Instance;
+        if (audio == null || audio.Settings == null || target == null ||
+            (targetLife != null && targetLife.IsDead)) return;
+        float distance = Vector3.Distance(transform.position, target.position);
+        var settings = audio.Settings;
+        if (distance >= Mathf.Max(settings.nearbyDistance + .1f, settings.nearbyResetDistance))
+            nearbyCuePlayed = false;
+        // Require an unobstructed approach, including from behind. A wall must not trigger the cue.
+        if (!nearbyCuePlayed && distance <= settings.nearbyDistance && HasClearSight() &&
+            audio.TryPlayNearbyZombie()) nearbyCuePlayed = true;
+    }
     private EnemySpriteAppearance RangedAppearance => spriteAnimator != null &&
         spriteAnimator.Appearance != null && spriteAnimator.Appearance.projectileSprite != null
         ? spriteAnimator.Appearance : null;

@@ -14,11 +14,29 @@ namespace UniDoom.Utils
         [SerializeField] private OpenDoorWithKey physicalDoor;
         [SerializeField] private bool waitForPhysicalDoorToOpen;
         private readonly HashSet<Collider> waitingPlayers = new HashSet<Collider>();
+        private OpenDoorWithKey soundDoor;
 
         public string DestinationScene => destinationScene;
         public string DestinationSpawnId => destinationSpawnId;
 
         private void Reset() => GetComponent<BoxCollider>().isTrigger = true;
+
+        private void Start()
+        {
+            soundDoor = physicalDoor;
+            if (soundDoor != null) return;
+            // Some legacy portals omit physicalDoor. Associate audio with the nearby leaf
+            // without changing that portal's existing key checks or passage rules.
+            float nearest = 1.5f * 1.5f;
+            Vector3 center = GetComponent<BoxCollider>().bounds.center;
+            foreach (var candidate in FindObjectsByType<OpenDoorWithKey>())
+            {
+                float distance = candidate.SurfaceDistanceSquared(center);
+                if (distance >= nearest) continue;
+                nearest = distance;
+                soundDoor = candidate;
+            }
+        }
 
         private void OnTriggerEnter(Collider other)
         {
@@ -54,7 +72,11 @@ namespace UniDoom.Utils
             if (waitForPhysicalDoorToOpen && physicalDoor != null && !physicalDoor.IsFullyOpen) return;
 
             if (UI.DoorReloadScreen.TryLoadScene(destinationScene, destinationSpawnId, destinationLabel))
+            {
+                // A physical leaf already plays when opening. Bare portals play on successful entry.
+                if (soundDoor == null) GameplayAudio.Instance?.PlayDoorOpening();
                 waitingPlayers.Clear();
+            }
         }
 
         private void OnDrawGizmosSelected()
