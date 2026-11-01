@@ -11,6 +11,10 @@ public class WeaponSpriteAnimator : MonoBehaviour
     [SerializeField] private float idleFrameRate = 12f;
     [SerializeField] private float shootFrameRate = 20f;
     [SerializeField] private float rechargeFrameRate = 5f;
+    private Axe axe;
+    private float[] shootFrameDurations;
+    private Vector2 hudViewportLimit = new Vector2(.36f, .42f);
+    private float minimumRightMargin = 16f;
 
     private Sprite[] currentAnimation;
     private float currentFrameRate;
@@ -35,6 +39,7 @@ public class WeaponSpriteAnimator : MonoBehaviour
 
         UnsubscribeFromGun(gun); // evita duplicar inscrição se SetGun já rodou antes deste Start()
         SubscribeToGun(gun);
+        SubscribeToAxe();
     }
 
     // Chamado de fora (pelo Spawner/GameManager) depois que o Player é instanciado.
@@ -45,6 +50,8 @@ public class WeaponSpriteAnimator : MonoBehaviour
 
     public void SetGun(Gun newGun, WeaponDefinition definition)
     {
+        UnsubscribeFromAxe();
+        axe = null;
         UnsubscribeFromGun(gun);
         gun = newGun;
         if (definition != null)
@@ -54,6 +61,7 @@ public class WeaponSpriteAnimator : MonoBehaviour
             rechargeFrames = definition.RechargeFrames;
             idleFrameRate = definition.IdleFrameRate;
             shootFrameRate = definition.ShootFrameRate;
+            shootFrameDurations = definition.ShootFrameDurations;
             rechargeFrameRate = definition.RechargeFrameRate;
         }
         ApplyHudLayout(definition);
@@ -69,10 +77,33 @@ public class WeaponSpriteAnimator : MonoBehaviour
             SubscribeToGun(gun);
     }
 
+    public void SetAxe(Axe newAxe, WeaponDefinition definition)
+    {
+        SetGun(null, definition);
+        axe = newAxe;
+        if (isActiveAndEnabled) SubscribeToAxe();
+    }
+
     void OnEnable()
     {
         UnsubscribeFromGun(gun);
         SubscribeToGun(gun);
+        SubscribeToAxe();
+    }
+
+    private void SubscribeToAxe()
+    {
+        if (axe == null) return;
+        UnsubscribeFromAxe();
+        axe.OnSwing += PlayShootAnimation;
+        axe.OnSwingFinished += StopRechargeAnimation;
+    }
+
+    private void UnsubscribeFromAxe()
+    {
+        if (axe == null) return;
+        axe.OnSwing -= PlayShootAnimation;
+        axe.OnSwingFinished -= StopRechargeAnimation;
     }
 
     private void ApplyHudLayout(WeaponDefinition definition)
@@ -92,7 +123,10 @@ public class WeaponSpriteAnimator : MonoBehaviour
         imageTransform.anchorMin = imageTransform.anchorMax = imageTransform.pivot = new Vector2(1, 0);
         weaponImage.preserveAspect = true;
         weaponImage.raycastTarget = false;
-        requestedHudPosition = defaultHudPosition +
+        hudViewportLimit = definition != null ? definition.HudViewportLimit : new Vector2(.36f, .42f);
+        minimumRightMargin = definition != null && definition.AxePrefab != null ? 0f : 16f;
+        // Melee poses are cut at the original screen edge; a firearm's inset exposes that cut.
+        requestedHudPosition = (definition != null && definition.AxePrefab != null ? Vector2.zero : defaultHudPosition) +
             (definition != null ? definition.HudOffset : Vector2.zero);
         Vector2 configuredSize = definition != null ? definition.HudSize : Vector2.zero;
         requestedHudSize = configuredSize.x > 0f && configuredSize.y > 0f
@@ -118,11 +152,12 @@ public class WeaponSpriteAnimator : MonoBehaviour
         hudLayoutDirty = false;
 
         // Reserve the centre for aiming and cap width independently on narrower monitors.
-        float scale = Mathf.Min(1, Mathf.Min(available.x * .36f / Mathf.Max(1, requestedHudSize.x),
-            available.y * .42f / Mathf.Max(1, requestedHudSize.y)));
+        float scale = Mathf.Min(1, Mathf.Min(available.x * hudViewportLimit.x / Mathf.Max(1, requestedHudSize.x),
+            available.y * hudViewportLimit.y / Mathf.Max(1, requestedHudSize.y)));
         Vector2 size = requestedHudSize * scale;
         imageRect.sizeDelta = size;
-        float right = Mathf.Clamp(-requestedHudPosition.x, 16, Mathf.Max(16, available.x - size.x));
+        float right = Mathf.Clamp(-requestedHudPosition.x, minimumRightMargin,
+            Mathf.Max(minimumRightMargin, available.x - size.x));
         // The arms meet the bottom edge, but no part of the frame extends below it.
         float bottom = Mathf.Clamp(requestedHudPosition.y, 0, Mathf.Max(0, available.y - size.y));
         imageRect.anchoredPosition = new Vector2(-right, bottom);
@@ -131,6 +166,7 @@ public class WeaponSpriteAnimator : MonoBehaviour
     void OnDisable()
     {
         UnsubscribeFromGun(gun);
+        UnsubscribeFromAxe();
     }
 
     private void SubscribeToGun(Gun targetGun)
@@ -161,6 +197,12 @@ public class WeaponSpriteAnimator : MonoBehaviour
         if (currentAnimation == null || currentAnimation.Length == 0 || weaponImage == null)
             return;
 
+        if (axe != null)
+        {
+            UpdateAxePose();
+            return;
+        }
+
         float frameInterval = 1f / Mathf.Max(currentFrameRate, 1f);
 
         timer += Time.deltaTime;
@@ -188,11 +230,9 @@ public class WeaponSpriteAnimator : MonoBehaviour
 
         if (timer >= frameInterval)
         {
-            timer = 0;
-
-            weaponImage.sprite = currentAnimation[currentFrame];
-
-            currentFrame++;
+            int advance = Mathf.FloorToInt(timer / frameInterval);
+            timer -= advance * frameInterval;
+            currentFrame += advance;
 
             if (currentFrame >= currentAnimation.Length)
             {
@@ -205,7 +245,28 @@ public class WeaponSpriteAnimator : MonoBehaviour
 
                 currentFrame = 0;
             }
+            if (currentAnimation != null && currentAnimation.Length > 0)
+                weaponImage.sprite = currentAnimation[currentFrame];
         }
+    }
+
+    private void UpdateAxePose()
+    {
+        if (!axe.IsAttacking || shootFrames == null || shootFrames.Length == 0)
+        {
+            if (idleFrames != null && idleFrames.Length > 0) weaponImage.sprite = idleFrames[0];
+            return;
+        }
+        float elapsed = axe.SwingElapsedTime;
+        int pose = 0;
+        if (shootFrameDurations != null && shootFrameDurations.Length == shootFrames.Length)
+        {
+            float end = Mathf.Max(.001f, shootFrameDurations[0]);
+            while (pose < shootFrames.Length - 1 && elapsed >= end)
+                end += Mathf.Max(.001f, shootFrameDurations[++pose]);
+        }
+        else pose = Mathf.Min(Mathf.FloorToInt(elapsed * shootFrameRate), shootFrames.Length - 1);
+        weaponImage.sprite = shootFrames[pose];
     }
 
     void PlayShootAnimation()
@@ -241,6 +302,7 @@ public class WeaponSpriteAnimator : MonoBehaviour
     void StopRechargeAnimation()
     {
         isReloading = false;
+        isShooting = false;
         currentAnimation = idleFrames;
         currentFrameRate = idleFrameRate;
         currentFrame = 0;

@@ -66,6 +66,7 @@ public abstract class Gun : MonoBehaviour
 
     public void TryShoot()
     {
+        if (!isActiveAndEnabled || PlayerWeaponManager.InputBlocked) return;
         if (recharging != null && recharging.IsReloading)
         {
             return;
@@ -93,6 +94,7 @@ public abstract class Gun : MonoBehaviour
 
     public void TryReload()
     {
+        if (!isActiveAndEnabled || PlayerWeaponManager.InputBlocked) return;
         if (recharging == null)
         {
             return;
