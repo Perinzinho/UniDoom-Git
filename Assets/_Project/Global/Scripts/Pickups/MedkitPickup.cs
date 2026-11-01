@@ -26,6 +26,7 @@ public class MedkitPickup : MonoBehaviour
         foreach (Collider trigger in GetComponents<Collider>())
             trigger.enabled = false;
         life.Heal(healAmount);
+        GameplayAudio.Instance?.PlayMedkitPickup();
         Destroy(gameObject);
         return true;
     }
