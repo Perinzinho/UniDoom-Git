@@ -8,8 +8,8 @@ public class KeysUI : MonoBehaviour
     [SerializeField] private Sprite lifeSprite;
     private const int LifeSlots = 3;
     private PlayerRespawn player;
-    private readonly Image[] lifeIcons = new Image[LifeSlots];
-    private readonly Outline[] lifeOutlines = new Outline[LifeSlots];
+    private Material livesMaterial;
+    private static readonly int RemainingLivesId = Shader.PropertyToID("_RemainingLives");
 
     private void Awake()
     {
@@ -24,6 +24,7 @@ public class KeysUI : MonoBehaviour
             rect.sizeDelta = new Vector2(42, 42);
             rect.anchoredPosition = new Vector2(53 + i * 54, -92);
         }
+<<<<<<< HEAD
         // Preserve the former label's top-left anchor, position and layout area.
         var livesRoot = MenuStyle.Rect("Remaining lives", transform, 32, 28, 220, 36);
         for (int i = 0; i < LifeSlots; i++)
@@ -38,6 +39,22 @@ public class KeysUI : MonoBehaviour
             lifeOutlines[i].useGraphicAlpha = false;
         }
         UpdateLives(LifeSlots);
+=======
+        var hearts = MenuStyle.Image("Remaining lives", transform, 20, 8, 198, 66, Color.white);
+        hearts.sprite = Resources.Load<Sprite>("Textures/UI/RemainingLives");
+        hearts.preserveAspect = true;
+        var template = Resources.Load<Material>("Materials/UI/RemainingLives");
+        if (hearts.sprite == null || template == null)
+        {
+            Debug.LogError("Missing remaining-lives HUD sprite or material.", this);
+            hearts.enabled = false;
+            return;
+        }
+        // A separate instance keeps this HUD's state out of the persistent material asset.
+        livesMaterial = new Material(template);
+        hearts.material = livesMaterial;
+        UpdateLives(player != null ? player.RemainingLives : 3);
+>>>>>>> ef89cee4cd73b40eb9f6af170b90bc282a50c62d
     }
 
     public void SetPlayer(PlayerRespawn newPlayer)
@@ -50,6 +67,7 @@ public class KeysUI : MonoBehaviour
 
     private void UpdateLives(int remaining)
     {
+<<<<<<< HEAD
         remaining = Mathf.Clamp(remaining, 0, LifeSlots);
         for (int i = 0; i < LifeSlots; i++)
         {
@@ -58,11 +76,16 @@ public class KeysUI : MonoBehaviour
             lifeOutlines[i].effectColor = available
                 ? new Color(0, 0, 0, .85f) : new Color(.49f, .46f, .40f, .65f);
         }
+=======
+        if (livesMaterial != null)
+            livesMaterial.SetFloat(RemainingLivesId, Mathf.Clamp(remaining, 0, 3));
+>>>>>>> ef89cee4cd73b40eb9f6af170b90bc282a50c62d
     }
 
     private void OnDestroy()
     {
         if (player != null) player.OnLivesChanged -= UpdateLives;
+        if (livesMaterial != null) Destroy(livesMaterial);
     }
 
     public void ShowKey(int index)
