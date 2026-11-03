@@ -183,7 +183,8 @@ public class PlayerRespawn : MonoBehaviour
 
     private IEnumerator RestoreCheckpoint(System.Action onRestored)
     {
-        if (SceneManager.GetActiveScene().path != RespawnScenePath)
+        // Rebuild encounters even when death occurred in the checkpoint's room.
+        // The persistent player retains keys/lives; collected medkits retain session state.
         {
             AsyncOperation load = null;
             string loadError = null;

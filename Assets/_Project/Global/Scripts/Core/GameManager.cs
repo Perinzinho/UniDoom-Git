@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 
     public static void EndSession()
     {
+        MedkitPickup.ResetSession();
         GameplayAudio.Instance?.EndSession();
         var previous = session;
         session = null;

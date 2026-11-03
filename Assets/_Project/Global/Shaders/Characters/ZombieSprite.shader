@@ -15,15 +15,10 @@ Shader "UniDoom/Characters/Zombie Sprite"
         Tags { "Queue"="AlphaTest" "RenderType"="TransparentCutout" "RenderPipeline"="UniversalPipeline" "CanUseSpriteAtlas"="False" }
         Cull Off
         ZWrite On
-        Pass
-        {
-            Tags { "LightMode"="UniversalForward" }
-            HLSLPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
-            #pragma multi_compile_fog
-            #pragma multi_compile_instancing
+        ZTest LEqual
+        HLSLINCLUDE
             #include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/Core2D.hlsl"
+            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Packing.hlsl"
             TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
             TEXTURE2D(_SilhouetteTex); SAMPLER(sampler_SilhouetteTex);
             CBUFFER_START(UnityPerMaterial)
@@ -37,6 +32,7 @@ Shader "UniDoom/Characters/Zombie Sprite"
             {
                 float4 positionOS:POSITION;
                 float2 uv:TEXCOORD0;
+                float3 normalOS:NORMAL;
                 half4 color:COLOR;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
@@ -46,6 +42,7 @@ Shader "UniDoom/Characters/Zombie Sprite"
                 float2 uv:TEXCOORD0;
                 half4 color:COLOR;
                 half fog:TEXCOORD1;
+                half3 normalWS:TEXCOORD2;
                 UNITY_VERTEX_OUTPUT_STEREO
             };
             Varyings vert(Attributes v)
@@ -59,9 +56,10 @@ Shader "UniDoom/Characters/Zombie Sprite"
                 o.uv = v.uv;
                 o.color = v.color * _Color * unity_SpriteColor;
                 o.fog = ComputeFogFactor(o.positionCS.z);
+                o.normalWS = TransformObjectToWorldNormal(v.normalOS);
                 return o;
             }
-            half4 frag(Varyings i):SV_Target
+            half4 SampleClippedSprite(Varyings i)
             {
                 half4 color = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
                 clip(lerp(1.0h, color.a - .5h, step(.5h, _UseSourceAlpha)));
@@ -72,9 +70,68 @@ Shader "UniDoom/Characters/Zombie Sprite"
                 half greenKeyMask = .15686h - (color.g - max(color.r, color.b));
                 clip(lerp(mask, greenKeyMask, step(.5, _UseGreenScreen)));
                 color *= i.color;
+                clip(color.a - .001h);
+                return color;
+            }
+            half4 frag(Varyings i):SV_Target
+            {
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
+                half4 color = SampleClippedSprite(i);
                 color.rgb = MixFog(color.rgb, i.fog);
                 return color;
             }
+            half4 fragDepth(Varyings i):SV_Target
+            {
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
+                SampleClippedSprite(i);
+                return i.positionCS.z;
+            }
+            half4 fragNormals(Varyings i):SV_Target
+            {
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
+                SampleClippedSprite(i);
+                half3 normalWS = normalize(i.normalWS);
+                #if defined(_GBUFFER_NORMALS_OCT)
+                    float2 oct = PackNormalOctQuadEncode(normalWS);
+                    return half4(PackFloat2To888(saturate(oct * .5 + .5)), 0);
+                #else
+                    return half4(normalWS, 0);
+                #endif
+            }
+        ENDHLSL
+        Pass
+        {
+            Name "Forward"
+            Tags { "LightMode"="UniversalForwardOnly" }
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma multi_compile_fog
+            #pragma multi_compile_instancing
+            ENDHLSL
+        }
+        // Use the same silhouette in every pass, so transparent backgrounds never
+        // occlude the scene and opaque characters participate in URP depth prepasses.
+        Pass
+        {
+            Name "DepthOnly"
+            Tags { "LightMode"="DepthOnly" }
+            ColorMask R
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment fragDepth
+            #pragma multi_compile_instancing
+            ENDHLSL
+        }
+        Pass
+        {
+            Name "DepthNormals"
+            Tags { "LightMode"="DepthNormalsOnly" }
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment fragNormals
+            #pragma multi_compile_instancing
+            #pragma multi_compile_fragment _ _GBUFFER_NORMALS_OCT
             ENDHLSL
         }
     }
