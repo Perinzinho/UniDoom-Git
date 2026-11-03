@@ -62,8 +62,6 @@ public class Reloading : MonoBehaviour
     {
         OnReloadStarted?.Invoke();
 
-        DebugUI.Log($"{gun.name}: recarregando...");
-        
         if (gun is Shotgun)
         {
             for (int round = 0; round < ReloadRoundCount; round++)
