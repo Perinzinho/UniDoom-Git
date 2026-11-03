@@ -28,6 +28,11 @@ public abstract class Gun : MonoBehaviour
     }
 
     public event Action OnShoot;
+    public static event Action<Vector3, float> Gunshot;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetGunshotListeners() => Gunshot = null;
+    private bool warnedMissingCamera;
 
     // Novos eventos: repassam o que acontece no Recharging para quem escuta o Gun.
     public event Action OnReloadStarted;
@@ -88,6 +93,9 @@ public abstract class Gun : MonoBehaviour
 
         Shoot();
         ConsumeAmmo();
+        var shooter = GetComponentInParent<PlayerLife>();
+        if (shooter != null)
+            Gunshot?.Invoke(shooter.transform.position, this is Shotgun ? 26f : 18f);
 
         OnShoot?.Invoke();
     }

@@ -31,6 +31,9 @@ public class Enemy : MonoBehaviour, IDamageable
     [Header("Group awareness")]
     [SerializeField, Min(0f)] private float alertRadius = 7f;
     [SerializeField, Min(.1f)] private float alertCooldown = 2f;
+    [SerializeField, Min(0f)] private float hearingRange = 20f;
+    [SerializeField, Min(.1f)] private float separationRadius = 1.2f;
+    [SerializeField, Range(0f, 1f)] private float separationStrength = .65f;
 
     [Header("Wandering")]
     [SerializeField, Min(0f)] private float patrolSpeed = 1f;
@@ -46,6 +49,8 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] private float attackRange = 1.5f;
     [FormerlySerializedAs("cooldownAtaque")]
     [SerializeField] private float attackCooldown = 1f;
+    [SerializeField, Min(.05f)] private float meleeWindup = .3f;
+    [SerializeField, Min(0f)] private float meleeRecovery = .35f;
 
     [Header("Events (optional, for other scripts to listen)")]
     [FormerlySerializedAs("OnVidaAlterada")]
@@ -82,6 +87,10 @@ public class Enemy : MonoBehaviour, IDamageable
     private float projectileReleaseAt = -1f, attackEndsAt;
     private EnemySpriteAppearance pendingProjectile;
     private bool nearbyCuePlayed;
+    private float meleeHitAt = -1f, meleeEndsAt, nextSeparation, recoveryUntil;
+    private Vector3 separation, previousSteering;
+    private readonly Collider[] separationHits = new Collider[24];
+    private readonly System.Collections.Generic.List<Enemy> nearbyAllies = new();
 
     private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
     private static readonly int ColorId = Shader.PropertyToID("_Color");
@@ -129,8 +138,38 @@ public class Enemy : MonoBehaviour, IDamageable
             if (body != null) { body.isKinematic = true; body.useGravity = false; }
             agent.updateRotation = false;
             agent.angularSpeed = turnSpeed;
+            agent.avoidancePriority = Random.Range(25, 75);
         }
         FindTarget();
+    }
+
+    private void OnEnable() => Gun.Gunshot += HearGunshot;
+
+    private void HearGunshot(Vector3 position, float loudness)
+    {
+        if (IsDead || Time.timeScale <= 0f || State == BehaviourState.Chasing) return;
+        float range = Mathf.Min(hearingRange, loudness);
+        if (Vector3.Distance(transform.position, position) > range) return;
+        // Sound gives a fixed clue, never live tracking. Walls reduce hearing range.
+        Vector3 origin = transform.position + Vector3.up * eyeHeight;
+        Vector3 sound = position + Vector3.up * eyeHeight;
+        int count = Physics.RaycastNonAlloc(origin, (sound - origin).normalized, sightHits,
+            Vector3.Distance(origin, sound), obstacleLayers, QueryTriggerInteraction.Ignore);
+        bool muffled = count == sightHits.Length;
+        for (int i = 0; i < count; i++)
+            if (!sightHits[i].transform.IsChildOf(transform) &&
+                sightHits[i].collider.GetComponentInParent<IDamageable>() == null)
+                muffled = true;
+        if (muffled && Vector3.Distance(transform.position, position) > range * .4f) return;
+        if (target == null) FindTarget();
+        lastSeenPosition = position;
+        ChangeState(BehaviourState.Searching);
+        searchDestination = position;
+        reachedLastSeenPosition = false;
+        searchWaitUntil = 0f;
+        searchEndsAt = Time.time + searchDuration + Mathf.Min(6f,
+            HorizontalDistance(transform.position, position) / Mathf.Max(.1f, moveSpeed));
+        nextPathUpdate = 0f;
     }
 
     private void Update()
@@ -141,6 +180,21 @@ public class Enemy : MonoBehaviour, IDamageable
 
         if (IsDead) return;
         UpdateNearbyAudio();
+        if (meleeHitAt >= 0f || Time.time < meleeEndsAt)
+        {
+            StopMoving();
+            if (meleeHitAt >= 0f && Time.time >= meleeHitAt)
+            {
+                meleeHitAt = -1f;
+                // Recheck at impact: backing away, taking cover or circling can avoid a hit.
+                if (target != null && (targetLife == null || !targetLife.IsDead) &&
+                    Vector3.Distance(transform.position, target.position) <= attackRange &&
+                    Vector3.Angle(FacingDirection, target.position - transform.position) <= 65f &&
+                    HasClearSight() && target.TryGetComponent<IDamageable>(out var victim))
+                    victim.TakeDamage(attackDamage, gameObject);
+            }
+            return;
+        }
         if (pendingProjectile != null)
         {
             StopMoving();
@@ -184,7 +238,11 @@ public class Enemy : MonoBehaviour, IDamageable
             TryAttack();
         }
         else if (State == BehaviourState.Searching) Search();
-        else MoveTo(lastSeenPosition, moveSpeed, .35f);
+        else
+        {
+            RecoverPursuit();
+            MoveTo(lastSeenPosition, moveSpeed, .35f);
+        }
     }
 
     private bool UsingAgent => agent != null && agent.enabled && agent.isOnNavMesh;
@@ -253,7 +311,8 @@ public class Enemy : MonoBehaviour, IDamageable
         State = state;
         if (state == BehaviourState.Searching)
         {
-            searchEndsAt = Time.time + searchDuration;
+            searchEndsAt = Time.time + searchDuration + Mathf.Min(6f,
+                HorizontalDistance(transform.position, lastSeenPosition) / Mathf.Max(.1f, moveSpeed));
             searchDestination = lastSeenPosition;
             reachedLastSeenPosition = false;
             searchWaitUntil = 0f;
@@ -433,26 +492,33 @@ public class Enemy : MonoBehaviour, IDamageable
         Vector3 direction = desiredDirection;
         if (direction.sqrMagnitude > .001f)
         {
+            UpdateSeparation();
+            Vector3 spread = (direction + separation * separationStrength).normalized;
+            if (spread.sqrMagnitude > .001f && CanWalk(spread)) direction = spread;
+            if (Time.time < recoveryUntil)
+                direction = Quaternion.Euler(0f, steeringSide * 90f, 0f) * direction;
             if (!CanWalk(direction))
             {
-                // Keep a preferred side so successive physics ticks do not alternate left/right.
+                // Score both sides, including retreating from a concave corner. Retain
+                // the previous heading to avoid alternating directions every physics tick.
                 Vector3 detour = Vector3.zero;
-                for (int angle = 30; angle <= 90; angle += 30)
+                float best = float.NegativeInfinity;
+                for (int angle = 30; angle <= 180; angle += 30)
                 {
-                    Vector3 candidate = Quaternion.Euler(0f, steeringSide * angle, 0f) * direction;
-                    if (!CanWalk(candidate)) continue;
-                    detour = candidate;
-                    break;
-                }
-                if (detour == Vector3.zero)
-                {
-                    steeringSide = -steeringSide;
-                    Vector3 candidate = Quaternion.Euler(0f, steeringSide * 90f, 0f) * direction;
-                    if (CanWalk(candidate)) detour = candidate;
+                    for (int side = -1; side <= 1; side += 2)
+                    {
+                        Vector3 candidate = Quaternion.Euler(0f, side * angle, 0f) * direction;
+                        float score = Vector3.Dot(candidate, direction) +
+                            .4f * Vector3.Dot(candidate, previousSteering) + (side == steeringSide ? .15f : 0f);
+                        if (score <= best || !CanWalk(candidate)) continue;
+                        best = score;
+                        detour = candidate;
+                    }
                 }
                 direction = detour;
                 if (direction == Vector3.zero && State == BehaviourState.Wandering) patrolDeadline = Time.time;
             }
+            previousSteering = direction;
             Face(direction, Time.fixedDeltaTime);
         }
         if (body != null && !body.isKinematic)
@@ -463,6 +529,42 @@ public class Enemy : MonoBehaviour, IDamageable
             if (body != null) body.MovePosition(position);
             else transform.position = position;
         }
+    }
+
+    private void RecoverPursuit()
+    {
+        if (Time.time < nextProgressCheck) return;
+        if (HorizontalDistance(transform.position, progressPosition) < .15f)
+        {
+            steeringSide = -steeringSide;
+            recoveryUntil = Time.time + .7f;
+            nextPathUpdate = 0f;
+            if (UsingAgent && !agent.pathPending) agent.ResetPath();
+        }
+        progressPosition = transform.position;
+        nextProgressCheck = Time.time + 1.5f;
+    }
+
+    private void UpdateSeparation()
+    {
+        if (Time.time < nextSeparation) return;
+        nextSeparation = Time.time + .2f;
+        separation = Vector3.zero;
+        nearbyAllies.Clear();
+        int count = Physics.OverlapSphereNonAlloc(transform.position, separationRadius,
+            separationHits, Physics.AllLayers, QueryTriggerInteraction.Ignore);
+        for (int i = 0; i < count; i++)
+        {
+            var ally = separationHits[i].GetComponentInParent<Enemy>();
+            if (ally == null || ally == this || ally.IsDead || nearbyAllies.Contains(ally)) continue;
+            nearbyAllies.Add(ally);
+            Vector3 away = transform.position - ally.transform.position;
+            away.y = 0f;
+            float distance = away.magnitude;
+            if (distance > .01f)
+                separation += away / distance * Mathf.Clamp01(1f - distance / separationRadius);
+        }
+        separation = Vector3.ClampMagnitude(separation, 1f);
     }
 
     private bool CanWalk(Vector3 direction)
@@ -514,7 +616,8 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         EnemySpriteAppearance ranged = RangedAppearance;
         if (IsDead || target == null || (targetLife != null && targetLife.IsDead) ||
-            Time.time - lastAttackTime < (ranged != null ? ranged.projectileCooldown : attackCooldown)) return;
+            Time.time - lastAttackTime < (ranged != null ? ranged.projectileCooldown : attackCooldown) ||
+            (ranged == null && Vector3.Angle(FacingDirection, target.position - transform.position) > 45f)) return;
         lastAttackTime = Time.time;
         Attacked?.Invoke();
 
@@ -526,10 +629,8 @@ public class Enemy : MonoBehaviour, IDamageable
             return;
         }
 
-        if (target.TryGetComponent<IDamageable>(out var damageableTarget))
-        {
-            damageableTarget.TakeDamage(attackDamage, gameObject);
-        }
+        meleeHitAt = Time.time + meleeWindup;
+        meleeEndsAt = meleeHitAt + meleeRecovery;
     }
 
     // ---- IDamageable implementation ----
@@ -606,6 +707,9 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void OnDisable()
     {
+        Gun.Gunshot -= HearGunshot;
+        meleeHitAt = -1f;
+        meleeEndsAt = 0f;
         pendingProjectile = null;
         projectileReleaseAt = -1f;
         StopMoving();
@@ -617,6 +721,8 @@ public class Enemy : MonoBehaviour, IDamageable
         if (IsDead) return;
 
         IsDead = true;
+        meleeHitAt = -1f;
+        meleeEndsAt = 0f;
         ChangeState(BehaviourState.Dead);
         if (agent != null) agent.enabled = false;
         target = null;

@@ -72,7 +72,10 @@ public class EnemyLootDrop : MonoBehaviour
         Vector3 side = Vector3.Cross(Vector3.up, direction) * 0.6f;
 
         if (dropMedkit)
-            Instantiate(medkitPickupPrefab, dropPosition - side + Vector3.down * 0.4f, Quaternion.identity);
+        {
+            var pickup = Instantiate(medkitPickupPrefab, dropPosition - side + Vector3.down * 0.4f, Quaternion.identity);
+            pickup.GetComponentInChildren<MedkitPickup>()?.MarkAsRuntimeDrop();
+        }
 
         if (dropAmmo)
             Instantiate(ammoPickupPrefab, dropPosition + side, Quaternion.identity);
