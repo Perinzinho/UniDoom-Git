@@ -19,8 +19,8 @@ public class AmmoUI : MonoBehaviour
         if (gun != null)
         {
             gun.OnAmmoChanged += UpdateText;
-            UpdateText();
         }
+        UpdateText();
     }
 
     private void OnDestroy()
@@ -31,6 +31,7 @@ public class AmmoUI : MonoBehaviour
 
     private void UpdateText()
     {
-        ammoText.text = $"{gun.CurrentAmmo}/{gun.ReserveAmmo}"; //{gun.MagazineSize}
+        if (ammoText != null)
+            ammoText.text = gun != null ? $"{gun.CurrentAmmo}/{gun.ReserveAmmo}" : "0/0";
     }
 }
