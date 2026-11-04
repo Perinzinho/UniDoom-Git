@@ -66148,6 +66148,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1910409796835165912}
+  - component: {fileID: 8502000000000000004}
   - component: {fileID: 8335178439439968530}
   m_Layer: 0
   m_Name: Porta da cela 4
@@ -67486,6 +67487,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 743000727497583885}
+  - component: {fileID: 8502000000000000001}
   - component: {fileID: 9105782186381166049}
   m_Layer: 0
   m_Name: Porta da cela 1
@@ -68747,6 +68749,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6783186580483882876}
+  - component: {fileID: 8502000000000000002}
   - component: {fileID: 7218050495898047545}
   m_Layer: 0
   m_Name: Porta da cela 2
@@ -69443,6 +69446,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6186682584314763281}
+  - component: {fileID: 8502000000000000006}
   - component: {fileID: 4262530613321848410}
   m_Layer: 0
   m_Name: Porta da cela 6
@@ -69580,6 +69584,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4879598170690784317}
+  - component: {fileID: 8502000000000000020}
   - component: {fileID: 7873673460272684119}
   - component: {fileID: 9212217544682922633}
   m_Layer: 0
@@ -69602,6 +69607,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8502000000000000031}
+  - {fileID: 8502000000000000041}
   - {fileID: 8916000000000000002}
   - {fileID: 8916000000000000139}
   - {fileID: 8916000000000000276}
@@ -70757,6 +70764,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6444782179556432972}
+  - component: {fileID: 8502000000000000003}
   - component: {fileID: 3241606510635264675}
   m_Layer: 0
   m_Name: Porta da cela 3
@@ -73196,6 +73204,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1636333672814700915}
+  - component: {fileID: 8502000000000000005}
   - component: {fileID: 30832899865469727}
   m_Layer: 0
   m_Name: Porta da cela 5
@@ -79992,6 +80001,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8916000000000000009}
+  - component: {fileID: 8502000000000000007}
   - component: {fileID: 8916000000000000010}
   m_Layer: 0
   m_Name: Porta da cela 7
@@ -83065,6 +83075,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8916000000000000146}
+  - component: {fileID: 8502000000000000008}
   - component: {fileID: 8916000000000000147}
   m_Layer: 0
   m_Name: Porta da cela 8
@@ -86563,3 +86574,209 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: db3f9dc4505de77458ac09c1c28d306e, type: 2}
+--- !u!114 &8502000000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1931838649199394786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7c70cfa25ee46be9a5e7249660fcd3c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PrisonCellGate
+  cellId: 1
+  teacher: {fileID: 8915000000000000001}
+  openingAngle: -100
+  openingDuration: 1.4
+--- !u!114 &8502000000000000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3267639952525810312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7c70cfa25ee46be9a5e7249660fcd3c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PrisonCellGate
+  cellId: 2
+  teacher: {fileID: 8915000000000000011}
+  openingAngle: 100
+  openingDuration: 1.4
+--- !u!114 &8502000000000000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5151854922657593876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7c70cfa25ee46be9a5e7249660fcd3c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PrisonCellGate
+  cellId: 3
+  teacher: {fileID: 8915000000000000021}
+  openingAngle: -100
+  openingDuration: 1.4
+--- !u!114 &8502000000000000004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 489449693642243640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7c70cfa25ee46be9a5e7249660fcd3c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PrisonCellGate
+  cellId: 4
+  teacher: {fileID: 8915000000000000031}
+  openingAngle: 100
+  openingDuration: 1.4
+--- !u!114 &8502000000000000005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8558538645451878230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7c70cfa25ee46be9a5e7249660fcd3c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PrisonCellGate
+  cellId: 5
+  teacher: {fileID: 8915000000000000041}
+  openingAngle: -100
+  openingDuration: 1.4
+--- !u!114 &8502000000000000006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3789764537871943025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7c70cfa25ee46be9a5e7249660fcd3c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PrisonCellGate
+  cellId: 6
+  teacher: {fileID: 8915000000000000051}
+  openingAngle: 100
+  openingDuration: 1.4
+--- !u!114 &8502000000000000007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8916000000000000008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7c70cfa25ee46be9a5e7249660fcd3c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PrisonCellGate
+  cellId: 7
+  teacher: {fileID: 8916000000000000137}
+  openingAngle: -100
+  openingDuration: 1.4
+--- !u!114 &8502000000000000008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8916000000000000145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7c70cfa25ee46be9a5e7249660fcd3c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PrisonCellGate
+  cellId: 8
+  teacher: {fileID: 8916000000000000274}
+  openingAngle: 100
+  openingDuration: 1.4
+--- !u!114 &8502000000000000020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3990196985676647793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27a5d7b443ee43d7b69fb690b9fac2b3, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PrisonController
+  encounter: {fileID: 4645060440832569725}
+  passage: {fileID: 7873673460272684119}
+  arrivalPoint: {fileID: 8502000000000000031}
+  keySprite: {fileID: 21300000, guid: 24ba5eab46b34db2b55cbd7c6002d6a8, type: 3}
+  interactionDistance: 3
+--- !u!1 &8502000000000000030
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8502000000000000031}
+  m_Layer: 0
+  m_Name: PrisonArrivalAfterBoss
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8502000000000000031
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8502000000000000030}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 1.25}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4879598170690784317}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &8502000000000000040
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4879598170690784317}
+    m_Modifications:
+    - target: {fileID: 5252053251228074831, guid: 6bd36eace8fa4f1e8020c4ddc16ddb1d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5252053251228074831, guid: 6bd36eace8fa4f1e8020c4ddc16ddb1d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5252053251228074831, guid: 6bd36eace8fa4f1e8020c4ddc16ddb1d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 3.1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6bd36eace8fa4f1e8020c4ddc16ddb1d, type: 3}
+--- !u!4 &8502000000000000041 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5252053251228074831, guid: 6bd36eace8fa4f1e8020c4ddc16ddb1d, type: 3}
+  m_PrefabInstance: {fileID: 8502000000000000040}
+  m_PrefabAsset: {fileID: 0}

@@ -24,22 +24,6 @@ public class KeysUI : MonoBehaviour
             rect.sizeDelta = new Vector2(42, 42);
             rect.anchoredPosition = new Vector2(53 + i * 54, -92);
         }
-<<<<<<< HEAD
-        // Preserve the former label's top-left anchor, position and layout area.
-        var livesRoot = MenuStyle.Rect("Remaining lives", transform, 32, 28, 220, 36);
-        for (int i = 0; i < LifeSlots; i++)
-        {
-            // The existing anatomical sprite includes transparent padding around the heart.
-            var heart = MenuStyle.Image("Life " + (i + 1), livesRoot, i * 48 - 6, -12, 48, 62, Color.white);
-            heart.sprite = lifeSprite;
-            heart.preserveAspect = true;
-            lifeIcons[i] = heart;
-            lifeOutlines[i] = heart.gameObject.AddComponent<Outline>();
-            lifeOutlines[i].effectDistance = new Vector2(1, -1);
-            lifeOutlines[i].useGraphicAlpha = false;
-        }
-        UpdateLives(LifeSlots);
-=======
         var hearts = MenuStyle.Image("Remaining lives", transform, 20, 8, 198, 66, Color.white);
         hearts.sprite = Resources.Load<Sprite>("Textures/UI/RemainingLives");
         hearts.preserveAspect = true;
@@ -54,7 +38,6 @@ public class KeysUI : MonoBehaviour
         livesMaterial = new Material(template);
         hearts.material = livesMaterial;
         UpdateLives(player != null ? player.RemainingLives : 3);
->>>>>>> ef89cee4cd73b40eb9f6af170b90bc282a50c62d
     }
 
     public void SetPlayer(PlayerRespawn newPlayer)
@@ -67,19 +50,8 @@ public class KeysUI : MonoBehaviour
 
     private void UpdateLives(int remaining)
     {
-<<<<<<< HEAD
-        remaining = Mathf.Clamp(remaining, 0, LifeSlots);
-        for (int i = 0; i < LifeSlots; i++)
-        {
-            bool available = i < remaining;
-            lifeIcons[i].color = available ? Color.white : new Color(.10f, .10f, .10f, .7f);
-            lifeOutlines[i].effectColor = available
-                ? new Color(0, 0, 0, .85f) : new Color(.49f, .46f, .40f, .65f);
-        }
-=======
         if (livesMaterial != null)
             livesMaterial.SetFloat(RemainingLivesId, Mathf.Clamp(remaining, 0, 3));
->>>>>>> ef89cee4cd73b40eb9f6af170b90bc282a50c62d
     }
 
     private void OnDestroy()
