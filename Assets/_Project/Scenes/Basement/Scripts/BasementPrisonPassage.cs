@@ -53,6 +53,16 @@ public sealed class BasementPrisonPassage : MonoBehaviour
         opening = StartCoroutine(Open());
     }
 
+    public void RevealImmediately()
+    {
+        if (concealedPanel == null) return;
+        if (opening != null) StopCoroutine(opening);
+        opening = null;
+        Revealed = true;
+        if (passageLight != null) passageLight.enabled = true;
+        FinishOpening();
+    }
+
     IEnumerator Open()
     {
         float elapsed = 0;

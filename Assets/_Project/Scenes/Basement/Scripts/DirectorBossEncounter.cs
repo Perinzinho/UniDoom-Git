@@ -127,6 +127,14 @@ public sealed class DirectorBossEncounter : MonoBehaviour
         Completed = true;
         onEncounterCompleted.Invoke();
     }
+
+    public void RestoreCompleted()
+    {
+        // Used by the prison shortcut and by reloads after the boss has already been defeated.
+        if (Started && !Completed) return;
+        Started = true;
+        CompleteEncounter();
+    }
     void OnDrawGizmosSelected()
     {
         if (activationVolume == null) return;
