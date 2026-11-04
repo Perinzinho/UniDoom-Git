@@ -250,15 +250,17 @@ namespace UniDoom.UI
             SetScreen(Screen.MapSelect);
         }
 
-        void StartNewGameAtScene(string scene, bool startAtBoss = false)
+        void StartAtPrison() => StartNewGameAtScene("Assets/_Project/Scenes/Basement/Basement.unity", startAtPrison: true);
+
+        void StartNewGameAtScene(string scene, bool startAtBoss = false, bool startAtPrison = false)
         {
             if (busy) return;
             if (string.IsNullOrEmpty(scene) || !Application.CanStreamedLevelBeLoaded(scene))
             { error.text = "O mapa não está disponível no Build Settings."; return; }
-            StartCoroutine(NewGame(scene, startAtBoss));
+            StartCoroutine(NewGame(scene, startAtBoss, startAtPrison));
         }
 
-        IEnumerator NewGame(string scene, bool startAtBoss)
+        IEnumerator NewGame(string scene, bool startAtBoss, bool startAtPrison)
         {
             busy = true;
             for (float t = 0; t < .2f; t += Time.unscaledDeltaTime) { SetFade(t / .2f); yield return null; }
@@ -269,23 +271,27 @@ namespace UniDoom.UI
             GameManager.EndSession();
             yield return null;
             AsyncOperation load = null;
-            bool startConfigured = !startAtBoss;
+            bool startConfigured = !startAtBoss && !startAtPrison;
             void ConfigureStart(Scene loaded, LoadSceneMode mode)
             {
-                if (!startAtBoss || loaded.path != scene) return;
+                if ((!startAtBoss && !startAtPrison) || loaded.path != scene) return;
                 Transform start = null;
                 DirectorBossEncounter encounter = null;
+                PrisonController prison = null;
                 // Awake has already moved the manager into DontDestroyOnLoad.
                 CharacterController playerController = GameManager.SessionPlayerControllerPrefab;
                 foreach (var root in loaded.GetRootGameObjects())
                 {
                     if (root.name == "SpawnPoint") start = root.transform;
                     if (encounter == null) encounter = root.GetComponentInChildren<DirectorBossEncounter>();
+                    if (prison == null) prison = root.GetComponentInChildren<PrisonController>();
                     var manager = root.GetComponent<GameManager>();
                     if (manager != null) playerController = manager.PlayerControllerPrefab;
                 }
                 // sceneLoaded runs before GameManager.Start creates the player and checkpoint.
-                startConfigured = start != null && encounter != null && encounter.TryConfigurePlayerStart(start, playerController);
+                startConfigured = startAtPrison
+                    ? prison != null && prison.TryConfigurePlayerStart(start, playerController)
+                    : encounter != null && encounter.TryConfigurePlayerStart(start, playerController);
             }
             SceneManager.sceneLoaded += ConfigureStart;
             try
@@ -311,7 +317,8 @@ namespace UniDoom.UI
                 SetFade(0);
                 SetScreen(Screen.Main);
                 AcquirePause();
-                error.text = "Não foi encontrado um ponto livre na arena do boss.";
+                error.text = startAtPrison ? "Não foi encontrado um ponto livre na entrada da prisão." :
+                    "Não foi encontrado um ponto livre na arena do boss.";
                 yield break;
             }
             SetScreen(Screen.Gameplay);
@@ -477,10 +484,11 @@ namespace UniDoom.UI
             StandardHeader(main, 0);
             mainFirst = ColumnButton(main, "NewGame", "NOVO JOGO", StartNewGame);
             chooseMap = ColumnButton(main, "TemporaryMapSelect", "ESCOLHER MAPA (TEMP.)", OpenMapSelection);
+            var prisonShortcut = ColumnButton(main, "PrisonShortcut", "PRISÃO — APÓS O BOSS", StartAtPrison);
             var mainOptions = ColumnButton(main, "Options", "OPÇÕES", OpenOptions);
             var creditButton = ColumnButton(main, "Credits", "CRÉDITOS", () => SetScreen(Screen.Credits));
             var quit = ColumnButton(main, "Quit", "SAIR", Quit);
-            MenuStyle.Link(mainFirst, chooseMap, mainOptions, creditButton, quit);
+            MenuStyle.Link(mainFirst, chooseMap, prisonShortcut, mainOptions, creditButton, quit);
             ColumnFooter(main);
             BuildMapSelection();
             StandardHeader(pause, 1);
