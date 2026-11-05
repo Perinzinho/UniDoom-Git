@@ -1,0 +1,137 @@
+using TMPro;
+using UniDoom.UI;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
+
+/// <summary>Prison interaction, cell-specific voices and the post-boss menu arrival.</summary>
+[DisallowMultipleComponent]
+public sealed class PrisonController : MonoBehaviour
+{
+    [SerializeField] DirectorBossEncounter encounter;
+    [SerializeField] BasementPrisonPassage passage;
+    [SerializeField] Transform arrivalPoint;
+    [SerializeField] Sprite keySprite;
+    [SerializeField, Min(1)] float interactionDistance = 3f;
+    Canvas hud;
+    TMP_Text prompt;
+    Image keyIcon;
+    AudioSource activeVoice;
+    PlayerMovement player;
+    Camera view;
+
+    void OnEnable()
+    {
+        if (encounter != null) encounter.onEncounterCompleted.AddListener(RememberVictory);
+    }
+
+    void Start()
+    {
+        if (PrisonProgress.BossDefeated)
+        {
+            encounter?.RestoreCompleted();
+            passage?.RevealImmediately();
+        }
+        BuildHUD();
+    }
+
+    void RememberVictory() => PrisonProgress.BossDefeated = true;
+
+    public bool TryConfigurePlayerStart(Transform start, CharacterController controller)
+    {
+        if (start == null || controller == null || arrivalPoint == null || encounter == null || passage == null)
+            return false;
+        // Fit the same scaled capsule that GameManager instantiates, before its Start/checkpoint capture.
+        Vector3 scale = controller.transform.lossyScale;
+        float radius = controller.radius * Mathf.Max(Mathf.Abs(scale.x), Mathf.Abs(scale.z));
+        float height = Mathf.Max(controller.height * Mathf.Abs(scale.y), radius * 2);
+        float clearance = Mathf.Max(.1f, controller.skinWidth * Mathf.Abs(scale.y));
+        Physics.SyncTransforms();
+        Vector3 candidate = arrivalPoint.position;
+        // Start below the low ceiling so the roof cannot be mistaken for the floor.
+        if (!Physics.Raycast(candidate + Vector3.up * .5f, Vector3.down, out var floor, 4,
+                ~0, QueryTriggerInteraction.Ignore) || floor.normal.y < .7f) return false;
+        if (Physics.CheckCapsule(floor.point + Vector3.up * (clearance + radius),
+                floor.point + Vector3.up * (clearance + height - radius), radius,
+                ~0, QueryTriggerInteraction.Ignore)) return false;
+        Quaternion rotation = arrivalPoint.rotation;
+        Vector3 centerOffset = Vector3.Scale(controller.center, scale);
+        start.SetPositionAndRotation(floor.point + Vector3.up * (height * .5f + clearance) -
+            rotation * centerOffset, rotation);
+        PrisonProgress.BossDefeated = true;
+        encounter.RestoreCompleted();
+        passage.RevealImmediately();
+        return true;
+    }
+
+    void BuildHUD()
+    {
+        var root = new GameObject("Prison interaction HUD", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler));
+        root.transform.SetParent(transform, false);
+        hud = root.GetComponent<Canvas>();
+        hud.renderMode = RenderMode.ScreenSpaceOverlay;
+        hud.sortingOrder = 15;
+        var scaler = root.GetComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920, 1080);
+        scaler.matchWidthOrHeight = .5f;
+        prompt = MenuStyle.Text("Cell interaction", root.transform, "", 0, 0, 1000, 60, 27, MenuStyle.Paper);
+        var rect = prompt.rectTransform;
+        rect.anchorMin = rect.anchorMax = new Vector2(.5f, 0);
+        rect.pivot = new Vector2(.5f, 0);
+        rect.anchoredPosition = new Vector2(0, 100);
+        prompt.alignment = TextAlignmentOptions.Center;
+        prompt.raycastTarget = false;
+        keyIcon = MenuStyle.Image("Prison key", root.transform, 0, 0, 52, 70, Color.white);
+        keyIcon.rectTransform.anchorMin = keyIcon.rectTransform.anchorMax = keyIcon.rectTransform.pivot = Vector2.one;
+        keyIcon.rectTransform.anchoredPosition = new Vector2(-28, -28);
+        keyIcon.sprite = keySprite;
+        keyIcon.preserveAspect = true;
+        keyIcon.raycastTarget = false;
+        keyIcon.gameObject.SetActive(false);
+    }
+
+    void Update()
+    {
+        if (hud == null) return;
+        player = GameManager.SessionPlayer;
+        bool playing = player != null && !GameMenus.BlocksGameplay && !DeathScreen.IsVisible &&
+            !DoorReloadScreen.IsReloading && Time.timeScale > 0;
+        hud.enabled = playing;
+        if (!playing) return;
+        keyIcon.gameObject.SetActive(PrisonProgress.HasKey);
+        prompt.text = "";
+        if (view == null || !view.gameObject.activeInHierarchy) view = Camera.main;
+        if (view == null || !Physics.Raycast(view.transform.position, view.transform.forward,
+                out var hit, interactionDistance, ~0, QueryTriggerInteraction.Ignore)) return;
+        var gate = hit.collider.GetComponentInParent<PrisonCellGate>();
+        if (gate == null || gate.IsOpen) return;
+        prompt.text = PrisonProgress.HasKey ? "[E] ABRIR CELA " + gate.CellId : "CELA TRANCADA — ENCONTRE A CHAVE DA PRISÃO";
+        bool interact = (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame) ||
+            (Gamepad.current != null && Gamepad.current.buttonWest.wasPressedThisFrame);
+        if (!interact) return;
+        if (!PrisonProgress.HasKey)
+        {
+            GameplayAudio.Instance?.NotifyLockedDoorContact(gate);
+            return;
+        }
+        if (!TryOpenCell(gate, player.GetComponent<PlayerPickupKey>())) return;
+        prompt.text = "";
+    }
+
+    public bool TryOpenCell(PrisonCellGate gate, PlayerPickupKey playerKeys)
+    {
+        if (gate == null || !gate.transform.IsChildOf(transform) || !gate.TryOpen(playerKeys)) return false;
+        if (activeVoice != null) activeVoice.Stop();
+        activeVoice = gate.Voice;
+        if (activeVoice != null && activeVoice.clip != null) activeVoice.Play();
+        return true;
+    }
+
+    void OnDisable()
+    {
+        if (encounter != null) encounter.onEncounterCompleted.RemoveListener(RememberVictory);
+        if (activeVoice != null) activeVoice.Stop();
+        if (hud != null) hud.enabled = false;
+    }
+}

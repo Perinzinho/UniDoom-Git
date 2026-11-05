@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19f679841a8340b0aa672348dbdae807, type: 3}
+  m_Name: FanZombieAppearance
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpriteAppearance
+  material: {fileID: 2100000, guid: 345363a9a0c063846baa581dd94bfdd8, type: 2}
+  idleFrames:
+  - {fileID: 64035867, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  frontWalkFrames:
+  - {fileID: 64035867, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: -1719768962, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: 1505505484, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: 1044371960, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: 1037506881, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: -645426972, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: -94227540, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: -1552730590, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  sideWalkFrames: []
+  leftWalkFrames: []
+  rightWalkFrames: []
+  backWalkFrames:
+  - {fileID: 1444008865, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: -1343550432, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: 502018741, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: -184993993, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: -1715723967, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: 350806987, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: -106983652, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: -214023775, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  attackFrames:
+  - {fileID: 1062865630, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: 1550132949, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: -556968862, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: 1373568588, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: -1525034994, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: -299557212, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: -937303599, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  painFrames: []
+  deathFrames:
+  - {fileID: -744328590, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: -424245443, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: -408326876, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: -1668554810, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: -722592783, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: 351140373, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  - {fileID: -1627791941, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  visualScale: 1
+  colliderHeight: 1.95
+  colliderRadius: 0.5
+  idleFramesPerSecond: 4
+  walkFramesPerSecond: 9
+  attackDuration: 0.84
+  painDuration: 0.32
+  deathDuration: 1.2
+  projectileSprite: {fileID: -134712100, guid: 79b9b43697654c549b9385d1034651d4, type: 3}
+  projectileAttackRange: 9
+  projectileCooldown: 2.4
+  projectileReleaseDelay: 0.36
+  projectileSpeed: 9
+  projectileLifetime: 3
+  projectileRadius: 0.16
+  projectileScale: 1.1
