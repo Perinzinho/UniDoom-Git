@@ -16,21 +16,13 @@ public class MedkitPickup : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics() => ResetSession();
 
-    private void Awake()
-    {
-        // Names and authored positions survive sibling removals and the persistent
-        // GameManager leaving the scene. Never use instance IDs or sibling indices.
-        sessionId = "";
-        for (Transform node = transform; node != null; node = node.parent)
-        {
-            Vector3 p = node.localPosition;
-            sessionId = System.FormattableString.Invariant($"/{node.name}@{p.x:R},{p.y:R},{p.z:R}") + sessionId;
-        }
-        sessionId = gameObject.scene.path + sessionId;
-    }
-
     private void Start()
     {
+        // Authored pickups keep the same world position across scene reloads.
+        // Parent hierarchies can change while entering or leaving a room.
+        Vector3 p = transform.position;
+        sessionId = System.FormattableString.Invariant(
+            $"{gameObject.scene.path}/{name}@{p.x:R},{p.y:R},{p.z:R}");
         if (!runtimeDrop && collected.Contains(sessionId))
         {
             consumed = true;
