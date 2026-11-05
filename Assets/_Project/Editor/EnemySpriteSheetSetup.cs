@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.U2D.Sprites;
@@ -19,6 +20,7 @@ public static class EnemySpriteSheetSetup
     const string WheelchairMaterialPath = "Assets/_Project/Global/Materials/Enemy/UniDoomWheelchairZombie.mat";
     const string WomanMaterialPath = "Assets/_Project/Global/Materials/Enemy/UniDoomZombieWoman.mat";
     const string EnemyPrefabPath = "Assets/_Project/Global/Prefabs/Enemy/Enemy.prefab";
+    const string SilhouetteVersion = "unidoom-silhouette-black8-speckles96-v1";
 
     // Boundaries deliberately include a little black padding so wide death poses stay intact.
     static readonly int[] FrameLefts = { 165, 323, 480, 638, 795, 953, 1110, 1268, 1438 };
@@ -28,9 +30,14 @@ public static class EnemySpriteSheetSetup
     {
         var wheelchair = AssetImporter.GetAtPath(WheelchairTexturePath);
         var woman = AssetImporter.GetAtPath(WomanTexturePath);
-        if (wheelchair == null || woman == null ||
-            (wheelchair.userData == ImportVersion && woman.userData == ImportVersion))
+        if (wheelchair == null || woman == null) return;
+        if (wheelchair.userData == ImportVersion && woman.userData == ImportVersion)
+        {
+            if (!HasCurrentSilhouette(WheelchairMaterialPath, WheelchairTexturePath) ||
+                !HasCurrentSilhouette(WomanMaterialPath, WomanTexturePath))
+                EditorApplication.delayCall += RefreshTransparencyMasks;
             return;
+        }
 
         EditorApplication.delayCall += () =>
         {
@@ -139,10 +146,108 @@ public static class EnemySpriteSheetSetup
         }
 
         material.mainTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
-        material.SetFloat("_UseSilhouetteMask", 0);
+        material.SetTexture("_SilhouetteTex", ConfigureSilhouette(texturePath));
+        material.SetFloat("_UseSilhouetteMask", 1);
+        material.SetFloat("_UseSourceAlpha", 0);
         material.SetFloat("_BlackThreshold", .012f);
         EditorUtility.SetDirty(material);
         return material;
+    }
+
+    static string SilhouettePath(string texturePath) => Path.ChangeExtension(texturePath, null) + "Silhouette.asset";
+    static string SilhouetteStamp(string texturePath) => SilhouetteVersion + ":" + AssetDatabase.GetAssetDependencyHash(texturePath);
+
+    static bool HasCurrentSilhouette(string materialPath, string texturePath)
+    {
+        var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+        string path = SilhouettePath(texturePath);
+        var importer = AssetImporter.GetAtPath(path);
+        return material != null && material.GetFloat("_UseSilhouetteMask") > .5f &&
+            material.GetTexture("_SilhouetteTex") == AssetDatabase.LoadAssetAtPath<Texture2D>(path) &&
+            importer != null && importer.userData == SilhouetteStamp(texturePath);
+    }
+
+    [MenuItem("Tools/UniDoom/Refresh Enemy Transparency Masks")]
+    public static void RefreshTransparencyMasks()
+    {
+        ConfigureMaterial(WheelchairMaterialPath, WheelchairTexturePath);
+        ConfigureMaterial(WomanMaterialPath, WomanTexturePath);
+        AssetDatabase.SaveAssets();
+    }
+
+    static Texture2D ConfigureSilhouette(string texturePath)
+    {
+        string path = SilhouettePath(texturePath);
+        string stamp = SilhouetteStamp(texturePath);
+        var mask = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        var importer = AssetImporter.GetAtPath(path);
+        if (mask != null && importer != null && importer.userData == stamp) return mask;
+
+        // Read the source without changing its importer, sprite rectangles or fileIDs.
+        var readable = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+        try
+        {
+            if (!ImageConversion.LoadImage(readable, File.ReadAllBytes(texturePath)))
+                throw new InvalidOperationException("Could not read sprite sheet: " + texturePath);
+            int width = readable.width, height = readable.height;
+            Color32[] pixels = readable.GetPixels32();
+            var silhouette = new byte[pixels.Length];
+            var dark = new bool[pixels.Length];
+            var visited = new bool[pixels.Length];
+            var queue = new int[pixels.Length];
+            for (int i = 0; i < pixels.Length; i++)
+            {
+                var color = pixels[i];
+                dark[i] = color.a < 128 || Mathf.Max(color.r, Mathf.Max(color.g, color.b)) <= 8;
+                silhouette[i] = dark[i] ? (byte)0 : (byte)255;
+            }
+
+            for (int start = 0; start < pixels.Length; start++)
+            {
+                if (!dark[start] || visited[start]) continue;
+                int head = 0, tail = 0;
+                bool touchesBorder = false, hasTransparentSource = false;
+                queue[tail++] = start; visited[start] = true;
+                while (head < tail)
+                {
+                    int index = queue[head++], x = index % width, y = index / width;
+                    touchesBorder |= x == 0 || x == width - 1 || y == 0 || y == height - 1;
+                    hasTransparentSource |= pixels[index].a < 128;
+                    if (x > 0) Enqueue(index - 1);
+                    if (x < width - 1) Enqueue(index + 1);
+                    if (y > 0) Enqueue(index - width);
+                    if (y < height - 1) Enqueue(index + width);
+                }
+                // Repair enclosed dark speckles; retain larger gaps between limbs and chair parts.
+                if (!touchesBorder && !hasTransparentSource && tail <= 96)
+                    for (int i = 0; i < tail; i++) silhouette[queue[i]] = 255;
+
+                void Enqueue(int index)
+                {
+                    if (visited[index] || !dark[index]) return;
+                    visited[index] = true; queue[tail++] = index;
+                }
+            }
+
+            if (mask == null)
+            {
+                mask = new Texture2D(width, height, TextureFormat.R8, false, true);
+                mask.name = Path.GetFileNameWithoutExtension(path);
+                AssetDatabase.CreateAsset(mask, path);
+            }
+            else mask.Reinitialize(width, height, TextureFormat.R8, false);
+            mask.filterMode = FilterMode.Point;
+            mask.wrapMode = TextureWrapMode.Clamp;
+            mask.SetPixelData(silhouette, 0);
+            mask.Apply(false, false);
+            EditorUtility.SetDirty(mask);
+            AssetDatabase.SaveAssetIfDirty(mask);
+            importer = AssetImporter.GetAtPath(path);
+            importer.userData = stamp;
+            importer.SaveAndReimport();
+            return mask;
+        }
+        finally { UnityEngine.Object.DestroyImmediate(readable); }
     }
 
     static void ConfigureAppearance(
