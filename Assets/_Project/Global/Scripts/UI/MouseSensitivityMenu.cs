@@ -428,7 +428,7 @@ namespace UniDoom.UI
             string scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
             pausedLocation.text = scene switch
             {
-                "Cylinder" => "BLOCO UNIVERSITÁRIO",
+                "Cylinder" => "REDONDO",
                 "Library" => "BIBLIOTECA",
                 "ClassRoom" => "SALA DE AULA",
                 "DirectorRoom" => "DIRETORIA",
