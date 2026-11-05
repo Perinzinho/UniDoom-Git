@@ -174,7 +174,7 @@ namespace UniDoom.UI
             string label = destination switch
             {
                 "EntranceGarden" => "JARDIM DO CAMPUS",
-                "Cylinder" => "BLOCO UNIVERSIT\u00c1RIO",
+                "Cylinder" => "REDONDO",
                 "Library" => "BIBLIOTECA",
                 "ClassRoom" => "SALA DE AULA",
                 "DirectorRoom" => "DIRETORIA",
@@ -287,7 +287,7 @@ namespace UniDoom.UI
                 : System.IO.Path.GetFileNameWithoutExtension(destination).Trim().ToUpperInvariant();
             switch (destination)
             {
-                case "HUB": case "CILINDRO": case "BLOCO UNIVERSITÁRIO": case "REDONDO": destination = "CYLINDER"; break;
+                case "HUB": case "CILINDRO": case "REDONDO": case "REDONDO": destination = "CYLINDER"; break;
                 case "BIBLIOTECA": destination = "LIBRARY"; break;
                 case "SALA DE AULA": destination = "CLASSROOM"; break;
                 case "DIRETORIA": destination = "DIRECTORROOM"; break;
