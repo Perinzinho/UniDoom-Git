@@ -655,6 +655,7 @@ namespace UniDoom.UI
                     "SampleScene" => "CAMPUS COMPLETO",
                     "Cylinder" => "CILINDRO",
                     "Library" => "BIBLIOTECA",
+                    "CampusLibrary" => "BIBLIOTECA DO CAMPUS",
                     "ClassRoom" => "SALA DE AULA",
                     "DirectorRoom" => "SALA DO DIRETOR",
                     "Basement" => "PORÃO — PRÉ-ARENA",

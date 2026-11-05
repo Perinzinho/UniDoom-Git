@@ -54,6 +54,7 @@ namespace UniDoom.UI
         {
             new DestinationArtwork("Cylinder"),
             new DestinationArtwork("Library"),
+            new DestinationArtwork("CampusLibrary"),
             new DestinationArtwork("ClassRoom"),
             new DestinationArtwork("DirectorRoom"),
             new DestinationArtwork("EntranceGarden")
@@ -176,6 +177,7 @@ namespace UniDoom.UI
                 "EntranceGarden" => "JARDIM DO CAMPUS",
                 "Cylinder" => "REDONDO",
                 "Library" => "BIBLIOTECA",
+                "CampusLibrary" => "BIBLIOTECA DO CAMPUS",
                 "ClassRoom" => "SALA DE AULA",
                 "DirectorRoom" => "DIRETORIA",
                 _ => destination
