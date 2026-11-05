@@ -10572,6 +10572,80 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: ffce6d79535956043a6e17cf4bece321, type: 2}
+--- !u!1 &1176104173384589873
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6082435236414668530}
+  - component: {fileID: 1253212698250757816}
+  - component: {fileID: 3926646975160602509}
+  m_Layer: 0
+  m_Name: "Entrada jog\xE1vel \u2014 Bloco de Direito"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6082435236414668530
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1176104173384589873}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -43, y: 1.85, z: 14.4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9065510402592215547}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1253212698250757816
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1176104173384589873}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.4, y: 2.8, z: 0.65}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3926646975160602509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1176104173384589873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2432109e0c44e1749872594917148e9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UniDoom.Utils.SceneTransitionDoor
+  destinationScene: LawSchool
+  destinationSpawnId: FromCampus
+  destinationLabel: BLOCO DE DIREITO
+  requiresKey01: 0
+  requiresKey02: 0
+  requiresKey03: 0
+  physicalDoor: {fileID: 0}
+  waitForPhysicalDoorToOpen: 0
 --- !u!1 &1189171558194558157
 GameObject:
   m_ObjectHideFlags: 0
@@ -12558,6 +12632,51 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &1435095690420970542
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 757352161849582141}
+  - component: {fileID: 1161382101588514279}
+  m_Layer: 0
+  m_Name: Chegada FromLawSchool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &757352161849582141
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1435095690420970542}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: -0.00000004371139}
+  m_LocalPosition: {x: -43, y: 1.75, z: 12.4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7561665567863255976}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1161382101588514279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1435095690420970542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce7f422863e19b14ba28983ea170382f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UniDoom.Utils.SceneArrivalPoint
+  spawnId: FromLawSchool
 --- !u!1 &1439228757458146120
 GameObject:
   m_ObjectHideFlags: 0
@@ -42791,6 +42910,7 @@ Transform:
   - {fileID: 5405638738411986507}
   - {fileID: 9137773610809904145}
   - {fileID: 2193811984305954378}
+  - {fileID: 6082435236414668530}
   m_Father: {fileID: 7561665567863255976}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5345782628690542611
@@ -47713,6 +47833,7 @@ Transform:
   - {fileID: 2809951860522797300}
   - {fileID: 1975632127733547055}
   - {fileID: 6037520877527944785}
+  - {fileID: 757352161849582141}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4285643434372017960
