@@ -7,7 +7,7 @@ using UnityEngine;
 public sealed class Axe : MonoBehaviour
 {
     [SerializeField, Min(1f)] private float damage = 55f;
-    [Tooltip("Maximum player-to-target distance, matching the zombie's attack range. Collider size adds no extra reach.")]
+    [Tooltip("Maximum melee reach. Zombies use player-to-target distance; the Director uses distance to its body collider.")]
     [SerializeField, Min(.1f)] private float range = 1.5f;
     [SerializeField, Min(0f)] private float hitRadius = .28f;
     [Tooltip("Extend the swing below eye level to catch shorter, seated enemies.")]
@@ -96,9 +96,12 @@ public sealed class Axe : MonoBehaviour
                 Vector3 point = hit.collider.ClosestPoint(origin);
                 var targetComponent = target as Component;
                 Vector3 playerPosition = owner != null ? owner.position : ray.origin;
-                // Use the same root-to-root distance as the enemy's attack range check.
-                // Keep the broader hitbox without granting extra reach for large colliders.
-                if (targetComponent != null && Vector3.Distance(playerPosition, targetComponent.transform.position) <= range &&
+                // The Director's root is at its feet, below the player's root. Its large
+                // solid body can be in reach while those roots remain over 1.5 m apart.
+                // Measure that boss at the contact surface; keep zombie attack-range parity.
+                bool withinTargetRange = targetComponent is DirectorBoss ||
+                    (targetComponent != null && Vector3.Distance(playerPosition, targetComponent.transform.position) <= range);
+                if (withinTargetRange &&
                     Vector3.Distance(origin, point) <= range &&
                     (!Physics.Linecast(ray.origin, point, out RaycastHit obstruction, ~0, QueryTriggerInteraction.Ignore) ||
                      obstruction.collider.GetComponentInParent<IDamageable>() == target))
