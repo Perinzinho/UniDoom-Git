@@ -16,7 +16,9 @@ namespace UniDoom.UI
         PlayerRespawn player;
         CanvasGroup toast;
         TMP_Text toastLabel;
-        float toastUntil, openedAt;
+        RectTransform toastRect;
+        static readonly Vector2 ToastPosition = new Vector2(38, 206);
+        float toastStarted, toastUntil, openedAt;
         bool deathActive, transitioning;
 
         void Awake()
@@ -30,24 +32,45 @@ namespace UniDoom.UI
             scaler.referenceResolution = new Vector2(1920, 1080);
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
             scaler.matchWidthOrHeight = .5f;
-            var rect = MenuStyle.Rect("Checkpoint notification", transform, 0, 0, 640, 82);
-            rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(.5f, 1);
-            rect.anchoredPosition = new Vector2(0, -55);
-            toast = rect.gameObject.AddComponent<CanvasGroup>();
+            EnsureCheckpointNotification();
+        }
+
+        void OnEnable()
+        {
+            Instance = this;
+            EnsureCheckpointNotification();
+        }
+
+        void EnsureCheckpointNotification()
+        {
+            if (toastRect != null) return;
+            // Rebuild only this owned widget when scripts reload during an existing run.
+            if (toast != null) Destroy(toast.gameObject);
+            toastRect = MenuStyle.Rect("Checkpoint notification", transform, 0, 0, 380, 38);
+            toastRect.anchorMin = toastRect.anchorMax = toastRect.pivot = Vector2.zero;
+            toastRect.anchoredPosition = ToastPosition;
+            toast = toastRect.gameObject.AddComponent<CanvasGroup>();
             toast.alpha = 0;
             toast.blocksRaycasts = toast.interactable = false;
-            MenuStyle.Image("Background", rect, 0, 0, 640, 82, new Color(.025f, .025f, .022f, .97f));
-            MenuStyle.Image("Accent", rect, 0, 0, 3, 82, MenuStyle.Amber);
-            toastLabel = MenuStyle.Text("Message", rect, "", 25, 8, 600, 36, 23, MenuStyle.Amber);
-            MenuStyle.Text("Detail", rect, "Seu ponto de retorno foi atualizado.", 25, 45, 600, 25, 20, MenuStyle.Paper);
+            var mark = MenuStyle.Image("Return mark", toastRect, 0, 9, 2, 14, new Color(.48f, .23f, .13f, .8f));
+            mark.rectTransform.localRotation = Quaternion.Euler(0, 0, -17);
+            MenuStyle.Image("Fading rule", toastRect, 14, 33, 64, 1, new Color(.48f, .44f, .36f, .25f));
+            toastLabel = MenuStyle.Text("Message", toastRect, "", 14, 0, 350, 31, 22, new Color(.74f, .70f, .61f));
+            toastLabel.characterSpacing = 1.8f;
+            var shadow = toastLabel.gameObject.AddComponent<Shadow>();
+            shadow.effectColor = new Color(0, 0, 0, .9f);
+            shadow.effectDistance = new Vector2(1, -1);
         }
 
         public void Bind(PlayerRespawn owner) => player = owner;
 
         public void ShowCheckpoint(int index)
         {
-            toastLabel.text = "CHECKPOINT ATUALIZADO";
-            toastUntil = Time.unscaledTime + 3.4f;
+            EnsureCheckpointNotification();
+            toastLabel.text = "UM LUGAR PARA VOLTAR";
+            toast.alpha = 0;
+            toastStarted = Time.unscaledTime;
+            toastUntil = toastStarted + 3.2f;
         }
 
         public void ShowDeath()
@@ -68,9 +91,13 @@ namespace UniDoom.UI
 
         void Update()
         {
+            EnsureCheckpointNotification();
             float remaining = toastUntil - Time.unscaledTime;
-            float target = remaining > 0 && !deathActive ? Mathf.Clamp01(remaining / .4f) : 0;
-            toast.alpha = Mathf.MoveTowards(toast.alpha, target, Time.unscaledDeltaTime * 5);
+            float appearing = Mathf.SmoothStep(0, 1, Mathf.Clamp01((Time.unscaledTime - toastStarted) / .5f));
+            float fading = Mathf.SmoothStep(0, 1, Mathf.Clamp01(remaining / .9f));
+            bool visible = remaining > 0 && !deathActive && Time.timeScale > 0 && !GameMenus.BlocksGameplay && !DoorReloadScreen.IsReloading;
+            toast.alpha = Mathf.MoveTowards(toast.alpha, visible ? .82f * appearing * fading : 0, Time.unscaledDeltaTime * 3.5f);
+            toastRect.anchoredPosition = ToastPosition + Vector2.up * (Mathf.Lerp(-4, 0, appearing) + (1 - fading) * 3);
         }
 
         public IEnumerator FadeToBlack()
