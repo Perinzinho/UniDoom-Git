@@ -287,7 +287,7 @@ namespace UniDoom.UI
                 : System.IO.Path.GetFileNameWithoutExtension(destination).Trim().ToUpperInvariant();
             switch (destination)
             {
-                case "HUB": case "CILINDRO": case "REDONDO": case "REDONDO": destination = "CYLINDER"; break;
+                case "HUB": case "CILINDRO": case "REDONDO": destination = "CYLINDER"; break;
                 case "BIBLIOTECA": destination = "LIBRARY"; break;
                 case "SALA DE AULA": destination = "CLASSROOM"; break;
                 case "DIRETORIA": destination = "DIRECTORROOM"; break;
