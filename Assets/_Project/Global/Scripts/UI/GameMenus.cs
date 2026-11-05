@@ -657,6 +657,8 @@ namespace UniDoom.UI
                     "Library" => "BIBLIOTECA",
                     "ClassRoom" => "SALA DE AULA",
                     "DirectorRoom" => "SALA DO DIRETOR",
+                    "LawSchool" => "BLOCO DE DIREITO",
+                    "CampusExterior" => "CAMPUS EXTERIOR — UNIMAR",
                     "Basement" => "PORÃO — PRÉ-ARENA",
                     _ => sceneName
                 };
