@@ -184,7 +184,8 @@ public class PlayerRespawn : MonoBehaviour
     private IEnumerator RestoreCheckpoint(System.Action onRestored)
     {
         // Rebuild encounters even when death occurred in the checkpoint's room.
-        // The persistent player retains keys/lives; collected medkits retain session state.
+        // Keep references to old enemies so any that survive scene unloading are removed.
+        Enemy[] previousEnemies = FindObjectsByType<Enemy>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         {
             AsyncOperation load = null;
             string loadError = null;
@@ -203,6 +204,8 @@ public class PlayerRespawn : MonoBehaviour
                 yield break;
             }
             while (!load.isDone) yield return null;
+            foreach (Enemy enemy in previousEnemies)
+                if (enemy != null) Destroy(enemy.gameObject);
             // Allow the room's Start methods and the duplicate GameManager cleanup to finish under black.
             yield return null;
         }
