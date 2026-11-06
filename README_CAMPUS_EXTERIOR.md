@@ -31,6 +31,8 @@
 
 As dez cenas estão habilitadas em `ProjectSettings/EditorBuildSettings.asset`. Após integrar o Bloco de Direito e a biblioteca, `CampusExterior` é a oitava entrada, `LawSchool` a nona e `CampusLibrary` a décima. Prefira os nomes das cenas a índices fixos. O contexto do Bloco de Direito e sua ligação com o exterior está em [Docs/Maps/LawSchool.md](Docs/Maps/LawSchool.md#conexões).
 
+Na saída de **LawSchool → CampusExterior / FromLawSchool**, o alarme do bloco bloqueia temporariamente a transição. `SceneTransitionDoor` consulta um guard opcional, vinculado somente a essa saída; desligar o quadro da manutenção libera o portal. Os demais portais continuam sem esse guard. Aviso e validação registrados na ficha de LawSchool.
+
 ## 3. Onde editar cada coisa
 
 ### Passos por piso (2026-11-06)
@@ -106,15 +108,9 @@ A direção visual segue o contexto local em [`.codex/SKILL.md`](.codex/SKILL.md
 
 O prefab atual contém **124 `LODGroup`s** associados às árvores de copa larga, com objetos `Canopy medium`, `Canopy distant` e colisões de tronco. Existem também palmeiras e canteiros compartilhados. Não elimine níveis de detalhe nem substitua todas as copas por versões de maior custo sem medir o resultado.
 
-Inventário exclusivo atual, sem `.meta`: **178 meshes**, **34 materiais**, **3 modelos FBX**, **6 prefabs**, **23 PNGs**, **1 HDR**, **2 scripts**, **1 shader**, **1 perfil** e **1 cena**. Esses números não incluem recursos compartilhados ou conteúdo interno dos modelos importados; não são uma medida de draw calls.
+Inventário exclusivo recontado em 06/11/2026, sem `.meta`: **176 meshes**, **33 materiais**, **3 modelos FBX**, **6 prefabs**, **20 PNGs**, **1 HDR**, **2 scripts**, **1 shader**, **1 perfil** e **1 cena**. Esses números não incluem recursos compartilhados ou conteúdo interno dos modelos importados; não são uma medida de draw calls.
 
-### Estacionamento e mobiliário dos pátios
-
-- `Street Parking Bays - 12` usa um mesh persistente com quatro vagas na avenida oeste, quatro na via norte e quatro na via sul. As linhas ficam ligeiramente acima do asfalto para evitar z-fighting e não possuem colisão própria.
-- `CampusConcreteBench` reproduz o banco de referência com assento e encosto de concreto claro, dois pedestais escuros e pés largos. Cada um possui um `BoxCollider`; os três pátios sociais instanciam quatro bancos, totalizando **12**.
-- A fonte ornamental fica somente no `West social courtyard`, entre o Bloco de Direito e a biblioteca. A fonte simples que ocupava o mesmo ponto foi desativada apenas nessa instância, evitando sobreposição; as fontes simples dos outros pátios foram preservadas.
-- `CampusOrnateFountain` possui piscina larga, dois níveis, coluna, figura central, quatro esculturas estilizadas e nove jatos visuais. A instância salva está em `(-58, 0, 16)` e possui colisão na bacia inferior.
-- A ferramenta identificada em `Assets/_TemporaryCampusExterior/Editor/CampusParkingBenchFountainSetup.cs` aplica e valida esses assets. Preserve-a enquanto ainda houver necessidade de regeneração ou revisão; não trate o script como gameplay.
+A lixeira `metal_trash_can` passou a ser compartilhada com LawSchool. Prefab em `Assets/_Project/Global/Prefabs/Equipment/metal_trash_can/metal_trash_can.prefab`; mesh, material e texturas correspondentes em `Global/{Meshes,Materials,Textures}/Equipment/metal_trash_can/`. Movimento por `AssetDatabase.MoveAsset`, preservando GUIDs e conteúdo. Dependências da cena CampusExterior por GUID permaneceram equivalentes; não houve mudança de layout ou conexões. Proveniência da reutilização: `Licenses/AssetSources/LawSchool/equipment-sources.json`.
 
 ### Portão e iluminação
 

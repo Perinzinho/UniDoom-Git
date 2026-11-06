@@ -45,6 +45,6 @@ public class Pistol : Gun
                 damageable.TakeDamage(damage, gameObject);
         }
         
-        SFXManager.Instance.PlayPistolShootSound();
+        if (SFXManager.Instance != null) SFXManager.Instance.PlayPistolShootSound();
     }
 }
