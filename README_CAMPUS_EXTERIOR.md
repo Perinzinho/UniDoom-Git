@@ -8,6 +8,7 @@
 - A nova biblioteca desse campus tem interior separado: cena **`CampusLibrary`**. Entrar e sair usa a transição existente do jogo, ao tocar no volume da porta.
 - **`Library` é a biblioteca antiga do começo do jogo. Não foi substituída pela nova biblioteca.** Não confundir também `CampusExterior` com `EntranceGarden` ou `Main/SampleScene`.
 - O exterior e o interior já estão salvos em cenas, prefabs, meshes e materiais persistentes. **Não precisam ser gerados novamente para jogar.**
+- O exterior possui **12 vagas de estacionamento** demarcadas em três trechos viários, **12 bancos de concreto** nos três pátios sociais e uma **fonte ornamental exclusiva** no pátio entre o Bloco de Direito e a biblioteca, em `(-58, 0, 16)`.
 - A revisão mais recente da biblioteca corrigiu móveis apertados, peças flutuando, suportes, portas dos banheiros e circulação. Preserve essas correções.
 - O jogador é persistente entre cenas pelo `GameManager`; não crie outro sistema de player, HUD, inventário ou carregamento para esses ambientes.
 - Antes de alterar, leia a seção correspondente abaixo e somente os scripts/assets envolvidos. Não despeje cenas, prefabs e arrays de vértices inteiros no contexto.
@@ -34,11 +35,24 @@ Na saída de **LawSchool → CampusExterior / FromLawSchool**, o alarme do bloco
 
 ## 3. Onde editar cada coisa
 
+### Passos por piso (2026-11-06)
+
+O player persistente usa `Global/Scripts/Utils/FootStepController.cs` e o resolvedor `FootstepSurface.cs`. Cada pisada consulta o colisor mais próximo sob o jogador: `Campus asphalt` usa passos secos de pavimento; `Campus continuous ground` usa grama; calçadas, sarjetas e degraus usam concreto; `Granite floor` da CampusLibrary usa o banco interno `Eco`. Assim, meshes visuais separados dos colisores não deixam os pisos silenciosos. Não reativar colisores antigos para adicionar som.
+
+Os novos bancos são carregados em `Resources/Audio/Footsteps/{Grass,Pavement}` dentro de `Assets/_Project/Global/`. Não mover essas pastas sem atualizar `Resources.LoadAll` no controlador. São cinco variações por banco, do pacote Kenney Impact Sounds (CC0); o conjunto `concrete` do autor representa o pavimento seco do asfalto. Bancos antigos de concreto, madeira e interiores continuam no prefab do player. Fontes e hashes: `Licenses/AssetSources/Footsteps/sources.json`.
+
+Para pisos novos, o componente opcional `FootstepSurface` permite definir explicitamente o material sonoro no colisor ou em seu grupo. Sem componente, o resolvedor usa nomes conhecidos, tags legadas e material único do renderer local; o fallback é concreto. Renomear os suportes sem renderer listados acima exige atualizar a regra ou adicionar o componente.
+
+Validação: dez OGG decodificados, com duração/amplitude verificadas e downloads conferidos por SHA de blob; referências/caminhos e diff revisados. Unity indisponível neste ambiente: compilação, carregamento de cenas/prefabs, Play Mode, build e comparação visual/auditiva no jogo não executados. Conferir a travessia rua → calçada → grama, entrada na biblioteca, pausa, aterrissagem e volume em relação aos áudios antigos. Os WAV antigos deste checkout ainda são ponteiros Git LFS; não foram substituídos nesta alteração.
+
 | Necessidade | Arquivo ou pasta |
 | --- | --- |
 | Exterior jogável, iluminação e objetos salvos na cena | `Assets/_Project/Scenes/CampusExterior/CampusExterior.unity` |
 | Prefab de referência do exterior | `Assets/_Project/Scenes/CampusExterior/Prefabs/CampusExterior.prefab` |
 | Materiais, meshes, modelos e texturas exclusivos do exterior | Subpastas correspondentes de `Assets/_Project/Scenes/CampusExterior/` |
+| Vagas persistentes | `Meshes/StreetParkingBays.asset`, usado por `Street Parking Bays - 12` na cena |
+| Banco de concreto dos pátios | `Prefabs/CampusConcreteBench.prefab`, instanciado por `CampusLandscapeCourtyard.prefab` |
+| Fonte entre Direito e biblioteca | `Prefabs/CampusOrnateFountain.prefab`, instância `Ornate fountain - Law School and Library` na cena |
 | Luz ambiente e névoa do exterior ao trocar de cena | `Assets/_Project/Scenes/CampusExterior/Scripts/CampusExteriorEnvironment.cs` |
 | Abertura do portão de entrada | `Assets/_Project/Scenes/CampusExterior/Scripts/CampusEntranceGate.cs` |
 | Pós-processamento do exterior | `Assets/_Project/Scenes/CampusExterior/Profiles/CampusDusk.asset` |
@@ -219,6 +233,8 @@ As seguintes verificações foram executadas durante a implementação/revisão,
 **Não houve geração de um novo executável na entrega da biblioteca/revisão.** Esses testes históricos não substituem testar novamente depois de alterar ou restaurar arquivos.
 
 ### Exterior e estado após a recuperação
+
+Em **05/11/2026**, após a implementação das vagas, bancos e fonte, a Unity recompilou a ferramenta sem erros de C#. A validação específica confirmou o mesh de **12 vagas**, o prefab de banco com **6 renderers**, **12 instâncias de bancos resolvidas** e a fonte ornamental com **31 renderers** na posição esperada. A cena foi salva fora do Play Mode. Não foram executados Play Mode, navegação completa, build nem comparação visual no ponto de vista do jogador nesta alteração.
 
 O código de `CampusRoadRevision.Validate()` permite conferir scripts/materiais/shaders ausentes, fragmentos fora da região preservada da torre e amostras de piso nas principais rotas, detectando falta de chão e saltos maiores que 30 cm. **Nesta documentação, esse validador e o build não foram executados novamente.** As prévias existentes são referência visual histórica, não evidência de um novo teste.
 

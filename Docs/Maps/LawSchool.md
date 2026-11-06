@@ -28,6 +28,8 @@ O usuário autorizou ampliar o interior e depois pediu que **absolutamente tudo 
 
 ## Arquivos e identidade
 
+Passos por piso (2026-11-06): o controlador global `FootstepController` agora resolve os suportes `*floor collision` desta cena como piso interno (`Eco`) e `Low stage collision`/`Stage step collision` como madeira. Não depende de renderer nos colisores; `FootstepSurface` permite sobrescrever a escolha em pisos futuros. Prefab, layout e materiais não foram modificados. Compilação, Play Mode e escuta no mapa ainda não executados: Unity indisponível no ambiente desta alteração.
+
 Prefixo exclusivo: `Assets/_Project/Scenes/LawSchool/`.
 
 | Conteúdo | Caminho relativo ao projeto |
@@ -78,6 +80,8 @@ A pasta aninhada `LawSchool/LawSchool/` é usada pela Unity para a oclusão; nã
 | Chegada de volta ao campus | `FromLawSchool` | `(-43; 1,75; 12,40)`; yaw 180° |
 
 Portais: `Assets/_Project/Global/Scripts/Utils/SceneTransitionDoor.cs`; chegadas: `SceneArrivalPoint.cs` na mesma pasta. Cena e prefab do campus ficam em `Assets/_Project/Scenes/CampusExterior/`. GUID da cena do campus: `faaefa97714810b429c19b5065aff68d`.
+
+No exterior, o pátio entre o Bloco de Direito e a biblioteca possui a instância `Ornate fountain - Law School and Library` em `(-58; 0; 16)`, além de bancos de concreto. Preserve a circulação entre esse mobiliário, a entrada do bloco e a entrada da biblioteca ao revisar conexões.
 
 Menu: botão `TemporaryMapSelect` → `Map_LawSchool`; rótulo **BLOCO DE DIREITO**. A lista deriva das cenas habilitadas. Ao verificar TMP de botão, procure o texto nos filhos; o primeiro TMP pode ser a seta de seleção.
 

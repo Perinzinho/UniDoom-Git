@@ -1,0 +1,73 @@
+{
+  "date": "2026-11-06",
+  "author": "Innerscene",
+  "license": "CC0-1.0",
+  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "pages": [
+    "https://www.innerscene.com/tools/library/3d-parts/generic-hot-hatch-a60561a5",
+    "https://www.innerscene.com/tools/library/3d-parts/adventure-motorcycle-3de675e4"
+  ],
+  "downloads": [
+    "https://files.innerscene.com/library/generic-hot-hatch-a60561a5/b15d8539f45354470a62/generic-hot-hatch.glb",
+    "https://files.innerscene.com/library/adventure-motorcycle-3de675e4/05f6f5080ca0a95360c3/adventure-motorcycle.glb"
+  ],
+  "conversion": "GLB transforms baked, X reflected and winding reversed for Unity, pivot centred at ground, geometry combined by material and reduced with QEM into three LODs. UVs transferred from nearest same-material source vertices. Source PNGs unchanged; car paint uses the source neutral white texture for variants. Transmission approximated with dark opaque URP glass. Binary source data is consumed by the editor setup and baked into persistent Unity Mesh assets.",
+  "models": [
+    {
+      "model": "Hatchback",
+      "source_sha256": "3ce9ea2664cda82468f2568acd458f417941388be39afb7c0bf6fab109194e1f",
+      "original_triangles": 123146,
+      "lod_triangles": [
+        20510,
+        15644,
+        15063
+      ],
+      "dimensions_m": {
+        "x": 2.109800010919571,
+        "y": 1.4570001575630158,
+        "z": 4.096258556470275
+      }
+    },
+    {
+      "model": "Motorcycle",
+      "source_sha256": "510345b23382dba0a7fca28a33ca45654ead4ecff82c13cf54432ee32ddb9800",
+      "original_triangles": 124714,
+      "lod_triangles": [
+        21902,
+        13194,
+        11144
+      ],
+      "dimensions_m": {
+        "x": 0.921999990940094,
+        "y": 1.4049999713897705,
+        "z": 2.2752397060394287
+      }
+    }
+  ],
+  "geometry": [
+    {
+      "file": "Assets/_Project/Scenes/CampusExterior/Models/ParkedVehicles/Hatchback_LOD0.bytes",
+      "sha256": "e89d90f7bc6c0e9ae6bf6454ab47321043afc1aba4a4b1690f28f9173474645b"
+    },
+    {
+      "file": "Assets/_Project/Scenes/CampusExterior/Models/ParkedVehicles/Hatchback_LOD1.bytes",
+      "sha256": "3d566cc246e381aa3a342dc5700f4eee70021584f4b1efd2b6e3cf6486bcbc08"
+    },
+    {
+      "file": "Assets/_Project/Scenes/CampusExterior/Models/ParkedVehicles/Hatchback_LOD2.bytes",
+      "sha256": "a4960ef9b1374164985afc03f2223b802f0a3478c53c513d87878e3cae0e62fe"
+    },
+    {
+      "file": "Assets/_Project/Scenes/CampusExterior/Models/ParkedVehicles/Motorcycle_LOD0.bytes",
+      "sha256": "7f0d93040ac478e689fd9d3c6208468feb1edc5c314d2bbd193ecdcda4711437"
+    },
+    {
+      "file": "Assets/_Project/Scenes/CampusExterior/Models/ParkedVehicles/Motorcycle_LOD1.bytes",
+      "sha256": "f0a785ddaa0cd286a3582ee2ba33fb23162281a935a68e62ce29397f5a71a87e"
+    },
+    {
+      "file": "Assets/_Project/Scenes/CampusExterior/Models/ParkedVehicles/Motorcycle_LOD2.bytes",
+      "sha256": "4aad9f8b32b21a0aff10bc544fed92aa7151049016d97a82d52b3dea8a2e0589"
+    }
+  ]
+}
