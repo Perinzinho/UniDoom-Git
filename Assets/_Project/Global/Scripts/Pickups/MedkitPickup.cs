@@ -10,6 +10,7 @@ public class MedkitPickup : MonoBehaviour
     private string sessionId;
     private bool runtimeDrop;
     private static readonly HashSet<string> collected = new HashSet<string>();
+    public event System.Action Collected;
 
     public static void ResetSession() => collected.Clear();
 
@@ -55,6 +56,7 @@ public class MedkitPickup : MonoBehaviour
             trigger.enabled = false;
         life.Heal(healAmount);
         GameplayAudio.Instance?.PlayMedkitPickup();
+        Collected?.Invoke();
         Destroy(gameObject);
         return true;
     }

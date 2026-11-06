@@ -57,10 +57,11 @@ namespace UniDoom.UI
             new DestinationArtwork("CampusLibrary"),
             new DestinationArtwork("ClassRoom"),
             new DestinationArtwork("DirectorRoom"),
+            new DestinationArtwork("LawSchool"),
             new DestinationArtwork("EntranceGarden")
         };
         private static readonly string[] DebugSectors =
-            { "REDONDO", "BIBLIOTECA", "SALA DE AULA", "DIRETORIA", "CORREDOR DE ENTRADA" };
+            { "REDONDO", "BIBLIOTECA", "SALA DE AULA", "DIRETORIA", "CORREDOR DE ENTRADA", "BLOCO DE DIREITO" };
         private readonly Dictionary<string, Texture2D> destinationImages = new(StringComparer.OrdinalIgnoreCase);
         private Texture2D activePassageImage;
         private int debugDestinationIndex;
@@ -180,6 +181,7 @@ namespace UniDoom.UI
                 "CampusLibrary" => "BIBLIOTECA DO CAMPUS",
                 "ClassRoom" => "SALA DE AULA",
                 "DirectorRoom" => "DIRETORIA",
+                "LawSchool" => "BLOCO DE DIREITO",
                 _ => destination
             };
             yield return Instance.ReloadRoutine(label, null, null, null, scenePath, restoreCheckpoint);
@@ -293,6 +295,7 @@ namespace UniDoom.UI
                 case "BIBLIOTECA": destination = "LIBRARY"; break;
                 case "SALA DE AULA": destination = "CLASSROOM"; break;
                 case "DIRETORIA": destination = "DIRECTORROOM"; break;
+                case "DIREITO": case "BLOCO DE DIREITO": destination = "LAWSCHOOL"; break;
                 case "ENTRANCEHALLWAY": case "CORREDOR DE ENTRADA": destination = "ENTRANCEGARDEN"; break;
             }
 

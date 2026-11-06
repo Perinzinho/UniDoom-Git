@@ -16,8 +16,10 @@ public sealed class PlayerCellKeys : MonoBehaviour
 
     public string GetOrChooseKeyLocation(string keyId, System.Collections.Generic.IReadOnlyList<string> choices)
     {
-        if (locations.TryGetValue(keyId,out var chosen)) return chosen;
         if (choices == null || choices.Count == 0) return null;
+        if (locations.TryGetValue(keyId,out var chosen))
+            foreach (var choice in choices)
+                if (choice == chosen) return chosen;
         string preference = "UniDoom.LastCellKeyRoom." + keyId;
         string previous = PlayerPrefs.GetString(preference, "");
         var candidates = new List<string>();
