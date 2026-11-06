@@ -33,6 +33,16 @@ As dez cenas estão habilitadas em `ProjectSettings/EditorBuildSettings.asset`. 
 
 ## 3. Onde editar cada coisa
 
+### Passos por piso (2026-11-06)
+
+O player persistente usa `Global/Scripts/Utils/FootStepController.cs` e o resolvedor `FootstepSurface.cs`. Cada pisada consulta o colisor mais próximo sob o jogador: `Campus asphalt` usa passos secos de pavimento; `Campus continuous ground` usa grama; calçadas, sarjetas e degraus usam concreto; `Granite floor` da CampusLibrary usa o banco interno `Eco`. Assim, meshes visuais separados dos colisores não deixam os pisos silenciosos. Não reativar colisores antigos para adicionar som.
+
+Os novos bancos são carregados em `Resources/Audio/Footsteps/{Grass,Pavement}` dentro de `Assets/_Project/Global/`. Não mover essas pastas sem atualizar `Resources.LoadAll` no controlador. São cinco variações por banco, do pacote Kenney Impact Sounds (CC0); o conjunto `concrete` do autor representa o pavimento seco do asfalto. Bancos antigos de concreto, madeira e interiores continuam no prefab do player. Fontes e hashes: `Licenses/AssetSources/Footsteps/sources.json`.
+
+Para pisos novos, o componente opcional `FootstepSurface` permite definir explicitamente o material sonoro no colisor ou em seu grupo. Sem componente, o resolvedor usa nomes conhecidos, tags legadas e material único do renderer local; o fallback é concreto. Renomear os suportes sem renderer listados acima exige atualizar a regra ou adicionar o componente.
+
+Validação: dez OGG decodificados, com duração/amplitude verificadas e downloads conferidos por SHA de blob; referências/caminhos e diff revisados. Unity indisponível neste ambiente: compilação, carregamento de cenas/prefabs, Play Mode, build e comparação visual/auditiva no jogo não executados. Conferir a travessia rua → calçada → grama, entrada na biblioteca, pausa, aterrissagem e volume em relação aos áudios antigos. Os WAV antigos deste checkout ainda são ponteiros Git LFS; não foram substituídos nesta alteração.
+
 | Necessidade | Arquivo ou pasta |
 | --- | --- |
 | Exterior jogável, iluminação e objetos salvos na cena | `Assets/_Project/Scenes/CampusExterior/CampusExterior.unity` |

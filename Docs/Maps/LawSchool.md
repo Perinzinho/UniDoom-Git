@@ -25,6 +25,8 @@ O usuário autorizou ampliar o interior. O traçado externo do campus permanece 
 
 ## Arquivos e identidade
 
+Passos por piso (2026-11-06): o controlador global `FootstepController` agora resolve os suportes `*floor collision` desta cena como piso interno (`Eco`) e `Low stage collision`/`Stage step collision` como madeira. Não depende de renderer nos colisores; `FootstepSurface` permite sobrescrever a escolha em pisos futuros. Prefab, layout e materiais não foram modificados. Compilação, Play Mode e escuta no mapa ainda não executados: Unity indisponível no ambiente desta alteração.
+
 Prefixo exclusivo: `Assets/_Project/Scenes/LawSchool/`.
 
 | Conteúdo | Caminho relativo ao projeto |

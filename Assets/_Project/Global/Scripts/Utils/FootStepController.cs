@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UniDoom.UI;
 
 [RequireComponent(typeof(CharacterController))]
 public class FootstepController : SFXPlayer
@@ -8,6 +9,8 @@ public class FootstepController : SFXPlayer
     [SerializeField] private SoundBank woodSteps;
     [SerializeField] private SoundBank concreteSteps;
     [SerializeField] private SoundBank ecoSteps;
+    [SerializeField] private SoundBank asphaltSteps;
+    [SerializeField] private SoundBank grassSteps;
 
     [Header("Volume por velocidade")]
     [SerializeField, Range(0f, 1f)] private float minSpeedVolume = 0.4f;
@@ -34,15 +37,37 @@ public class FootstepController : SFXPlayer
     private bool isFirstStep = true;
     private bool wasGrounded = true;
     private float airTime;
+    private PlayerLife life;
+    private readonly RaycastHit[] groundHits = new RaycastHit[24];
+    public FootstepSurfaceType CurrentSurface { get; private set; }
 
     protected override void Awake()
     {
         base.Awake(); // cria o pool de AudioSources
         controller = GetComponent<CharacterController>();
+        life = GetComponent<PlayerLife>();
+        // Persist with the existing player across scenes; no second audio/player system.
+        if (asphaltSteps == null || asphaltSteps.IsEmpty) asphaltSteps = LoadSteps("Pavement", .8f);
+        if (grassSteps == null || grassSteps.IsEmpty) grassSteps = LoadSteps("Grass", .85f);
     }
 
-    void Update()
+    static SoundBank LoadSteps(string surface, float volume) => new SoundBank
     {
+        clips = Resources.LoadAll<AudioClip>("Audio/Footsteps/" + surface),
+        volume = volume,
+        basePitch = 1f,
+        pitchVariation = .06f,
+        volumeVariation = .1f
+    };
+
+    void LateUpdate()
+    {
+        if (!controller.enabled || Time.timeScale <= 0f || GameMenus.BlocksGameplay ||
+            DoorReloadScreen.IsReloading || (life != null && life.IsDead))
+        {
+            ResetStride();
+            return;
+        }
         bool grounded = controller.isGrounded;
 
         Vector3 horizontalVelocity = controller.velocity;
@@ -51,7 +76,12 @@ public class FootstepController : SFXPlayer
 
         HandleLanding(grounded);
 
-        if (!grounded) return;
+        if (!grounded)
+        {
+            distanceAccumulated = 0f;
+            isFirstStep = true;
+            return;
+        }
 
         if (speed < minSpeed)
         {
@@ -72,6 +102,16 @@ public class FootstepController : SFXPlayer
             PlayFootstep(speed);
             OnFootstep?.Invoke(speed);
         }
+    }
+
+    void OnDisable() => ResetStride();
+
+    void ResetStride()
+    {
+        distanceAccumulated = 0f;
+        isFirstStep = true;
+        wasGrounded = true;
+        airTime = 0f;
     }
 
     private void HandleLanding(bool grounded)
@@ -101,8 +141,18 @@ public class FootstepController : SFXPlayer
         Vector3 origin = controller.bounds.center;
         float distance = controller.bounds.extents.y + rayExtraDistance;
 
-        if (!Physics.Raycast(origin, Vector3.down, out RaycastHit hit, distance,
-                             groundMask, QueryTriggerInteraction.Ignore))
+        int count = Physics.RaycastNonAlloc(origin, Vector3.down, groundHits, distance,
+            groundMask, QueryTriggerInteraction.Ignore);
+        RaycastHit hit = default;
+        float nearest = float.PositiveInfinity;
+        for (int i = 0; i < count; i++)
+        {
+            var candidate = groundHits[i];
+            if (candidate.transform.IsChildOf(transform) || candidate.normal.y < .5f || candidate.distance >= nearest) continue;
+            hit = candidate;
+            nearest = candidate.distance;
+        }
+        if (hit.collider == null)
         {
             if (debugLogs) Debug.LogWarning("Footstep: raycast não acertou nada");
             return;
@@ -122,9 +172,15 @@ public class FootstepController : SFXPlayer
 
     protected virtual SoundBank GetBankForSurface(Collider col)
     {
-        if (col.CompareTag("Wood"))     return woodSteps;
-        if (col.CompareTag("Concrete")) return concreteSteps;
-        if (col.CompareTag("Eco"))      return ecoSteps;
-        return null;
+        CurrentSurface = FootstepSurface.Resolve(col);
+        SoundBank bank = CurrentSurface switch
+        {
+            FootstepSurfaceType.Grass => grassSteps,
+            FootstepSurfaceType.Asphalt => asphaltSteps,
+            FootstepSurfaceType.Wood => woodSteps,
+            FootstepSurfaceType.Interior => ecoSteps,
+            _ => concreteSteps
+        };
+        return bank != null && !bank.IsEmpty ? bank : concreteSteps;
     }
 }
