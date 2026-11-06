@@ -47874,6 +47874,68 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1069718590}
   m_Mesh: {fileID: 4300000, guid: e3598be1d80405445804df492dbd4a2e, type: 2}
+--- !u!1001 &1070427323
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 9088000000000000001}
+    m_Modifications:
+    - target: {fileID: 2243954452158450607, guid: 88e6fe86a9f0672459076a476780a1f8, type: 3}
+      propertyPath: m_Name
+      value: Ornate fountain - Law School and Library
+      objectReference: {fileID: 0}
+    - target: {fileID: 7555255242589638358, guid: 88e6fe86a9f0672459076a476780a1f8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -58
+      objectReference: {fileID: 0}
+    - target: {fileID: 7555255242589638358, guid: 88e6fe86a9f0672459076a476780a1f8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7555255242589638358, guid: 88e6fe86a9f0672459076a476780a1f8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 7555255242589638358, guid: 88e6fe86a9f0672459076a476780a1f8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7555255242589638358, guid: 88e6fe86a9f0672459076a476780a1f8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7555255242589638358, guid: 88e6fe86a9f0672459076a476780a1f8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7555255242589638358, guid: 88e6fe86a9f0672459076a476780a1f8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7555255242589638358, guid: 88e6fe86a9f0672459076a476780a1f8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7555255242589638358, guid: 88e6fe86a9f0672459076a476780a1f8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7555255242589638358, guid: 88e6fe86a9f0672459076a476780a1f8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 88e6fe86a9f0672459076a476780a1f8, type: 3}
+--- !u!4 &1070427324 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7555255242589638358, guid: 88e6fe86a9f0672459076a476780a1f8, type: 3}
+  m_PrefabInstance: {fileID: 1070427323}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1071808457
 GameObject:
   m_ObjectHideFlags: 0
@@ -98100,6 +98162,7 @@ Transform:
   - {fileID: 9088000000000000011}
   - {fileID: 9088000000000000021}
   - {fileID: 9088000000000000031}
+  - {fileID: 1070427324}
   m_Father: {fileID: 1146707355}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &9088000000000000010
@@ -98110,6 +98173,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 9088000000000000001}
     m_Modifications:
+    - target: {fileID: 3000, guid: d35f994e94fa4e5d9cd2b5fe54ef7ee2, type: 3}
+      propertyPath: m_Name
+      value: West social courtyard
+      objectReference: {fileID: 0}
     - target: {fileID: 3002, guid: d35f994e94fa4e5d9cd2b5fe54ef7ee2, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -98150,9 +98217,9 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3000, guid: d35f994e94fa4e5d9cd2b5fe54ef7ee2, type: 3}
-      propertyPath: m_Name
-      value: West social courtyard
+    - target: {fileID: 3020, guid: d35f994e94fa4e5d9cd2b5fe54ef7ee2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -98172,6 +98239,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 9088000000000000001}
     m_Modifications:
+    - target: {fileID: 3000, guid: d35f994e94fa4e5d9cd2b5fe54ef7ee2, type: 3}
+      propertyPath: m_Name
+      value: East social courtyard
+      objectReference: {fileID: 0}
     - target: {fileID: 3002, guid: d35f994e94fa4e5d9cd2b5fe54ef7ee2, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -98212,10 +98283,6 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3000, guid: d35f994e94fa4e5d9cd2b5fe54ef7ee2, type: 3}
-      propertyPath: m_Name
-      value: East social courtyard
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -98234,6 +98301,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 9088000000000000001}
     m_Modifications:
+    - target: {fileID: 3000, guid: d35f994e94fa4e5d9cd2b5fe54ef7ee2, type: 3}
+      propertyPath: m_Name
+      value: North social courtyard
+      objectReference: {fileID: 0}
     - target: {fileID: 3002, guid: d35f994e94fa4e5d9cd2b5fe54ef7ee2, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -98273,10 +98344,6 @@ PrefabInstance:
     - target: {fileID: 3002, guid: d35f994e94fa4e5d9cd2b5fe54ef7ee2, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3000, guid: d35f994e94fa4e5d9cd2b5fe54ef7ee2, type: 3}
-      propertyPath: m_Name
-      value: North social courtyard
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -98377,7 +98444,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9099000000000000000}
-  m_Mesh: {fileID: 4300000, guid: a93cc795ff2c47acb59c89f553d350c1, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 4e76e591d312c9945a4ec2ce2f325393, type: 2}
 --- !u!1 &9100000000000000000
 GameObject:
   m_ObjectHideFlags: 0

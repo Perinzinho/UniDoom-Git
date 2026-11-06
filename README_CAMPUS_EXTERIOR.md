@@ -8,6 +8,7 @@
 - A nova biblioteca desse campus tem interior separado: cena **`CampusLibrary`**. Entrar e sair usa a transição existente do jogo, ao tocar no volume da porta.
 - **`Library` é a biblioteca antiga do começo do jogo. Não foi substituída pela nova biblioteca.** Não confundir também `CampusExterior` com `EntranceGarden` ou `Main/SampleScene`.
 - O exterior e o interior já estão salvos em cenas, prefabs, meshes e materiais persistentes. **Não precisam ser gerados novamente para jogar.**
+- O exterior possui **12 vagas de estacionamento** demarcadas em três trechos viários, **12 bancos de concreto** nos três pátios sociais e uma **fonte ornamental exclusiva** no pátio entre o Bloco de Direito e a biblioteca, em `(-58, 0, 16)`.
 - A revisão mais recente da biblioteca corrigiu móveis apertados, peças flutuando, suportes, portas dos banheiros e circulação. Preserve essas correções.
 - O jogador é persistente entre cenas pelo `GameManager`; não crie outro sistema de player, HUD, inventário ou carregamento para esses ambientes.
 - Antes de alterar, leia a seção correspondente abaixo e somente os scripts/assets envolvidos. Não despeje cenas, prefabs e arrays de vértices inteiros no contexto.
@@ -37,6 +38,9 @@ As dez cenas estão habilitadas em `ProjectSettings/EditorBuildSettings.asset`. 
 | Exterior jogável, iluminação e objetos salvos na cena | `Assets/_Project/Scenes/CampusExterior/CampusExterior.unity` |
 | Prefab de referência do exterior | `Assets/_Project/Scenes/CampusExterior/Prefabs/CampusExterior.prefab` |
 | Materiais, meshes, modelos e texturas exclusivos do exterior | Subpastas correspondentes de `Assets/_Project/Scenes/CampusExterior/` |
+| Vagas persistentes | `Meshes/StreetParkingBays.asset`, usado por `Street Parking Bays - 12` na cena |
+| Banco de concreto dos pátios | `Prefabs/CampusConcreteBench.prefab`, instanciado por `CampusLandscapeCourtyard.prefab` |
+| Fonte entre Direito e biblioteca | `Prefabs/CampusOrnateFountain.prefab`, instância `Ornate fountain - Law School and Library` na cena |
 | Luz ambiente e névoa do exterior ao trocar de cena | `Assets/_Project/Scenes/CampusExterior/Scripts/CampusExteriorEnvironment.cs` |
 | Abertura do portão de entrada | `Assets/_Project/Scenes/CampusExterior/Scripts/CampusEntranceGate.cs` |
 | Pós-processamento do exterior | `Assets/_Project/Scenes/CampusExterior/Profiles/CampusDusk.asset` |
@@ -92,7 +96,15 @@ A direção visual segue o contexto local em [`.codex/SKILL.md`](.codex/SKILL.md
 
 O prefab atual contém **124 `LODGroup`s** associados às árvores de copa larga, com objetos `Canopy medium`, `Canopy distant` e colisões de tronco. Existem também palmeiras e canteiros compartilhados. Não elimine níveis de detalhe nem substitua todas as copas por versões de maior custo sem medir o resultado.
 
-Inventário exclusivo atual, sem `.meta`: **177 meshes**, **34 materiais**, **3 modelos FBX**, **4 prefabs**, **23 PNGs**, **1 HDR**, **2 scripts**, **1 shader**, **1 perfil** e **1 cena**. Esses números não incluem recursos compartilhados ou conteúdo interno dos modelos importados; não são uma medida de draw calls.
+Inventário exclusivo atual, sem `.meta`: **178 meshes**, **34 materiais**, **3 modelos FBX**, **6 prefabs**, **23 PNGs**, **1 HDR**, **2 scripts**, **1 shader**, **1 perfil** e **1 cena**. Esses números não incluem recursos compartilhados ou conteúdo interno dos modelos importados; não são uma medida de draw calls.
+
+### Estacionamento e mobiliário dos pátios
+
+- `Street Parking Bays - 12` usa um mesh persistente com quatro vagas na avenida oeste, quatro na via norte e quatro na via sul. As linhas ficam ligeiramente acima do asfalto para evitar z-fighting e não possuem colisão própria.
+- `CampusConcreteBench` reproduz o banco de referência com assento e encosto de concreto claro, dois pedestais escuros e pés largos. Cada um possui um `BoxCollider`; os três pátios sociais instanciam quatro bancos, totalizando **12**.
+- A fonte ornamental fica somente no `West social courtyard`, entre o Bloco de Direito e a biblioteca. A fonte simples que ocupava o mesmo ponto foi desativada apenas nessa instância, evitando sobreposição; as fontes simples dos outros pátios foram preservadas.
+- `CampusOrnateFountain` possui piscina larga, dois níveis, coluna, figura central, quatro esculturas estilizadas e nove jatos visuais. A instância salva está em `(-58, 0, 16)` e possui colisão na bacia inferior.
+- A ferramenta identificada em `Assets/_TemporaryCampusExterior/Editor/CampusParkingBenchFountainSetup.cs` aplica e valida esses assets. Preserve-a enquanto ainda houver necessidade de regeneração ou revisão; não trate o script como gameplay.
 
 ### Portão e iluminação
 
@@ -215,6 +227,8 @@ As seguintes verificações foram executadas durante a implementação/revisão,
 **Não houve geração de um novo executável na entrega da biblioteca/revisão.** Esses testes históricos não substituem testar novamente depois de alterar ou restaurar arquivos.
 
 ### Exterior e estado após a recuperação
+
+Em **05/11/2026**, após a implementação das vagas, bancos e fonte, a Unity recompilou a ferramenta sem erros de C#. A validação específica confirmou o mesh de **12 vagas**, o prefab de banco com **6 renderers**, **12 instâncias de bancos resolvidas** e a fonte ornamental com **31 renderers** na posição esperada. A cena foi salva fora do Play Mode. Não foram executados Play Mode, navegação completa, build nem comparação visual no ponto de vista do jogador nesta alteração.
 
 O código de `CampusRoadRevision.Validate()` permite conferir scripts/materiais/shaders ausentes, fragmentos fora da região preservada da torre e amostras de piso nas principais rotas, detectando falta de chão e saltos maiores que 30 cm. **Nesta documentação, esse validador e o build não foram executados novamente.** As prévias existentes são referência visual histórica, não evidência de um novo teste.
 

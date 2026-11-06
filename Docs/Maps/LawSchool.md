@@ -70,6 +70,8 @@ A pasta aninhada `LawSchool/LawSchool/` é usada pela Unity para a oclusão; nã
 
 Portais: `Assets/_Project/Global/Scripts/Utils/SceneTransitionDoor.cs`; chegadas: `SceneArrivalPoint.cs` na mesma pasta. Cena e prefab do campus ficam em `Assets/_Project/Scenes/CampusExterior/`. GUID da cena do campus: `faaefa97714810b429c19b5065aff68d`.
 
+No exterior, o pátio entre o Bloco de Direito e a biblioteca possui a instância `Ornate fountain - Law School and Library` em `(-58; 0; 16)`, além de bancos de concreto. Preserve a circulação entre esse mobiliário, a entrada do bloco e a entrada da biblioteca ao revisar conexões.
+
 Menu: botão `TemporaryMapSelect` → `Map_LawSchool`; rótulo **BLOCO DE DIREITO**. A lista deriva das cenas habilitadas. Ao verificar TMP de botão, procure o texto nos filhos; o primeiro TMP pode ser a seta de seleção.
 
 O `spawnPoint` serializado do `GameManager` aponta para a raiz `SpawnPoint` deste interior. Preserve serviços, câmera e HUD compartilhados; não copie outro manager mantendo o spawn de outro mapa.
