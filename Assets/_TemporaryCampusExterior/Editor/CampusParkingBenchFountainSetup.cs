@@ -70,52 +70,9 @@ public static class CampusParkingBenchFountainSetup
 
     private static Mesh BuildParkingMesh()
     {
-        var vertices = new List<Vector3>();
-        var triangles = new List<int>();
-        var uvs = new List<Vector2>();
-
-        AddQuad(vertices, triangles, uvs, -92f, -1.85f, -70f, -1.75f, 0.055f);
-        foreach (var x in new[] { -92f, -86.5f, -81f, -75.5f, -70f })
-            AddQuad(vertices, triangles, uvs, x - 0.05f, -1.8f, x + 0.05f, 0.2f, 0.055f);
-
-        AddQuad(vertices, triangles, uvs, 15.75f, 52f, 15.85f, 74f, 0.06f);
-        foreach (var z in new[] { 52f, 57.5f, 63f, 68.5f, 74f })
-            AddQuad(vertices, triangles, uvs, 15.8f, z - 0.05f, 17.8f, z + 0.05f, 0.06f);
-
-        AddQuad(vertices, triangles, uvs, 76.15f, -57f, 76.25f, -35f, 0.06f);
-        foreach (var z in new[] { -57f, -51.5f, -46f, -40.5f, -35f })
-            AddQuad(vertices, triangles, uvs, 73.7f, z - 0.05f, 76.2f, z + 0.05f, 0.06f);
-
-        var generated = new Mesh { name = "Street Parking Bays - 12" };
-        generated.SetVertices(vertices);
-        generated.SetTriangles(triangles, 0);
-        generated.SetUVs(0, uvs);
-        generated.RecalculateNormals();
-        generated.RecalculateBounds();
-
-        var existing = AssetDatabase.LoadAssetAtPath<Mesh>(ParkingMeshPath);
-        if (existing == null)
-        {
-            AssetDatabase.CreateAsset(generated, ParkingMeshPath);
-            return generated;
-        }
-
-        EditorUtility.CopySerialized(generated, existing);
-        UnityEngine.Object.DestroyImmediate(generated);
-        EditorUtility.SetDirty(existing);
-        return existing;
-    }
-
-    private static void AddQuad(List<Vector3> vertices, List<int> triangles, List<Vector2> uvs,
-        float minX, float minZ, float maxX, float maxZ, float y)
-    {
-        var start = vertices.Count;
-        vertices.Add(new Vector3(minX, y, minZ));
-        vertices.Add(new Vector3(minX, y, maxZ));
-        vertices.Add(new Vector3(maxX, y, maxZ));
-        vertices.Add(new Vector3(maxX, y, minZ));
-        triangles.AddRange(new[] { start, start + 1, start + 2, start, start + 2, start + 3 });
-        uvs.AddRange(new[] { Vector2.zero, Vector2.up, Vector2.one, Vector2.right });
+        var campus = FindSceneTransform(SceneManager.GetActiveScene(), "Campus Exterior - Part 2")
+            ?? throw new InvalidOperationException("Campus root was not found.");
+        return CampusParkingVehicleSetup.BuildParkingMesh(campus);
     }
 
     [MenuItem("Tools/UniDoom/Campus/Validate Parking, Concrete Benches and Fountain")]
