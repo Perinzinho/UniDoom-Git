@@ -41,7 +41,7 @@ public class Shotgun : Gun
     // Implements abstract Shoot defined in Gun.
     protected override void Shoot()
     {
-        SFXManager.Instance.PlayShotgunShootSound();
+        if (SFXManager.Instance != null) SFXManager.Instance.PlayShotgunShootSound();
         Ray aimRay = CrosshairAim.CreateRay(playerCamera);
 
 
