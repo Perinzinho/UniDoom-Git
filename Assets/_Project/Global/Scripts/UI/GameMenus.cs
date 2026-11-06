@@ -15,7 +15,7 @@ namespace UniDoom.UI
     /// <summary>Shared main, pause, death, options and confirmation screens. Progress lasts for the current run.</summary>
     public sealed partial class GameMenus : MonoBehaviour
     {
-        public enum Screen { Gameplay, Main, Pause, Death, Options, Credits, Confirm, MapSelect, GameOver, Document }
+        public enum Screen { Gameplay, Main, Pause, Death, Options, Credits, Confirm, MapSelect, GameOver, Document, Interaction }
         public static GameMenus Instance { get; private set; }
         public static bool BlocksGameplay => Instance != null && (Instance.CurrentScreen != Screen.Gameplay || Instance.busy);
         public Screen CurrentScreen { get; private set; }
@@ -87,7 +87,7 @@ namespace UniDoom.UI
             if (busy) return;
             bool back = (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) ||
                 (Gamepad.current != null && (Gamepad.current.startButton.wasPressedThisFrame || Gamepad.current.buttonEast.wasPressedThisFrame));
-            if (back && CurrentScreen != Screen.Document && !DoorReloadScreen.IsReloading)
+            if (back && CurrentScreen != Screen.Document && CurrentScreen != Screen.Interaction && !DoorReloadScreen.IsReloading)
             {
                 if (CurrentScreen == Screen.Gameplay) OpenPause();
                 else Back();
@@ -119,6 +119,7 @@ namespace UniDoom.UI
             Fit();
             if (CurrentScreen == Screen.Document && documentOwner == null) CloseDocument();
             if (CurrentScreen == Screen.Document) FitDocument();
+            if (CurrentScreen == Screen.Interaction && (interactionOwner == null || interactionPanel == null)) CloseInteraction();
             if (ownsPause) { Time.timeScale = 0; AudioListener.pause = true; FreezePlayer(); }
             ApplyCursorState();
         }
@@ -140,7 +141,7 @@ namespace UniDoom.UI
 
         public void OpenOptions()
         {
-            if (busy || CurrentScreen == Screen.Death || CurrentScreen == Screen.GameOver || CurrentScreen == Screen.Confirm || CurrentScreen == Screen.Document) return;
+            if (busy || CurrentScreen == Screen.Death || CurrentScreen == Screen.GameOver || CurrentScreen == Screen.Confirm || CurrentScreen == Screen.Document || CurrentScreen == Screen.Interaction) return;
             if (CurrentScreen == Screen.Gameplay) OpenPause();
             optionsOrigin = CurrentScreen;
             if (MouseSensitivityMenu.Instance != null)
@@ -177,6 +178,7 @@ namespace UniDoom.UI
         public void CloseForDeath()
         {
             if (CurrentScreen == Screen.Document) CloseDocument();
+            if (CurrentScreen == Screen.Interaction) CloseInteraction();
             if (ownsPause) ReleasePause();
             SetScreen(Screen.Gameplay);
         }
@@ -184,6 +186,7 @@ namespace UniDoom.UI
         public void ShowDeath(PlayerRespawn player, DeathScreen owner)
         {
             if (CurrentScreen == Screen.Document) CloseDocument();
+            if (CurrentScreen == Screen.Interaction) CloseInteraction();
             deadPlayer = player;
             deathOwner = owner;
             int lives = player != null ? player.RemainingLives : 0;
@@ -656,6 +659,7 @@ namespace UniDoom.UI
                     "Cylinder" => "CILINDRO",
                     "Library" => "BIBLIOTECA",
                     "CampusLibrary" => "BIBLIOTECA DO CAMPUS",
+                    "CampusBlock4" => "BLOCO 4",
                     "ClassRoom" => "SALA DE AULA",
                     "DirectorRoom" => "SALA DO DIRETOR",
                     "Basement" => "PORÃO — PRÉ-ARENA",
