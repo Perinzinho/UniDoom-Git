@@ -81,14 +81,19 @@ public sealed class LibraryEncounterDirector : MonoBehaviour
         foreach(var point in wave.points)
         {
             if(!point){pendingSpawns--;continue;}
-            // Avoid materialising a zombie inside the player if they reached a marker first.
-            float waited=0;
-            while(player&&Vector3.Distance(player.position,point.position)<3&&waited<5){waited+=.25f;yield return new WaitForSeconds(.25f);}
-            if(player&&Vector3.Distance(player.position,point.position)<3){pendingSpawns--;continue;}
             if(NavMesh.SamplePosition(point.position,out var hit,1.5f,NavMesh.AllAreas))
             {
-                var enemy=Instantiate(zombiePrefab,hit.position,point.rotation,transform);
-                spawned.Add(enemy);SpawnedCount++;
+                float waited=0;
+                while(!EnemySpawnSafety.CanSpawn(hit.position,player)&&waited<12f)
+                {
+                    waited+=.25f;
+                    yield return new WaitForSeconds(.25f);
+                }
+                if(EnemySpawnSafety.CanSpawn(hit.position,player))
+                {
+                    var enemy=Instantiate(zombiePrefab,hit.position,point.rotation,transform);
+                    spawned.Add(enemy);SpawnedCount++;
+                }
             }
             pendingSpawns--;yield return new WaitForSeconds(spawnInterval);
         }

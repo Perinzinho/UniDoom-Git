@@ -27,6 +27,7 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField, Min(.1f)] private float searchDuration = 4f;
     [SerializeField, Min(.5f)] private float searchRadius = 3f;
     [SerializeField, Min(.1f)] private float searchPause = .6f;
+    [SerializeField, Min(0f)] private float closeAwarenessRange = 3.5f;
 
     [Header("Group awareness")]
     [SerializeField, Min(0f)] private float alertRadius = 7f;
@@ -183,6 +184,9 @@ public class Enemy : MonoBehaviour, IDamageable
         if (meleeHitAt >= 0f || Time.time < meleeEndsAt)
         {
             StopMoving();
+            // Follow the approach during windup; commit the swing once it lands.
+            if (meleeHitAt >= 0f && target != null)
+                Face(target.position - transform.position, Time.deltaTime);
             if (meleeHitAt >= 0f && Time.time >= meleeHitAt)
             {
                 meleeHitAt = -1f;
@@ -283,7 +287,7 @@ public class Enemy : MonoBehaviour, IDamageable
         if (toTarget.sqrMagnitude > range * range) return false;
         toTarget.y = 0f;
         // Once acquired, a visible target can run around the enemy without cancelling pursuit.
-        if (!chasing && toTarget.sqrMagnitude > .001f &&
+        if (!chasing && toTarget.sqrMagnitude > closeAwarenessRange * closeAwarenessRange &&
             Vector3.Angle(transform.forward, toTarget) > fieldOfView * .5f) return false;
         return HasClearSight();
     }
@@ -410,7 +414,11 @@ public class Enemy : MonoBehaviour, IDamageable
         }
         if (!hasPatrolDestination)
         {
-            if (Time.time < waitUntil) return;
+            if (Time.time < waitUntil)
+            {
+                Face(Quaternion.Euler(0f, steeringSide * 60f * Time.deltaTime, 0f) * transform.forward, Time.deltaTime);
+                return;
+            }
             if (!ChoosePatrolDestination()) { waitUntil = Time.time + 1f; return; }
         }
         MoveTo(patrolDestination, patrolSpeed, .25f);
@@ -453,10 +461,14 @@ public class Enemy : MonoBehaviour, IDamageable
         if (UsingAgent)
         {
             desiredDirection = Vector3.zero;
-            agent.speed = speed;
             agent.stoppingDistance = stoppingDistance;
             agent.isStopped = false;
-            Face(agent.desiredVelocity, Time.deltaTime);
+            Vector3 heading = agent.desiredVelocity;
+            if (heading.sqrMagnitude < .001f)
+                heading = (agent.hasPath ? agent.steeringTarget : destination) - transform.position;
+            Face(heading, Time.deltaTime);
+            // Turn before advancing instead of sliding backwards toward the player.
+            agent.speed = speed * MovementAlignment(heading);
             if (Time.time >= nextPathUpdate)
             {
                 nextPathUpdate = Time.time + pathUpdateInterval;
@@ -521,11 +533,12 @@ public class Enemy : MonoBehaviour, IDamageable
             previousSteering = direction;
             Face(direction, Time.fixedDeltaTime);
         }
+        float alignedSpeed = desiredSpeed * MovementAlignment(direction);
         if (body != null && !body.isKinematic)
-            body.linearVelocity = direction * desiredSpeed + Vector3.up * body.linearVelocity.y;
+            body.linearVelocity = direction * alignedSpeed + Vector3.up * body.linearVelocity.y;
         else if (direction.sqrMagnitude > .001f)
         {
-            Vector3 position = transform.position + direction * desiredSpeed * Time.fixedDeltaTime;
+            Vector3 position = transform.position + direction * alignedSpeed * Time.fixedDeltaTime;
             if (body != null) body.MovePosition(position);
             else transform.position = position;
         }
@@ -612,12 +625,19 @@ public class Enemy : MonoBehaviour, IDamageable
         else transform.rotation = rotation;
     }
 
+    private float MovementAlignment(Vector3 direction)
+    {
+        direction.y = 0f;
+        return direction.sqrMagnitude < .001f ? 1f :
+            Mathf.Lerp(.15f, 1f, Mathf.Clamp01(Vector3.Dot(FacingDirection, direction.normalized)));
+    }
+
     private void TryAttack()
     {
         EnemySpriteAppearance ranged = RangedAppearance;
         if (IsDead || target == null || (targetLife != null && targetLife.IsDead) ||
             Time.time - lastAttackTime < (ranged != null ? ranged.projectileCooldown : attackCooldown) ||
-            (ranged == null && Vector3.Angle(FacingDirection, target.position - transform.position) > 45f)) return;
+            Vector3.Angle(FacingDirection, target.position - transform.position) > 45f) return;
         lastAttackTime = Time.time;
         Attacked?.Invoke();
 
