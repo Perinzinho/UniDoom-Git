@@ -1,6 +1,6 @@
 # Campus Exterior e Biblioteca do Campus — contexto de implementação
 
-> Documento para continuar o trabalho sem reconstruir o contexto da conversa nem ler milhares de assets. Atualizado em **05/11/2026**, com os arquivos presentes e o histórico desta sessão. Base versionada: `development`, commit `494fdd18`. Alterações futuras podem mudar os números e parâmetros abaixo.
+> Documento para continuar o trabalho sem reconstruir o contexto da conversa nem ler milhares de assets. Atualizado em **06/11/2026**, com os arquivos presentes e o histórico desta sessão. Base versionada: `development`, commit `494fdd18`. Alterações futuras podem mudar os números e parâmetros abaixo.
 
 ## 1. Leitura rápida para a próxima IA
 
@@ -20,6 +20,7 @@
 | --- | --- | --- |
 | `CampusExterior` | `CampusExterior/CampusExterior.unity` | Campus externo com grama, avenidas, árvores e edifícios desta implementação. |
 | `CampusLibrary` | `CampusLibrary/CampusLibrary.unity` | Novo interior da biblioteca ligada ao Campus Exterior. |
+| `CampusBlock4` | `CampusBlock4/CampusBlock4.unity` | Interior térreo do Bloco 4; salas internas conectadas sem carregamento. |
 | `Library` | `Library/Library.unity` | Biblioteca anterior, preservada. |
 | `EntranceGarden` | `EntranceGarden/EntranceGarden.unity` | Jardim/entrada anterior; não é o novo Campus Exterior. |
 | `SampleScene` | `Main/SampleScene.unity` | Cenário anterior. O menu ainda o apresenta como **CAMPUS COMPLETO**; esse texto não identifica `CampusExterior`. |
@@ -28,7 +29,7 @@
 
 **Ambiente registrado:** Unity **6000.5.7f1**, URP **17.5.0**, Cinemachine **3.1.7**, Input System **1.20.0**, AI Navigation **2.0.14**. As fontes de verdade são `ProjectSettings/ProjectVersion.txt` e `Packages/manifest.json`.
 
-As nove cenas estão habilitadas em `ProjectSettings/EditorBuildSettings.asset`. Na fotografia atual, `CampusExterior` é a oitava entrada e `CampusLibrary` a nona. Prefira os nomes das cenas a índices fixos.
+As dez cenas estão habilitadas em `ProjectSettings/EditorBuildSettings.asset`. Na fotografia atual, `CampusExterior` é a oitava entrada e `CampusLibrary` a nona; `CampusBlock4` é a décima. Prefira os nomes das cenas a índices fixos.
 
 ## 3. Onde editar cada coisa
 
@@ -42,7 +43,8 @@ As nove cenas estão habilitadas em `ProjectSettings/EditorBuildSettings.asset`.
 | Pós-processamento do exterior | `Assets/_Project/Scenes/CampusExterior/Profiles/CampusDusk.asset` |
 | Depósitos de sujeira localizados | `Assets/_Project/Scenes/CampusExterior/Shaders/LocalizedWeathering.shader` |
 | Cena e prefab da nova biblioteca | `Assets/_Project/Scenes/CampusLibrary/CampusLibrary.unity` e `Prefabs/CampusLibrary.prefab` |
-| Geometria e acabamento da nova biblioteca | `Assets/_Project/Scenes/CampusLibrary/Meshes/`, `Materials/` e `Textures/` |
+| Geometria da nova biblioteca | `Assets/_Project/Scenes/CampusLibrary/Meshes/`, com cadeiras/estantes compartilhadas em `Global/Meshes/CampusInterior/` |
+| Paleta compartilhada dos interiores do campus | `Assets/_Project/Global/Materials/CampusInterior/` e `Global/Textures/CampusInterior/` |
 | Pós-processamento da biblioteca | `Assets/_Project/Scenes/CampusLibrary/Profiles/CampusLibrary.asset` |
 | Imagem de carregamento da biblioteca | `Assets/_Project/Scenes/CampusLibrary/Resources/Textures/UI/Transitions/CampusLibrary.png` |
 | Trigger que solicita a troca de cena | `Assets/_Project/Global/Scripts/Utils/SceneTransitionDoor.cs` |
@@ -111,6 +113,8 @@ Não confunda os valores padrão declarados no script com os valores serializado
 
 ```text
 Basement / prisão  <-->  CampusExterior  <-->  CampusLibrary
+                              |
+                              +-------------> CampusBlock4 (ida e volta)
 ```
 
 | Origem | `destinationScene` | `destinationSpawnId` | Ponto de chegada na cena de destino |
@@ -119,6 +123,8 @@ Basement / prisão  <-->  CampusExterior  <-->  CampusLibrary
 | `Return to prison`, no exterior | `Basement` | `FromCampus` | `SceneArrivalPoint` com ID `FromCampus`, no prefab `Basement` |
 | `Library entrance - CampusLibrary`, no exterior | `CampusLibrary` | `FromCampusExterior` | `Arrival - FromCampusExterior` |
 | `Exit to Campus Exterior`, na biblioteca | `CampusExterior` | `FromCampusLibrary` | `Arrival - FromCampusLibrary` |
+| `Block 4 entrance - CampusBlock4`, no exterior | `CampusBlock4` | `FromCampusExterior` | `Arrival - FromCampusExterior`, no Bloco 4 |
+| `Exit to Campus Exterior`, no Bloco 4 | `CampusExterior` | `FromCampusBlock4` | `Arrival - FromCampusBlock4` |
 
 Referências de posição salvas nos prefabs, em coordenadas locais dos respectivos roots:
 
@@ -161,7 +167,13 @@ A referência foi o infográfico **“Infográfico da Biblioteca UniDoom.png”*
 - Dois banheiros, com **seis cabines no total**, bancadas, cubas, divisórias e acessórios.
 - Piso de granito, teto modular, vigas alaranjadas, pilares, luminárias, sinalização, plantas, extintores, lixeiras e detalhes de uso universitário.
 
-A geometria persistente está no prefab e nos meshes; a biblioteca não possui um gerador de layout necessário em runtime. O inventário exclusivo atual é de **252 meshes**, **24 materiais**, **1 perfil**, **1 prefab**, **1 cena** e **2 PNGs**, além dos `.meta`.
+A geometria persistente está no prefab e nos meshes; a biblioteca não possui um gerador de layout necessário em runtime. O inventário histórico da biblioteca era de **252 meshes**, **24 materiais**, **1 perfil**, **1 prefab**, **1 cena** e **2 PNGs**, além dos `.meta`. Em 06/11, os 24 materiais e `GraniteSpeckle.png` passaram para `Global` para uso compartilhado com o Bloco 4, sem alterar bytes, GUIDs ou importadores. Sete meshes de cadeiras e estantes também passaram para `Global/Meshes/CampusInterior/` com os mesmos GUIDs e bytes. Com o quadro da recepção, a biblioteca conserva **247 meshes exclusivos**, **1 material fotográfico exclusivo**, **1 fotografia PNG**, perfil, prefab, cena e arte de carregamento.
+
+### Quadro da recepção
+
+A fotografia original `Screenshot_1.png`, enviada pelo usuário, foi incorporada sem alterar seus bytes em `CampusLibrary/Textures/Campus library portrait.png`. O quadro **`Reception portrait easter egg`** fica na parede frontal interna, junto à recepção, em `(-11.2, 2.45, -11.94)`, voltado para o hall (Y = 180°). A foto tem 1,6 m de largura, preserva a proporção original e usa moldura de madeira compartilhada com os interiores do campus. A linha de visão desde o hall de entrada está livre. Não há legenda ou interação nova.
+
+O material exclusivo fica em `CampusLibrary/Materials/Campus library portrait photograph.mat`; essa pasta contém o novo material da foto, enquanto a paleta anterior continua em `Global/Materials/CampusInterior/`. Os dois meshes novos são `Library portrait plane` e `Library picture frame cube`. A decoração está salva no prefab, não acrescenta colliders e não altera a biblioteca inicial `Library`. Prévias: `output/CampusLibrary-Quadro-Recepcao.png`, `CampusLibrary-Quadro-Detalhe.png` e `CampusLibrary-Quadro-Entrada.png`.
 
 ### Revisão de contato e circulação já entregue
 
@@ -285,3 +297,129 @@ Essa limpeza eliminou os 42 avisos originais: 30 entradas com metadados antigos 
 6. Salve recursos exclusivos na pasta do cenário e reutilize os compartilhados em `Global`. Mantenha ferramentas pontuais fora dos assets finais e resultados persistentes dentro do projeto.
 7. Informe sempre quais verificações foram realmente executadas na alteração atual. Diferencie resultados históricos, inspeção de código, recuperação de arquivos e testes no jogo.
 
+
+## 12. Bloco 4 — interior conectado ao campus
+
+A planta vigente segue o **segundo desenho enviado pelo usuário em 06/11/2026**: entrada frontal, um corredor principal até o fundo e **dois corredores transversais** cruzando esse eixo. O infográfico inicial permanece como referência de materiais e ambientes. O esquema da implementação está em [output/CampusBlock4-Planta.png](output/CampusBlock4-Planta.png). As referências de planta não são dependências do jogo; a fotografia enviada posteriormente foi incorporada como textura exclusiva deste cenário.
+
+- Cena: `Assets/_Project/Scenes/CampusBlock4/CampusBlock4.unity`; prefab: `Prefabs/CampusBlock4.prefab` dentro dessa pasta. Root: `Campus Block 4 Interior`.
+- Planta térrea de **70 × 68 m**. Frente em `z = -34`; corredor principal em `x = 0`, com aproximadamente 6,3 m de largura; cruzamentos em `z = -12,4` e `z = 12,4`, com 3,6 m de largura.
+- Quatro alas de **seis salas cada**, com três portas de cada lado. As portas dos pares opostos têm a mesma coordenada `x`: as salas ficam de frente umas para as outras. Salas 401–424 acessíveis sem troca de cena; a 423 exige resolver o enigma das fotografias descrito abaixo.
+- Secretaria de Informática à esquerda de quem entra. Bebedouro à esquerda do trecho central; **parede fechada com o quadro da turma à direita**. Escada, elevador e suas placas foram substituídos a pedido do usuário; não há acesso técnico nesse trecho.
+- Catracas **na entrada**, em `z = -28`, após a chegada do jogador e antes do primeiro cruzamento, com passagem central livre de 1,8 m. Bancos de espera permanecem dos dois lados do fundo. Quatro banheiros, um no fim de cada ala, com três cabines cada. Os banheiros da esquerda são femininos e os da direita masculinos.
+- O espaço atrás da secretaria é **inacessível**, com volumes sólidos fechando a faixa oeste e as antigas brechas frontal e traseira. A porta e o interior da secretaria continuam acessíveis. Os bancos e plantas que ficavam nesse espaço foram reposicionados na espera do fundo.
+- Em frente ao bebedouro, a foto da turma de cowboy ocupa um quadro com moldura de madeira e luminária, sobre uma parede contínua com colisão.
+- Branco institucional, laranja nas alas direitas, caixilhos escuros, portas azuis, piso tátil, forro modular e luminárias. Mantida a direção visual de desgaste localizado do campus.
+
+### Salas de ADS e Ciência da Computação
+
+| Ala | Primeira fileira | Fileira oposta |
+| --- | --- | --- |
+| 1 — primeiro cruzamento, esquerda | 401 Algoritmos e Lógica; 402 Programação I; 403 Arquitetura de Computadores | 404 Engenharia de Software; 405 Desenvolvimento Web; 406 Redes de Computadores |
+| 2 — primeiro cruzamento, direita | 407 Banco de Dados; 408 Programação Orientada a Objetos; 409 Sistemas Operacionais | 410 Matemática Discreta; 411 Interação Humano Computador; 412 Computação Gráfica |
+| 3 — segundo cruzamento, esquerda | 413 Estruturas de Dados; 414 Desenvolvimento Mobile; 415 Segurança da Informação | 416 Robótica e Automação; 417 Sistemas Embarcados; 418 Inteligência Artificial |
+| 4 — segundo cruzamento, direita | 419 Análise de Sistemas; 420 Qualidade e Testes de Software; 421 Cloud e DevOps | 422 Projetos Integradores; 423 Pesquisa e TCC; 424 Auditório TEC |
+
+Os ambientes variam entre carteiras para aulas, laboratórios de computadores, mesas em grupos, bancadas de robótica/eletrônica e auditório. Lousas e identificação usam o assunto de cada sala. Redes, segurança e DevOps incluem racks; mobile e computação gráfica têm objetos de estudo próprios; robótica e embarcados têm instrumentos distintos. Cadeiras e estantes reutilizam os meshes compartilhados existentes.
+
+### Quadro e easter eggs nos computadores
+
+A fotografia original **“WhatsApp Image 2026-09-27 at 01.51.59.jpeg”** foi copiada sem alterar seus bytes para `Textures/Cowboy crew.jpeg`, dentro de `CampusBlock4`. O jogo referencia essa cópia; não depende do arquivo na Área de Trabalho. O quadro usa a imagem completa, com proporção 4:3, em frente ao bebedouro. A legenda atual tem somente duas linhas: **TURMA DO RODEIO** e **CIÊNCIAS DA COMPUTAÇÃO**.
+
+A fotografia **`images.jpg`** enviada depois foi incorporada sem alterar seus bytes em `Textures/Secretariat portrait.jpg`. Ela ocupa um quadro de madeira na parede oeste interna da secretaria, acima da mesa secundária, próximo da estante. O material exclusivo é `Secretariat portrait photograph`; plano, moldura e fundo reutilizam meshes e materiais existentes. Nenhum novo collider foi acrescentado para essa decoração.
+
+Quatro computadores têm telas especiais, cada uma mostrando uma pessoa diferente da foto, numeradas da esquerda para a direita: **402 → Cowboy Dev 01**, **407 → 02**, **414 → 03**, **420 → 04**. Os terminais incluem brincadeiras como `git rodeio`, `sudo cafe`, `npm run boi` e `BOI: MAIN`. Os rostos usam quatro meshes de UV com regiões distintas da **mesma textura original**, sem gerar cópias recortadas da imagem. Materiais exclusivos: `Cowboy crew photograph` e `Cowboy crew LCD portraits`. A emissão das telas é configurada no material salvo; não há script de easter egg em runtime.
+
+Os antigos meshes e colliders da escada/elevador foram reaproveitados como segmentos adjacentes da parede sólida. A geometria antiga foi removida dos buffers, incluindo os antigos cabeçalhos; os assets, GUIDs e fileIDs foram preservados. A moldura reutiliza o cubo e o plano persistentes existentes do cenário.
+
+### Portas, vidros e carregamento
+
+As **41 portas internas** usam `OpenDoorWithKey`: 24 salas, secretaria, quatro entradas de banheiro e 12 cabines. Quarenta abrem por aproximação. A sala 423 exige ativação manual pelo teclado do enigma; todas permanecem abertas após destrancar. O trigger é fixo; somente a folha, seu collider e as maçanetas giram na dobradiça. Batentes, janelas e paredes são independentes da folha. `enableShaderReload = false` em todas as portas internas.
+
+Os vidros são planos separados de quatro vértices, com collider fino próprio; não são cubos transparentes combinados às paredes. O material `Observation glass` usa alpha 0,055, fila 3000, `ZWrite = 0` e não projeta sombras. Os vãos das portas e janelas são aberturas reais na geometria. Paredes coincidentes entre salas adjacentes foram substituídas por uma única divisória. As juntas decorativas são superfícies simples, sem faces laterais e sem sombras próprias.
+
+| Objeto | Posição do root/trigger | Orientação da chegada |
+| --- | --- | --- |
+| Exterior: trigger de entrada no Bloco 4 | `(63, 2.05, 30.55)` | — |
+| Exterior: chegada `FromCampusBlock4` | `(63, 1.91, 29.65)` | Y = 180°; voltado para o campus |
+| Interior: chegada `FromCampusExterior` e `SpawnPoint` | `(0, 1.11, -30.4)` | Y = 0°; voltado para o fundo |
+| Interior: trigger de saída | `(0, 1.4, -33.55)` | — |
+
+As chegadas ficam fora dos triggers de retorno. O portal externo está no prefab **e** no root serializado da cena exterior. O shell externo existente foi preservado. O carregamento continua pelo `DoorReloadScreen`, com rótulo **BLOCO 4** e recurso **`Textures/UI/Transitions/CampusBlock4`**, atualizado com a captura desta planta. Pause e checkpoint reconhecem `CampusBlock4`. Jogador, vida, munição e HUD continuam sob o `GameManager` existente. Somente a entrada/saída do prédio troca de cena.
+
+### Enigma das fotografias — sala 423
+
+As cinco fotografias têm placas azuis com **formas geométricas e números**, sem depender de cores. As placas dos quatro retratos ficam presas acima das telas; a quinta fica abaixo do retrato na secretaria. A ordem aparece em uma placa separada abaixo da legenda do quadro da turma, em frente ao bebedouro. A pedido do usuário, essa placa mostra **somente as cinco formas**, sem título, instrução ou setas. A legenda da turma permanece com as duas linhas originais.
+
+| Local da pista | Símbolo | Número |
+| --- | --- | --- |
+| 402 — Programação I | Quadrado | 1 |
+| 407 — Banco de Dados | Triângulo | 2 |
+| 414 — Desenvolvimento Mobile | Círculo | 3 |
+| 420 — Qualidade e Testes | Losango | 4 |
+| Secretaria | Cruz | 5 |
+
+**Solução para manutenção (spoiler):** triângulo → losango → quadrado → cruz → círculo, portanto **24153**. A configuração está em `CampusBlock4/Block4 photo puzzle.asset`; `Block4PuzzleDefinition` valida as cinco formas, números únicos 1–5 e sequência completa. A porta compara os dígitos com essa configuração. As placas e meshes são assets salvos; alterações futuras da configuração devem manter as placas físicas correspondentes.
+
+A **sala 423 — Pesquisa e TCC** guarda a recompensa. Seu `OpenDoorWithKey` usa `requiresManualActivation = true`, sem alterar o comportamento das outras 40 portas. O terminal físico fica ao lado do batente, em `(11.65, 1.48, 14.04)`. Dentro de 2,4 m e com linha de visão livre até o terminal, **E** abre o teclado; no controle, o botão oeste (**X** no Xbox). O painel aceita mouse, dígitos superiores e teclado numérico; **Backspace/Delete** apagam, **Enter** confirma e **Esc** fecha. Há botões para apagar, limpar, confirmar e fechar. A entrada tem cinco dígitos; tentativas incompletas ou incorretas mantêm a porta trancada. Digitar após erro substitui a tentativa anterior.
+
+`GameMenus.Interaction.cs` compartilha a propriedade do pause dos menus: movimento, câmera, armas, áudio e HUD são suspensos durante a digitação. O fechamento consome o frame de entrada para evitar disparos ou abertura do pause pelo mesmo clique/Esc. O painel respeita a área segura e o tamanho disponível. Morte, destruição do proprietário e saída da cena liberam a interação.
+
+A chave fica em um pedestal dentro da 423, com trigger em `(12.9, 1.27, 20.35)`. O visual atual reutiliza **o mesmo sprite, material e escala do `Key03.prefab` da sala do diretor**, com `Billboard` e flutuação; não gira como um modelo 3D. O visual fica 0,30 m acima do trigger para não atravessar o pedestal. As peças antigas de latão estão inativas, preservando seus fileIDs e referências. `Block4TeacherKeyPickup` só coleta a chave com a senha resolvida, a porta totalmente aberta, o jogador vivo e o gameplay ativo. Recolhe uma única vez, toca o som existente e mostra a confirmação no HUD. **Nenhuma cela está ligada a essa chave ainda.** Ela não altera `Key01..03` nem `PrisonProgress.HasKey`.
+
+O inventário da partida fica em `UniDoom.CampusBlock4.Block4PuzzleProgress`: `DoorUnlocked`, `HasTeacherCellKey` e o identificador `TeacherCellKeyId = "block4.teacher-cell"` estão disponíveis para a futura cela do professor. A porta destrancada e a chave coletada sobrevivem às transições e à recarga de checkpoint; a chave recolhida não reaparece. `GameManager.EndSession()` e o início do runtime limpam esse progresso para a próxima partida. Não há gravação desse estado em disco.
+
+### Persistência e manutenção
+
+O inventário exclusivo atual é de **963 meshes**, **10 materiais**, **1 perfil**, **1 configuração do enigma**, **4 scripts locais**, **1 prefab**, **1 cena**, **2 fotografias JPEG** e **1 PNG de carregamento**, mais `.meta`. A geometria e os materiais são persistentes; a interface do teclado é montada em runtime seguindo o padrão existente de `GameMenus`. Os nomes históricos dos meshes originais foram mantidos para preservar caminhos, GUIDs e referências, embora a geometria tenha sido atualizada para esta planta.
+
+Foram preservados todos os arquivos e `.meta` existentes do Bloco 4, os **5.135 fileIDs** originais do prefab e os **21 fileIDs** originais da cena. Objetos antigos foram reaproveitados; colisores de divisórias duplicadas foram transformados em células adjacentes do piso, sem colisão sobreposta. Meshes novos intermediários sem dependência na cena ficaram fora da integração. Nenhum asset anterior do usuário foi excluído nesta revisão.
+
+A paleta de 24 materiais em `Global/Materials/CampusInterior/`, `GraniteSpeckle.png` em `Global/Textures/CampusInterior/` e os sete meshes de cadeiras/estantes em `Global/Meshes/CampusInterior/` são compartilhados com a biblioteca. A migração dessas pastas pertence à implementação inicial; **esta revisão de planta não moveu nem modificou esses recursos**, a biblioteca ou a fachada exterior.
+
+As ferramentas pontuais ficam na cópia isolada preexistente `.utmp/DirectorRoomValidation/Assets/Editor/`; saídas temporárias em `Temp/Block4Diagram/`, `Temp/Block4EntranceFix/`, `Temp/Block4Cowboys/`, `Temp/Block4SecretariatPortrait/` e `Temp/Block4Puzzle/`. Não foram adicionados geradores em `Assets` do projeto principal. Capturas selecionadas ficam em `output/CampusBlock4-*.png`.
+
+### Validações anteriores da planta e decoração — 06/11/2026
+
+Executadas na cópia isolada, com Unity **6000.5.7f1**, scripts e dependências atuais:
+
+- Compilação; abertura do prefab e da cena; ausência de scripts, materiais ou shaders faltantes; meshes persistentes verificados. Meshes transitórios do TextMeshPro são esperados e usam as fontes salvas do projeto.
+- **42 rotas completas** de NavMesh a partir da entrada, cobrindo as 24 salas, secretaria, bebedouro, aproximação do quadro, bancos/catracas e 12 cabines. NavMesh temporário calculado das colisões salvas, com raio 0,27 m, altura 2,15 m e voxel 6 cm; nenhum NavMesh de teste integrado.
+- **63 amostras** ao longo do corredor principal sem obstrução e **72 amostras** de folga nos vãos das salas com folhas abertas.
+- Play Mode automatizado com o `CharacterController` real: **45 percursos físicos** — corredor principal inteiro, os dois cruzamentos, 24 salas, secretaria, quatro banheiros, 12 cabines e aproximação do quadro. As **41 portas** abriram por aproximação; nenhuma passagem interna solicitou carregamento.
+- Collider de vidro testado por raycast e tentativa física de atravessar a janela. Entrada pela fachada, arte de loading correta, chegada atualizada, saída e reentrada, sem loop de transição ou player duplicado. Vida, carregador e reserva preservados.
+- Reabertura em nova sessão da Unity e inspeção das capturas de hall, ala com salas opostas, aula, informática, pesquisa, robótica, banheiro, secretaria, catracas e portas/vidros. O refinamento final das juntas decorativas altera somente renderização, sem mudar as colisões testadas.
+- Comparação dos assets integrados com a cópia validada, preservação de GUIDs/fileIDs e resolução das referências. Os bytes de dependências compartilhadas permaneceram iguais. `git diff --check` executado após a integração.
+
+Na revisão anterior da entrada e do fechamento da secretaria, antes da instalação do quadro, foram repetidos os testes das **42 rotas**, **45 percursos físicos**, **41 portas**, vidros e transições. Foram acrescentadas verificações da posição das quatro catracas e duas tentativas físicas de entrar atrás da secretaria, ambas bloqueadas. Todos os **11.865 fileIDs** do prefab e os **21 fileIDs** da cena existentes antes daquela correção foram preservados.
+
+Na instalação do quadro e das telas de cowboy, os **11.892 fileIDs** existentes do prefab e os **21 fileIDs** da cena foram preservados. A foto foi comparada por SHA-256 com o JPEG original. Abertura da cena/prefab, compilação, as **42 rotas**, **45 percursos físicos**, **41 portas**, colisão dos vidros e ida/volta ao campus foram verificados novamente. O jogador tentou entrar no antigo acesso técnico e nas duas brechas da secretaria: os três acessos ficaram bloqueados. Os quatro monitores foram encontrados em Play Mode; UVs distintos e textura compartilhada foram conferidos. A emissão das telas foi refinada depois do teste físico, sem alterar colisões. Capturas na Unity verificam a foto completa, os quatro retratos e a nova parede. Prévias: `CampusBlock4-Quadro-Cowboys.png` e `CampusBlock4-Cowboy-Dev-01.png` até `04.png`. Os assets integrados foram comparados com a cópia isolada, incluindo os `.meta` e a resolução de GUIDs; não houve modificação de dependências compartilhadas.
+
+Como no teste anterior, o log do Play Mode registrou uma exceção de indexação em `UnityEditor.Search.SearchDatabase` durante a inicialização do Editor; as verificações automatizadas de gameplay concluíram com sucesso. A origem desse aviso de Editor não foi investigada nesta tarefa.
+
+Na alteração decorativa do retrato da secretaria e da legenda, foram verificados compilação, abertura do prefab/cena, materiais, scripts, 41 portas e capturas da secretaria e do quadro da turma. Todas as colisões existentes foram comparadas antes/depois e permaneceram idênticas, inclusive após salvar e reabrir a cena. Foram preservados os fileIDs e `.meta` anteriores, e a nova foto foi comparada com o original por SHA-256. Não foi repetido o Play Mode nem gerado build nessa alteração decorativa. Prévias: `CampusBlock4-Secretaria-Retrato.png`, `CampusBlock4-Secretaria-Interior.png` e `CampusBlock4-Quadro-Cowboys.png`.
+
+### Validação do enigma — 06/11/2026
+
+Executada na cópia isolada com Unity **6000.5.7f1**, sem interferir no Editor principal:
+
+- Compilação, prefab/cena salvos e reabertos; configuração, materiais, shaders, scripts e meshes persistentes conferidos. Preservados os **12.005 fileIDs** anteriores do prefab e os **21** da cena, todos os `.meta` anteriores e as fotografias originais. Os **1.570 registros de colliders/rigidbodies** anteriores permanecem idênticos; os **3.405 transforms** anteriores mantêm posição, rotação, escala e pai.
+- Play Mode com o jogador real: porta bloqueia fisicamente antes da senha; uso remoto do terminal recusado; chave não pode ser coletada antes do enigma, inclusive no teste de teleporte para dentro da sala.
+- E, dígitos superiores, numpad, Backspace, Enter, Esc e botões da interface testados; limite de cinco dígitos, erro, tentativa incompleta, apagar/limpar, reabertura, bloqueio de opções, fechamento e limpeza de morte. Movimento/câmera suspensos, disparos bloqueados e nenhum tiro no fechamento. O foco inicial do controle está implementado; não houve sessão manual com controle físico.
+- Senha correta, feedback, animação real da dobradiça, travessia com `CharacterController`, coleta por aproximação e inventário independente verificados.
+- **45 percursos físicos**: corredor principal, dois cruzamentos, 24 salas, secretaria, quatro banheiros, 12 cabines e aproximação do quadro. As 40 portas livres e a 423 após a senha ficaram abertas. Vidros, catracas, parede do quadro e fechamento atrás da secretaria novamente conferidos. Nenhuma passagem interna carregou outra cena.
+- Entrada e loading do exterior, saída/reentrada, um único jogador e conservação de vida/munição verificados. Reentrada e **recarga real de checkpoint** conservaram a porta e a chave; uma **nova partida** restaurou a porta trancada e a recompensa disponível.
+- Capturas do teclado em **1280×720, 1920×1080 e 1024×768**, sem overflow dos textos ou recorte do painel; revisão visual das cinco pistas, ordem, porta, feedback e confirmação de coleta. Prévias em `output/CampusBlock4-Enigma-*.png`.
+- Integração comparada por bytes com a cópia validada, resolução de GUIDs e preservação dos assets anteriores. Nenhum gerador de autoria foi integrado a `Assets` do projeto principal.
+
+O aviso preexistente de `UnityEditor.Search.SearchDatabase` voltou a aparecer na inicialização do Editor isolado; os testes de gameplay concluíram com sucesso. O NavMesh não foi recalculado nesta implementação; as rotas desta revisão foram percorridas fisicamente no Play Mode.
+
+### Refinamento dos símbolos, chave e quadro da biblioteca — 06/11/2026
+
+Na cópia isolada da Unity, foram executadas compilação, abertura dos dois prefabs/cenas e comparação visual das capturas. A placa abaixo do quadro mostra apenas cinco símbolos; a senha e as cinco pistas permanecem iguais. A nova chave usa exatamente os recursos visuais da chave da sala do diretor. O retrato da recepção utiliza a fotografia original, sem recorte ou mudança de proporção.
+
+O Play Mode conferiu a orientação do billboard para a câmera real, a folga acima do pedestal, desbloqueio pelo código existente, travessia física e coleta única da chave. Também percorreu Bloco 4 → exterior → `CampusLibrary` → exterior, verificando o quadro, a visão desobstruída a partir do hall, um único jogador e a conservação de vida, munição e inventário. Todas as colisões anteriores dos dois prefabs foram comparadas e permaneceram idênticas; os fileIDs e `.meta` anteriores foram preservados. Os bytes da foto foram comparados com `Screenshot_1.png`.
+
+Ferramentas pontuais na cópia isolada; registros temporários em `Temp/CampusPortraitPolish/`. Nenhum gerador foi integrado aos assets finais. Prévias adicionais: `output/CampusBlock4-Enigma-Quadro-Sem-Dica.png` e `CampusBlock4-Enigma-Chave-Padrao.png`. Não foram repetidas as 45 rotas nem o NavMesh neste refinamento visual; não houve build ou medição com Profiler. O aviso preexistente de indexação de `UnityEditor.Search.SearchDatabase` reapareceu durante a inicialização do Editor isolado, sem impedir a conclusão do teste.
+
+**Não foi gerado executável nem realizado benchmark com Profiler.** O Play Mode foi automatizado na cópia isolada, sem uma sessão manual completa no Editor principal. A validação não constitui uma medição de FPS.
