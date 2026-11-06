@@ -28,7 +28,7 @@
 
 **Ambiente registrado:** Unity **6000.5.7f1**, URP **17.5.0**, Cinemachine **3.1.7**, Input System **1.20.0**, AI Navigation **2.0.14**. As fontes de verdade são `ProjectSettings/ProjectVersion.txt` e `Packages/manifest.json`.
 
-As nove cenas estão habilitadas em `ProjectSettings/EditorBuildSettings.asset`. Na fotografia atual, `CampusExterior` é a oitava entrada e `CampusLibrary` a nona. Prefira os nomes das cenas a índices fixos.
+As dez cenas estão habilitadas em `ProjectSettings/EditorBuildSettings.asset`. Após integrar o Bloco de Direito e a biblioteca, `CampusExterior` é a oitava entrada, `LawSchool` a nona e `CampusLibrary` a décima. Prefira os nomes das cenas a índices fixos. O contexto do Bloco de Direito e sua ligação com o exterior está em [Docs/Maps/LawSchool.md](Docs/Maps/LawSchool.md#conexões).
 
 ## 3. Onde editar cada coisa
 
