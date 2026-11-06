@@ -430,6 +430,7 @@ namespace UniDoom.UI
             {
                 "Cylinder" => "REDONDO",
                 "Library" => "BIBLIOTECA",
+                "CampusLibrary" => "BIBLIOTECA DO CAMPUS",
                 "ClassRoom" => "SALA DE AULA",
                 "DirectorRoom" => "DIRETORIA",
                 "EntranceGarden" => "CORREDOR DE ENTRADA",

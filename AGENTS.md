@@ -17,3 +17,7 @@
 
 - Antes de alterar um mapa, consulte `Docs/Maps/README.md`, comece pela seção Leitura rápida da ficha da cena solicitada e abra outras seções sob demanda. O fluxo está em `.codex/PROMPT_MESTRE.md`; fontes e autores ficam em `Docs/Maps/Referencias-e-Assets.md`, para consulta quando houver pesquisa de arte.
 - Atualize a ficha quando mudar escala, layout, conexões ou dependências. Use os dados para evitar investigação repetida, mas confirme o estado real dos arquivos antes de reutilizar resultados de testes anteriores.
+
+## Contexto do Campus Exterior
+
+- Para tarefas em `CampusExterior`, `CampusLibrary` ou suas transições, leia primeiro [README_CAMPUS_EXTERIOR.md](README_CAMPUS_EXTERIOR.md). Ele reúne identificação dos cenários, caminhos, arquitetura, spawn IDs, revisões, validações e o histórico da recuperação de assets. Consulte as seções relevantes antes de explorar assets grandes e atualize o documento quando esses contratos mudarem.
