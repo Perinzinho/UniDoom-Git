@@ -12,12 +12,14 @@ public sealed class CylinderEnemySpawns : MonoBehaviour
     private bool triggered;
     private int nextSpawn;
     private Coroutine spawning;
+    private Transform player;
 
     private void OnTriggerEnter(Collider other)
     {
         if (!isActiveAndEnabled || triggered || !IsPlayer(other) || !enemyPrefab || spawnPoints == null || spawnPoints.Length == 0)
             return;
         triggered = true;
+        player = other.GetComponentInParent<PlayerLife>()?.transform;
         spawning = StartCoroutine(SpawnRemaining());
     }
 
@@ -37,9 +39,19 @@ public sealed class CylinderEnemySpawns : MonoBehaviour
     {
         while (nextSpawn < spawnPoints.Length)
         {
-            var point = spawnPoints[nextSpawn++];
+            var point = spawnPoints[nextSpawn];
             if (point && enemyPrefab)
-                Instantiate(enemyPrefab, point.position, point.rotation);
+            {
+                float waited = 0f;
+                while (point && !EnemySpawnSafety.CanSpawn(point.position, player) && waited < 12f)
+                {
+                    waited += .25f;
+                    yield return new WaitForSeconds(.25f);
+                }
+                if (point && EnemySpawnSafety.CanSpawn(point.position, player))
+                    Instantiate(enemyPrefab, point.position, point.rotation);
+            }
+            nextSpawn++;
             if (nextSpawn < spawnPoints.Length && delayBetweenSpawns > 0)
                 yield return new WaitForSeconds(delayBetweenSpawns);
         }
