@@ -29,6 +29,7 @@ public class BasementArenaEncounter : MonoBehaviour
     }
 
     readonly List<Enemy> enemies = new List<Enemy>();
+    readonly List<Enemy> waitingEnemies = new List<Enemy>();
     Transform player;
     Vector3 closedPosition;
     float openProgress;
@@ -50,6 +51,18 @@ public class BasementArenaEncounter : MonoBehaviour
                 return;
             }
         closedPosition = gateLeaf.localPosition;
+        // Populate before the first rendered frame, so entering the arena never creates
+        // zombies in plain sight. Only their AI is activated by the encounter trigger.
+        foreach (Transform point in spawnPoints)
+        {
+            var instance = Instantiate(enemyPrefab, point.position, point.rotation);
+            instance.transform.SetParent(arena, true);
+            instance.name = "Basement arena enemy";
+            var enemy = instance.GetComponentInChildren<Enemy>();
+            enemy.enabled = false;
+            waitingEnemies.Add(enemy);
+            RegisterEnemy(enemy);
+        }
     }
 
     void Update()
@@ -95,14 +108,9 @@ public class BasementArenaEncounter : MonoBehaviour
         // Collect existing scene enemies at activation, after scene spawners have run Start.
         foreach (Enemy enemy in FindObjectsByType<Enemy>(FindObjectsSortMode.None))
             if (!enemy.IsDead && Contains(enemy.transform.position)) RegisterEnemy(enemy);
-        foreach (Transform point in spawnPoints)
-        {
-            var instance = Instantiate(enemyPrefab, point.position, point.rotation);
-            // Keep the enemy's world dimensions when the map instance scales the basement.
-            instance.transform.SetParent(arena, true);
-            instance.name = "Basement arena enemy";
-            RegisterEnemy(instance.GetComponentInChildren<Enemy>());
-        }
+        foreach (Enemy enemy in waitingEnemies)
+            if (enemy != null && !enemy.IsDead) enemy.enabled = true;
+        waitingEnemies.Clear();
     }
 
     // Wave spawners can register additional enemies before the last living enemy dies.
