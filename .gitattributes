@@ -169,3 +169,14 @@ Packages/packages-lock.json linguist-generated
 
 # Exceptions for .asset files such as lightning pre-baking
 LightingData.asset     binary
+
+# Legacy PNGs committed as ordinary Git blobs, not LFS pointers.
+# Keep their filters consistent with storage; remove only with an explicit LFS migration.
+Assets/_Project/Global/Resources/Textures/UI/RemainingLives.png -filter binary
+Assets/_Project/Global/Sprites/teachers/sprite-caio-professor.png -filter binary
+Assets/_Project/Global/Sprites/teachers/sprite-fabio-professor.png -filter binary
+Assets/_Project/Global/Sprites/teachers/sprite-henrique-professor.png -filter binary
+Assets/_Project/Global/Sprites/teachers/sprite-maheus-professor.png -filter binary
+Assets/_Project/Global/Sprites/teachers/sprite-matheus-ferraroni-professor.png -filter binary
+Assets/_Project/Global/Sprites/teachers/sprite-navarro-professor.png -filter binary
+Assets/_Project/Global/Sprites/teachers/sprite-paulinho-professor.png -filter binary

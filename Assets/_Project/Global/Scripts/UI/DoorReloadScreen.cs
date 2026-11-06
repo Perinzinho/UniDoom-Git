@@ -55,6 +55,7 @@ namespace UniDoom.UI
             new DestinationArtwork("Cylinder"),
             new DestinationArtwork("Library"),
             new DestinationArtwork("CampusLibrary"),
+            new DestinationArtwork("CampusBlock4"),
             new DestinationArtwork("ClassRoom"),
             new DestinationArtwork("DirectorRoom"),
             new DestinationArtwork("EntranceGarden")
@@ -178,6 +179,7 @@ namespace UniDoom.UI
                 "Cylinder" => "REDONDO",
                 "Library" => "BIBLIOTECA",
                 "CampusLibrary" => "BIBLIOTECA DO CAMPUS",
+                "CampusBlock4" => "BLOCO 4",
                 "ClassRoom" => "SALA DE AULA",
                 "DirectorRoom" => "DIRETORIA",
                 _ => destination
@@ -291,6 +293,7 @@ namespace UniDoom.UI
             {
                 case "HUB": case "CILINDRO": case "REDONDO": destination = "CYLINDER"; break;
                 case "BIBLIOTECA": destination = "LIBRARY"; break;
+                case "BLOCO 4": destination = "CAMPUSBLOCK4"; break;
                 case "SALA DE AULA": destination = "CLASSROOM"; break;
                 case "DIRETORIA": destination = "DIRECTORROOM"; break;
                 case "ENTRANCEHALLWAY": case "CORREDOR DE ENTRADA": destination = "ENTRANCEGARDEN"; break;
