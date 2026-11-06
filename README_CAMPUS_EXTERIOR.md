@@ -35,6 +35,8 @@ As **onze cenas** estão habilitadas em `ProjectSettings/EditorBuildSettings.ass
 
 Na saída de **LawSchool → CampusExterior / FromLawSchool**, o alarme do bloco bloqueia temporariamente a transição. `SceneTransitionDoor` consulta um guard opcional, vinculado somente a essa saída; desligar o quadro da manutenção libera o portal. Os demais portais continuam sem esse guard. Aviso e validação registrados na ficha de LawSchool.
 
+Ao entrar em **LawSchool / FromCampus**, a transição compartilhada mostra a captura do hall em `LawSchool/Resources/Textures/UI/Transitions/LawSchool.png` e o título **BLOCO DE DIREITO**. O reconhecimento da cena, checkpoint e prévia é feito por `Global/Scripts/UI/DoorReloadScreen.cs`; o portal e o spawn ID continuam os mesmos. Validação da entrada real e da restauração do jogo registrada na ficha do bloco.
+
 ## 3. Onde editar cada coisa
 
 ### Passos por piso (2026-11-06)

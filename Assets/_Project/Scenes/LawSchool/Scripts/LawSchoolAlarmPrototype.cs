@@ -12,12 +12,14 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
     [SerializeField] LawSchoolCellKeyPickup key;
     [SerializeField] AudioSource siren;
     [SerializeField] GameObject zombiePrefab;
+    [SerializeField] GameObject[] zombieVariants;
     [SerializeField] Transform[] arrivalPoints;
     [SerializeField] Transform[] keyLocations;
+    [SerializeField] Transform[] excludedKeyAreas;
     [SerializeField, Min(.1f)] float initialRedSeconds = 2;
     [SerializeField, Min(.1f)] float redSeconds = 3;
     [SerializeField, Min(.1f)] float blackoutSeconds = 1.6f;
-    [SerializeField, Min(.2f)] float arrivalInterval = 1.2f;
+    [SerializeField, Min(.2f)] float arrivalInterval = .55f;
     [SerializeField, Min(3)] float minimumArrivalDistance = 10;
     [SerializeField, Min(1)] float nearbyVisibilityRange = 4.5f;
     [SerializeField, Min(0)] float nearbyVisibilityIntensity = 8.5f;
@@ -36,6 +38,7 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
     readonly List<SpriteState> actors = new List<SpriteState>();
     bool[] arrived;
     float nextArrival;
+    int variantOffset;
     bool audioPaused;
     Camera view;
     Light nearbyLight;
@@ -115,6 +118,9 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         {
             if (!location) continue;
             bool maintenance = false;
+            if (excludedKeyAreas != null)
+                foreach (var area in excludedKeyAreas)
+                    if (area && location.IsChildOf(area)) { maintenance = true; break; }
             for (var parent = location; parent && parent != building; parent = parent.parent)
                 if (parent.name.StartsWith("MANUTEN",System.StringComparison.OrdinalIgnoreCase)) { maintenance = true; break; }
             if (maintenance || names.Contains(location.name)) continue;
@@ -148,6 +154,7 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         StateChanged?.Invoke();
         Elapsed = 0;
         SpawnedCount = 0;
+        variantOffset = zombieVariants != null && zombieVariants.Length > 0 ? Random.Range(0,zombieVariants.Length) : 0;
         arrived = new bool[arrivalPoints != null ? arrivalPoints.Length : 0];
         nextArrival = initialRedSeconds;
         foreach (var light in building.GetComponentsInChildren<Light>())
@@ -156,6 +163,11 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         foreach (var renderer in building.GetComponentsInChildren<Renderer>())
         {
             if (!renderer.enabled) continue;
+            if (renderer is SpriteRenderer sprite)
+            {
+                actors.Add(new SpriteState { renderer = sprite, color = sprite.color });
+                continue;
+            }
             var materials = renderer.sharedMaterials;
             for (int i = 0; i < materials.Length; i++)
             {
@@ -259,15 +271,16 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
 
     void TryNextArrival()
     {
-        if (!zombiePrefab) return;
+        var prefab = NextZombiePrefab();
+        if (!prefab) return;
         var player = GameManager.SessionPlayer;
         if (!player) return;
         if (!view) view = Camera.main;
         for (int i = 0; i < arrived.Length; i++)
         {
             var point = arrivalPoints[i];
-            if (arrived[i] || !point || !SafeArrival(point.position, player.transform.position)) continue;
-            var enemy = Instantiate(zombiePrefab, point.position, point.rotation);
+            if (arrived[i] || !point || !SafeArrival(point.position, player.transform.position,prefab)) continue;
+            var enemy = Instantiate(prefab, point.position, point.rotation);
             SceneManager.MoveGameObjectToScene(enemy, gameObject.scene);
             enemy.transform.SetParent(transform, true); // Keep the enemy's original world scale, not the building's 1.25x.
             enemy.name = "Alarme — zumbi " + (i + 1);
@@ -280,19 +293,30 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         }
     }
 
-    bool SafeArrival(Vector3 position, Vector3 player)
+    GameObject NextZombiePrefab()
+    {
+        if (zombieVariants != null)
+            for (int i = 0; i < zombieVariants.Length; i++)
+            {
+                var prefab = zombieVariants[(SpawnedCount+variantOffset+i)%zombieVariants.Length];
+                if (prefab) return prefab;
+            }
+        return zombiePrefab;
+    }
+
+    bool SafeArrival(Vector3 position, Vector3 player, GameObject prefab)
     {
         var offset = position - player;
         offset.y = 0;
         if (offset.sqrMagnitude < minimumArrivalDistance * minimumArrivalDistance) return false;
-        if (Physics.CheckCapsule(position + Vector3.down * .40f, position + Vector3.up * .40f,
-                .46f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore)) return false;
-        if (!view) return true;
-        var bounds = new Bounds(position, new Vector3(1.2f, 2.1f, 1.2f));
-        if (!GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(view), bounds)) return true;
-        // Even in the blackout, a visible open corridor is not a valid place to materialize an enemy.
-        return Physics.Linecast(view.transform.position, position + Vector3.up * .35f,
-            Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+        var capsule = prefab.GetComponent<CapsuleCollider>();
+        float radius = capsule ? capsule.radius+.03f : .62f;
+        float segment = capsule ? Mathf.Max(0,capsule.height*.5f-radius-.04f) : .40f;
+        var center = position + (capsule ? capsule.center : Vector3.zero);
+        if (Physics.CheckCapsule(center-Vector3.up*segment,center+Vector3.up*segment,
+                radius,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Ignore)) return false;
+        // Tall/wide variants need full-body coverage; other zombies cannot hide a visible spawn.
+        return EnemySpawnSafety.CanSpawn(position,GameManager.SessionPlayer.transform,minimumArrivalDistance);
     }
 
     void OnDisable() => RestorePresentation();
