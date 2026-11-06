@@ -12,3 +12,8 @@
 - Exclusões definitivas exigem autorização explícita e verificação de dependências e recuperabilidade. Não crie backups ou quarentenas permanentes sem solicitação.
 - Preserve os casos classificados como revisão manual e quaisquer alterações existentes do usuário.
 - Antes/depois de reorganizar, compare referências e conteúdo e valide na Unity. Informe claramente quando compilação, cenas, prefabs, Play Mode, build ou comparação visual não foram executados. Não atribua problemas preexistentes às mudanças atuais.
+
+## Contexto dos mapas e leitura incremental
+
+- Antes de alterar um mapa, consulte `Docs/Maps/README.md`, comece pela seção Leitura rápida da ficha da cena solicitada e abra outras seções sob demanda. O fluxo está em `.codex/PROMPT_MESTRE.md`; fontes e autores ficam em `Docs/Maps/Referencias-e-Assets.md`, para consulta quando houver pesquisa de arte.
+- Atualize a ficha quando mudar escala, layout, conexões ou dependências. Use os dados para evitar investigação repetida, mas confirme o estado real dos arquivos antes de reutilizar resultados de testes anteriores.
