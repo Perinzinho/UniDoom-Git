@@ -30,6 +30,8 @@
 
 As dez cenas estão habilitadas em `ProjectSettings/EditorBuildSettings.asset`. Após integrar o Bloco de Direito e a biblioteca, `CampusExterior` é a oitava entrada, `LawSchool` a nona e `CampusLibrary` a décima. Prefira os nomes das cenas a índices fixos. O contexto do Bloco de Direito e sua ligação com o exterior está em [Docs/Maps/LawSchool.md](Docs/Maps/LawSchool.md#conexões).
 
+Na saída de **LawSchool → CampusExterior / FromLawSchool**, o alarme do bloco bloqueia temporariamente a transição. `SceneTransitionDoor` consulta um guard opcional, vinculado somente a essa saída; desligar o quadro da manutenção libera o portal. Os demais portais continuam sem esse guard. Aviso e validação registrados na ficha de LawSchool.
+
 ## 3. Onde editar cada coisa
 
 | Necessidade | Arquivo ou pasta |
@@ -92,7 +94,9 @@ A direção visual segue o contexto local em [`.codex/SKILL.md`](.codex/SKILL.md
 
 O prefab atual contém **124 `LODGroup`s** associados às árvores de copa larga, com objetos `Canopy medium`, `Canopy distant` e colisões de tronco. Existem também palmeiras e canteiros compartilhados. Não elimine níveis de detalhe nem substitua todas as copas por versões de maior custo sem medir o resultado.
 
-Inventário exclusivo atual, sem `.meta`: **177 meshes**, **34 materiais**, **3 modelos FBX**, **4 prefabs**, **23 PNGs**, **1 HDR**, **2 scripts**, **1 shader**, **1 perfil** e **1 cena**. Esses números não incluem recursos compartilhados ou conteúdo interno dos modelos importados; não são uma medida de draw calls.
+Inventário exclusivo recontado em 06/11/2026, sem `.meta`: **176 meshes**, **33 materiais**, **3 modelos FBX**, **6 prefabs**, **20 PNGs**, **1 HDR**, **2 scripts**, **1 shader**, **1 perfil** e **1 cena**. Esses números não incluem recursos compartilhados ou conteúdo interno dos modelos importados; não são uma medida de draw calls.
+
+A lixeira `metal_trash_can` passou a ser compartilhada com LawSchool. Prefab em `Assets/_Project/Global/Prefabs/Equipment/metal_trash_can/metal_trash_can.prefab`; mesh, material e texturas correspondentes em `Global/{Meshes,Materials,Textures}/Equipment/metal_trash_can/`. Movimento por `AssetDatabase.MoveAsset`, preservando GUIDs e conteúdo. Dependências da cena CampusExterior por GUID permaneceram equivalentes; não houve mudança de layout ou conexões. Proveniência da reutilização: `Licenses/AssetSources/LawSchool/equipment-sources.json`.
 
 ### Portão e iluminação
 

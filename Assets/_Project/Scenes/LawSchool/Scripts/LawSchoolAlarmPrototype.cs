@@ -1,0 +1,321 @@
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.Rendering.Universal;
+
+/// <summary>First playable slice: key pickup, red/black alarm and one finite group of zombies.</summary>
+[DisallowMultipleComponent, DefaultExecutionOrder(11000)]
+public sealed class LawSchoolAlarmPrototype : MonoBehaviour
+{
+    [SerializeField] Transform building;
+    [SerializeField] LawSchoolLighting lighting;
+    [SerializeField] LawSchoolCellKeyPickup key;
+    [SerializeField] AudioSource siren;
+    [SerializeField] GameObject zombiePrefab;
+    [SerializeField] Transform[] arrivalPoints;
+    [SerializeField] Transform[] keyLocations;
+    [SerializeField, Min(.1f)] float initialRedSeconds = 2;
+    [SerializeField, Min(.1f)] float redSeconds = 3;
+    [SerializeField, Min(.1f)] float blackoutSeconds = 1.6f;
+    [SerializeField, Min(.2f)] float arrivalInterval = 1.2f;
+    [SerializeField, Min(3)] float minimumArrivalDistance = 10;
+    [SerializeField, Min(1)] float nearbyVisibilityRange = 4.5f;
+    [SerializeField, Min(0)] float nearbyVisibilityIntensity = 8.5f;
+
+    public bool IsActive { get; private set; }
+    public event System.Action StateChanged;
+    public bool IsBlackout { get; private set; }
+    public float Elapsed { get; private set; }
+    public int SpawnedCount { get; private set; }
+    public bool IsResolved { get; private set; }
+    public string SelectedKeyRoom { get; private set; }
+    public const string EventId = "law-school-cell-key-alarm";
+
+    readonly List<LightState> lights = new List<LightState>();
+    readonly List<Surface> surfaces = new List<Surface>();
+    readonly List<SpriteState> actors = new List<SpriteState>();
+    bool[] arrived;
+    float nextArrival;
+    bool audioPaused;
+    Camera view;
+    Light nearbyLight;
+    UnityEngine.UI.Image weaponHud;
+    Color weaponHudColor;
+
+    static readonly Color AlarmRed = new Color(1, .025f, .008f, 1);
+    static readonly Color SpriteRed = new Color(1, .15f, .09f, 1);
+    static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
+    static readonly int TintColor = Shader.PropertyToID("_Color");
+    static readonly int Emission = Shader.PropertyToID("_EmissionColor");
+
+    sealed class LightState
+    {
+        public Light light;
+        public Color color;
+        public bool enabled, temperature;
+        public float intensity;
+    }
+
+    sealed class SpriteState
+    {
+        public SpriteRenderer renderer;
+        public Color color;
+    }
+
+    sealed class Surface
+    {
+        public Renderer renderer;
+        public Material material;
+        public int index;
+        public readonly MaterialPropertyBlock original = new MaterialPropertyBlock();
+        public readonly MaterialPropertyBlock working = new MaterialPropertyBlock();
+
+        public void Apply(bool dark)
+        {
+            if (!renderer || !material) return;
+            renderer.SetPropertyBlock(original.isEmpty ? null : original, index);
+            renderer.GetPropertyBlock(working, index);
+            if (dark && (material.shader.name.Contains("Unlit") || renderer is SpriteRenderer))
+            {
+                if (material.HasProperty(BaseColor)) working.SetColor(BaseColor, OpaqueBlack(material.GetColor(BaseColor)));
+                if (material.HasProperty(TintColor)) working.SetColor(TintColor, OpaqueBlack(material.GetColor(TintColor)));
+            }
+            else if (material.shader.name.Contains("Unlit") || renderer is SpriteRenderer)
+            {
+                if (material.HasProperty(BaseColor)) working.SetColor(BaseColor, material.GetColor(BaseColor) * SpriteRed);
+                if (material.HasProperty(TintColor)) working.SetColor(TintColor, material.GetColor(TintColor) * SpriteRed);
+            }
+            if (material.HasProperty(Emission))
+                working.SetColor(Emission, dark ? Color.black : material.GetColor(Emission) * AlarmRed);
+            renderer.SetPropertyBlock(working, index);
+        }
+
+        static Color OpaqueBlack(Color source) => new Color(0, 0, 0, source.a);
+        public void Restore() { if (renderer) renderer.SetPropertyBlock(original.isEmpty ? null : original, index); }
+    }
+
+    void Start()
+    {
+        // Returning to this scene keeps the specific key owned by the persistent player.
+        var player = GameManager.SessionPlayer;
+        if (!player || !key) return;
+        var keys = player.GetComponent<PlayerCellKeys>();
+        if (!keys) keys = player.gameObject.AddComponent<PlayerCellKeys>();
+        ChooseKeyRoom(keys);
+        IsResolved = keys.HasCompletedEvent(EventId);
+        if (keys.HasKey(key.CellId) && !IsResolved) BeginAlarm();
+    }
+
+    void ChooseKeyRoom(PlayerCellKeys inventory)
+    {
+        if (keyLocations == null) return;
+        var available = new List<Transform>();
+        var names = new List<string>();
+        foreach (var location in keyLocations)
+        {
+            if (!location) continue;
+            bool maintenance = false;
+            for (var parent = location; parent && parent != building; parent = parent.parent)
+                if (parent.name.StartsWith("MANUTEN",System.StringComparison.OrdinalIgnoreCase)) { maintenance = true; break; }
+            if (maintenance || names.Contains(location.name)) continue;
+            available.Add(location); names.Add(location.name);
+        }
+        string chosen = inventory.GetOrChooseKeyLocation(key.CellId,names);
+        int index = names.IndexOf(chosen);
+        if (index < 0) return;
+        SelectedKeyRoom = available[index].parent.name;
+        key.transform.SetParent(building,true);
+        key.transform.position = available[index].position;
+    }
+
+    public bool TryResolve(PlayerPickupKey player)
+    {
+        if (!IsActive || IsResolved || !player || Time.timeScale <= 0 || UniDoom.UI.GameMenus.BlocksGameplay) return false;
+        var life = player.GetComponent<PlayerLife>();
+        if (life && life.IsDead) return false;
+        var inventory = player.GetComponent<PlayerCellKeys>();
+        if (!inventory || !key || !inventory.HasKey(key.CellId)) return false;
+        inventory.CompleteEvent(EventId);
+        IsResolved = true;
+        RestorePresentation();
+        return true;
+    }
+
+    public void BeginAlarm()
+    {
+        if (IsActive || IsResolved || !isActiveAndEnabled || !building || !lighting) return;
+        IsActive = true;
+        StateChanged?.Invoke();
+        Elapsed = 0;
+        SpawnedCount = 0;
+        arrived = new bool[arrivalPoints != null ? arrivalPoints.Length : 0];
+        nextArrival = initialRedSeconds;
+        foreach (var light in building.GetComponentsInChildren<Light>())
+            lights.Add(new LightState { light = light, color = light.color, intensity = light.intensity,
+                enabled = light.enabled, temperature = light.useColorTemperature });
+        foreach (var renderer in building.GetComponentsInChildren<Renderer>())
+        {
+            if (!renderer.enabled) continue;
+            var materials = renderer.sharedMaterials;
+            for (int i = 0; i < materials.Length; i++)
+            {
+                if (!materials[i]) continue;
+                var surface = new Surface { renderer = renderer, material = materials[i], index = i };
+                renderer.GetPropertyBlock(surface.original, i);
+                surfaces.Add(surface);
+            }
+        }
+        BindPlayerPresentation();
+        ApplyPhase(false);
+        if (siren) siren.Play();
+    }
+
+    void Update()
+    {
+        if (!IsActive) return;
+        bool paused = Time.timeScale <= 0 || UniDoom.UI.GameMenus.BlocksGameplay;
+        if (siren && paused != audioPaused)
+        {
+            if (paused) siren.Pause(); else siren.UnPause();
+            audioPaused = paused;
+        }
+        if (paused) return;
+        Elapsed += Time.deltaTime;
+        bool dark = Elapsed >= initialRedSeconds &&
+            Mathf.Repeat(Elapsed - initialRedSeconds, blackoutSeconds + redSeconds) < blackoutSeconds;
+        if (dark != IsBlackout) ApplyPhase(dark);
+        if (Elapsed >= nextArrival && SpawnedCount < arrived.Length)
+        {
+            TryNextArrival();
+            nextArrival = Elapsed + arrivalInterval;
+        }
+    }
+
+    void ApplyPhase(bool dark)
+    {
+        IsBlackout = dark;
+        foreach (var state in lights)
+        {
+            if (!state.light) continue;
+            state.light.enabled = state.enabled && !dark;
+            state.light.color = AlarmRed;
+            state.light.useColorTemperature = false;
+            state.light.intensity = state.intensity;
+        }
+        foreach (var surface in surfaces) surface.Apply(dark);
+        lighting.SetAlarmPhase(true, dark);
+        if (nearbyLight) nearbyLight.enabled = dark;
+        TintActors();
+    }
+
+    void LateUpdate()
+    {
+        if (!IsActive) return;
+        if (!nearbyLight || !weaponHud) BindPlayerPresentation();
+        if (weaponHud) weaponHud.color = weaponHudColor * (IsBlackout ? new Color(.17f,.20f,.25f,1) : SpriteRed);
+        TintActors();
+    }
+
+    void BindPlayerPresentation()
+    {
+        if (!view) view = Camera.main;
+        if (!nearbyLight && view)
+        {
+            var source = new GameObject("LawSchool — visão próxima no apagão");
+            source.transform.SetParent(view.transform,false);
+            source.transform.localPosition = new Vector3(0,-.08f,.12f);
+            nearbyLight = source.AddComponent<Light>();
+            nearbyLight.type = LightType.Spot;
+            nearbyLight.spotAngle = 140;
+            nearbyLight.innerSpotAngle = 95;
+            nearbyLight.range = nearbyVisibilityRange;
+            nearbyLight.intensity = nearbyVisibilityIntensity;
+            nearbyLight.color = new Color(.45f,.52f,.65f);
+            nearbyLight.shadows = LightShadows.Soft;
+            nearbyLight.shadowNearPlane = .05f;
+            nearbyLight.enabled = IsBlackout;
+            nearbyLight.GetUniversalAdditionalLightData().additionalLightsShadowResolutionTier = 0;
+        }
+        if (!weaponHud)
+        {
+            var animator = Object.FindAnyObjectByType<WeaponSpriteAnimator>();
+            if (animator && animator.WeaponImage)
+            {
+                weaponHud = animator.WeaponImage;
+                weaponHudColor = weaponHud.color;
+            }
+        }
+    }
+
+    void TintActors()
+    {
+        foreach (var actor in actors)
+            if (actor.renderer)
+            {
+                float proximity = view ? Mathf.Clamp01(1-Vector3.Distance(actor.renderer.bounds.center,view.transform.position)/nearbyVisibilityRange) : 0;
+                actor.renderer.color = actor.color * (IsBlackout ? new Color(.50f,.55f,.65f,1)*new Color(proximity,proximity,proximity,1) : SpriteRed);
+            }
+    }
+
+    void TryNextArrival()
+    {
+        if (!zombiePrefab) return;
+        var player = GameManager.SessionPlayer;
+        if (!player) return;
+        if (!view) view = Camera.main;
+        for (int i = 0; i < arrived.Length; i++)
+        {
+            var point = arrivalPoints[i];
+            if (arrived[i] || !point || !SafeArrival(point.position, player.transform.position)) continue;
+            var enemy = Instantiate(zombiePrefab, point.position, point.rotation);
+            SceneManager.MoveGameObjectToScene(enemy, gameObject.scene);
+            enemy.transform.SetParent(transform, true); // Keep the enemy's original world scale, not the building's 1.25x.
+            enemy.name = "Alarme — zumbi " + (i + 1);
+            foreach (var sprite in enemy.GetComponentsInChildren<SpriteRenderer>())
+                actors.Add(new SpriteState { renderer = sprite, color = sprite.color });
+            arrived[i] = true;
+            SpawnedCount++;
+            TintActors();
+            return;
+        }
+    }
+
+    bool SafeArrival(Vector3 position, Vector3 player)
+    {
+        var offset = position - player;
+        offset.y = 0;
+        if (offset.sqrMagnitude < minimumArrivalDistance * minimumArrivalDistance) return false;
+        if (Physics.CheckCapsule(position + Vector3.down * .40f, position + Vector3.up * .40f,
+                .46f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore)) return false;
+        if (!view) return true;
+        var bounds = new Bounds(position, new Vector3(1.2f, 2.1f, 1.2f));
+        if (!GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(view), bounds)) return true;
+        // Even in the blackout, a visible open corridor is not a valid place to materialize an enemy.
+        return Physics.Linecast(view.transform.position, position + Vector3.up * .35f,
+            Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+    }
+
+    void OnDisable() => RestorePresentation();
+
+    void RestorePresentation()
+    {
+        if (!IsActive) return;
+        if (siren) siren.Stop();
+        if (nearbyLight) Destroy(nearbyLight.gameObject);
+        if (weaponHud) weaponHud.color = weaponHudColor;
+        foreach (var state in lights)
+        {
+            if (!state.light) continue;
+            state.light.color = state.color;
+            state.light.intensity = state.intensity;
+            state.light.useColorTemperature = state.temperature;
+            state.light.enabled = state.enabled;
+        }
+        foreach (var surface in surfaces) surface.Restore();
+        foreach (var actor in actors) if (actor.renderer) actor.renderer.color = actor.color;
+        if (lighting) lighting.SetAlarmPhase(false, false);
+        lights.Clear(); surfaces.Clear(); actors.Clear();
+        IsActive = false;
+        StateChanged?.Invoke();
+    }
+}
