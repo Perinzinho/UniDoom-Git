@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public static void EndSession()
     {
         PrisonProgress.Reset();
+        UniDoom.CampusBlock4.Block4PuzzleProgress.ResetSession();
         MedkitPickup.ResetSession();
         GameplayAudio.Instance?.EndSession();
         var previous = session;
