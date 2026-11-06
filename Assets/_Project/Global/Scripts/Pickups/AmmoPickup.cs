@@ -7,6 +7,7 @@ public class AmmoPickup : MonoBehaviour
     [Tooltip("Fill the equipped weapon's magazine and reserve instead of adding a fixed amount.")]
     [SerializeField] private bool refillEquippedWeapon;
     private bool consumed;
+    public event System.Action Collected;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -45,6 +46,7 @@ public class AmmoPickup : MonoBehaviour
         GameplayAudio.Instance?.PlayAmmoPickup();
         foreach (Collider trigger in GetComponents<Collider>())
             trigger.enabled = false;
+        Collected?.Invoke();
         Destroy(gameObject);
         return true;
     }
