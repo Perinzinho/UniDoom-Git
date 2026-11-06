@@ -4,6 +4,19 @@ public class SFXManager : SFXPlayer
 {
     public static SFXManager Instance { get; private set; }
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    private static void EnsureAvailable()
+    {
+        if (Instance != null) return;
+        var prefab = Resources.Load<SFXManager>("Audio/SFXManager");
+        if (prefab != null) Instantiate(prefab);
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
+
     [Header("Sons globais")] [SerializeField]
     private SoundBank KeyPickupSound;
 

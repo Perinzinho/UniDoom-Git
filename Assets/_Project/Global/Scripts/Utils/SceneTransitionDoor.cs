@@ -3,6 +3,11 @@ using UnityEngine;
 
 namespace UniDoom.Utils
 {
+    public interface ISceneTransitionGuard
+    {
+        bool IsTransitionBlocked { get; }
+    }
+
     /// <summary>Touch volume at a doorway. Arrivals must leave the volume before using it again.</summary>
     [DisallowMultipleComponent, RequireComponent(typeof(BoxCollider))]
     public sealed class SceneTransitionDoor : MonoBehaviour
@@ -13,11 +18,13 @@ namespace UniDoom.Utils
         [SerializeField] private bool requiresKey01, requiresKey02, requiresKey03;
         [SerializeField] private OpenDoorWithKey physicalDoor;
         [SerializeField] private bool waitForPhysicalDoorToOpen;
+        [SerializeField] private MonoBehaviour transitionGuard;
         private readonly HashSet<Collider> waitingPlayers = new HashSet<Collider>();
         private OpenDoorWithKey soundDoor;
 
         public string DestinationScene => destinationScene;
         public string DestinationSpawnId => destinationSpawnId;
+        public bool IsBlocked => transitionGuard is ISceneTransitionGuard guard && guard.IsTransitionBlocked;
 
         private void Reset() => GetComponent<BoxCollider>().isTrigger = true;
 
@@ -59,7 +66,7 @@ namespace UniDoom.Utils
         private void TryTransition(Collider other)
         {
             var player = other.GetComponentInParent<PlayerMovement>();
-            if (player == null || UI.DoorReloadScreen.IsReloading) return;
+            if (player == null || UI.DoorReloadScreen.IsReloading || IsBlocked) return;
             var life = player.GetComponent<PlayerLife>();
             if (life != null && life.IsDead) return;
             var keys = player.GetComponent<PlayerPickupKey>();
