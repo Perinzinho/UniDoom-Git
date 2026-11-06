@@ -662,6 +662,8 @@ namespace UniDoom.UI
                     "CampusBlock4" => "BLOCO 4",
                     "ClassRoom" => "SALA DE AULA",
                     "DirectorRoom" => "SALA DO DIRETOR",
+                    "LawSchool" => "BLOCO DE DIREITO",
+                    "CampusExterior" => "CAMPUS EXTERIOR — UNIMAR",
                     "Basement" => "PORÃO — PRÉ-ARENA",
                     _ => sceneName
                 };

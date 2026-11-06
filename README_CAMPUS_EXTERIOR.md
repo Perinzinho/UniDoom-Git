@@ -8,6 +8,7 @@
 - A nova biblioteca desse campus tem interior separado: cena **`CampusLibrary`**. Entrar e sair usa a transição existente do jogo, ao tocar no volume da porta.
 - **`Library` é a biblioteca antiga do começo do jogo. Não foi substituída pela nova biblioteca.** Não confundir também `CampusExterior` com `EntranceGarden` ou `Main/SampleScene`.
 - O exterior e o interior já estão salvos em cenas, prefabs, meshes e materiais persistentes. **Não precisam ser gerados novamente para jogar.**
+- O exterior possui **12 vagas de estacionamento** demarcadas em três trechos viários, **12 bancos de concreto** nos três pátios sociais e uma **fonte ornamental exclusiva** no pátio entre o Bloco de Direito e a biblioteca, em `(-58, 0, 16)`.
 - A revisão mais recente da biblioteca corrigiu móveis apertados, peças flutuando, suportes, portas dos banheiros e circulação. Preserve essas correções.
 - O jogador é persistente entre cenas pelo `GameManager`; não crie outro sistema de player, HUD, inventário ou carregamento para esses ambientes.
 - Antes de alterar, leia a seção correspondente abaixo e somente os scripts/assets envolvidos. Não despeje cenas, prefabs e arrays de vértices inteiros no contexto.
@@ -20,6 +21,7 @@
 | --- | --- | --- |
 | `CampusExterior` | `CampusExterior/CampusExterior.unity` | Campus externo com grama, avenidas, árvores e edifícios desta implementação. |
 | `CampusLibrary` | `CampusLibrary/CampusLibrary.unity` | Novo interior da biblioteca ligada ao Campus Exterior. |
+| `LawSchool` | `LawSchool/LawSchool.unity` | Bloco de Direito ligado ao Campus Exterior; saída controlada pelo alarme interno. |
 | `CampusBlock4` | `CampusBlock4/CampusBlock4.unity` | Interior térreo do Bloco 4; salas internas conectadas sem carregamento. |
 | `Library` | `Library/Library.unity` | Biblioteca anterior, preservada. |
 | `EntranceGarden` | `EntranceGarden/EntranceGarden.unity` | Jardim/entrada anterior; não é o novo Campus Exterior. |
@@ -29,15 +31,30 @@
 
 **Ambiente registrado:** Unity **6000.5.7f1**, URP **17.5.0**, Cinemachine **3.1.7**, Input System **1.20.0**, AI Navigation **2.0.14**. As fontes de verdade são `ProjectSettings/ProjectVersion.txt` e `Packages/manifest.json`.
 
-As dez cenas estão habilitadas em `ProjectSettings/EditorBuildSettings.asset`. Na fotografia atual, `CampusExterior` é a oitava entrada e `CampusLibrary` a nona; `CampusBlock4` é a décima. Prefira os nomes das cenas a índices fixos.
+As **onze cenas** estão habilitadas em `ProjectSettings/EditorBuildSettings.asset`. Após integrar os dois blocos, `CampusExterior` é a oitava entrada, `LawSchool` a nona, `CampusLibrary` a décima e `CampusBlock4` a décima primeira. Prefira os nomes das cenas a índices fixos. O contexto do Bloco de Direito e sua ligação com o exterior está em [Docs/Maps/LawSchool.md](Docs/Maps/LawSchool.md#conexões).
+
+Na saída de **LawSchool → CampusExterior / FromLawSchool**, o alarme do bloco bloqueia temporariamente a transição. `SceneTransitionDoor` consulta um guard opcional, vinculado somente a essa saída; desligar o quadro da manutenção libera o portal. Os demais portais continuam sem esse guard. Aviso e validação registrados na ficha de LawSchool.
 
 ## 3. Onde editar cada coisa
+
+### Passos por piso (2026-11-06)
+
+O player persistente usa `Global/Scripts/Utils/FootStepController.cs` e o resolvedor `FootstepSurface.cs`. Cada pisada consulta o colisor mais próximo sob o jogador: `Campus asphalt` usa passos secos de pavimento; `Campus continuous ground` usa grama; calçadas, sarjetas e degraus usam concreto; `Granite floor` da CampusLibrary usa o banco interno `Eco`. Assim, meshes visuais separados dos colisores não deixam os pisos silenciosos. Não reativar colisores antigos para adicionar som.
+
+Os novos bancos são carregados em `Resources/Audio/Footsteps/{Grass,Pavement}` dentro de `Assets/_Project/Global/`. Não mover essas pastas sem atualizar `Resources.LoadAll` no controlador. São cinco variações por banco, do pacote Kenney Impact Sounds (CC0); o conjunto `concrete` do autor representa o pavimento seco do asfalto. Bancos antigos de concreto, madeira e interiores continuam no prefab do player. Fontes e hashes: `Licenses/AssetSources/Footsteps/sources.json`.
+
+Para pisos novos, o componente opcional `FootstepSurface` permite definir explicitamente o material sonoro no colisor ou em seu grupo. Sem componente, o resolvedor usa nomes conhecidos, tags legadas e material único do renderer local; o fallback é concreto. Renomear os suportes sem renderer listados acima exige atualizar a regra ou adicionar o componente.
+
+Validação: dez OGG decodificados, com duração/amplitude verificadas e downloads conferidos por SHA de blob; referências/caminhos e diff revisados. Unity indisponível neste ambiente: compilação, carregamento de cenas/prefabs, Play Mode, build e comparação visual/auditiva no jogo não executados. Conferir a travessia rua → calçada → grama, entrada na biblioteca, pausa, aterrissagem e volume em relação aos áudios antigos. Os WAV antigos deste checkout ainda são ponteiros Git LFS; não foram substituídos nesta alteração.
 
 | Necessidade | Arquivo ou pasta |
 | --- | --- |
 | Exterior jogável, iluminação e objetos salvos na cena | `Assets/_Project/Scenes/CampusExterior/CampusExterior.unity` |
 | Prefab de referência do exterior | `Assets/_Project/Scenes/CampusExterior/Prefabs/CampusExterior.prefab` |
 | Materiais, meshes, modelos e texturas exclusivos do exterior | Subpastas correspondentes de `Assets/_Project/Scenes/CampusExterior/` |
+| Vagas persistentes | `Meshes/StreetParkingBays.asset`, usado por `Street Parking Bays - 12` na cena |
+| Banco de concreto dos pátios | `Prefabs/CampusConcreteBench.prefab`, instanciado por `CampusLandscapeCourtyard.prefab` |
+| Fonte entre Direito e biblioteca | `Prefabs/CampusOrnateFountain.prefab`, instância `Ornate fountain - Law School and Library` na cena |
 | Luz ambiente e névoa do exterior ao trocar de cena | `Assets/_Project/Scenes/CampusExterior/Scripts/CampusExteriorEnvironment.cs` |
 | Abertura do portão de entrada | `Assets/_Project/Scenes/CampusExterior/Scripts/CampusEntranceGate.cs` |
 | Pós-processamento do exterior | `Assets/_Project/Scenes/CampusExterior/Profiles/CampusDusk.asset` |
@@ -94,7 +111,9 @@ A direção visual segue o contexto local em [`.codex/SKILL.md`](.codex/SKILL.md
 
 O prefab atual contém **124 `LODGroup`s** associados às árvores de copa larga, com objetos `Canopy medium`, `Canopy distant` e colisões de tronco. Existem também palmeiras e canteiros compartilhados. Não elimine níveis de detalhe nem substitua todas as copas por versões de maior custo sem medir o resultado.
 
-Inventário exclusivo atual, sem `.meta`: **177 meshes**, **34 materiais**, **3 modelos FBX**, **4 prefabs**, **23 PNGs**, **1 HDR**, **2 scripts**, **1 shader**, **1 perfil** e **1 cena**. Esses números não incluem recursos compartilhados ou conteúdo interno dos modelos importados; não são uma medida de draw calls.
+Inventário exclusivo recontado em 06/11/2026, sem `.meta`: **176 meshes**, **33 materiais**, **3 modelos FBX**, **6 prefabs**, **20 PNGs**, **1 HDR**, **2 scripts**, **1 shader**, **1 perfil** e **1 cena**. Esses números não incluem recursos compartilhados ou conteúdo interno dos modelos importados; não são uma medida de draw calls.
+
+A lixeira `metal_trash_can` passou a ser compartilhada com LawSchool. Prefab em `Assets/_Project/Global/Prefabs/Equipment/metal_trash_can/metal_trash_can.prefab`; mesh, material e texturas correspondentes em `Global/{Meshes,Materials,Textures}/Equipment/metal_trash_can/`. Movimento por `AssetDatabase.MoveAsset`, preservando GUIDs e conteúdo. Dependências da cena CampusExterior por GUID permaneceram equivalentes; não houve mudança de layout ou conexões. Proveniência da reutilização: `Licenses/AssetSources/LawSchool/equipment-sources.json`.
 
 ### Portão e iluminação
 
@@ -114,6 +133,7 @@ Não confunda os valores padrão declarados no script com os valores serializado
 ```text
 Basement / prisão  <-->  CampusExterior  <-->  CampusLibrary
                               |
+                              +-------------> LawSchool (ida e volta; saída depende do alarme)
                               +-------------> CampusBlock4 (ida e volta)
 ```
 
@@ -123,6 +143,8 @@ Basement / prisão  <-->  CampusExterior  <-->  CampusLibrary
 | `Return to prison`, no exterior | `Basement` | `FromCampus` | `SceneArrivalPoint` com ID `FromCampus`, no prefab `Basement` |
 | `Library entrance - CampusLibrary`, no exterior | `CampusLibrary` | `FromCampusExterior` | `Arrival - FromCampusExterior` |
 | `Exit to Campus Exterior`, na biblioteca | `CampusExterior` | `FromCampusLibrary` | `Arrival - FromCampusLibrary` |
+| Entrada do Bloco de Direito, no exterior | `LawSchool` | `FromCampus` | Chegada do hall no Bloco de Direito |
+| Saída do Bloco de Direito, liberada pelo quadro de manutenção | `CampusExterior` | `FromLawSchool` | Chegada do Bloco de Direito no exterior |
 | `Block 4 entrance - CampusBlock4`, no exterior | `CampusBlock4` | `FromCampusExterior` | `Arrival - FromCampusExterior`, no Bloco 4 |
 | `Exit to Campus Exterior`, no Bloco 4 | `CampusExterior` | `FromCampusBlock4` | `Arrival - FromCampusBlock4` |
 
@@ -227,6 +249,8 @@ As seguintes verificações foram executadas durante a implementação/revisão,
 **Não houve geração de um novo executável na entrega da biblioteca/revisão.** Esses testes históricos não substituem testar novamente depois de alterar ou restaurar arquivos.
 
 ### Exterior e estado após a recuperação
+
+Em **05/11/2026**, após a implementação das vagas, bancos e fonte, a Unity recompilou a ferramenta sem erros de C#. A validação específica confirmou o mesh de **12 vagas**, o prefab de banco com **6 renderers**, **12 instâncias de bancos resolvidas** e a fonte ornamental com **31 renderers** na posição esperada. A cena foi salva fora do Play Mode. Não foram executados Play Mode, navegação completa, build nem comparação visual no ponto de vista do jogador nesta alteração.
 
 O código de `CampusRoadRevision.Validate()` permite conferir scripts/materiais/shaders ausentes, fragmentos fora da região preservada da torre e amostras de piso nas principais rotas, detectando falta de chão e saltos maiores que 30 cm. **Nesta documentação, esse validador e o build não foram executados novamente.** As prévias existentes são referência visual histórica, não evidência de um novo teste.
 
@@ -423,3 +447,16 @@ O Play Mode conferiu a orientação do billboard para a câmera real, a folga ac
 Ferramentas pontuais na cópia isolada; registros temporários em `Temp/CampusPortraitPolish/`. Nenhum gerador foi integrado aos assets finais. Prévias adicionais: `output/CampusBlock4-Enigma-Quadro-Sem-Dica.png` e `CampusBlock4-Enigma-Chave-Padrao.png`. Não foram repetidas as 45 rotas nem o NavMesh neste refinamento visual; não houve build ou medição com Profiler. O aviso preexistente de indexação de `UnityEditor.Search.SearchDatabase` reapareceu durante a inicialização do Editor isolado, sem impedir a conclusão do teste.
 
 **Não foi gerado executável nem realizado benchmark com Profiler.** O Play Mode foi automatizado na cópia isolada, sem uma sessão manual completa no Editor principal. A validação não constitui uma medição de FPS.
+
+## 13. Integração com development — 06/11/2026
+
+Merge de `origin/development` (`688a7298`) na `feat/bloco4` (`a6d2672e`). Os conflitos envolveram a cena do exterior, seu prefab e este documento. As duas branches adicionaram objetos nas mesmas regiões do YAML; a resolução preservou todos os objetos recebidos e acrescentou os dois portais/chegadas do Bloco 4, mantendo os fileIDs e referências. A cena passou de 4.384 para 4.391 registros e o prefab de 4.281 para 4.288; a alteração nos roots foi somente a união das listas de filhos. Permanecem as passagens para porão, biblioteca, Direito e Bloco 4, além das novidades de paisagismo/estacionamento da development. As onze cenas continuam habilitadas.
+
+Validação desta integração:
+
+- Conferência estática dos 17.790 caminhos rastreados: arquivos presentes, nenhum GUID duplicado e nenhum ponteiro LFS pendente entre os formatos binários conferidos. Cena e prefab do exterior sem IDs locais duplicados, referências locais ausentes ou marcadores de conflito. Os arquivos recebidos não foram substituídos pela versão inteira de uma das branches.
+- Unity **6000.5.7f1**, na cópia isolada: compilação, abertura do prefab do exterior e das cenas `CampusExterior`, `CampusBlock4`, `CampusLibrary` e `LawSchool`; scripts, materiais e shaders resolvidos. Foram verificados os quatro destinos, suas chegadas, a senha/41 portas do Bloco 4, a placa sem dica, a chave com sprite, o retrato da biblioteca e o guard da saída de Direito.
+- Play Mode: resolução do enigma, travessia física e coleta da chave; Bloco 4 → exterior → biblioteca → exterior → Direito → exterior. Um único jogador, vida, munição e chave do Bloco 4 foram preservados. A saída de Direito foi testada antes de ativar o alarme; o ciclo completo desse alarme não foi repetido nesta integração.
+- As 4.303 dependências enumeradas na validação foram comparadas entre o projeto principal e a cópia isolada, sem diferenças de conteúdo. O cache isolado tinha registros de GUID antigos para onze assets; esses registros foram reconstruídos preservando os bytes dos arquivos e `.meta`. Isso não exigiu alterar os modelos ou materiais originais do jogo.
+
+O aviso preexistente de indexação de `UnityEditor.Search.SearchDatabase` reapareceu durante a inicialização do Play Mode, sem impedir a conclusão dos testes. Não houve nova comparação visual detalhada, recálculo de NavMesh, repetição das 45 rotas, build ou benchmark nesta integração. Ferramentas e registros temporários ficam fora dos assets finais, em `Temp/CampusMerge/` e na cópia isolada de validação.

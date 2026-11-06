@@ -5,6 +5,7 @@ public class WeaponSpriteAnimator : MonoBehaviour
 {
     [SerializeField] private Gun gun;
     [SerializeField] private Image weaponImage;
+    public Image WeaponImage => weaponImage;
     [SerializeField] private Sprite[] idleFrames;
     [SerializeField] private Sprite[] shootFrames;
     [SerializeField] private Sprite[] rechargeFrames;
