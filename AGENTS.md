@@ -12,3 +12,7 @@
 - Exclusões definitivas exigem autorização explícita e verificação de dependências e recuperabilidade. Não crie backups ou quarentenas permanentes sem solicitação.
 - Preserve os casos classificados como revisão manual e quaisquer alterações existentes do usuário.
 - Antes/depois de reorganizar, compare referências e conteúdo e valide na Unity. Informe claramente quando compilação, cenas, prefabs, Play Mode, build ou comparação visual não foram executados. Não atribua problemas preexistentes às mudanças atuais.
+
+## Contexto do Campus Exterior
+
+- Para tarefas em `CampusExterior`, `CampusLibrary` ou suas transições, leia primeiro [README_CAMPUS_EXTERIOR.md](README_CAMPUS_EXTERIOR.md). Ele reúne identificação dos cenários, caminhos, arquitetura, spawn IDs, revisões, validações e o histórico da recuperação de assets. Consulte as seções relevantes antes de explorar assets grandes e atualize o documento quando esses contratos mudarem.
