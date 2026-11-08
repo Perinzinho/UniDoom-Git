@@ -142,6 +142,20 @@ Checklist interno da direção visual: escala 2, materiais 2, desgaste causal 1,
 
 As ferramentas pontuais desta revisão ficam em `Temp/LibraryFinalReview/`, fora dos assets finais após conferir as dependências; não são necessárias para carregar ou jogar. A falha preexistente do gerador `CampusParkingVehicleSetup`, externa à biblioteca, continua separada dos resultados desta revisão. Capturas finais: `output/CampusLibrary-Final-after-*.png` e `output/CampusLibrary-Final-Player-Sanitarios.png`.
 
+### Complemento após conferência do usuário — fechamento frontal e cabines
+
+A vista deixada pelo usuário no Play Mode mostrou um trecho que a primeira amostragem não cobria: as duas paredes frontais começavam em **x = 20,65**, deixando aproximadamente **1,73 m** até o encontro com a parede lateral em **x = 18,92**. As paredes visíveis e seus colisores agora abrangem essa faixa em **z = 3,00 e 7,70**, do piso ao teto. Permanecem somente as entradas laterais previstas; não há mais passagem frontal direta do acervo para as cabines.
+
+Conforme a escolha explícita do usuário, as portas continuam **estáticas e entreabertas**, sem mecânica nova de abertura. Os seis painéis frontais esquerdos foram ampliados até os encontros; foram acrescentados seis painéis frontais direitos e as duas divisórias terminais a oeste. Cada folha de **0,85 m** corresponde ao seu vão de **0,85 m** em posição fechada. A pose salva foi ajustada de 55° para **85°**, com puxadores e dobradiças acompanhando a folha, para conservar acesso ao vão; o collider passou da caixa alinhada aos eixos para uma caixa orientada de **0,85 × 2,05 × 0,05 m**, acompanhando a geometria. As folgas de 0,125 m sob os painéis e sua altura de 2,05 m são próprias da divisória sanitária, não trechos de parede incompletos.
+
+Reutilizados os materiais existentes; acrescentados apenas dois meshes persistentes de painéis em `Meshes/Cubicle {west end partition,front right return} mesh.asset`, compartilhados entre as instâncias locais. Os **6.564 fileIDs anteriores** foram preservados; prefab final com **6.606 fileIDs**. As 55 inscrições impressas permanecem iguais às da primeira etapa.
+
+Nova validação na Unity, com a cena isolada: **6.588 / 6.588 amostras de triângulos** nas duas fachadas completas e nos painéis fixos das cabines, excluindo os seis vãos intencionais; **34 / 34 rotas completas**, incluindo as seis cabines, com o mesmo agente de teste. As capturas `output/CampusLibrary-Sanitarios-Final-{VistaApontada,Fachada,Cabines,Cabines2,Entrada}.png` substituem as vistas anteriores para avaliar o fechamento frontal e os encaixes. As capturas da primeira etapa conservam apenas valor histórico nesses trechos.
+
+O Play Mode repetiu os **31 trajetos físicos**, incluindo as seis cabines, e as três tentativas nas juntas laterais, com sucesso. O usuário também conferiu o mapa por conta própria e confirmou a correção do problema; outros refinamentos visuais ficam para revisão futura.
+
+Ferramenta complementar e registros em `Temp/LibraryFinalReview/WallFollowup/`; sem gerador necessário em runtime. As limitações de build, benchmark, áudio e input manual descritas acima continuam válidas.
+
 ## Validação da fila de tarefas — 07/11/2026
 
 Executada na Unity **6000.5.7f1**, URP **17.5.0**, após restaurar a organização de `32028565`. As verificações desta seção são novas; a seção seguinte conserva os testes da ampliação anterior.
