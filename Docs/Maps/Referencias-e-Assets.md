@@ -27,6 +27,8 @@ A referência artística normativa do projeto é `.codex/SKILL.md`; as fotos rea
 
 Proveniência durável: `Licenses/AssetSources/LawSchool/{sources.json,sanitary-sources.json,sanitary-readme.txt}`; para as ruas, `Licenses/AssetSources/CampusExterior/road-revision-sources.json`. Esses arquivos registram URLs, SHA256 e conversões. Texturas compartilhadas anteriores foram reutilizadas; consulte seus manifestos antes de atribuir novos autores. Não invente autoria individual ausente.
 
+Reuso em **CampusLibrary, 07/11/2026**: estantes, livros e cadeiras registrados em `Licenses/AssetSources/CampusLibrary/expansion-sources.json`; vasos/pias de loafbrr_1 / loafbrr, lixeiras de GurJas Studios, extintores de UM JOORIN e luminárias de Kuutti Siitonen / Yann Kervran registrados em `reused-props-sources.json` da mesma pasta. Todos já estavam baixados e creditados como CC0; não houve novo download de modelo. Os 19 recursos compartilhados de sanitários/extintor foram movidos para Global com GUIDs e bytes preservados. A [ficha da biblioteca](CampusLibrary.md) reúne as conversões, medidas e fotos institucionais usadas somente como referência visual.
+
 ## Sites para pesquisas futuras
 
 | Prioridade | Fonte e autoria | Uso recomendado | Verificação |

@@ -99,6 +99,8 @@ Autores/fontes principais: **Ethan Place / Poly Haven**, cadeiras e carteiras; *
 
 PBR: texturas sanitárias e escolares em 1K; normal maps importados como normal, máscaras em espaço linear. ARM/AoRM destes assets foram convertidos para Unity Lit: **R=metallic, G=occlusion, A=1−roughness**. Os manifestos conservam hash de origem/conversão. Não converta novamente uma máscara já convertida.
 
+Compartilhamento com CampusLibrary, 07/11/2026: os meshes de vaso/pia e seus materiais/texturas utilizados passaram para `Global/{Meshes,Materials,Textures}/Sanitary/`; o prefab de extintor passou para `Global/Prefabs/Equipment/korean_fire_extinguisher_01.prefab`. Os 19 assets foram movidos pela Unity API, com GUIDs e conteúdo preservados; os prefabs existentes de LawSchool continuam referenciando os mesmos recursos. Prefabs sanitários e FBX de origem permanecem em LawSchool. Lista exata, fontes e SHA-256: `Licenses/AssetSources/CampusLibrary/reused-props-sources.json`.
+
 Iluminação: `LawSchoolLighting` mantém ambiente/fog consistentes ao trocar de cena com câmera persistente. Luzes locais sem sombras na maioria; fontes selecionadas usam sombra. No PC, o tier **Medium do UniversalAdditionalLightData é 512 px**; o atlas é 2048. Em URP, alterar só `Light.shadowResolution` não substitui conferir o tier adicional. Não altere configurações globais para resolver apenas este mapa.
 
 ## Revisão de fechamento, ambientes e proporções

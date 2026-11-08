@@ -4,11 +4,13 @@
 
 - Cena: `Assets/_Project/Scenes/CampusLibrary/CampusLibrary.unity`; interior no prefab `Prefabs/CampusLibrary.prefab` da mesma pasta. A cena referencia o prefab; não há geração do mapa em runtime.
 - Este é o interior novo do campus Unimar. `Scenes/Library/Library.unity` é a biblioteca antiga e não pertence a esta revisão.
+- Fila de trabalho: [tarefas da biblioteca](CampusLibrary-Tarefas.md), uma por vez, priorizando a última pendente e marcando após validação.
+- Design de gameplay: [mecânicas gerais](CampusLibrary-Mecanicas.md) e [puzzles caóticos com inimigos](CampusLibrary-Puzzles-Caoticos.md); propostas documentadas, sem implementação.
 - Contexto, portais e histórico: [README_CAMPUS_EXTERIOR.md](../../README_CAMPUS_EXTERIOR.md), seções 5, 6 e 7.
-- Revisão de 07/11/2026: ampliação ao norte, a partir de `z = 12`, mantendo hall, atendimento, degraus, foto, pesquisa e sanitários. Nova ala em `North wing - university library`, com leitura silenciosa, salas de estudo, cabines e acervo por assunto.
+- Revisão de 07/11/2026: ampliação ao norte, a partir de `z = 12`, mantendo hall, atendimento, degraus, foto, pesquisa e sanitários. Após restaurar a organização do commit `32028565`, a fila de tarefas revisa escala do mobiliário, modelos, luz, sinalização e separação dos sanitários. Nova ala em `North wing - university library`, com leitura silenciosa, duas salas de estudo, cabines e acervo por assunto.
 - Envelope aproximado: **56 × 42 m**, antes **56 × 24 m**. Acréscimo de aproximadamente **1.016 m²**, cerca de **76%** sobre os 1.344 m² nominais anteriores; área bruta de planta, sem descontar paredes e móveis. Limite interno norte: `z = 30.15`.
 - Paleta e mobiliário de `Global/Materials/CampusInterior/` e `Global/Meshes/CampusInterior/`. Meshes exclusivos novos: `CampusLibrary/Meshes/NorthWing*.asset`.
-- Nenhum novo download de modelo 3D. Fontes e hashes da reutilização: `Licenses/AssetSources/CampusLibrary/expansion-sources.json`; os três documentos de créditos registram o uso nesta ala.
+- Nenhum novo download de modelo 3D. Fontes e hashes da reutilização: `Licenses/AssetSources/CampusLibrary/expansion-sources.json` e `reused-props-sources.json` da mesma pasta; os três documentos de créditos registram o uso nesta ala.
 
 ## Função, layout e circulação
 
@@ -22,9 +24,17 @@ O edifício continua térreo, com hall elevado a **0,64 m** e quatro degraus de 
 | Acervo geral | Leste | Quinze conjuntos duplos: trinta estantes, com ciências sociais, naturais, tecnologia, artes e literatura |
 | Serviço | Junto à passagem central | Carrinho de livros consultados, fora do eixo principal |
 
-Passagens do acervo: **3,26 m entre conjuntos lateralmente** e **1,70 m entre fileiras transversalmente**. Espaço diante das cadeiras das cabines: aproximadamente **1,6 m** junto ao acervo. Há pilares em pontos dessas faixas; a verificação de rotas considera as colisões reais.
+Após o aumento dos móveis, o acervo norte mantém aproximadamente **3,01 m entre conjuntos lateralmente** e **1,17 m entre fileiras transversalmente**; a coluna adicional a leste tem cerca de **1,61 m** até a vizinha. No acervo antigo, os intervalos nominais são **1,91 m lateralmente** e **0,92 m entre fileiras**. Pilares e cadeiras reduzem trechos locais; a verificação de rotas considera as colisões reais, inclusive diante das cabines individuais.
 
 A ala acrescenta **8 mesas**, **12 cabines**, **44 cadeiras** e **30 estantes**. Permanecem recepção, espera, seis posições individuais anteriores, nove gabinetes de computador, leitura em grupo, periódicos e dois sanitários com seis cabines.
+
+### Separação dos sanitários na fila de tarefas
+
+Dois conjuntos duplos, antes em `(17.42, 0, 3.5)` e `(17.42, 0, 7.6)`, passam para `(26.6, 0, 16.8)` e `(26.6, 0, 21.15)` na lateral do acervo norte. Foram movidas as quatro estantes, suas duas colisões e placas; continuam **62 estantes** ao todo. As coordenadas indicam os centros dos conjuntos em planta.
+
+Um anteparo de reboco em `x = 16`, entre `z = 2.6–12.15`, separa livros e acesso dos banheiros. O vestíbulo comum tem aproximadamente **2,84 m livres**, entrada de **2,00 m** e lintel com **2,60 m livres**. Um pilar existente reduz localmente a faixa, sem ter sido removido. As duas plantas sanitárias, suas seis cabines e instalações permanecem nas posições anteriores. A medida resolve a proximidade com o acervo sem refazer a organização geral restaurada.
+
+Capturas de conferência: `output/CampusLibrary-Sanitarios-{Acesso,Separacao,Acervo}.png`. Não usar as fotografias institucionais como comprovação dessa planta: o anteparo é uma adaptação ao mapa do jogo.
 
 ## Escala em relação ao jogador
 
@@ -32,17 +42,38 @@ Referência: prefab global `Player`, sem mudar sua escala ou o sistema persisten
 
 | Elemento | Dimensões e decisão |
 | --- | --- |
-| Cadeiras de leitura | Altura de 0,83 para **0,913 m**, largura aproximada 0,539 m e profundidade 0,594 m. Aumento uniforme de 10%, com apoio no piso e colisão acompanhando a mudança |
-| Estantes | **2,15 m** de altura; cada conjunto duplo ocupa aproximadamente 1,24 × 2,65 m. Mantida a dimensão funcional existente |
-| Mesas novas | Tampo a **0,80 m**, área 2,80 × 1,35 m, pés até o piso |
-| Cabines novas | Tampo a **0,80 m**, largura 1,45 m, profundidade 0,78 m; divisórias de aproximadamente 1,32 m |
+| Cadeiras de leitura | **1,0956 m** de altura, aproximadamente 0,6468 m de largura e 0,7128 m de profundidade. Aumento adicional de 20% sobre os 0,913 m restaurados, ancorado nos pés, com colisão acompanhando a mudança |
+| Estantes | **2,58 m** de altura; cada conjunto duplo ocupa aproximadamente **1,488 × 3,18 m**. Os livros e as placas acompanham o conjunto |
+| Mesas novas | Tampo a **0,96 m**, área **3,36 × 1,62 m**, pés até o piso |
+| Cabines novas | Tampo a **0,96 m**, largura **1,74 m**, profundidade **0,936 m**; divisórias de aproximadamente **1,584 m** |
+| Pesquisa e atendimento | Oito bancadas de pesquisa aumentadas com computadores e cadeiras, espaçamento entre centros corrigido para 3,24 m. Balcão de atendimento ampliado a partir do piso elevado, sem mover degraus ou corrimãos |
+| Sanitários reutilizados | Vasos com 1,05 m de altura; pias com 0,63 m de altura, base em 0,50 m e topo em 1,13 m. Encaixe, fundo e dreno ajustados à bancada |
 | Passagem da ala | **6,00 m** de largura e **3,20 m** de altura livre |
 | Salas de estudo | Entrada de **1,60 m**, acima da altura da cápsula |
 | Teto | Cota próxima de **4,60 m** |
 
-As correções anteriores de apoio dos tampos, bancadas, gabinetes e corrimãos permanecem. As cadeiras novas usam o mesh compartilhado e a dimensão revisada das anteriores; a ampliação não aplica escala global aos props.
+O aumento de 20% é aplicado por conjunto de mobiliário: 17 mesas, 18 posições individuais, oito bancadas de pesquisa, recepção, 31 pares de estantes, catálogo, periódicos e 95 cadeiras. Luminárias e objetos apoiados nesses móveis acompanham a transformação; a traseira das cabines permanece ancorada junto à parede. Os oito computadores da pesquisa receberam maior espaçamento entre centros para evitar sobreposição. Piso, pilares, portas, teto, degraus, corrimãos e player não foram redimensionados. Meshes globais permanecem intactos; os lotes exclusivos do mapa foram ajustados por peças conectadas e as instâncias compartilhadas, por seus transforms.
 
 ## Materiais e direção visual
+
+### Iluminação e sinalização — fila de tarefas
+
+A revisão posterior ao retorno para `32028565` ajusta as luzes existentes, sem alterar o perfil de pós-processamento, névoa ou configuração global da URP. Pontos do salão usam intensidade 12, os da ala norte 10, com alcance de 8,5 m no teto; os pontos baixos dos sanitários usam intensidade 8 e alcance 5,5 m. As doze luzes de tarefa passam a intensidade 1,25, alcance 2,2 m e tonalidade quente. São valores do componente Light, sem equivalência declarada em lux.
+
+Duas luminárias existentes acima das salas coletivas passam de Point para Spot voltado ao piso, cone externo 112°, alcance 7 m e sombras suaves no nível baixo de resolução da URP. As demais sombras existentes são preservadas; a quantidade de luzes não aumenta. Quatro vistas foram revistas na Unity, com 0 scripts ausentes e 0 materiais inválidos. Capturas: `output/CampusLibrary-Luz-{Mesas,Sala,Individual,Entrada}.png`; custo de GPU não medido.
+
+A entrada do acervo recebe placa de duas faces com “SEÇÕES DO ACERVO / CONSULTE AS PLACAS NAS ESTANTES”. Os 31 textos de classificação originais mantêm seus objetos e códigos, agora em placas individuais de 1,75 × 0,50 m antes da correção de escala dos conjuntos. Três placas foram afastadas dos pilares que as encobriam. A geometria usa meshes exclusivos persistentes e materiais compartilhados; painéis antigos tiveram somente os triângulos correspondentes retirados dos lotes, preservando assets e identidades. Capturas: `output/CampusLibrary-Sinalizacao-{Entrada,Marcadores}.png`.
+
+### Referências reais pesquisadas — 07/11/2026
+
+Duas fotografias oficiais da Biblioteca Central Zilma Parente de Barros foram inspecionadas antes de retomar os ajustes:
+
+- [Salão de leitura](https://oficial.unimar.br/wp-content/uploads/2020/07/biblioteca-e1643832656844.jpg), vinculado à [página oficial](https://oficial.unimar.br/biblioteca/): mesas claras de quatro lugares, assentos azuis, pilares claros com faixas verdes, vigas laranjas, janelas altas, luzes lineares e piso granulado. A arquitetura existente já compartilha parte dessa identidade.
+- [Nichos de estudo](https://portal.unimar.br/site/public/img/noticias/148/biblioteca-site.jpg), publicados no [portal institucional](https://portal.unimar.br/site/noticias/biblioteca-da-unimar-e-revitalizada): módulos escuros com painéis laterais altos, mesa, cadeiras, quadro branco e cabeceira superior.
+
+São referências de aparência, sem medidas confiáveis de planta. Elas não estabelecem a posição dos banheiros nem o controle de acesso ao acervo; nesses pontos vale o contexto do usuário. As fotos foram consultadas temporariamente fora de Assets, sem importação ou redistribuição como texturas. Publicação institucional da Unimar; autoria fotográfica individual e licença de reutilização não identificadas nas páginas.
+
+Propostas de gameplay para esse espaço: [possíveis mecânicas](CampusLibrary-Mecanicas.md). São ideias para decisão futura, sem implementação nesta tarefa documental.
 
 Fontes normativas: [prompt mestre](../../.codex/PROMPT_MESTRE.md) e [skill local](../../.codex/SKILL.md). Referência observada: captura oficial [Hotel Lobby, Total Chaos clássico](https://www.moddb.com/mods/total-chaos/images/hotel-lobby), de wadaholic. Orienta contraste, leitura, superfícies usadas e profundidade; nenhum asset do mod foi extraído.
 
@@ -54,13 +85,50 @@ Luzes adicionais: pontos nas luminárias do teto e spots curtos nas doze luminá
 
 ## Dependências, conexões e preservação
 
+### Reutilização de modelos na fila de tarefas
+
+Foram integradas **31 instâncias** de recursos já baixados: seis vasos `Toilet Elongated A`, seis pias `Sink A`, cinco `Metal Trash Can`, dois `Korean Fire Extinguisher 01` e doze `Desk Lamp Arm 01`. Autores, CC0, fontes, conversões e movimentos estão em `Licenses/AssetSources/CampusLibrary/reused-props-sources.json` e nos três MDs de créditos. Não houve download de modelo novo; os móveis e a arquitetura específicos do mapa continuam autorais/reutilizados.
+
+Dezenove meshes, materiais, texturas e o prefab do extintor foram compartilhados em Global pela Unity API; GUIDs e SHA-256 conferidos sem divergência. Os consumidores de LawSchool mantêm as mesmas referências. A luminária usa geometria estática exclusiva da cena, extraída da pose de bind, sem alterar o FBX/importador de origem; uma peça auxiliar incompatível com a extração foi omitida. Bancadas receberam aberturas persistentes para as cubas, com encaixes locais de fundo e dreno. Objetos/IDs anteriores são conservados, com superfícies e colisões substituídas desativadas.
+
+A conferência na Unity reabriu a cena com **0 scripts ausentes e 0 materiais inválidos**, 31 instâncias e revisão visual dos sanitários e luminárias. A tarefa de modelos está concluída na fila. Capturas: `output/CampusLibrary-Modelos-{Sanitarios,Lavatorios,Luminarias}.png`.
+
+### Conexões e arquivos protegidos
+
 - Entrada: `CampusExterior → CampusLibrary / FromCampusExterior`; chegada `(0, 1.75, -9.6)`.
 - Saída: `CampusLibrary → CampusExterior / FromCampusLibrary`; trigger `(0, 1.9, -11.48)`.
 - `GameManager`, HUD, inventário, munição, player persistente e transições continuam compartilhados. A ampliação não cria outro player nem muda o menu.
 - Foto `Campus library portrait.png` e arte `Resources/Textures/UI/Transitions/CampusLibrary.png`: preservar as alterações locais preexistentes.
 - Prefab e meshes persistentes bastam para jogar. As quatro ferramentas temporárias de Editor e seus `.meta` foram retirados de `Assets` após validar os resultados e confirmar zero consumidores serializados de seus GUIDs e nenhum uso no código do jogo. Permanecem apenas na área descartável `Temp/CampusLibraryRevision/`, ignorada pelo Git; não são necessárias para carregar ou jogar o mapa.
 
-## Validação desta revisão
+## Validação da fila de tarefas — 07/11/2026
+
+Executada na Unity **6000.5.7f1**, URP **17.5.0**, após restaurar a organização de `32028565`. As verificações desta seção são novas; a seção seguinte conserva os testes da ampliação anterior.
+
+| Verificação atual | Resultado e limite |
+| --- | --- |
+| Cena e prefab | Salvos e reabertos na Unity; **0 scripts ausentes**, **0 materiais inválidos**; 95 cadeiras, 62 estantes, duas salas coletivas e 31 modelos reutilizados |
+| Escala e colisões | Aumento de 20% por conjunto; 132 meshes exclusivos ajustados por 2.526 peças conectadas, instâncias compartilhadas transformadas e 237 colisores independentes acompanhando o mobiliário |
+| Apoio no piso | **95 / 95 cadeiras** verificadas por raycast; diferença máxima de aproximadamente **0,00000006 m**, dentro da precisão numérica |
+| Arquitetura durante a escala | Registro de posição, escala e dimensões dos colisores de paredes, pisos, teto, pilares, portas, degraus e conexões idêntico antes/depois do aumento dos móveis; o anteparo sanitário já integrava o registro inicial |
+| Navegação | **28 / 28 rotas completas**, tanto após separar os sanitários quanto após aumentar os móveis; inclui as seis cabines, pesquisa, salas, acervo e circulação junto às estantes transferidas |
+| Agente de navegação | Altura **2,141 m**, raio **0,27 m**, degrau **0,36 m**, voxel **0,08 m**. NavMesh temporário, sem novo asset ou mudança no runtime |
+| Referências | **487 GUIDs externos distintos no prefab** e **512 no conjunto dos 447 arquivos de cena/prefabs/materiais/assets da pasta**, todos resolvidos em Assets ou pacotes; GUIDs internos padrão da Unity excluídos dessas contagens |
+| Identidades | **5.821 / 5.821 fileIDs** da versão restaurada preservados; prefab atual com **6.301 IDs** |
+| Recursos preservados | SHA-256 idêntico dos oito arquivos protegidos: Library antiga, CampusExterior, Player, cena CampusLibrary, duas imagens preexistentes, prefab LawSchool e prefab CampusBlock4. Os sete meshes compartilhados também mantêm os hashes |
+| Assets movidos para Global | **19 / 19** com conteúdo e GUID preservados; caminhos atuais das texturas compartilhadas atualizados no manifesto sanitário de LawSchool |
+| Ferramentas temporárias | Oito fontes de Editor e seus `.meta` retirados de Assets após salvar/reabrir os resultados e verificar **0 consumidores por GUID ou código do jogo**; cache descartável em `Temp/CampusLibraryScale/FinishedEditor/`, sem dependência para jogar ou carregar o mapa |
+| Compilação final | Scripts recompilados pela Unity após a retirada das ferramentas, com sucesso; não é um build de executável |
+| Play Mode controlado | **Um PlayerMovement**, cápsula real **0,4733 × 2,1210 × 0,4733 m**, olhos a **1,838885 m** dos pés. `CharacterController.Move` atravessou a abertura original → ala norte até `z = 14` |
+| Revisão visual | Capturas com FOV 60° em **1920 × 1080**, incluindo comparação antes/depois e câmera do jogo posicionada na Head real; não equivale a teste de input ou acompanhamento automático da Cinemachine |
+
+Capturas atuais de escala: `output/CampusLibrary-Escala-Antes-{Mesas,Sala}.png`, `output/CampusLibrary-Escala-Depois-{Mesas,Sala,Individual,Entrada}.png` e `output/CampusLibrary-Escala-Player-Real.png`. As capturas de modelos, sinalização, luz e sanitários acima registram etapas anteriores ao aumento final do mobiliário.
+
+Hardware informado pela Unity: **Intel UHD Graphics 620**, **Intel Core i5-8265U**, aproximadamente **8 GB de RAM**. Não houve benchmark, build/executável, percurso manual completo, verificação auditiva ou nova ida/volta pelos portais. Os contratos dos portais foram preservados por comparação de conteúdo. Problemas históricos de `CampusParkingVehicleSetup` e avisos de áudio do ambiente aditivo não foram tratados como regressões desta biblioteca nem como prova de Console global limpo.
+
+Checklist interno da skill, limitado às capturas e à passagem controlada: escala 2, materiais 2, desgaste causal 1, fontes de luz 2, sombras/contato 2, profundidade 2, uso/abandono 1, props/colisões 2, legibilidade 2, identidade 2 e pós-processamento 2: **20 pontos nos 11 itens avaliados**. Desempenho não avaliado; sem aprovação integral dos 12 critérios ou afirmação de FPS.
+
+## Validação histórica da ampliação — commit 32028565
 
 Executada em **07/11/2026**, Unity **6000.5.7f1**, URP **17.5.0**, Windows. Capturas em **1920 × 1080**, FOV 60°, perfil existente da cena; não constituem benchmark de CPU/GPU.
 
