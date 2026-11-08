@@ -7,6 +7,7 @@
 - Fila de trabalho: [tarefas da biblioteca](CampusLibrary-Tarefas.md), uma por vez, priorizando a última pendente e marcando após validação.
 - Design de gameplay: [mecânicas gerais](CampusLibrary-Mecanicas.md) e [puzzles caóticos com inimigos](CampusLibrary-Puzzles-Caoticos.md); propostas documentadas, sem implementação.
 - Contexto, portais e histórico: [README_CAMPUS_EXTERIOR.md](../../README_CAMPUS_EXTERIOR.md), seções 5, 6 e 7.
+- Revisão de 08/11/2026: fechamento dos sanitários até o teto do salão e inscrições físicas em atlas, descritos em [Revisão final de paredes e sinalização](#revisão-final-de-paredes-e-sinalização--08112026). As dimensões e a circulação do mobiliário permanecem as da revisão anterior.
 - Revisão de 07/11/2026: ampliação ao norte, a partir de `z = 12`, mantendo hall, atendimento, degraus, foto, pesquisa e sanitários. Após restaurar a organização do commit `32028565`, a fila de tarefas revisa escala do mobiliário, modelos, luz, sinalização e separação dos sanitários. Nova ala em `North wing - university library`, com leitura silenciosa, duas salas de estudo, cabines e acervo por assunto.
 - Envelope aproximado: **56 × 42 m**, antes **56 × 24 m**. Acréscimo de aproximadamente **1.016 m²**, cerca de **76%** sobre os 1.344 m² nominais anteriores; área bruta de planta, sem descontar paredes e móveis. Limite interno norte: `z = 30.15`.
 - Paleta e mobiliário de `Global/Materials/CampusInterior/` e `Global/Meshes/CampusInterior/`. Meshes exclusivos novos: `CampusLibrary/Meshes/NorthWing*.asset`.
@@ -100,6 +101,46 @@ A conferência na Unity reabriu a cena com **0 scripts ausentes e 0 materiais in
 - `GameManager`, HUD, inventário, munição, player persistente e transições continuam compartilhados. A ampliação não cria outro player nem muda o menu.
 - Foto `Campus library portrait.png` e arte `Resources/Textures/UI/Transitions/CampusLibrary.png`: preservar as alterações locais preexistentes.
 - Prefab e meshes persistentes bastam para jogar. As quatro ferramentas temporárias de Editor e seus `.meta` foram retirados de `Assets` após validar os resultados e confirmar zero consumidores serializados de seus GUIDs e nenhum uso no código do jogo. Permanecem apenas na área descartável `Temp/CampusLibraryRevision/`, ignorada pelo Git; não são necessárias para carregar ou jogar o mapa.
+
+## Revisão final de paredes e sinalização — 08/11/2026
+
+### Correções persistentes
+
+As oito peças de parede dos dois sanitários terminavam em **3,20 m**, abaixo do teto do salão a **4,60 m**. As paredes e lintéis agora chegam a 4,60 m, preservando o vão de **2,50 m** sob os lintéis e os tetos internos a 3,20 m. As duas paredes de privacidade foram prolongadas **0,20 m** até os lintéis, eliminando as fendas verticais. Os extremos leste das paredes alcançam a parede externa em **x = 28,15**; uma peça de fechamento une os retornos entre **z = 7,30 e 7,70**. Também foram fechadas as duas frestas de **0,05 m** entre os tetos internos e a parede externa. Os oito colisores de parede e os dois do teto acompanham as superfícies, mais um collider na nova junta. UVs métricas mantêm a densidade do azulejo.
+
+Os cinco meshes existentes `CampusLibrary_{5_2,5_3,6_2,6_3,6_4}_Restroom ceramic.asset` e os dois lotes `CampusLibrary_{6_2,6_3}_Mineral ceiling panels.asset` foram editados pela Unity API, com GUIDs/importadores preservados. A junta acrescentada reutiliza o material compartilhado `Restroom ceramic`. Nada foi alterado no player, nos móveis, no acervo ou nos materiais globais.
+
+As **55 inscrições estáticas** do prefab foram rasterizadas em **Liberation Sans**, já distribuída no projeto sob SIL OFL 1.1, uma fonte sem serifa adequada à sinalização institucional impressa. A fonte anterior dos TMP também era Liberation Sans; a mudança principal é a inscrição passar a integrar uma superfície física iluminada. Cada placa preserva o conteúdo em português, acentos, códigos, orientação e posição, com ajuste de tamanho para caber no suporte. As duas faces da placa de seções continuam legíveis em seus respectivos sentidos.
+
+As faces opacas usam **um atlas RGB 4096 × 4096**, mipmaps, filtragem trilinear e **um material local** com o shader existente `TotalChaosInspiredSurface`, sem emissão, metallic 0 e smoothness 0,20. Letras em tinta clara envelhecida, bordas discretamente gastas e fixadores sugerem impressão sobre esmalte azul; as placas de extintor conservam a base vermelha. A sinalização recebe a iluminação e as sombras do cenário. `SANITÁRIOS`, antes sem suporte, ganhou uma chapa de **1,90 × 0,42 × 0,03 m**.
+
+Dependências novas: `Textures/Library signage atlas.png`, `Materials/Library printed enamel.mat`, 55 meshes `Meshes/Printed sign NN.asset` e os meshes da chapa/junta, todos persistentes com `.meta`. Os componentes TMP, textos e fileIDs originais permanecem no prefab, **desabilitados**, para permitir edição posterior; não há texto de cenário gerado em runtime. Para mudar uma inscrição, editar sua origem preservada e atualizar a região correspondente do atlas/mesh. HUD, menus e textos de outras cenas mantêm seu funcionamento.
+
+Fonte, autoria, licença, conversão e SHA-256: `Licenses/AssetSources/CampusLibrary/printed-signage-sources.json`. Nenhuma fonte ou modelo novo foi baixado. A captura oficial de [Hotel Lobby, Total Chaos clássico](https://www.moddb.com/mods/total-chaos/images/hotel-lobby), de wadaholic, foi consultada temporariamente para orientar integração de superfícies, luz e desgaste; não foi importada como asset.
+
+### Verificação desta revisão
+
+Unity **6000.5.7f1**, URP **17.5.0**, Windows, resolução **1920 × 1080**, FOV **60°**. A biblioteca foi carregada isoladamente para evitar que outra cena aberta aditivamente interferisse na renderização ou na física; o conjunto anterior de cenas do Editor foi restaurado ao fim dos testes.
+
+| Verificação | Resultado |
+| --- | --- |
+| Compilação, prefab e cena | Recompilação e reabertura na Unity; **0 scripts ausentes e 0 materiais inválidos** |
+| Fechamento visual dos sanitários | **12.344 / 12.344 amostras** sobre os triângulos renderizados, incluindo paredes superiores, juntas e tetos; vãos de entrada abaixo de 2,50 m excluídos intencionalmente |
+| Demais juntas revisadas | **68 / 68 amostras** nas janelas e divisórias das salas, sem novos reparos necessários |
+| Sinalização | **55 / 55 faces persistentes**, **0 TMP ativos** no prefab, materiais/meshes salvos; inspeção de capturas do hall, sanitários, acervo e salas |
+| Navegação | **34 / 34 rotas completas**; agente 2,141 m, raio 0,27 m, degrau 0,36 m, voxel 0,08 m; NavMesh temporário, sem asset integrado |
+| Circulação e apoio | Passagem central e corredor sanitário sem caixas sólidas invadindo as áreas verificadas; **95 / 95 cadeiras** apoiadas; **62 estantes** conservadas |
+| Play Mode físico | **31 trajetos** seguindo os cantos do NavMesh por `CharacterController.Move`, incluindo as seis cabines, pesquisa, ala norte e salas; cápsula real **0,4733 × 2,1210 × 0,4733 m** |
+| Colisão das juntas corrigidas | Três tentativas físicas de cruzar a parede em **z = 4,40; 7,50; 9,10**, bloqueadas |
+| Portais em Play Mode | **CampusLibrary → CampusExterior → CampusLibrary** por contato real com os triggers; mesmo jogador, **vida 100, carregador 10 e reserva 30** preservados. A automação encerrou o menu inicial/pausa antes do teste; nenhum contrato de transição foi alterado |
+| Preservação | **6.333 / 6.333 fileIDs originais** preservados, 6.564 finais; **550 GUIDs externos** do prefab resolvidos; nenhum GUID duplicado nos metadados consultados; importadores anteriores intactos |
+| Recursos protegidos | SHA-256 idêntico de **65 arquivos** protegidos, incluindo as cenas CampusLibrary/CampusExterior, prefab do exterior e meshes/materiais compartilhados do mobiliário |
+
+As rotas de Play Mode foram automatizadas, sem uma sessão manual completa por teclado/controle. As amostras geométricas e as capturas cobrem os trechos descritos, sem constituir garantia de ausência absoluta de defeitos. **Não houve build de executável, benchmark com Profiler ou teste auditivo.** O atlas novo tem custo de memória próprio; não foi afirmado ganho de FPS.
+
+Checklist interno da direção visual: escala 2, materiais 2, desgaste causal 1, fontes de luz 2, sombras/contato 2, profundidade 2, uso/abandono 1, props/colisões 2, legibilidade 2, identidade 2 e pós-processamento 2: **20 pontos nos 11 critérios avaliados**. O 12º critério, desempenho, permanece sem nota por falta de medição; não equivale a uma aprovação integral ou benchmark.
+
+As ferramentas pontuais desta revisão ficam em `Temp/LibraryFinalReview/`, fora dos assets finais após conferir as dependências; não são necessárias para carregar ou jogar. A falha preexistente do gerador `CampusParkingVehicleSetup`, externa à biblioteca, continua separada dos resultados desta revisão. Capturas finais: `output/CampusLibrary-Final-after-*.png` e `output/CampusLibrary-Final-Player-Sanitarios.png`.
 
 ## Validação da fila de tarefas — 07/11/2026
 
