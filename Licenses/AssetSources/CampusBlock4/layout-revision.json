@@ -1,0 +1,282 @@
+{
+  "date": "2026-11-08",
+  "scene": "CampusBlock4",
+  "method": "Reuse existing imported models and original PBR materials. Architecture dimensions measured from LawSchool. Bathroom geometry copied into persistent material batches retaining UVs/normals; source assets unchanged. Static lettering rendered from the existing LiberationSans font into a scene-local atlas. No new external model downloads.",
+  "references": [
+    {
+      "url": "https://blog.unimar.br/2022/10/10/novo-parque-compuatcional-da-unimar/",
+      "author": "Imprensa / Unimar",
+      "use": "Photo reference only: computer desks, monitors, cables, circulation. No claim to a measured floor plan; photo not imported into game."
+    },
+    {
+      "url": "https://www.moddb.com/mods/total-chaos/images/hotel-lobby",
+      "author": "wadaholic / Total Chaos",
+      "use": "Visual direction reference only; no assets extracted."
+    }
+  ],
+  "reused_models": [
+    {
+      "id": "classic_laptop",
+      "provenance_manifest": "Licenses/AssetSources/LawSchool/model-replacements.json",
+      "source": "https://polyhaven.com/a/classic_laptop",
+      "author": {
+        "Arrangemonk": "All"
+      },
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "drawer_cabinet",
+      "provenance_manifest": "Licenses/AssetSources/LawSchool/model-replacements.json",
+      "source": "https://polyhaven.com/a/drawer_cabinet",
+      "author": {
+        "Ulan Cabanilla": "All"
+      },
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "metal_office_desk",
+      "provenance_manifest": "Licenses/AssetSources/EntranceRebuild/sources.json",
+      "source": "https://polyhaven.com/a/metal_office_desk",
+      "author": {
+        "Ulan Cabanilla": "All"
+      },
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "metal_toolbox",
+      "provenance_manifest": "Licenses/AssetSources/LawSchool/maintenance-sources.json",
+      "source": "https://polyhaven.com/a/metal_toolbox",
+      "author": {
+        "Mateusz Sadek": "All"
+      },
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "mid_century_lounge_chair",
+      "provenance_manifest": "Licenses/AssetSources/EntranceRebuild/sources.json",
+      "source": "https://polyhaven.com/a/mid_century_lounge_chair",
+      "author": {
+        "Kuutti Siitonen": "All"
+      },
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "office_chair",
+      "provenance_manifest": "Licenses/AssetSources/LawSchool/model-replacements.json",
+      "source": "https://opengameart.org/content/office-chair-1",
+      "author": "nisu / 3DModelsCC0",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "office_copier",
+      "provenance_manifest": "Licenses/AssetSources/LawSchool/equipment-sources.json",
+      "source": "https://www.innerscene.com/tools/library/3d-parts/copy-tower-office-copier-c07038f9",
+      "author": "Innerscene Corp",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "office_notepads",
+      "provenance_manifest": "Licenses/AssetSources/LawSchool/model-replacements.json",
+      "source": "https://polyhaven.com/a/office_notepads",
+      "author": {
+        "Ulan Cabanilla": "All"
+      },
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "steel_frame_shelves_01",
+      "provenance_manifest": "Licenses/AssetSources/LawSchool/model-replacements.json",
+      "source": "https://polyhaven.com/a/steel_frame_shelves_01",
+      "author": {
+        "James Ray Cock": "All"
+      },
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "vintage_microwave",
+      "provenance_manifest": "Licenses/AssetSources/LawSchool/video-revision-sources.json",
+      "source": "https://polyhaven.com/a/vintage_microwave",
+      "author": "Adam Nekola",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "waiting_bench",
+      "provenance_manifest": "Licenses/AssetSources/LawSchool/model-replacements.json",
+      "source": "https://www.innerscene.com/tools/library/3d-parts/waiting-room-seating-row-public-transport-furniture-74e428a0",
+      "author": "Innerscene Corp",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "water_cooler",
+      "provenance_manifest": "Licenses/AssetSources/LawSchool/equipment-sources.json",
+      "source": "https://grab3d.com/models/electronics/water-cooler/",
+      "author": "Grab3D",
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "wooden_bookshelf_worn",
+      "provenance_manifest": "Licenses/AssetSources/LawSchool/model-replacements.json",
+      "source": "https://polyhaven.com/a/wooden_bookshelf_worn",
+      "author": {
+        "Ulan Cabanilla": "All"
+      },
+      "license": "CC0-1.0"
+    }
+  ],
+  "prefab_hashes": [
+    {
+      "path": "Assets/_Project/Scenes/LawSchool/Prefabs/Furniture/classic_laptop.prefab",
+      "sha256": "69af356dc788a18c52df308e1c877749dcfe7a5814dabaa832682f85e4e871d7"
+    },
+    {
+      "path": "Assets/_Project/Scenes/LawSchool/Prefabs/Furniture/drawer_cabinet.prefab",
+      "sha256": "29f8222621c82e5372188cb273a2504e94d18553d76707750e29a886ea49bf61"
+    },
+    {
+      "path": "Assets/_Project/Scenes/LawSchool/Prefabs/Furniture/metal_office_desk.prefab",
+      "sha256": "394df6c4bb115e1cc69038ae2acea70e7268b137a5b02519fde5aff26a7cd2f7"
+    },
+    {
+      "path": "Assets/_Project/Scenes/LawSchool/Prefabs/Furniture/mid_century_lounge_chair.prefab",
+      "sha256": "dcb63b63d2cbf2422052ea709ab8f0f65a9e3aaf6c3d5f9c9343b5fa271ac0a4"
+    },
+    {
+      "path": "Assets/_Project/Scenes/LawSchool/Prefabs/Furniture/office_chair.prefab",
+      "sha256": "331785459567bd879c4084dddd0b42288ca9210b622c2ba6e32dbb4e604e7d68"
+    },
+    {
+      "path": "Assets/_Project/Scenes/LawSchool/Prefabs/Furniture/office_notepads.prefab",
+      "sha256": "329a6e5938eccadc520f7bc17612690787081b8810499d89150f3c77da3df9fe"
+    },
+    {
+      "path": "Assets/_Project/Scenes/LawSchool/Prefabs/Furniture/steel_frame_shelves_01.prefab",
+      "sha256": "4dd31ad39a8361b676a92a42bdf1e323673e0bd593270ea8fa1f8aad3691bd8d"
+    },
+    {
+      "path": "Assets/_Project/Scenes/LawSchool/Prefabs/Furniture/waiting_bench.prefab",
+      "sha256": "2587fcf19e5d7598e216f9859052e51fb0aa96dfaf070c2eb98d49412a873fa9"
+    },
+    {
+      "path": "Assets/_Project/Scenes/LawSchool/Prefabs/Furniture/wooden_bookshelf_worn.prefab",
+      "sha256": "e99a55b94b5cd633bef2d515416f52a2ce7c63e8474c1617df1ebea1d104cfe6"
+    },
+    {
+      "path": "Assets/_Project/Scenes/LawSchool/Prefabs/Equipment/office_copier.prefab",
+      "sha256": "593e1031239757cdf04cc652c3f770124255e16b5053741341830af6185448e8"
+    },
+    {
+      "path": "Assets/_Project/Scenes/LawSchool/Prefabs/Equipment/water_cooler.prefab",
+      "sha256": "e7cbd57e09eb86c9bbfaccb85abf9d241d39ddc1640d07fb4313ddae60b12044"
+    },
+    {
+      "path": "Assets/_Project/Scenes/LawSchool/Prefabs/Maintenance/metal_toolbox.prefab",
+      "sha256": "1731fdd5f8035fe11f90f5d46932d4ce395a16374a0192c61152b4f7cb326e0a"
+    }
+  ],
+  "sanitary_sink": {
+    "path": "Assets/_Project/Scenes/LawSchool/Prefabs/Sanitary_Sink_A.prefab",
+    "source": "https://opengameart.org/node/165996",
+    "author": "loafbrr_1",
+    "license": "CC0",
+    "provenance_manifest": "Licenses/AssetSources/LawSchool/sanitary-sources.json"
+  },
+  "new_local_mesh": {
+    "path": "Assets/_Project/Scenes/CampusBlock4/Meshes/Stored network cable coil.asset",
+    "author": "Project procedural geometry",
+    "description": "One reusable tube mesh used by four stored cable coils. Persistent mesh only; no runtime generator."
+  },
+  "weapon": {
+    "path": "Assets/_Project/Global/Prefabs/Weapons/ShotgunPickup.prefab",
+    "use": "Existing gameplay pickup, instance in puzzle room 423; no source modification."
+  },
+  "lawschool_scale_revision": {
+    "date": "2026-11-08",
+    "classroom_width_m": 13.5,
+    "outer_depth_m": 17,
+    "inner_depth_m": 11.75,
+    "cross_corridor_width_m": 8,
+    "clear_height_m": 4.06,
+    "restrooms": "Four LawSchool layouts: female 13.5 x 24.5m, male 9.5 x 24.5m. Source assets unchanged.",
+    "generated_geometry": "Scene-local restroom batches retaining source materials and UVs; beveled fitted leaves/housings; printed lettering planes. Persistent assets, no runtime generator.",
+    "hashes": {
+      "Assets/_Project/Scenes/CampusBlock4/Textures/Printed campus lettering.png": "367063f8eb1444dff0adff0a183a3cb0f2fa7de62c087739093eb2c904af0ab1",
+      "Assets/_Project/Scenes/LawSchool/Prefabs/LawSchool.prefab": "f153b6777b07dda50a8d2c9f3ed08270556e9921c0ee5854994f12c62ffea18c",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east female 0.asset": "e077af3ba8ab6f6f21bb8985870e96b202d6d1af98380561700ab6a018e45e21",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east female 1.asset": "678421cc634dfba2cb5f3ef8beeeabf7b91a083d8f10fe2db5d544edd7774954",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east female 10.asset": "4e0ac5bc6a3ef9a0a13d27eabf28052a96f9a8e063a8b57a559968db56ebfda8",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east female 11.asset": "ba76e971e7cd554fdf7b757fd4977bb17aee6aa443675e29e9c284946f8f04a9",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east female 12.asset": "3e20d674d8e254bd8466d32fd4fa6fe98bbc6a48c6518649757ee423c5887983",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east female 13.asset": "15c85a71a92dfd10815e5784d4aea73b7fcf3cc603cd2946214314e085dd38c0",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east female 14.asset": "75702967460ade4a8218057793ea378e7f2be45fab228ddbbfde5c4469163d38",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east female 15.asset": "e0fa804e00a683774bccef6b7d666b7755a1c4e3ab6b1fada636bd231b479eae",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east female 2.asset": "3ad8f7ee1237d0b7638d599a72f496c2db6980ecdb12bb27458417675c32ce0e",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east female 3.asset": "66621df841ebc1055852907d90da990f9757b2890d8b25058988032e38acdf65",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east female 4.asset": "42eab727d2dfdf0afaacfbd70127de24cd058ef2f70891b47d7d31be77a3dc56",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east female 5.asset": "b3ec1aec7403f0e2b0dc299804fbdf171e76cc1b6206abe312b7fb58fab5f54b",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east female 6.asset": "851301d637c7464ca35e18399f7fd9938d044594a85d460694f59752449acd85",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east female 7.asset": "52743572e5b0eac73d193da4ab2c333dc6278f1b5e311981e9c7aa1e216c4421",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east female 8.asset": "10e6bd9e0de1f703daee7e5a5119dac5be52d0cc916b46b641baf91f638daed5",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east female 9.asset": "ae5712a13023346910b9181c37563c3f8e2b5ae352115311c810f0188a3d879c",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east male 0.asset": "ab1467dc2f723cc2ed42012bcd71591d10ed9a625fb8fb418b95d56795896624",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east male 1.asset": "6e69cff57c672efacb28f8abbe0a9453cf756506215ef0b2c2fd9f314c3d9dcb",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east male 10.asset": "85d90097fa4e4fd6f927d2694dfec7d73906f1727a12c6e36747cae3639e5412",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east male 11.asset": "62c73fe942c5cccba18529d36a5100fbd6ddcd457d0966241e6fde1f789865fb",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east male 12.asset": "0e7341ded0bc20aa192bba605318ed2043b28f490486fb1c1306cabf5a105840",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east male 13.asset": "706249e53f7376d2e901669017bba0b7db7fe822a4a4051cb6d919eab9f1fb79",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east male 14.asset": "7042eada5eceb5ee7db19be760f6596ffcaaa8daa915a6525f0482df4dd7815c",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east male 15.asset": "633251a9fae44878923a44d38fbacfb4742a25b5d0750b3bb5b5dc895988c9eb",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east male 16.asset": "5efdd4911e016c23c251724a2f82584fc0b2334893cb9499db39c79f81da4bfc",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east male 17.asset": "d0d4cdc5df427d93362119576069b5e74cd29b7b4facc90e96a6bfa5ae218736",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east male 18.asset": "c32a8f69da9754818b698724774d6d8c4c7c82b248a459ca1bb71c201c460ebb",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east male 2.asset": "095cc29e704ff8ff7b171fecf1f2558edd99646f27df93c13d04405aa3260b59",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east male 3.asset": "ac653eae57525ebdececd62492a683517baee92bba7cf7cf3603a790289d62a2",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east male 4.asset": "61e2993fffed4080f3b177c7177f5791639b12bf8ee972b4cc1a82b1319bede4",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east male 5.asset": "e82a0a4d0dfee8280f4cb2f842cd216dadd8f26a3fa62464dcc4a2b70617faf6",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east male 6.asset": "54251a6a20586c00d0eea91199e1240d6f5ef3b6762e73d80a8df497e645a6d2",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east male 7.asset": "3bf410c57eae7a14aae8218a1ecb8778ee8b2f7a46af46451f2ac6b660f9bf8a",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east male 8.asset": "4b95083a8600cc0fb439c3fdacfcfc9a7502abbdca4e66cc7526d9987032e145",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom east male 9.asset": "26cf2ca69dc6a2aa5c5e0aac5fc45c1a8bc3080300012c4289eea146bceaacc1",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west female 0.asset": "41b782af9dc3dfaafdf9134613e30dd19231bbecfb6bc0553d13e5e49c456229",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west female 1.asset": "92ee1e2dd7d7e0ac6b75f7b84e38b6c8aba915fb5e15486b593d84fadb36dcdb",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west female 10.asset": "48b63270fb7d66de10d345fae7244b89af662d345adb649794f08dded20d5e72",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west female 11.asset": "abe47e303baf7c533b2b8d5d3f55f4beaf1dc62374e6b3b88571ec939d38ad28",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west female 12.asset": "f03a12c7596c8dfe8e3552a444b9b10a176391dccb77d2e91e51a38e46167c10",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west female 13.asset": "0fc8157496736febcb54996177f7ffc443fd42bc59a0b00a722acccf82a74348",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west female 14.asset": "96ea70991e970569d8502634df3d7c6da0cee834ea732f64d507bfe16c229366",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west female 15.asset": "abee6f31659ed2ca3631067ae266d194d200c2cd75afeec16071c750bc6c93e6",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west female 2.asset": "bbf4672174893c8d82cd8d593409be55718485a252f36741feffe73e51ebfc1b",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west female 3.asset": "f5f2ece5cd0b1989212059bcd63388dbbc6fcb4ff4d4a9a65ef7552cf233cb80",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west female 4.asset": "ab242b3973346f1f5598ab4ea8f62cbaee8284b3898889dd047642afe81abd3e",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west female 5.asset": "0ae597fe2cb8445accb2498695c383828d430acb6ff229be882141b01a8faa56",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west female 6.asset": "1808e8ab1b75b846ee807741f53650c35cd6289219d0ece0fe645918e7d9c091",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west female 7.asset": "915252520272735b8c3d6dc2f1e642b442270156f4af5c0cc6555c3ed9c844a6",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west female 8.asset": "ce672bb69ee0383dd5b10fa9a645456c9e551ebfa2d9558ed7abd9be70b3d83e",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west female 9.asset": "0d17c23da5137806c545e4c1d0e73d02ba4acb65e27265da053a11c639376d1e",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west male 0.asset": "7576620ad286fcb8fcdc3602cd691169d7a8ea846fab4fb41d57c524791d9863",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west male 1.asset": "ca412624eb8a6192eb3f2a86f55d55fcd8fbed2648d671f1d81877ed1d3c5cc4",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west male 10.asset": "61c0c4332db677b591fdf4c1dda2b4d5f251ded41c744195c6922ef110f766de",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west male 11.asset": "0256c69c23fd5916836702c9fec5f463c294451e568f5b6825c034405373545f",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west male 12.asset": "3efeb4c494f62fdc49397efa95f653526b1e05b5283247b62e0fa33985db1e23",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west male 13.asset": "cbbcd856c1f4588172976f9e62fde97d5e0bfb1490976e3cf31cf5c4f36351a6",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west male 14.asset": "7d73cb51233f98571f5b2d1e2f87179bd4d9a89838f47f6290ecdf896ff0baa0",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west male 15.asset": "8b339a94ef940db857233b9ac3e49ad5ec454f2f3e6b480014f65d2f14ea742f",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west male 16.asset": "210e4c8bff65a694d818b85d390fb62593b0d788ad0792473273db9c982e11e1",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west male 17.asset": "5bb5cf9dc783d9b2953d88d37392ecaf5dc69e9195be4c1bea46d0064754e073",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west male 18.asset": "897daab7eb1bce4736176ddc07c5830c3238037d7e7ecae3998580c57c9332a9",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west male 2.asset": "c7618768d1f2adfe303706a5417d3fe78e4fe6c48267c1c48a9f7b968464f362",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west male 3.asset": "ba5b8432f3a745eb60eedd7eed678dc32924aa56b82387f94a866f9027282950",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west male 4.asset": "f2dbf5efaeda6d8d79a876b98bf4ce5f1d6b7a66fa4815ae6c26eef50c56b04b",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west male 5.asset": "a1ff2a55c05550134420644210c7e2926b7b151697f0d4c2315b5b04f29f8597",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west male 6.asset": "34a24d390877f6ba8669492a192020eac3a9660fdb9bd2fb8faa15f71ee88482",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west male 7.asset": "bd88c8ac0168e07ea9d448915ab80b2655d8ba4960dafc88e89ad64cf0265ff9",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west male 8.asset": "3f267ef5f2427a3fbdcc5a14c144b01bd615da84632a61a19ceadb3e56c821a4",
+      "Assets/_Project/Scenes/CampusBlock4/Meshes/LawSchool restroom west male 9.asset": "40c76a7ddb4c4ef3dfb71b615a00d897b043feb6ad00ea74689ff3683a8a48ee"
+    }
+  },
+  "printed_lettering": {
+    "author": "Project lettering rendered with the existing TMP LiberationSans font",
+    "font": "Assets/TextMesh Pro/Fonts/LiberationSans.ttf",
+    "license_reference": "Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt",
+    "texture": "Assets/_Project/Scenes/CampusBlock4/Textures/Printed campus lettering.png"
+  }
+}
