@@ -4,6 +4,7 @@ Atualizado: **2026-11-08**. Estado: chave sorteada por partida, placas gastas e 
 
 ## Leitura rápida
 
+- **Fonte jogável:** `LawSchool.unity` contém o prédio desembrulhado, independente de `Prefabs/LawSchool.prefab`. Alterar somente esse prefab não altera o mapa carregado pelo jogo. Conferir e corrigir a cena real em mudanças de gameplay.
 - Unity **6000.5.7f1**, URP **17.5.0**, Windows/D3D12. Confirme versões nos arquivos do projeto somente se mudaram.
 - Interior térreo com hall central, quatro corredores, **36 salas de aula**, manutenção 104 com quadro de energia e ferramentas, quatro banheiros compartilhados entre pares de corredores, secretaria, uma coordenação, copa e auditório. As contagens de revisões anteriores são históricas.
 - A ampliação anterior de 2× recebeu **escala uniforme adicional de 1,25× em todo o bloco**, incluindo arquitetura, mobiliário, portas, placas e sanitários. A implantação ocupa aproximadamente **169 m × 100 m**. O prefab do player foi preservado.
@@ -38,7 +39,7 @@ Prefixo exclusivo: `Assets/_Project/Scenes/LawSchool/`.
 | Conteúdo | Caminho relativo ao projeto |
 |---|---|
 | Cena jogável | `Assets/_Project/Scenes/LawSchool/LawSchool.unity` |
-| Prefab principal | `Assets/_Project/Scenes/LawSchool/Prefabs/LawSchool.prefab` |
+| Prefab independente, não instanciado na cena jogável | `Assets/_Project/Scenes/LawSchool/Prefabs/LawSchool.prefab` |
 | Materiais e meshes persistentes | `Assets/_Project/Scenes/LawSchool/Materials/` e `Meshes/` |
 | Mobiliário escolar | `Prefabs/SchoolChair_01.prefab`, `Prefabs/SchoolDesk_01.prefab` sob o prefixo |
 | Sanitários | `Models/Sanitary/`, `Textures/Sanitary/`, `Prefabs/Sanitary_*.prefab` sob o prefixo |
@@ -413,3 +414,11 @@ Exatamente duas chaves ativas em Direito: cela 1, que inicia o alarme, e manuten
 A entrada da manutenção possui colisor sólido salvo e ativo cobrindo todo o vão, separado da folha móvel. `LawSchoolMaintenanceAccess.entranceBarrier` só libera quando existe `law-school-maintenance` no inventário. `OpenDoorWithKey` também exige essa chave. O quadro exige as duas chaves. Originais das celas 2/3 em Direito inativos; pickups transferidos para a biblioteca para preservar a progressão das oito celas.
 
 Horda: máximo 38 chegadas. Lanterna automática durante o alarme, F/direcional para cima alterna; feixe de 18 m/58°. Sem abrir Unity ou executar gameplay, testes, compilação, build ou capturas nesta rodada.
+
+### Correção aplicada na cena carregada pelo jogo
+
+A investigação da reincidência confirmou que a cena não referencia o prefab principal. Na cena, a porta real `OpenDoorWithKey` de fileID `908449428` não tinha `requiredInventoryKey`; o pickup da manutenção e seu controlador também estavam ausentes. As correções anteriores no prefab não chegavam ao mapa jogável.
+
+Agora `LawSchool.unity` contém a exigência `law-school-maintenance` nessa porta, o colisor sólido ativo cobrindo o vão, o pickup e `LawSchoolMaintenanceAccess`. O controlador está registrado no objeto do alarme da própria cena e usa seus 33 locais de sorteio fora do corredor da manutenção, com distância mínima de 45 m da chave da cela. Há exatamente os dois pickups: cela 1 e manutenção. As chegadas do alarme na cena também foram alinhadas ao limite de 38 já solicitado.
+
+Todos os IDs anteriores da cena foram preservados; 12 registros adicionados e referências locais conferidas. Sem abrir Unity, testes de gameplay, capturas, commit, push ou desligamento nesta correção.

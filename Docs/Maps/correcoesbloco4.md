@@ -193,3 +193,9 @@ Itens implementados nos arquivos; `[x]` não afirma confirmação em execução.
 - Espingarda: recuo inferior de 16% para ocultar o corte da arma acima da mão; proporção preservada. Campus: movimento cinemático apoiado no chão, travessia de degraus até 35 cm e roaming limitado ao raio do spawn. Saída do Bloco 4 com fechamento visual atrás do gatilho para ocultar o vazio.
 
 Conferência desta rodada apenas por arquivos: referências do novo colisor, estado dos pickups e coordenadas dos locais. Gameplay não executado. Textos de revisões anteriores são históricos e substituídos por este contrato.
+
+## Reincidência da manutenção — causa encontrada na cena
+
+`LawSchool.unity` tem uma cópia independente do prédio, sem instância de `Prefabs/LawSchool.prefab`. Eu havia alterado somente o prefab. A porta da manutenção na cena permanecia sem exigência de chave e a cena não continha o pickup/controlador da manutenção.
+
+Correção agora salva diretamente em `LawSchool.unity`: porta real exige `law-school-maintenance`; bloqueio sólido do vão ativo; pickup e controlador ligados aos objetos reais da cena; duas chaves no total, disponíveis desde a entrada em salas diferentes, separadas por no mínimo 45 m e fora do corredor da manutenção. Limite de 38 chegadas alinhado na cena. Referências locais e preservação dos IDs anteriores conferidas por arquivos. Sem Unity, gameplay, capturas, commit, push ou desligamento.

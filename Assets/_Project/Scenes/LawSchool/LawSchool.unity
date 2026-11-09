@@ -83072,6 +83072,7 @@ Transform:
   m_LocalScale: {x: 1.25, y: 1.25, z: 1.25}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 3925213393069943016}
   - {fileID: 66522890}
   - {fileID: 1691236581}
   - {fileID: 1705328100}
@@ -264631,6 +264632,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: law-school-maintenance
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1776898761}
@@ -531970,6 +531972,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 5256466564355404405}
   - component: {fileID: 1795379037}
   - component: {fileID: 1795379039}
   - component: {fileID: 1795379038}
@@ -532120,62 +532123,40 @@ MonoBehaviour:
   - {fileID: 609331188}
   - {fileID: 1102564669}
   - {fileID: 2083544873}
-  - {fileID: 646383907}
-  - {fileID: 747218917}
   - {fileID: 343717056}
   - {fileID: 1557121209}
   - {fileID: 906872452}
-  - {fileID: 2103550304}
   - {fileID: 781180106}
-  - {fileID: 1948880025}
   - {fileID: 690610138}
   - {fileID: 1768519515}
-  - {fileID: 1395990780}
   - {fileID: 724985231}
   - {fileID: 653230695}
-  - {fileID: 373745971}
   - {fileID: 629611349}
-  - {fileID: 2129736542}
   - {fileID: 550259257}
   - {fileID: 1827415811}
   - {fileID: 2102365490}
-  - {fileID: 1104696949}
-  - {fileID: 156863981}
   - {fileID: 236026879}
   - {fileID: 575525932}
   - {fileID: 2030413493}
   - {fileID: 1297881278}
-  - {fileID: 1594121337}
-  - {fileID: 1725250147}
   - {fileID: 1533998040}
   - {fileID: 1069071304}
   - {fileID: 1604717319}
-  - {fileID: 1574050606}
   - {fileID: 495371402}
-  - {fileID: 145142797}
   - {fileID: 1209388487}
   - {fileID: 657751819}
-  - {fileID: 390320066}
   - {fileID: 1473422866}
   - {fileID: 710409286}
-  - {fileID: 1990453040}
   - {fileID: 1680437891}
-  - {fileID: 2140607196}
   - {fileID: 255845669}
   - {fileID: 1451585466}
   - {fileID: 451202410}
-  - {fileID: 2007446257}
-  - {fileID: 1135510397}
   - {fileID: 1856027563}
   - {fileID: 158995247}
   - {fileID: 1474124775}
   - {fileID: 12859630}
-  - {fileID: 1701443480}
-  - {fileID: 1758345749}
   - {fileID: 14482480}
   - {fileID: 1225721394}
-  - {fileID: 1123528}
-  - {fileID: 93856729}
   keyLocations:
   - {fileID: 1453804150}
   - {fileID: 1137312809}
@@ -550219,6 +550200,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 9100000000000040102}
   - {fileID: 1994949879}
   - {fileID: 1429533579}
   - {fileID: 2043977244}
@@ -642527,3 +642509,278 @@ SceneRoots:
   - {fileID: 2079982006}
   - {fileID: 580899698}
   - {fileID: 1153897547}
+--- !u!1 &7670235980943934615
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3925213393069943016}
+  - component: {fileID: 3617713092794055118}
+  - component: {fileID: 866010568519123974}
+  m_Layer: 0
+  m_Name: "Chave da manuten\xE7\xE3o 104 \u2014 revelada pelo alarme"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &3925213393069943016
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7670235980943934615}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.052000016, z: 64}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 9085469705316812927}
+  m_Father: {fileID: 299184222}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &3617713092794055118
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7670235980943934615}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.34
+  m_Center: {x: 0, y: 0.12, z: 0}
+--- !u!114 &866010568519123974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7670235980943934615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38c8fbe899c0f6243a748856216d92ff, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::LawSchoolMaintenanceKeyPickup
+--- !u!1 &244619095008025838
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9085469705316812927}
+  - component: {fileID: 5281447763817058665}
+  - component: {fileID: 636187665704958106}
+  m_Layer: 0
+  m_Name: "Chave de manuten\xE7\xE3o"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9085469705316812927
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 244619095008025838}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.096, z: 0}
+  m_LocalScale: {x: 0.04, y: 0.04, z: 0.04}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3925213393069943016}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &5281447763817058665
+SpriteRenderer:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 244619095008025838}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 495217220, guid: cc3c9fdd0c034524896fd5082497b4c8, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1.5058824}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
+--- !u!114 &636187665704958106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 244619095008025838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98221062abc2032479f6f0e42a63103e, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Billboard
+--- !u!114 &5256466564355404405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1795379036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa6cf6c542082be428d7cd2b6cbb05a5, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::LawSchoolMaintenanceAccess
+  alarm: {fileID: 1795379039}
+  key: {fileID: 866010568519123974}
+  entranceBarrier: {fileID: 9100000000000040103}
+  minimumKeySeparation: 45
+  locations:
+  - {fileID: 1453804150}
+  - {fileID: 1137312809}
+  - {fileID: 71678431}
+  - {fileID: 1515646926}
+  - {fileID: 335655991}
+  - {fileID: 181732061}
+  - {fileID: 1774000925}
+  - {fileID: 227044816}
+  - {fileID: 509609310}
+  - {fileID: 1701896041}
+  - {fileID: 1550259925}
+  - {fileID: 2021486815}
+  - {fileID: 1267076519}
+  - {fileID: 1498160205}
+  - {fileID: 109336387}
+  - {fileID: 1605209253}
+  - {fileID: 1342724626}
+  - {fileID: 1165184131}
+  - {fileID: 1890924724}
+  - {fileID: 1822189251}
+  - {fileID: 1974212686}
+  - {fileID: 1648027967}
+  - {fileID: 310498965}
+  - {fileID: 799457764}
+  - {fileID: 241384521}
+  - {fileID: 746296845}
+  - {fileID: 1872379932}
+  - {fileID: 979591424}
+  - {fileID: 18118095}
+  - {fileID: 329912606}
+  - {fileID: 1496417204}
+  - {fileID: 797084107}
+  - {fileID: 1341897469}
+--- !u!1 &9100000000000040101
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9100000000000040102}
+  - component: {fileID: 9100000000000040103}
+  m_Layer: 0
+  m_Name: Maintenance entrance locked barrier
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9100000000000040102
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9100000000000040101}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.22, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1851874816}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &9100000000000040103
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9100000000000040101}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.7, y: 2.6, z: 0.5}
+  m_Center: {x: 0, y: 0, z: 0}
