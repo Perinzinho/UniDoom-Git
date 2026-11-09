@@ -48,16 +48,28 @@
 - [x] Corrigir hud da shotgun, arma fica com espaço para fora e imagem esticada, fazer scrip que faz com que se ajuste a cada resolução evitando que a hud da arma fique fora do lugar e fique esticada
 - [x] No bloco 3, a porta da manutenção deve ficar trancada, quando o player pega a ultima chave da cela e o alarme toca, a chave da manutenção spawna em uma sala aleatória, diminuir quantidade de zumbis em 20%
 - [x] Adicionar Créditos ao jogo, por enquanto faça o botão de créditos no menu inicial, deixe fácil de editar os textos e adicionar música
-- [] A sala onde está o símbolo e número correspondente não está trocando quando há um apagão
-- [] Fazer apagão ocorrer com um pouco mais de frequência
-- [] A cena do alarme no bloco de direito dispara se o jogador pegar a chave da cela no bloco 4, corrigir, isso deve acontecer quando o jogador no bloco de direito pega a chave da cela do bloco de direito
-- [] Aumentar a velocidade da rolagem dos créditos
-- [] Corrigir porta de saída do bloco 4 desaparecendo
-- [] Colocar um portal na prisão que leva ao campus da Unimar, pode ser um gif, vídeo sem fundo da internet
-- [] Corrigir zumbis voando quando o player volta para o campus da unimar
-- [] Corrigir zumbis presos e incapaz de mover no campus da unimar
-- [] Corrigir spawn do player no campus da Unimar quando ele vai da prisão para o campus
-- [] No bloco de direito, acho que o chat não entendeu oq eu queria, ao entrar no bloco de direito, vai ter 2 chaves colacadas aleatoraimente em salas diferentes, que não sejam do corredor da sala de manuntenção, 1, vai ser chave da cela que vai disparar o alarme, a outra é a chave da sala de manuntenção, ou seja, a sala de manuntenção deve estar trancada ao entrar no bloco de direito
+- [x] A sala onde está o símbolo e número correspondente não está trocando quando há um apagão
+- [x] Fazer apagão ocorrer com um pouco mais de frequência
+- [x] A cena do alarme no bloco de direito dispara se o jogador pegar a chave da cela no bloco 4, corrigir, isso deve acontecer quando o jogador no bloco de direito pega a chave da cela do bloco de direito
+- [x] Corrigir porta de saída do bloco 4 desaparecendo
+- [x] Colocar um portal na prisão que leva ao campus da Unimar, pode ser um gif, vídeo sem fundo da internet
+- [x] Corrigir zumbis voando quando o player volta para o campus da unimar
+- [x] Corrigir zumbis presos e incapaz de mover no campus da unimar
+- [x] Corrigir spawn do player no campus da Unimar quando ele vai da prisão para o campus
+- [x] No bloco de direito, acho que o chat não entendeu oq eu queria, ao entrar no bloco de direito, vai ter 2 chaves colacadas aleatoraimente em salas diferentes, que não sejam do corredor da sala de manuntenção, 1, vai ser chave da cela que vai disparar o alarme, a outra é a chave da sala de manuntenção, ou seja, a sala de manuntenção deve estar trancada ao entrar no bloco de direito
+- [] HUD da espingarda continua tendo partes dela para fora, deixei imagem na pasta docs/maps
+- [] Zumbis continuam sendo vistos sendo jogados no ar e caindo no chão ao ir para o campus da unimar
+- [] Zumbis não conseguem subir da grama para a calçada no campus, resolver
+- [] Zumbis devem fazer roaming, quando não estiverem perseguindo o player, ou seja, andando para direções aleatórais dentro de um raio de seu spawwn
+- [ ] Porta do bloco 4 continua sumindo quando se tenta sair de lá, dá para sair, mas a abertura mostra o vazio do mapa
+- [ ] Sala da manuntenção não está trancada no bloco de direito
+- [ ] Trocar sprite da chave no bloco de direito
+- [] Alguns zumbis continuam presos no chão e não conseguem andar
+- [] Reduzir em 20% a quantidade de zumbis do bloco de direito
+- [] Adicionar uma mecânica de lanterna no bloco de direito quando o alarme disparar
+
+
+IDEIA DO ALARME= AO ENTRAR NO BLOCO DE DIREITO, VAI TER 2 CHAVES, A DA CELA QUE VAI DISPARAR O ALARME E DA SALA DE MANUNTENÇÃO PARA ABRIR  A SALA DE MANUNTENÇÃO NO BLOCO, ENTÃO O JOGADOR DEVE ACHAR AS 2 CHAVES PARA PROSSEGUIR NO JOGO, É ISSO QUE EU QUERO QUE VC IMPLEMENTE
 
 
 
@@ -149,3 +161,20 @@ Validação: compilação; prefabs salvos/reabertos, IDs/GUIDs e referências; m
 ## Apresentação cinematográfica dos créditos — 08/11/2026
 
 Refeito o layout a pedido do usuário: fundo preto em toda a tela, coluna branca centralizada, sem painel, scrollbar, cabeçalho fixo ou botão sobreposto. Rolagem automática por tempo não escalado; começa abaixo da tela e termina quando todo o texto sair pelo topo. Pausas de 2 s no início e 3 s no fim, velocidade 24 unidades/s, retorno automático ao menu e encerramento da música. Esc/voltar do controle permitem pular. Conteúdo sem links e configuração musical preservados. Testes de jogo ficam com o usuário; os arquivos de captura/vídeo e ferramentas temporárias desta revisão foram retirados conforme a última instrução. Nenhum jogo/Play Mode foi iniciado e nenhuma janela foi aberta/focada.
+
+## Ajustes de fluxo — 09/11/2026
+
+Implementação salva, sem testes de jogo: pistas passam a trocar em cada apagão, sem bloqueio após abrir o puzzle; intervalos de luz em 20–40 s, primeira falha em 8–15 s. Alarme de Direito retoma apenas quando sua chave local tiver registrado o evento, sem disparar por inventário trazido de outro mapa. Chave da manutenção disponível desde a entrada, após definir a sala sorteada da chave da cela, excluindo essa sala e mantendo as posições elegíveis fora do corredor da manutenção.
+
+Ainda pendentes nesta lista: porta de saída do Bloco 4, portal da prisão, spawn de retorno e zumbis flutuando/presos no campus. Não foram geradas capturas, vídeos ou executado Play Mode nesta etapa.
+
+## Retorno da prisão e campus — 09/11/2026
+
+Cinco implementações restantes salvas. Os itens marcados indicam alteração de código; os testes de jogo ficam com o usuário.
+
+- Saída do Bloco 4: fachada de entrada com instâncias locais de materiais em dupla face, sem modificar os materiais compartilhados. Near clip da câmera limitado a 0,06 m no bloco para evitar que a superfície desapareça ao aproximar; valor anterior restaurado ao sair. Colisões e destino do portal preservados.
+- Prisão: portal animado em três anéis na transição já existente para CampusExterior / FromPrison. Visual feito em código, sem gif/vídeo/novas texturas, sem outro sistema de carregamento.
+- Zumbis no campus: navegação por física com gravidade e alinhamento inicial ao chão; agente de NavMesh desativado somente nessa cena para não bloquear a movimentação nem sustentar NPCs em altura incorreta. Steering, desvio, combate e regras das demais cenas preservados.
+- Retorno FromPrison: altura calculada a partir do piso e do CharacterController real. Escolha próxima ao ponto autoral, com espaço para a cápsula e fora do trigger de retorno, evitando colisões e teleporte imediato de volta. Falta de posição segura produz erro de configuração em vez de colocar o player dentro de obstáculo.
+
+Sem prints, vídeos, abertura/foco de Unity, Play Mode, execução do jogo, compilação ou build nesta etapa, conforme solicitado.

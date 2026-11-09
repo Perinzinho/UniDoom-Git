@@ -397,3 +397,9 @@ Aplicável ao **bloco de Direito**, conforme correção do usuário no pedido in
 A porta da manutenção 104 mantém folha/animação/colisão e exige `OpenDoorWithKey.requiredInventoryKey = law-school-maintenance`. Campos vazios preservam o comportamento das demais portas. Chaves das celas e chaves 01–03 antigas não substituem a da manutenção. Quadro, sirene, fases de luz, persistência do alarme e bloqueio da saída preservados. O pool de chegadas passa de **60 para 48**: removida uma referência a cada cinco, sem apagar marcadores ou mudar regras de segurança/variantes. Os zumbis já presentes permanecem após desligar o alarme.
 
 Validação em Edit Mode: configuração salva/reaberta, 32 locais após exclusão da sala da chave 1, pickup inicial oculto, limite de 48 e condição da porta em inventários isolados. Previews `output/Ultimos-Itens-{Chave-Manutencao-Direito,Porta-Manutencao-104}.png`. Cenas, importadores e IDs anteriores preservados. **Sem jogo/Play Mode, coleta/alarme/horda/animação/retorno entre cenas em runtime, abrir/focar janela, build ou FPS.** Registros antigos de Play Mode acima não validam este novo requisito de chave.
+
+## Chaves disponíveis desde a entrada — 09/11/2026
+
+As duas chaves do fluxo alarme/manutenção são posicionadas na entrada: a chave da cela 1 usa o sorteio existente e a chave da manutenção usa outra sala elegível, excluindo a origem da primeira e mantendo a exclusão da ala de manutenção. A manutenção começa trancada; não é necessário iniciar o alarme para sua chave aparecer. Posse e escolha continuam no inventário persistente existente.
+
+O alarme só retoma quando a coleta local da chave de Direito tiver registrado law-school-local-key-collected. Ter uma chave obtida no Bloco 4 não inicia esse evento. Horda máxima de 48 e desligamento no quadro preservados. Implementação salva, sem executar testes, jogo ou Play Mode. Este contrato substitui o registro anterior de aparecimento da chave apenas após disparar o alarme.

@@ -470,3 +470,9 @@ O aviso preexistente de indexação de `UnityEditor.Search.SearchDatabase` reapa
 ### Revisão do Bloco 4 — 08/11/2026
 
 Planta, apoios, mobiliário e validação atual registrados em [Docs/Maps/CampusBlock4.md](Docs/Maps/CampusBlock4.md). Hall ampliado, copa, coordenação, depósito compacto e espingarda coletável na sala da chave. Materiais, fotografias, cinco pistas, senha, scripts, menu, spawn IDs e portais anteriores preservados. Modelos 3D reutilizados sem duplicação de arquivos de origem; proveniência em `Licenses/AssetSources/CampusBlock4/layout-revision.json`. Revisão posterior ampliou salas aos módulos de LawSchool, copiou quatro banheiros, fechou laterais das catracas, removeu espera posterior, aplicou numeração 401–424 e textos impressos e ajustou portas/batentes. Capturas atuais em `output/Bloco4-Revisao-*.png`. As medidas e os testes anteriores são históricos; resultados atuais na ficha.
+
+## Retorno da prisão e chão dos atores — 09/11/2026
+
+CampusGrounding é compartilhado por Enemy e SceneArrivalPoint. Em CampusExterior, zumbis usam Rigidbody dinâmico com gravidade, são alinhados inicialmente ao suporte real e deixam de manter agente NavMesh habilitado fora de uma malha válida. As outras cenas continuam com seu controlador existente. No retorno FromPrison, o ponto autoral permanece, mas a altura final vem do piso e da cápsula do player; posições bloqueadas ou dentro do portal de retorno são evitadas em busca local de até 4 m. Se não houver posição segura, a transição informa configuração inválida.
+
+PrisonCampusPortal, exclusivo da prisão, adiciona três anéis animados à transição Basement → CampusExterior / FromPrison já existente. Não usa mídia externa ou novo sistema de carga. Scripts e metas persistentes; sem mudar geometria, spawns autorais, cenas ou prefabs nesta etapa. Não houve abertura/foco da Unity, jogo, Play Mode, compilação solicitada, build, prints ou vídeos; testes com o usuário.

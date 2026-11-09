@@ -16,6 +16,7 @@ public sealed class LawSchoolMaintenanceAccess : MonoBehaviour
     IEnumerator Start()
     {
         while (!GameManager.SessionPlayer) yield return null;
+        while (alarm && string.IsNullOrEmpty(alarm.SelectedKeyRoom)) yield return null;
         Sync();
     }
 
@@ -24,7 +25,7 @@ public sealed class LawSchoolMaintenanceAccess : MonoBehaviour
         if (!key) return;
         var player = GameManager.SessionPlayer;
         var inventory = player ? player.GetComponent<PlayerCellKeys>() : null;
-        bool visible = alarm && alarm.IsActive && inventory && !inventory.HasKey(KeyId);
+        bool visible = alarm && !string.IsNullOrEmpty(alarm.SelectedKeyRoom) && inventory && !inventory.HasKey(KeyId);
         if (visible)
         {
             var choices = new List<string>();

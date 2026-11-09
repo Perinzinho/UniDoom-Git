@@ -13,7 +13,7 @@ Atualizado: **2026-11-08**, revisão de [correcoesbloco4.md](correcoesbloco4.md)
 - Paleta laranja/azul conservada. Piso terrazzo e reboco padronizado reutilizam a base visual de Direito, em materiais exclusivos do Bloco 4. Paredes contínuas junto às lousas; janelas transparentes de observação restauradas nas frentes, ao lado das portas.
 - Quatro longarinas e quatro vasos do hall encostados às paredes, com folga geométrica de **15 mm**. Bancos mantêm orientação e escala; vasos girados para acomodar as folhagens. O vaso antes diante da secretaria foi levado para `z = −25,5`, junto à parede oeste perto da entrada; balcão, foto/símbolos e cruzamentos dos corredores livres.
 
-- Pisos: 129 colisores ativos com tag `Eco` e superfície `Interior`. Energia: primeiro evento em 12–24 s, seguintes em 35–75 s, apagão de 2–4 s; 199 luzes e 182 difusores. Chaves de cela: **7** no puzzle da 423 e **8** na mesa docente da 428. Contrato compartilhado: [PrisonCellKeys.md](PrisonCellKeys.md).
+- Pisos: 129 colisores ativos com tag `Eco` e superfície `Interior`. Energia: primeiro evento em 8–15 s, seguintes em 20–40 s, apagão de 2–4 s; 199 luzes e 182 difusores. Chaves de cela: **7** no puzzle da 423 e **8** na mesa docente da 428. Contrato compartilhado: [PrisonCellKeys.md](PrisonCellKeys.md).
 
 ## Portas, catracas e identificação
 
@@ -73,7 +73,7 @@ Dois fechamentos antigos sobrepostos às frentes de 426/428 foram reduzidos a `x
 
 Previews desta rodada: `output/Campus-Ultimas-Sala{426,428}-{Janela,VaoLivre}.png`, `Campus-Ultimas-Luzes-*.png` e `Campus-Ultimas-Chave-*.png`. Luzes e folhas foram posadas apenas para renderização fora de tela. Matrizes de chaves, duplicatas e IDs inválidos validados em objetos isolados no Editor. Cenas, importadores existentes, fotos/definição do puzzle preservados. Sem jogo, Play Mode, abertura/foco de janela, teste de gameplay, build ou FPS.
 
-## Pistas que mudam de monitor — estado atual
+## Pistas que mudam de monitor — revisão anterior
 
 `Block4MonitorClues`, salvo no prefab, referencia os cinco grupos originais de símbolo/dígito e 21 âncoras no `Monitor 24 polegadas` da `Estação 1`, na primeira fileira junto à janela. Apoio, salas inativas e a 423 trancada ficam fora dos destinos. Inicialmente: quadrado 402, triângulo 407, círculo 414, losango 420 e cruz **406**; a cruz saiu do laptop administrativo para obedecer à regra de primeira fileira. Nenhuma fotografia foi movida/editada.
 
@@ -82,3 +82,9 @@ Após intervalo de **180–300 s**, cada apagão completo oferece **25%** de cha
 Os destinos são **salas aleatórias**, cada âncora em um laboratório diferente. A 426 aparece somente na demonstração de preview, sem privilégio ou destino fixo na lógica. Materiais originais das pistas preservados.
 
 Checkpoint anterior à mecânica: **0fb6abbf**, enviado ao remoto antes desta implementação. Mil redistribuições isoladas, contrato das âncoras, duplicatas/destinos inválidos, compilação e referências conferidos em Edit Mode. Previews `output/Ultimos-Itens-Pista-*.png` e `Ultimos-Itens-Monitor-402-Apos-Troca.png`; a troca foi posada apenas para captura e não aciona o evento em jogo. Sem Play Mode, execução do jogo, abrir/focar janela, build ou FPS. O pedido de chave da manutenção/horda foi corrigido pelo usuário para **Direito**, sem acrescentar alarme ou trancar o depósito 419 do Bloco 4.
+
+## Estado atual — 09/11/2026
+
+As cinco pistas mudam para salas aleatórias distintas em cada apagão completo, sem a espera adicional de 180–300 s, sem chance de falhar e sem interromper as trocas após resolver o painel. Primeiro apagão em 8–15 s, próximos em 20–40 s. Mesmos 21 destinos na primeira fileira, mesmos pares e senha 24153.
+
+Saída: materiais da fachada de entrada passam a dupla face por instâncias locais em runtime, preservando os assets compartilhados. Near clip da câmera limitado a 0,06 m enquanto essa saída estiver carregada, com restauração ao destruir o objeto na troca de cena. Isso evita corte próximo e desaparecimento por face invertida. Porta, colisores e CampusExterior / FromCampusBlock4 mantidos. Sem Unity/Play Mode, build ou capturas nesta alteração; o usuário fará a validação.
