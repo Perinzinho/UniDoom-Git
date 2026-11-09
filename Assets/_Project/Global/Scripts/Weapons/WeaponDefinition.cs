@@ -31,6 +31,7 @@ public class WeaponDefinition : ScriptableObject
     [SerializeField] private Vector2 hudViewportLimit = new Vector2(.36f, .42f);
     [Tooltip("Attach cropped first-person artwork to the bottom/right screen edges.")]
     [SerializeField] private bool hudAttachToScreenEdges;
+    [SerializeField, Range(0f, .4f)] private float hudBottomCropFraction;
     [Tooltip("Optional opaque bounds in source texture pixels. Source sprites and importers stay unchanged.")]
     [SerializeField] private HudFrameBounds[] hudFrameBounds;
 
@@ -47,6 +48,7 @@ public class WeaponDefinition : ScriptableObject
     public Vector2 HudOffset => hudOffset;
     public Vector2 HudSize => hudSize;
     public bool HudAttachToScreenEdges => hudAttachToScreenEdges;
+    public float HudBottomCropFraction => hudBottomCropFraction;
     public Rect HudFrameRect(Sprite sprite)
     {
         if (!sprite) return default;

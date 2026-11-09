@@ -45,6 +45,7 @@ public class OpenDoorWithKey : MonoBehaviour
     private Vector3 closedCenter;
     private Transform hinge;
     private BoxCollider proximityTrigger;
+    private BoxCollider inventoryLockBarrier;
     private float openProgress;
     private float closeTimer;
     private bool unlocked;
@@ -55,7 +56,7 @@ public class OpenDoorWithKey : MonoBehaviour
     public bool IsFullyOpen => unlocked && openProgress >= .999f;
 
     public bool BlocksPlayer(Collider surface, PlayerPickupKey player) => door != null &&
-        surface.transform.IsChildOf(door) && !unlocked &&
+        (surface == inventoryLockBarrier || surface.transform.IsChildOf(door)) && !unlocked &&
         (!isActiveAndEnabled || requiresManualActivation || player == null || !HasRequiredKey(player));
 
     public float SurfaceDistanceSquared(Vector3 position)
@@ -75,6 +76,7 @@ public class OpenDoorWithKey : MonoBehaviour
             openingDirection = fixedOpeningDirection != 0 ? Mathf.Sign(fixedOpeningDirection) : (side >= 0f ? -1f : 1f);
         }
         unlocked = true;
+        if (inventoryLockBarrier) inventoryLockBarrier.enabled = false;
         return true;
     }
 
@@ -113,6 +115,16 @@ public enum DoorReloadTriggerMode
         }
 
         closedCenter = transform.InverseTransformPoint(door.TransformPoint(doorCollider.center));
+        if (!string.IsNullOrEmpty(requiredInventoryKey))
+        {
+            // Keep a solid, stationary lock volume while the key is missing, including
+            // the small jamb gaps that a moving leaf alone does not cover.
+            inventoryLockBarrier = gameObject.AddComponent<BoxCollider>();
+            inventoryLockBarrier.center = closedCenter;
+            Vector3 worldSize = Vector3.Scale(doorCollider.size, door.lossyScale);
+            Vector3 localSize = transform.InverseTransformVector(door.TransformDirection(worldSize));
+            inventoryLockBarrier.size = new Vector3(Mathf.Abs(localSize.x), Mathf.Abs(localSize.y), Mathf.Abs(localSize.z)) + Vector3.one * .08f;
+        }
         Vector3 hingePosition = door.TransformPoint(doorCollider.center +
             Vector3.Scale(doorCollider.size, hingePoint));
         // Compensa a escala antes da rotação para a folha não deformar ao girar.
@@ -160,6 +172,7 @@ public enum DoorReloadTriggerMode
 
     private void Update()
     {
+        if (inventoryLockBarrier) inventoryLockBarrier.enabled = !unlocked;
         // Teleportes e colliders desabilitados/destruídos podem não enviar OnTriggerExit.
         nearbyPlayers.RemoveWhere(IsOutsideTrigger);
         // Remove remembered crossing sides too, so returning after a teleport starts a fresh crossing.
@@ -184,6 +197,7 @@ public enum DoorReloadTriggerMode
             }
         }
 
+        if (inventoryLockBarrier) inventoryLockBarrier.enabled = !unlocked;
         bool shouldOpen = unlocked && (stayOpenAfterUnlock || nearbyPlayers.Count > 0);
         if (shouldOpen && openProgress <= 0f)
         {

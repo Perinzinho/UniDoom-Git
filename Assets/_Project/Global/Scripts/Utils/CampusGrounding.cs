@@ -8,7 +8,7 @@ namespace UniDoom.Utils
         {
             floor = default;
             float nearest = float.PositiveInfinity;
-            foreach (var hit in Physics.RaycastAll(feet + Vector3.up * .4f, Vector3.down, 16,
+            foreach (var hit in Physics.RaycastAll(feet + Vector3.up * .8f, Vector3.down, 16,
                          Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
             {
                 var col = hit.collider;
