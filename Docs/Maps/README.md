@@ -7,6 +7,7 @@ Leia este índice e **comece pela seção Leitura rápida da ficha do mapa solic
 | Bloco de Direito | `Assets/_Project/Scenes/LawSchool/LawSchool.unity` | [LawSchool.md](LawSchool.md) |
 | Bloco 4 — Tecnologia da Informação | `Assets/_Project/Scenes/CampusBlock4/CampusBlock4.unity` | [CampusBlock4.md](CampusBlock4.md) |
 | Campus Exterior — Unimar | `Assets/_Project/Scenes/CampusExterior/CampusExterior.unity` | Dependência: seção Conexões de [LawSchool.md](LawSchool.md#conexões) |
+| Biblioteca do Campus — Unimar | `Assets/_Project/Scenes/CampusLibrary/CampusLibrary.unity` | [CampusLibrary.md](CampusLibrary.md); contexto e portais em [README_CAMPUS_EXTERIOR.md](../../README_CAMPUS_EXTERIOR.md) |
 
 - Instruções operacionais: [prompt mestre](../../.codex/PROMPT_MESTRE.md).
 - Direção artística normativa: [Total Chaos visual direction](../../.codex/SKILL.md).
