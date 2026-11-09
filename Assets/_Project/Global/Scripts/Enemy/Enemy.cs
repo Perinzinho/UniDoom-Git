@@ -145,10 +145,11 @@ public class Enemy : MonoBehaviour, IDamageable
                 body.constraints &= ~RigidbodyConstraints.FreezePosition;
                 body.constraints |= RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             }
-            if (capsule && UniDoom.Utils.CampusGrounding.TryFloor(
-                    new Vector3(transform.position.x, capsule.bounds.min.y, transform.position.z), out var floor))
+            // Probe from the root: an authored spawn may already have its feet below
+            // the road. Starting a ray below that surface cannot recover the actor.
+            if (capsule && UniDoom.Utils.CampusGrounding.TryFloor(transform.position, out var floor))
             {
-                float offset = transform.position.y - capsule.bounds.min.y;
+                float offset = CampusFootOffset();
                 var grounded = new Vector3(transform.position.x, floor.point.y + offset + .02f, transform.position.z);
                 if (body) body.position = grounded;
                 else transform.position = grounded;
@@ -567,7 +568,7 @@ public class Enemy : MonoBehaviour, IDamageable
                 hasPatrolDestination = false;
                 position = transform.position;
             }
-            float offset = transform.position.y - capsule.bounds.min.y;
+            float offset = CampusFootOffset();
             if (UniDoom.Utils.CampusGrounding.TryFloor(position - Vector3.up * offset, out var floor))
             {
                 position.y = floor.point.y + offset + .015f;
@@ -644,15 +645,16 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private bool TryGround(Vector3 position, out Vector3 grounded)
     {
-        float footOffset = capsule != null ? transform.position.y - capsule.bounds.min.y : 1f;
         if (gameObject.scene.name == "CampusExterior")
         {
+            float campusFootOffset = CampusFootOffset();
             grounded = position;
-            if (!UniDoom.Utils.CampusGrounding.TryFloor(position - Vector3.up * footOffset, out var support) ||
-                Mathf.Abs(support.point.y - (position.y - footOffset)) > .35f) return false;
-            grounded.y = support.point.y + footOffset;
+            if (!UniDoom.Utils.CampusGrounding.TryFloor(position - Vector3.up * campusFootOffset, out var support) ||
+                Mathf.Abs(support.point.y - (position.y - campusFootOffset)) > .35f) return false;
+            grounded.y = support.point.y + campusFootOffset;
             return true;
         }
+        float footOffset = capsule != null ? transform.position.y - capsule.bounds.min.y : 1f;
         Vector3 origin = position + Vector3.up * .4f;
         int count = Physics.RaycastNonAlloc(origin, Vector3.down, movementHits, footOffset + .9f,
             obstacleLayers, QueryTriggerInteraction.Ignore);
@@ -669,6 +671,17 @@ public class Enemy : MonoBehaviour, IDamageable
             grounded = hit.point + Vector3.up * footOffset;
         }
         return nearest < float.PositiveInfinity;
+    }
+
+    private float CampusFootOffset()
+    {
+        if (!capsule) return 1f;
+        // Derive feet from the collider geometry, not the interpolated physics bounds.
+        // Appearance variants can change height/center while preserving the same feet.
+        Vector3 scale = transform.lossyScale;
+        float radius = capsule.radius * Mathf.Max(Mathf.Abs(scale.x), Mathf.Abs(scale.z));
+        float halfHeight = Mathf.Max(capsule.height * Mathf.Abs(scale.y) * .5f, radius);
+        return halfHeight - transform.TransformVector(capsule.center).y;
     }
 
     private void Face(Vector3 direction, float deltaTime)
