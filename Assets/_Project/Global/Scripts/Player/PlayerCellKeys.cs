@@ -10,7 +10,13 @@ public sealed class PlayerCellKeys : MonoBehaviour
     readonly HashSet<string> completedEvents = new HashSet<string>();
 
     public bool HasKey(string cellId) => !string.IsNullOrEmpty(cellId) && keys.Contains(cellId);
-    public bool TryAddKey(string cellId) => !string.IsNullOrEmpty(cellId) && keys.Add(cellId);
+    public int Revision { get; private set; }
+    public bool TryAddKey(string cellId)
+    {
+        if (string.IsNullOrEmpty(cellId) || !keys.Add(cellId)) return false;
+        Revision++;
+        return true;
+    }
     public bool HasCompletedEvent(string eventId) => completedEvents.Contains(eventId);
     public void CompleteEvent(string eventId) => completedEvents.Add(eventId);
 

@@ -3,10 +3,10 @@ using UnityEngine;
 namespace UniDoom.CampusBlock4
 {
     // Run inventory: survives scene transitions and checkpoint reloads, never a new game.
-    // Kept separate from PrisonProgress and Key01..03; no professor's cell is connected yet.
+    // The existing puzzle key also grants cell 07 in PlayerCellKeys; Key01..03 stay separate.
     public static class Block4PuzzleProgress
     {
-        public const string TeacherCellKeyId = "block4.teacher-cell";
+        public const string TeacherCellKeyId = "professor-cell-07";
         public static bool DoorUnlocked { get; private set; }
         public static bool HasTeacherCellKey { get; private set; }
         internal static void UnlockDoor() => DoorUnlocked = true;
