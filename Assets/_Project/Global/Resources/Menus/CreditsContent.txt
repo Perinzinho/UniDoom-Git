@@ -60,6 +60,7 @@ Licença CC0 1.0.
 - **CDmir** — Human Skull — CC0 1.0.
 - **loafbrr_1 / loafbrr** — Toilets: Sink A, Toilet Elongated A e Urinal A — CC0 1.0.
 - **nisu / 3DModelsCC0** — Office Chair — CC0 1.0.
+- **p0ss** — Open can (junk) — CC0 1.0.
 - **Yughues** — Palm Tree v2 — CC0 1.0.
 
 ### Innerscene

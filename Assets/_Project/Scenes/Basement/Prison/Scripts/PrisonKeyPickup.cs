@@ -4,7 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 public sealed class PrisonKeyPickup : MonoBehaviour
 {
-    [SerializeField, Range(1, 8)] int cellId = 1;
+    [SerializeField, Range(1, PrisonProgress.CellCount)] int cellId = 1;
     void OnEnable()
     {
         var player = GameManager.SessionPlayer;

@@ -167,21 +167,24 @@ internal static class PrisonCellLayoutBuilder
         divider.localScale = new Vector3(3.65f, 3.4f, .2f);
 
         gateTransform.name = $"Porta da cela {cellId:00}";
-        gateTransform.localPosition = new Vector3(side * 1.55f, 0f, start + .78f);
-        gateTransform.localScale = new Vector3(1f, 1f, .65f);
+        gateTransform.localPosition = new Vector3(side * 1.55f, 0f, start + .23f);
+        gateTransform.localScale = new Vector3(1f, 1f, .64f);
+        gateTransform.GetComponent<BoxCollider>().size = new Vector3(.13f, 2.9f, 2.365f);
         fixedBars.name = $"Grade fixa da cela {cellId:00}";
-        fixedBars.localPosition = new Vector3(side * 1.55f, 0f, start + 2.38f);
-        fixedBars.localScale = new Vector3(1f, 1f, .65f);
+        fixedBars.localPosition = new Vector3(side * 1.55f, 0f, start + 1.75f);
+        fixedBars.localScale = new Vector3(1f, 1f, .60f);
+        fixedBars.GetComponent<BoxCollider>().size = new Vector3(.13f, 2.9f, 2.415f);
         lintel.localPosition = new Vector3(side * 1.55f, 3.15f, center);
         lintel.localScale = new Vector3(.2f, .5f, CellWidth);
         bench.localPosition = new Vector3(side * 4.25f, .25f, center + .35f);
         bench.localScale = new Vector3(.75f, .5f, 1.25f);
+        bench.gameObject.SetActive(false);
 
         var teacherAsset = AssetDatabase.LoadAssetAtPath<GameObject>(teacherSpec.Path) ??
             throw new InvalidOperationException($"Missing teacher prefab: {teacherSpec.Path}");
         var teacher = (GameObject)PrefabUtility.InstantiatePrefab(teacherAsset, cell);
         teacher.name = $"Professor {teacherSpec.Name} - Cela {cellId:00}";
-        teacher.transform.localPosition = new Vector3(side * 2.8f, .03f, center + .45f);
+        teacher.transform.localPosition = new Vector3(side * 3.1f, .02f, start + 1.1f);
         teacher.transform.localRotation = Quaternion.identity;
         teacher.transform.localScale = Vector3.one;
 
@@ -190,7 +193,7 @@ internal static class PrisonCellLayoutBuilder
         var serializedGate = new SerializedObject(gate);
         serializedGate.FindProperty("cellId").intValue = cellId;
         serializedGate.FindProperty("teacher").objectReferenceValue = teacher.transform;
-        serializedGate.FindProperty("openingAngle").floatValue = left ? -100f : 100f;
+        serializedGate.FindProperty("openingAngle").floatValue = left ? -90f : 90f;
         serializedGate.FindProperty("openingDuration").floatValue = 1.4f;
         serializedGate.ApplyModifiedPropertiesWithoutUndo();
     }
@@ -198,14 +201,15 @@ internal static class PrisonCellLayoutBuilder
     private static void RemoveOldCells(Transform prison)
     {
         var remove = DirectChildren(prison).Where(t =>
-            t.name.StartsWith("Cela 07 -", StringComparison.Ordinal) ||
-            t.name.StartsWith("Cela 08 -", StringComparison.Ordinal) ||
+            (t.name.StartsWith("Cela ", StringComparison.Ordinal) && !t.name.EndsWith("imported props", StringComparison.Ordinal)) ||
             t.name.StartsWith("Teacher-", StringComparison.Ordinal) ||
             t.name.StartsWith("Professor ", StringComparison.Ordinal) ||
             t.name.StartsWith("Porta da cela ", StringComparison.Ordinal) ||
             t.name == "Divisória de cela" || t.name == "Colisão da grade" ||
             t.name == "Estrado enferrujado" || t.name == "Colchão abandonado" ||
             t.name == "Banco de concreto" ||
+            t.name.StartsWith("Fundo gasto - Cela ", StringComparison.Ordinal) ||
+            t.name == "Fechamento compacto após a cela 12" ||
             (t.name.Length == 2 && int.TryParse(t.name, out _)) ||
             t.name == "Worn custody sign backing").ToArray();
         foreach (var item in remove) UnityEngine.Object.DestroyImmediate(item.gameObject);
@@ -259,7 +263,8 @@ internal static class PrisonCellLayoutBuilder
 
     private static void RepositionServiceLights(Transform prison)
     {
-        var lights = DirectChildren(prison).Where(t => t.name == "Luz de serviço" || t.name == "Luz de servico - Celas 7 e 8")
+        var lights = DirectChildren(prison).Where(t => t.name == "Luz de serviço" || t.name == "Luz de servico - Celas 7 e 8" ||
+                t.name.StartsWith("Luz de serviço - trecho ", StringComparison.Ordinal))
             .OrderBy(t => t.localPosition.z).ToArray();
         float[] positions = { 6.2f, 10.4f, 14.6f, 18.8f, 23f };
         for (int i = 0; i < Math.Min(lights.Length, positions.Length); i++)

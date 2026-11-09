@@ -51,7 +51,8 @@ public class OpenDoorWithKey : MonoBehaviour
     private bool unlocked;
     private float openingDirection = 1f;
 
-    private bool RequiresAnyKey => requiresKey01 || requiresKey02 || requiresKey03;
+    private bool RequiresAnyKey => requiresKey01 || requiresKey02 || requiresKey03 ||
+        !string.IsNullOrEmpty(requiredInventoryKey);
     public bool IsUnlocked => unlocked;
     public bool IsOpen => unlocked && openProgress >= .8f;
     public bool IsFullyOpen => unlocked && openProgress >= .999f;
@@ -95,7 +96,7 @@ public class OpenDoorWithKey : MonoBehaviour
 
         if (!unlocked)
         {
-            float side = transform.InverseTransformPoint(player.transform.position).x - closedCenter.x;
+            float side = PlayerSide(player.transform.position);
             openingDirection = fixedOpeningDirection != 0 ? Mathf.Sign(fixedOpeningDirection) :
                 (side >= 0f ? -1f : 1f);
         }
