@@ -2,6 +2,7 @@
 
 ## Leitura rápida
 
+- Chaves 4/5/6/10/11 com metal envelhecido e número gravado, altura visual de aproximadamente 24 cm e raio de coleta de aproximadamente 1,05 m sobre as mesas. Distribuição e proposta dos puzzles preservadas. Conferência estática, sem Unity/Play Mode. [Contrato dos sprites e coleta](PrisonCellKeys.md).
 - Distribuição atual: cinco chaves de cela, **4/5/6/10/11**. Chaves 10 e 11 na cabine individual ao norte e na mesa da leitura silenciosa, respectivamente. [Proposta de puzzles curtos de leitura](CampusLibrary-Puzzles-Leitura.md); os enigmas ainda não estão implementados.
 - Cena: `Assets/_Project/Scenes/CampusLibrary/CampusLibrary.unity`; interior no prefab `Prefabs/CampusLibrary.prefab` da mesma pasta. A cena referencia o prefab; não há geração do mapa em runtime.
 - Este é o interior novo do campus Unimar. `Scenes/Library/Library.unity` é a biblioteca antiga e não pertence a esta revisão.

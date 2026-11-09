@@ -16,7 +16,11 @@ public sealed class LawSchoolMaintenanceKeyPickup : MonoBehaviour
         if (player.TryGetComponent<PlayerLife>(out var life) && life.IsDead) return;
         var inventory = player.GetComponent<PlayerCellKeys>();
         if (!inventory) inventory = player.gameObject.AddComponent<PlayerCellKeys>();
-        if (inventory.TryAddKey(LawSchoolMaintenanceAccess.KeyId)) SFXManager.Instance?.PlayKeyPickupSound();
+        if (inventory.TryAddKey(LawSchoolMaintenanceAccess.KeyId))
+        {
+            SFXManager.Instance?.PlayKeyPickupSound();
+            LawSchoolAlarmPrototype.NotifyKeyCollected(this, inventory);
+        }
         gameObject.SetActive(false);
     }
 }

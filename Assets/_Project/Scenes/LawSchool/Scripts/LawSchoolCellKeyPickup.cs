@@ -36,8 +36,7 @@ public sealed class LawSchoolCellKeyPickup : MonoBehaviour
         if (newlyCollected) SFXManager.Instance?.PlayKeyPickupSound();
         if (newlyCollected)
         {
-            keys.CompleteEvent(LawSchoolAlarmPrototype.TriggeredEventId);
-            alarm.BeginAlarm();
+            LawSchoolAlarmPrototype.NotifyKeyCollected(this, keys);
         }
         return newlyCollected;
     }
