@@ -52,7 +52,7 @@ namespace UniDoom.CampusBlock4
             if (inventory != null)
             {
                 inventory.gameObject.SetActive(gameplay && Block4PuzzleProgress.HasTeacherCellKey);
-                inventory.text = Time.unscaledTime < toastUntil ? "CHAVE COLETADA\nChave da cela • guardada no inventário" : "CHAVE DA CELA  /  NO INVENTÁRIO";
+                inventory.text = Time.unscaledTime < toastUntil ? "CHAVE COLETADA\nChave da cela 7 • guardada no inventário" : "CHAVE DA CELA 7  /  NO INVENTÁRIO";
             }
             if (!IsOpen || closing || Time.frameCount == openedFrame) return;
             var keyboard = Keyboard.current;
@@ -75,7 +75,7 @@ namespace UniDoom.CampusBlock4
                 var size = ((RectTransform)GameMenus.Instance.transform).rect.size;
                 var safe = Screen.safeArea;
                 float sx = safe.width / Mathf.Max(1, Screen.width), sy = safe.height / Mathf.Max(1, Screen.height);
-                card.localScale = Vector3.one * Mathf.Min(1, Mathf.Min(size.x * sx / 690, size.y * sy / 1010));
+                card.localScale = Vector3.one * Mathf.Min(1, Mathf.Min(size.x * sx / 690, size.y * sy / 930));
                 card.anchoredPosition = new Vector2((safe.center.x / Mathf.Max(1, Screen.width) - .5f) * size.x,
                     (safe.center.y / Mathf.Max(1, Screen.height) - .5f) * size.y);
             }
@@ -106,7 +106,7 @@ namespace UniDoom.CampusBlock4
             entry = ""; replaceEntry = false; closing = false;
             foreach (var button in keys) button.interactable = true;
             RenderEntry();
-            feedback.text = "Encontre as marcas junto às cinco fotografias.\nA ordem está junto ao quadro da turma.";
+            feedback.text = "Digite a senha.";
             feedback.color = MenuStyle.Muted;
             IsOpen = GameMenus.Instance != null && GameMenus.Instance.TryOpenInteraction(panel, this, OnClosed);
             if (IsOpen && Gamepad.current != null && Gamepad.current.buttonWest.wasPressedThisFrame)
@@ -121,7 +121,7 @@ namespace UniDoom.CampusBlock4
             if (replaceEntry) { entry = ""; replaceEntry = false; }
             if (entry.Length >= definition.Length) return;
             entry += (char)('0' + digit);
-            feedback.text = "CONFIRMAR para verificar a sequência.";
+            feedback.text = "";
             feedback.color = MenuStyle.Muted;
             RenderEntry();
         }
@@ -131,7 +131,7 @@ namespace UniDoom.CampusBlock4
             if (!IsOpen || closing) return;
             replaceEntry = false;
             if (entry.Length > 0) entry = entry.Substring(0, entry.Length - 1);
-            feedback.text = "Digite os cinco números na ordem dos símbolos.";
+            feedback.text = "";
             feedback.color = MenuStyle.Muted;
             RenderEntry();
         }
@@ -140,7 +140,7 @@ namespace UniDoom.CampusBlock4
         {
             if (!IsOpen || closing) return;
             entry = ""; replaceEntry = false; RenderEntry();
-            feedback.text = "Sequência limpa. Digite novamente.";
+            feedback.text = "";
             feedback.color = MenuStyle.Muted;
         }
 
@@ -155,7 +155,7 @@ namespace UniDoom.CampusBlock4
             }
             if (!definition.Accepts(entry))
             {
-                feedback.text = "SEQUÊNCIA INCORRETA\nConfira as marcas e a ordem junto ao quadro.";
+                feedback.text = "Senha incorreta";
                 feedback.color = new Color(.94f, .58f, .34f);
                 replaceEntry = true;
                 return;
@@ -165,7 +165,7 @@ namespace UniDoom.CampusBlock4
             RefreshWorld();
             closing = true;
             foreach (var button in keys) button.interactable = false;
-            feedback.text = "ACESSO LIBERADO\nA chave está dentro da sala.";
+            feedback.text = "ACESSO LIBERADO";
             feedback.color = new Color(.70f, .83f, .62f);
             StartCoroutine(CloseAfterInput(.85f));
         }
@@ -217,10 +217,10 @@ namespace UniDoom.CampusBlock4
             var button = face.gameObject.AddComponent<Button>();
             button.targetGraphic = face;
             var colors = button.colors;
-            colors.normalColor = new Color(.105f, .108f, .103f);
-            colors.highlightedColor = colors.selectedColor = new Color(.29f, .24f, .15f);
-            colors.pressedColor = new Color(.40f, .30f, .15f);
-            colors.disabledColor = new Color(.065f, .067f, .062f);
+            colors.normalColor = new Color(.27f, .285f, .28f);
+            colors.highlightedColor = colors.selectedColor = new Color(.42f, .45f, .40f);
+            colors.pressedColor = new Color(.13f, .16f, .13f);
+            colors.disabledColor = new Color(.12f, .13f, .12f);
             colors.fadeDuration = .08f;
             button.colors = colors;
             var text = MenuStyle.Text("Label", face.transform, label, 0, 0, width, height, size, MenuStyle.Paper);
@@ -235,28 +235,39 @@ namespace UniDoom.CampusBlock4
             panel = MenuStyle.Rect("Block 4 access keypad", GameMenus.Instance.transform, 0, 0, 0, 0).gameObject;
             MenuStyle.Stretch((RectTransform)panel.transform);
             var blocker = panel.AddComponent<Image>(); blocker.color = new Color(0, 0, 0, .45f); blocker.raycastTarget = true;
-            card = MenuStyle.Rect("Access terminal", panel.transform, 0, 0, 626, 948);
+            card = MenuStyle.Rect("Access terminal", panel.transform, 0, 0, 626, 870);
             card.anchorMin = card.anchorMax = card.pivot = new Vector2(.5f, .5f);
-            var background = card.gameObject.AddComponent<Image>(); background.color = new Color(.043f, .047f, .044f);
-            MenuStyle.Image("Brass header", card, 0, 0, 626, 5, MenuStyle.Amber);
-            MenuStyle.Text("Location", card, "BLOCO 4  /  SALA 423", 42, 28, 542, 34, 24, MenuStyle.Amber);
-            MenuStyle.Text("Title", card, "ACESSO RESTRITO", 42, 68, 542, 62, 43, MenuStyle.Paper).fontStyle = FontStyles.Bold;
-            MenuStyle.Text("Instructions", card, "Cada símbolo corresponde a um número.\nDigite os números na ordem indicada.", 42, 138, 542, 64, 25, MenuStyle.Paper);
-            MenuStyle.Image("Display", card, 42, 228, 542, 96, new Color(.015f, .021f, .018f));
-            digits = MenuStyle.Text("Five digits", card, "", 42, 228, 542, 96, 48, MenuStyle.Paper); digits.alignment = TextAlignmentOptions.Center;
-            feedback = MenuStyle.Text("Result", card, "", 42, 340, 542, 82, 23, MenuStyle.Muted);
+            var background = card.gameObject.AddComponent<Image>(); background.color = new Color(.075f, .085f, .08f);
+            MenuStyle.Image("Metal housing bevel", card, 5, 5, 616, 860, new Color(.34f, .36f, .33f));
+            MenuStyle.Image("Brushed metal face", card, 12, 12, 602, 846, new Color(.20f, .22f, .205f));
+            foreach(float x in new[]{24f,580f})foreach(float y in new[]{24f,824f})
+            {
+                MenuStyle.Image("Mounting screw",card,x,y,18,18,new Color(.105f,.115f,.11f));
+                MenuStyle.Image("Screw slot",card,x+3,y+8,12,2,new Color(.37f,.39f,.36f));
+            }
+            MenuStyle.Image("Serial plate",card,64,34,498,46,new Color(.075f,.08f,.075f));
+            var serial=MenuStyle.Text("Location",card,"CONTROLE DE ACESSO  •  423",76,42,474,28,22,MenuStyle.Paper);serial.alignment=TextAlignmentOptions.Center;
+            MenuStyle.Image("Power indicator",card,540,103,12,12,new Color(.47f,.66f,.34f));
+            MenuStyle.Text("Device label",card,"TECLADO NUMÉRICO",64,98,420,28,20,new Color(.65f,.68f,.62f));
+            MenuStyle.Image("LCD recessed frame", card, 52, 143, 522, 166, new Color(.035f, .045f, .035f));
+            MenuStyle.Image("LCD glass", card, 62, 153, 502, 146, new Color(.12f, .18f, .12f));
+            MenuStyle.Text("LCD header",card,"SALA 423     /     ACESSO RESTRITO",78,165,470,24,18,new Color(.55f,.68f,.45f));
+            digits = MenuStyle.Text("Five digits", card, "", 72, 191, 482, 68, 48, new Color(.74f,.86f,.59f)); digits.alignment = TextAlignmentOptions.Center;
+            feedback = MenuStyle.Text("Result", card, "", 76, 266, 474, 26, 21, new Color(.63f,.75f,.53f));feedback.alignment=TextAlignmentOptions.Center;
+            for(int i=0;i<4;i++)MenuStyle.Image("Speaker slot",card,217,329+i*7,192,2,new Color(.075f,.085f,.075f));
             keys = new Button[14];
             for (int i = 0; i < 9; i++)
             {
                 int digit = i + 1;
-                keys[i] = Control(card, "Digit " + digit, digit.ToString(), 42 + (i % 3) * 185, 438 + (i / 3) * 82, 172, 70,
+                MenuStyle.Image("Key socket",card,57+(i%3)*176,379+(i/3)*82,160,76,new Color(.06f,.07f,.06f));
+                keys[i] = Control(card, "Digit " + digit, digit.ToString(), 60 + (i % 3) * 176, 380 + (i / 3) * 82, 154, 68,
                     () => { if (!KeyboardSubmit) EnterDigit(digit); }, 35);
             }
-            keys[9] = Control(card, "Backspace", "APAGAR", 42, 684, 172, 70, () => { if (!KeyboardSubmit) Backspace(); }, 23);
-            keys[10] = Control(card, "Digit 0", "0", 227, 684, 172, 70, () => { if (!KeyboardSubmit) EnterDigit(0); }, 35);
-            keys[11] = Control(card, "Clear", "LIMPAR", 412, 684, 172, 70, () => { if (!KeyboardSubmit) Clear(); }, 23);
-            keys[12] = Control(card, "Confirm", "CONFIRMAR", 42, 776, 542, 66, Submit, 29);
-            keys[13] = Control(card, "Close", "FECHAR  /  ESC", 42, 858, 542, 50, Cancel, 22);
+            keys[9] = Control(card, "Backspace", "APAGAR", 60, 626, 154, 68, () => { if (!KeyboardSubmit) Backspace(); }, 22);
+            keys[10] = Control(card, "Digit 0", "0", 236, 626, 154, 68, () => { if (!KeyboardSubmit) EnterDigit(0); }, 35);
+            keys[11] = Control(card, "Clear", "LIMPAR", 412, 626, 154, 68, () => { if (!KeyboardSubmit) Clear(); }, 22);
+            keys[12] = Control(card, "Confirm", "CONFIRMAR", 60, 716, 506, 58, Submit, 26);
+            keys[13] = Control(card, "Close", "AFASTAR-SE  /  ESC", 60, 793, 506, 32, Cancel, 19);
             // Explicit horizontal / vertical navigation keeps a controller inside this modal.
             for (int i = 0; i < 12; i++)
             {

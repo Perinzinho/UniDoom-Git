@@ -29,7 +29,8 @@ public sealed class PrisonCellGate : MonoBehaviour
 
     public bool TryOpen(PlayerPickupKey player)
     {
-        if (!isActiveAndEnabled || IsOpen || !PrisonProgress.HasKey || player == null ||
+        if (!isActiveAndEnabled || IsOpen || player == null ||
+            !PrisonProgress.HasCellKey(cellId, player.GetComponent<PlayerCellKeys>()) ||
             UniDoom.UI.GameMenus.BlocksGameplay || Time.timeScale <= 0) return false;
         var life = player.GetComponent<PlayerLife>();
         if (life != null && life.IsDead) return false;
