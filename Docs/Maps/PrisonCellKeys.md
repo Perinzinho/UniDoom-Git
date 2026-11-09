@@ -20,3 +20,7 @@ Sprites: atlas compartilhado `Assets/_Project/Global/Resources/Textures/Pickups/
 Onze gravações existentes tratadas, mantendo caminhos, GUIDs, importadores e associações. Ruído moderado reduzido, silêncios retirados, volume medido entre −18,30 e −17,98 LUFS e pico verdadeiro máximo −1,50 dBTP. Cortes confirmados pelo usuário: Henrique sem “calma”, mantendo “Vai Corinthians”; Bianca somente “yipeee” final. Medições e hashes em `Licenses/AssetSources/Teachers/audio-edit.json`. Os professores Ferraroni, Navarro e Rafa já não tinham áudio associado; nenhum áudio de outro professor foi atribuído a eles. Todos os onze arquivos fornecidos foram processados, inclusive os ainda sem consumidor.
 
 Validação: matriz 8 × 8 de identidade, duplicatas, IDs inválidos e sprites carregados em objetos isolados no modo de edição; prefabs reabertos, referências e IDs preservados; previews fora de tela em `output/Campus-Ultimas-Chave-*.png`; hashes e métricas dos áudios conferidos. Sem executar jogo, Play Mode, ativar/focar janela ou testar coleta, retorno entre mapas, áudio/HUD em runtime, build ou FPS.
+
+## Chave da manutenção de Direito
+
+Além das oito chaves de cela, `law-school-maintenance` abre apenas a porta da manutenção 104. Ela é revelada pelo alarme da chave da cela 1, em sala diferente da origem do alarme. Não abre celas nem substitui as oito chaves numeradas. Usa o mesmo inventário persistente e um sprite sem número já existente; detalhes em [LawSchool.md](LawSchool.md).

@@ -36,7 +36,7 @@
 - [x] A porta da 428 e 426 foram colocadas no lado oposto do banheiro, mas não é acessível, a porta não se abre e não há janelas
 - [x] Adicionar evento aleatório de luzes piscando, apagando, voltando para criar ambiente
 - [x] Adicionar tags aos chãos para reproduzir som de passo
-- [] Adicionar mecânica no bloco 4, quanto as luzes se apagam, os computadores que tem os símbolos trocam de monitor, então se o circulo tá no computador da 406, ele vai pra 426 por exemplo, isso deve ocorrer com pouca frequência, e  o símbolo sempre deve estar na primeira fileira dos computadores, a fileira que é próxima da janela- Fazer commit das alterações antes de começar essa tarefa
+- [x] Adicionar mecânica no bloco 4, quanto as luzes se apagam, os computadores que tem os símbolos trocam de monitor, então se o circulo tá no computador da 406, ele vai pra 426 por exemplo, isso deve ocorrer com pouca frequência, e  o símbolo sempre deve estar na primeira fileira dos computadores, a fileira que é próxima da janela- Fazer commit das alterações antes de começar essa tarefa
 
 
 
@@ -45,9 +45,19 @@
 - [x] Preciso que os audios dos professores sejam editados, remover ruído, vozes alternativas e silencio, ajustar som para ficarem no mesmo volume
 - [x] Criar sprite de chave para celas, cada chave abre 1 cela no porão,
 - [x] Distribuir essas chaves entre os 3 prédios, biblioteca do campus, bloco de direito e bloco 4
-- [] Corrigir hud da shotgun, arma fica com espaço para fora e imagem esticada, fazer scrip que faz com que se ajuste a cada resolução evitando que a hud da arma fique fora do lugar e fique esticada
-- [] No bloco 4, a porta da manutenção deve ficar trancada, quando o player pega a ultima chave da cela e o alarme toca, a chave da manutenção spawna em uma sala aleatória, diminuir quantidade de zumbis em 20%
-- [] Adicionar Créditos ao jogo, por enquanto faça o botão de créditos no menu inicial, deixe fácil de editar os textos e adicionar música
+- [x] Corrigir hud da shotgun, arma fica com espaço para fora e imagem esticada, fazer scrip que faz com que se ajuste a cada resolução evitando que a hud da arma fique fora do lugar e fique esticada
+- [x] No bloco 3, a porta da manutenção deve ficar trancada, quando o player pega a ultima chave da cela e o alarme toca, a chave da manutenção spawna em uma sala aleatória, diminuir quantidade de zumbis em 20%
+- [x] Adicionar Créditos ao jogo, por enquanto faça o botão de créditos no menu inicial, deixe fácil de editar os textos e adicionar música
+- [] A sala onde está o símbolo e número correspondente não está trocando quando há um apagão
+- [] Fazer apagão ocorrer com um pouco mais de frequência
+- [] A cena do alarme no bloco de direito dispara se o jogador pegar a chave da cela no bloco 4, corrigir, isso deve acontecer quando o jogador no bloco de direito pega a chave da cela do bloco de direito
+- [] Aumentar a velocidade da rolagem dos créditos
+- [] Corrigir porta de saída do bloco 4 desaparecendo
+- [] Colocar um portal na prisão que leva ao campus da Unimar, pode ser um gif, vídeo sem fundo da internet
+- [] Corrigir zumbis voando quando o player volta para o campus da unimar
+- [] Corrigir zumbis presos e incapaz de mover no campus da unimar
+- [] Corrigir spawn do player no campus da Unimar quando ele vai da prisão para o campus
+- [] No bloco de direito, acho que o chat não entendeu oq eu queria, ao entrar no bloco de direito, vai ter 2 chaves colacadas aleatoraimente em salas diferentes, que não sejam do corredor da sala de manuntenção, 1, vai ser chave da cela que vai disparar o alarme, a outra é a chave da sala de manuntenção, ou seja, a sala de manuntenção deve estar trancada ao entrar no bloco de direito
 
 
 
@@ -97,7 +107,7 @@ Quatro longarinas e quatro vasos aproximados das faces internas das paredes, com
 
 Somente oito instâncias do mobiliário do hall alteradas; cena, modelos de origem, materiais, scripts e puzzle preservados. Previews da disposição atual: `output/Bloco4-Hall-Paredes-*.png`. Conferência em prefab reaberto e renderização fora de tela; **sem jogo, Play Mode ou janela interativa**.
 
-## Terceira lista — 08/11/2026 (estado atual)
+## Terceira lista — 08/11/2026 (histórico)
 
 Os cinco novos itens estão implementados e salvos:
 
@@ -109,7 +119,7 @@ Os cinco novos itens estão implementados e salvos:
 
 Preservados os 37.492 IDs existentes antes desta lista, importadores, cena, posições dos bancos/vasos do hall, scripts, cinco pistas, fotografias, chave, espingarda e senha. Compilação, gravação/reabertura do prefab, dimensões, materiais, referências e previews em `output/Bloco4-TerceiraLista-*.png`. Nesta lista foi usado **o editor já aberto, sem foco/ativação de janela e sem iniciar jogo ou Play Mode**. Travessias, abertura das portas, coletas, build, FPS e NavMesh não foram executados. Ferramentas temporárias desta tarefa retiradas após verificar os resultados persistentes.
 
-## Quarta lista — 08/11/2026
+## Quarta lista — 08/11/2026 (histórico)
 
 Seis itens implementados e salvos nesta rodada. A nova troca de monitores durante apagões, a adaptação da HUD da espingarda, a progressão da manutenção e os créditos continuam pendentes. O checkpoint Git é anterior à implementação dessas novas tarefas.
 
@@ -120,3 +130,22 @@ Seis itens implementados e salvos nesta rodada. A nova troca de monitores durant
 - **Áudios:** onze arquivos existentes tratados com redução moderada de ruído, corte de silêncio e normalização próxima de −18 LUFS. Henrique: removido apenas o “calma”, mantendo “Vai Corinthians”; Bianca: mantida somente a comemoração final “yipeee”, conforme respostas do usuário. GUIDs, importadores e associações existentes preservados. Medições e hashes: `Licenses/AssetSources/Teachers/audio-edit.json`.
 
 Validação em modo de edição: controle negativo com porta fechada e cápsula do player livre em cinco posições por vão com a folha posada aberta; matriz 8 × 8 de chaves/celas, duplicatas e IDs inválidos; referências, IDs e hashes; análise dos áudios e previews fora de tela em `output/Campus-Ultimas-*.png`. As quatro cenas, os importadores anteriores, fotografias e definição do puzzle permaneceram byte a byte iguais nesta rodada. **Sem iniciar jogo/Play Mode, abrir outro editor ou ativar/focar a janela da Unity.** Abertura automática, coleta, evento aleatório, escuta no jogo, transições, build e FPS não foram testados em runtime. Ferramentas temporárias desta rodada removidas após conferir os assets persistentes.
+
+## Últimas pendências — 08/11/2026
+
+Quatro itens implementados. A manutenção se refere ao **bloco de Direito (LawSchool / bloco 3)**, conforme correção expressa do usuário; o disparo continua sendo a coleta da chave sorteada da **cela 1**, sem esperar as outras chaves.
+
+- **Monitores do Bloco 4:** cinco pares símbolo/número preservados, inicialmente em 402, 407, 414, 420 e 406. Destinos limitados ao primeiro computador da primeira fileira de **21 laboratórios acessíveis**, perto das janelas; 423 excluída enquanto depende do puzzle. Após espera de 180–300 s, cada apagão tem 25% de chance de mover os cinco pares para monitores distintos, todos diferentes dos anteriores. Nova espera de 180–300 s após uma troca. Mudança ocorre somente no início do apagão completo, após as piscadas; distribuição persiste ao retornar na mesma sessão e para após destravar o puzzle. Código **24153**, associações símbolo/número, fotos, quadro, chave e espingarda preservados. Checkpoint anterior: `0fb6abbf`, já enviado antes desta implementação.
+- **Espingarda:** configuração própria para encostar nas bordas inferior/direita e ajuste por proporção real da arte opaca de cada sprite. Margens transparentes compensadas por recortes UV em memória, em cache; escala de pixel constante entre poses. O tamanho respeita a área disponível em cada resolução; tiro/recarga mantêm os quadros e tempos originais. Ajuste refeito ao mudar resolução, arma ou quadro, sem esticar a imagem nem editar pixels/importadores.
+- **Direito:** manutenção 104 exige a chave separada `law-school-maintenance`. O alarme original da cela 1 revela uma única chave em uma das posições de sala já existentes; a sala da chave do alarme é excluída, restando **32 escolhas elegíveis** na configuração atual. Local e posse persistem na sessão, inclusive ao recarregar o mapa. Chaves de celas não abrem essa porta. O quadro e o bloqueio da saída continuam no fluxo original. Horda reduzida exatamente em 20%: **60 → 48 chegadas**, preservando os objetos dos marcadores e as regras de spawn seguro.
+- **Créditos:** botão existente ligado a conteúdo completo com rolagem automática lenta, com autoria, recursos, agradecimentos à Unimar e aos professores e os 13 nomes em ordem alfabética. Links dos modelos removidos a pedido do usuário, preservando autores e títulos. Campo musical opcional e volume em asset próprio; texto em arquivo editável. Espera inicial de 2 s, velocidade de 24 unidades/s e pausa final de 3 s; ao terminar, volta automaticamente ao menu inicial e encerra a música. Tela preta inteira, texto branco centralizado e movimento automático de baixo para cima; sem caixa de texto ou barra de rolagem. Mouse não interrompe o movimento. Sem inventar nomes de testers. Caminhos e edição: [../Credits.md](../Credits.md).
+
+A 426 foi usada apenas como destino demonstrado em um preview; o jogo sorteia salas, sem sala fixa. Materiais originais das pistas preservados.
+
+Validação: compilação; prefabs salvos/reabertos, IDs/GUIDs e referências; mil redistribuições sem duplicar destinos nem manter a pista no mesmo monitor; rejeição de destinos inválidos; manutenção rejeita inventário vazio/apenas chaves de celas e aceita sua chave; **189 combinações de quadros/resoluções da espingarda**, com limites e proporções conferidos; conteúdo dos créditos. Quinze previews fora de tela em `output/Ultimos-Itens-*.png`, incluindo troca demonstrada para 426, monitor de origem sem a pista, chave da manutenção, espingarda em 4:3/16:9/ultrawide e início/final dos créditos. As duas cenas, importadores existentes, texturas e definição do puzzle preservados. Ferramentas temporárias retiradas após verificar os assets persistentes.
+
+**Sem jogo, Play Mode, abrir/focar janela, áudio em reprodução, build ou medição de FPS.** Coleta, evento aleatório, spawn, travessia, persistência entre cenas e navegação de menus/controle não foram testados em execução. `[x]` significa implementação salva, não validação de gameplay.
+
+## Apresentação cinematográfica dos créditos — 08/11/2026
+
+Refeito o layout a pedido do usuário: fundo preto em toda a tela, coluna branca centralizada, sem painel, scrollbar, cabeçalho fixo ou botão sobreposto. Rolagem automática por tempo não escalado; começa abaixo da tela e termina quando todo o texto sair pelo topo. Pausas de 2 s no início e 3 s no fim, velocidade 24 unidades/s, retorno automático ao menu e encerramento da música. Esc/voltar do controle permitem pular. Conteúdo sem links e configuração musical preservados. Testes de jogo ficam com o usuário; os arquivos de captura/vídeo e ferramentas temporárias desta revisão foram retirados conforme a última instrução. Nenhum jogo/Play Mode foi iniciado e nenhuma janela foi aberta/focada.

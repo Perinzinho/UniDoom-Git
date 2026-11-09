@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class WeaponSpriteAnimator : MonoBehaviour
 {
@@ -29,6 +30,11 @@ public class WeaponSpriteAnimator : MonoBehaviour
     private Vector2 requestedHudPosition, requestedHudSize, fittedParentSize;
     private RectTransform fittedParent;
     private bool hudLayoutDirty;
+    private Sprite fittedSprite;
+    private bool attachToScreenEdges;
+    private WeaponDefinition hudDefinition;
+    private Vector2 animationCanvas;
+    private readonly Dictionary<Sprite, Sprite> hudFrames = new Dictionary<Sprite, Sprite>();
 
     void Start()
     {
@@ -111,6 +117,12 @@ public class WeaponSpriteAnimator : MonoBehaviour
     {
         if (weaponImage == null)
             return;
+        ClearHudFrames();
+        hudDefinition = definition;
+        animationCanvas = Vector2.zero;
+        foreach (var frames in new[] { idleFrames, shootFrames, rechargeFrames })
+            if (frames != null)
+                foreach (var frame in frames) if (frame) animationCanvas = Vector2.Max(animationCanvas, frame.rect.size);
 
         RectTransform imageTransform = weaponImage.rectTransform;
         if (!hasDefaultHudLayout)
@@ -125,10 +137,12 @@ public class WeaponSpriteAnimator : MonoBehaviour
         weaponImage.preserveAspect = true;
         weaponImage.raycastTarget = false;
         hudViewportLimit = definition != null ? definition.HudViewportLimit : new Vector2(.36f, .42f);
-        minimumRightMargin = definition != null && definition.AxePrefab != null ? 0f : 16f;
+        attachToScreenEdges = definition != null && (definition.HudAttachToScreenEdges || definition.AxePrefab != null);
+        minimumRightMargin = attachToScreenEdges ? 0f : 16f;
         // Melee poses are cut at the original screen edge; a firearm's inset exposes that cut.
         requestedHudPosition = (definition != null && definition.AxePrefab != null ? Vector2.zero : defaultHudPosition) +
             (definition != null ? definition.HudOffset : Vector2.zero);
+        if (attachToScreenEdges) requestedHudPosition = Vector2.zero;
         Vector2 configuredSize = definition != null ? definition.HudSize : Vector2.zero;
         requestedHudSize = configuredSize.x > 0f && configuredSize.y > 0f
             ? configuredSize
@@ -147,22 +161,64 @@ public class WeaponSpriteAnimator : MonoBehaviour
         if (parent == null) return;
         Vector2 available = parent.rect.size;
         if (available.x <= 0 || available.y <= 0) return;
-        if (!hudLayoutDirty && fittedParent == parent && fittedParentSize == available) return;
+        if (!hudLayoutDirty && fittedParent == parent && fittedParentSize == available && fittedSprite == weaponImage.sprite) return;
         fittedParent = parent;
         fittedParentSize = available;
         hudLayoutDirty = false;
+        fittedSprite = weaponImage.sprite;
 
         // Reserve the centre for aiming and cap width independently on narrower monitors.
-        float scale = Mathf.Min(1, Mathf.Min(available.x * hudViewportLimit.x / Mathf.Max(1, requestedHudSize.x),
-            available.y * hudViewportLimit.y / Mathf.Max(1, requestedHudSize.y)));
-        Vector2 size = requestedHudSize * scale;
+        var displaySprite = HudSprite(fittedSprite);
+        weaponImage.overrideSprite = displaySprite;
+        Vector2 frame = displaySprite ? displaySprite.rect.size : requestedHudSize;
+        Rect fit = CalculateHudRect(available, requestedHudSize, frame, hudViewportLimit,
+            requestedHudPosition, minimumRightMargin, animationCanvas);
+        Vector2 size = fit.size;
         imageRect.sizeDelta = size;
-        float right = Mathf.Clamp(-requestedHudPosition.x, minimumRightMargin,
-            Mathf.Max(minimumRightMargin, available.x - size.x));
-        // The arms meet the bottom edge, but no part of the frame extends below it.
-        float bottom = Mathf.Clamp(requestedHudPosition.y, 0, Mathf.Max(0, available.y - size.y));
-        imageRect.anchoredPosition = new Vector2(-right, bottom);
+        imageRect.anchoredPosition = new Vector2(fit.xMax - available.x, fit.yMin);
     }
+
+    // Match the actual sprite aspect before fitting: preserveAspect alone centres a smaller
+    // drawing inside a mismatched rectangle, exposing a gap beneath cropped first-person arms.
+    public static Rect CalculateHudRect(Vector2 available, Vector2 requested, Vector2 frame,
+        Vector2 viewportLimit, Vector2 position, float rightMargin, Vector2 animationCanvas = default)
+    {
+        if (animationCanvas.x <= 0 || animationCanvas.y <= 0) animationCanvas = frame;
+        float pixelScale = Mathf.Min(requested.x / Mathf.Max(1, animationCanvas.x),
+            requested.y / Mathf.Max(1, animationCanvas.y));
+        Vector2 envelope = animationCanvas * pixelScale;
+        float scale = Mathf.Min(1, Mathf.Min(available.x * viewportLimit.x / Mathf.Max(1, envelope.x),
+            available.y * viewportLimit.y / Mathf.Max(1, envelope.y)));
+        var size = frame * (pixelScale * scale);
+        float right = Mathf.Clamp(-position.x, rightMargin, Mathf.Max(rightMargin, available.x - size.x));
+        float bottom = Mathf.Clamp(position.y, 0, Mathf.Max(0, available.y - size.y));
+        return new Rect(available.x - right - size.x, bottom, size.x, size.y);
+    }
+
+    Sprite HudSprite(Sprite source)
+    {
+        if (!source || !hudDefinition) return source;
+        Rect rect = hudDefinition.HudFrameRect(source);
+        if (rect == source.rect) return source;
+        if (!hudFrames.TryGetValue(source, out var cropped))
+        {
+            cropped = Sprite.Create(source.texture, rect, new Vector2(.5f, .5f), source.pixelsPerUnit, 0, SpriteMeshType.FullRect);
+            cropped.name = source.name + " — HUD opaque bounds";
+            cropped.hideFlags = HideFlags.DontSave;
+            hudFrames.Add(source, cropped);
+        }
+        return cropped;
+    }
+
+    void ClearHudFrames()
+    {
+        if (weaponImage) weaponImage.overrideSprite = null;
+        foreach (var frame in hudFrames.Values)
+            if (frame) { if (Application.isPlaying) Destroy(frame); else DestroyImmediate(frame); }
+        hudFrames.Clear();
+    }
+
+    void OnDestroy() => ClearHudFrames();
 
     void OnDisable()
     {

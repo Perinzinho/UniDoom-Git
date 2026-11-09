@@ -7,6 +7,8 @@ public class OpenDoorWithKey : MonoBehaviour
     [SerializeField] private bool requiresKey01;
     [SerializeField] private bool requiresKey02;
     [SerializeField] private bool requiresKey03;
+    [Tooltip("Optional key in the existing persistent PlayerCellKeys inventory.")]
+    [SerializeField] private string requiredInventoryKey;
     [Tooltip("Requires an explicit interaction instead of unlocking by proximity.")]
     [SerializeField] private bool requiresManualActivation;
     [SerializeField] private bool stayOpenAfterUnlock;
@@ -257,7 +259,9 @@ public enum DoorReloadTriggerMode
     {
         return (!requiresKey01 || player.key01) &&
             (!requiresKey02 || player.key02) &&
-            (!requiresKey03 || player.key03);
+            (!requiresKey03 || player.key03) &&
+            (string.IsNullOrEmpty(requiredInventoryKey) ||
+                (player.TryGetComponent<PlayerCellKeys>(out var inventory) && inventory.HasKey(requiredInventoryKey)));
     }
 
     private float PlayerSide(Vector3 position)
