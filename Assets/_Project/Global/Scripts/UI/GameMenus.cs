@@ -28,7 +28,7 @@ namespace UniDoom.UI
         GameObject main, pause, death, options, credits, confirmation, mapSelection, gameOver;
         Button gameOverRestart, gameOverBack;
         Button chooseMap, mapFirst;
-        Button mainFirst, pauseFirst, deathRetry, deathBack, optionsBack, creditsBack, cancel;
+        Button mainFirst, pauseFirst, deathRetry, deathBack, optionsBack, cancel;
         Slider sensitivity, volume;
         Toggle invertY, fullscreen;
         TMP_Text sensitivityValue, volumeValue, confirmText, error, deathHint;
@@ -85,6 +85,7 @@ namespace UniDoom.UI
         void Update()
         {
             if (busy) return;
+            UpdateCreditsScroll();
             bool back = (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) ||
                 (Gamepad.current != null && (Gamepad.current.startButton.wasPressedThisFrame || Gamepad.current.buttonEast.wasPressedThisFrame));
             if (back && CurrentScreen != Screen.Document && CurrentScreen != Screen.Interaction && !DoorReloadScreen.IsReloading)
@@ -414,19 +415,20 @@ namespace UniDoom.UI
             document.SetActive(screen == Screen.Document);
             options.SetActive(screen == Screen.Options);
             credits.SetActive(screen == Screen.Credits);
+            SetCreditsVisible(screen == Screen.Credits);
             confirmation.SetActive(screen == Screen.Confirm);
             mapSelection.SetActive(screen == Screen.MapSelect);
-            bool mainBackground = screen == Screen.Main || screen == Screen.Credits || screen == Screen.MapSelect ||
+            bool mainBackground = screen == Screen.Main || screen == Screen.MapSelect ||
                 (screen == Screen.Options && optionsOrigin == Screen.Main);
             bool gameOverBackground = screen == Screen.GameOver || (screen == Screen.Confirm && confirmOrigin == Screen.GameOver);
             backdrop.gameObject.SetActive(mainBackground || gameOverBackground);
             shade.gameObject.SetActive(screen != Screen.Gameplay);
-            shade.color = new Color(0, 0, 0, mainBackground || screen == Screen.GameOver ? 0 : screen == Screen.Document ? .72f : screen == Screen.Pause ? .1f : screen == Screen.Death ? .2f : .78f);
+            shade.color = new Color(0, 0, 0, screen == Screen.Credits ? 1 : mainBackground || screen == Screen.GameOver ? 0 : screen == Screen.Document ? .72f : screen == Screen.Pause ? .1f : screen == Screen.Death ? .2f : .78f);
             error.text = "";
             if (screen == Screen.Gameplay) RestoreHUD(); else HideHUD();
             EnsureEvents();
             Select(screen switch { Screen.Main => mainFirst, Screen.Pause => pauseFirst,
-                Screen.Death => deathRetry, Screen.Options => optionsBack, Screen.Credits => creditsBack,
+                Screen.Death => deathRetry, Screen.Options => optionsBack,
                 Screen.Confirm => cancel, Screen.MapSelect => mapFirst, Screen.GameOver => gameOverRestart,
                 Screen.Document => documentClose, _ => null });
             Fit();
@@ -510,13 +512,7 @@ namespace UniDoom.UI
             MenuStyle.Link(deathRetry, deathBack);
             ColumnFooter(death);
             BuildOptions();
-            MenuStyle.Text("Heading", credits.transform, "CRÉDITOS", 200, 230, 1400, 100, 52, MenuStyle.Paper);
-            MenuStyle.Text("Game", credits.transform, "UNIDOOM", 205, 365, 1300, 70, 36, MenuStyle.Paper);
-            MenuStyle.Text("Project", credits.transform, "Projeto de jogo desenvolvido na Unity.", 205, 460, 1400, 60, 26, MenuStyle.Muted);
-            // Credits reflect dependencies actually used; no invented contributor names.
-            MenuStyle.Text("Packages", credits.transform, "Unity · Universal Render Pipeline · Cinemachine · TextMesh Pro", 205, 535, 1500, 60, 25, MenuStyle.Muted);
-            creditsBack = MenuStyle.Button(credits.transform, "Back", "VOLTAR", 165, 800, 500, Back);
-            MenuStyle.Link(creditsBack);
+            BuildCredits();
             confirmText = MenuStyle.Text("Warning", confirmation.transform, "", 320, 300, 1350, 220, 42, MenuStyle.Paper);
             confirmText.textWrappingMode = TextWrappingModes.Normal;
             var confirm = MenuStyle.Button(confirmation.transform, "ConfirmReturn", "VOLTAR AO MENU", 320, 650, 600, () => confirmAction?.Invoke());
