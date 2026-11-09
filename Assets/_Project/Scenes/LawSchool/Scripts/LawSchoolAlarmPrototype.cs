@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 
-/// <summary>First playable slice: key pickup, red/black alarm and one finite group of zombies.</summary>
+/// <summary>The first local key triggers one persistent alarm and one finite group of zombies.</summary>
 [DisallowMultipleComponent, DefaultExecutionOrder(11000)]
 public sealed class LawSchoolAlarmPrototype : MonoBehaviour
 {
@@ -34,6 +34,20 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
     public string SelectedKeyRoom { get; private set; }
     public const string EventId = "law-school-cell-key-alarm";
     public const string TriggeredEventId = "law-school-local-key-collected";
+
+    public static void NotifyKeyCollected(Component pickup, PlayerCellKeys inventory)
+    {
+        if (!pickup || !inventory || inventory.HasCompletedEvent(TriggeredEventId) ||
+            inventory.HasCompletedEvent(EventId)) return;
+        foreach (var alarm in FindObjectsByType<LawSchoolAlarmPrototype>())
+        {
+            // Shared pickups in the library and Block 4 must not trigger this building.
+            if (!alarm.isActiveAndEnabled || alarm.gameObject.scene != pickup.gameObject.scene) continue;
+            inventory.CompleteEvent(TriggeredEventId);
+            alarm.BeginAlarm();
+            return;
+        }
+    }
 
     readonly List<LightState> lights = new List<LightState>();
     readonly List<Surface> surfaces = new List<Surface>();
@@ -143,8 +157,7 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         var life = player.GetComponent<PlayerLife>();
         if (life && life.IsDead) return false;
         var inventory = player.GetComponent<PlayerCellKeys>();
-        if (!inventory || !key || !inventory.HasKey(key.CellId) ||
-            !inventory.HasKey(LawSchoolMaintenanceAccess.KeyId)) return false;
+        if (!inventory || !inventory.HasKey(LawSchoolMaintenanceAccess.KeyId)) return false;
         inventory.CompleteEvent(EventId);
         IsResolved = true;
         RestorePresentation();
