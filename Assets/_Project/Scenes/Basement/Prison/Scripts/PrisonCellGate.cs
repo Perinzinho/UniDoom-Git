@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 public sealed class PrisonCellGate : MonoBehaviour
 {
-    [SerializeField, Range(1, 13)] int cellId = 1;
+    [SerializeField, Range(1, PrisonProgress.CellCount)] int cellId = 1;
     [SerializeField] Transform teacher;
     [SerializeField] float openingAngle = -100;
     [SerializeField, Min(.1f)] float openingDuration = 1.4f;

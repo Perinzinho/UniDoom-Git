@@ -2,6 +2,7 @@
 
 ## Leitura rápida
 
+- Distribuição atual: cinco chaves de cela, **4/5/6/10/11**. Chaves 10 e 11 na cabine individual ao norte e na mesa da leitura silenciosa, respectivamente. [Proposta de puzzles curtos de leitura](CampusLibrary-Puzzles-Leitura.md); os enigmas ainda não estão implementados.
 - Cena: `Assets/_Project/Scenes/CampusLibrary/CampusLibrary.unity`; interior no prefab `Prefabs/CampusLibrary.prefab` da mesma pasta. A cena referencia o prefab; não há geração do mapa em runtime.
 - Este é o interior novo do campus Unimar. `Scenes/Library/Library.unity` é a biblioteca antiga e não pertence a esta revisão.
 - Fila de trabalho: [tarefas da biblioteca](CampusLibrary-Tarefas.md), uma por vez, priorizando a última pendente e marcando após validação.

@@ -14,9 +14,10 @@ Atualizado: **2026-11-08**. Estado: chave sorteada por partida, placas gastas e 
 - Seleções anteriores: **19 modelos CC0**, com 194 instâncias na primeira e 42 na segunda, antes da redistribuição descrita na revisão do vídeo. As contagens históricas de 228 instâncias ativas e 31 mesas docentes não representam o layout atual. A revisão reaproveita esses modelos, acrescenta o micro-ondas já existente no projeto e redistribui administração, longarinas, audiovisual, bebedouros, lixeiras e segurança. Fontes: `Licenses/AssetSources/LawSchool/{model-replacements.json,equipment-sources.json,video-revision-sources.json}`; pesquisa local em `LawSchool-modelos-referencias.md`, ignorada pelo Git.
 - Entrada pelo prédio de Direito no Campus Exterior e pelo menu temporário. Não crie outra cena ou outra opção de menu para o mesmo mapa.
 - Suprimentos: nas **36 salas de aula**, uma distribuição por partida reserva **6 salas para medkit, 10 para munição e 20 vazias**. Cada medkit cura até 50; cada pacote adiciona 20 à reserva da arma carregada. Ao voltar ao bloco, salas e itens coletados mantêm o estado da sessão.
-- Protótipo: **uma chave sorteada entre 33 ambientes, fora do corredor 2 e dos dois banheiros ligados a ele**. Coletar dispara sirene e vermelho/apagão: 2 s de vermelho inicial, depois 1,6 s de escuro e 3 s de vermelho, repetidos. Visão fraca até **4,5 m** no apagão; mão/arma acompanham as fases. Até **48 zumbis variados** chegam, redução de 20% sobre os 60 anteriores, com intervalo de 0,55 s. Ao disparar, aparece uma **chave da manutenção** em sala sorteada, diferente da sala da chave do alarme. A manutenção 104 começa trancada e exige essa chave separada. Para encerrar, pegar a nova chave, entrar na manutenção 104, mirar o quadro a até 3 m e pressionar **E**. A chave é conservada e os zumbis presentes permanecem. Placas com tinta desbotada dificultam identificar as salas. **A saída fica bloqueada durante o alarme**, com aviso de proximidade; desligar o quadro libera a transição para o campus.
+- Alarme atual: coletar a chave sorteada da cela 1 inicia sirene e alterna fases vermelhas/apagadas. Pool de 30 ambientes, fora da ala da manutenção e das salas reservadas 110/121/132. Até **34 zumbis variados** chegam, com intervalo de 0,55 s e regras de spawn seguro preservadas. A chave da manutenção existe desde a entrada, em outra sala a pelo menos 45 m. A sala 104 exige essa chave; o quadro exige as duas chaves do fluxo. Ao desligar o quadro, a saída para o campus é liberada, sem remover zumbis presentes. Lanterna durante o alarme alternada em F/direcional para cima.
 
-- Chaves atuais: somente cela 1 e manutenção ativas em Direito; sorteadas desde a entrada em salas diferentes, fora da ala de manutenção e separadas por pelo menos 45 m. As chaves de cela 2/3 foram transferidas para a biblioteca. A manutenção começa bloqueada por colisor sólido salvo, liberado apenas pela chave específica. Detalhes: [PrisonCellKeys.md](PrisonCellKeys.md). Esta correção não recebeu teste de gameplay.
+- Chaves atuais após redistribuição equilibrada: celas **1, 2, 3 e 9**, mais **manutenção**, total cinco. Cela 1 e manutenção são sorteadas em salas diferentes, fora da ala da manutenção e separadas por pelo menos 45 m. Celas 2/3/9 ficam nas mesas das salas 110/121/132, reservadas e excluídas dos dois sorteios. A manutenção exige a chave específica. Detalhes: [PrisonCellKeys.md](PrisonCellKeys.md). Sem teste de gameplay nesta correção.
+- Atualização atual do alarme: **34 chegadas**, redução de aproximadamente 10% sobre as 38 anteriores. Chave da manutenção com sprite exclusivo de metal gasto e plaqueta amarela com chave de boca, fundo transparente e altura visível de 24 cm. Aplicado na cena jogável e no prefab independente.
 
 ## Pedido do usuário e decisões aceitas
 
@@ -422,3 +423,19 @@ A investigação da reincidência confirmou que a cena não referencia o prefab 
 Agora `LawSchool.unity` contém a exigência `law-school-maintenance` nessa porta, o colisor sólido ativo cobrindo o vão, o pickup e `LawSchoolMaintenanceAccess`. O controlador está registrado no objeto do alarme da própria cena e usa seus 33 locais de sorteio fora do corredor da manutenção, com distância mínima de 45 m da chave da cela. Há exatamente os dois pickups: cela 1 e manutenção. As chegadas do alarme na cena também foram alinhadas ao limite de 38 já solicitado.
 
 Todos os IDs anteriores da cena foram preservados; 12 registros adicionados e referências locais conferidas. Sem abrir Unity, testes de gameplay, capturas, commit, push ou desligamento nesta correção.
+
+## Redistribuição e portas após o merge — 09/11/2026
+
+O pedido de equilíbrio substitui a limitação anterior de duas chaves em Direito: há quatro de cela (1/2/3/9) e uma de manutenção. Biblioteca recebe cinco e Bloco 4 quatro chaves. Três pickups foram acrescentados na cena jogável e no prefab independente; locais reservados às salas 110/121/132 não participam dos sorteios da cela 1/manutenção.
+
+O merge alterou a abertura das portas comuns para contato, mas `RequiresAnyKey` considerava apenas os três booleans antigos. Corrigido para incluir `requiredInventoryKey`: a manutenção não pode abrir por contato sem sua chave e continua liberando por aproximação quando ela está no inventário. O sentido de abertura por contato também consulta `openingSideAxis` via `PlayerSide`, preservando as catracas.
+
+Mudanças locais, sem commit, push, Unity ou Play Mode.
+
+## Sprite da manutenção e redução da horda
+
+Pedido corrigido pelo usuário para **Direito**, não Bloco 4. Sprite novo em `Textures/Pickups/MaintenanceKey.png`, gerado pela ferramenta imagegen, sem reutilizar a identificação das chaves de cela. Metal gasto, plaqueta amarela com símbolo de chave de boca, sem letras ou números. PNG original preservado com alpha; importer Single Sprite, Point, sem compressão e 1024 PPU. Escala ajustada pelos limites visíveis do alpha para aproximadamente 24 cm de altura, mantendo posição e collider do pickup. Origem e hash em `Licenses/AssetSources/LawSchool/maintenance-key-sprite.json`.
+
+O limite de reforços do alarme passou de **38 para 34** nas duas cópias do mapa: `LawSchool.unity` e `Prefabs/LawSchool.prefab`. São quatro referências a menos, distribuídas pela lista. Redução real de 10,53%, por arredondamento para número inteiro; marcadores, variantes e regras de spawn seguro preservados. Sem apagar objetos de spawn.
+
+Conferência por PNG/importador/referências e arrays serializados. Sem abrir Unity, jogo, Play Mode, build, capturas, commit ou push.

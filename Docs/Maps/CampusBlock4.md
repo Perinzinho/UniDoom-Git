@@ -4,6 +4,7 @@ Atualizado: **2026-11-08**, revisão de [correcoesbloco4.md](correcoesbloco4.md)
 
 ## Leitura rápida
 
+- Distribuição atual: quatro chaves de cela, **7/8/12/13**. Chave 7 preserva o puzzle da 423; 8 na mesa da 428; 12 e 13 nas mesas docentes da 414 e 421. O pedido de distribuição equilibrada substitui contagens anteriores. [Contrato atual](PrisonCellKeys.md).
 - Cena `Assets/_Project/Scenes/CampusBlock4/CampusBlock4.unity`; prefab `Prefabs/CampusBlock4.prefab` na mesma pasta. Sem nova cena/menu.
 - **Salas 401–424, 426 e 428 em uso**; 425/427 inativas. **22 laboratórios**, incluindo a antiga sala de auditório 424, copa 401, **secretaria 404**, coordenação 410 e periféricos 419. Ambientes de apoio preservados por confirmação do usuário; quatro banheiros compartilhados entre os corredores.
 - Módulos preservados: largura **13,5 m**, profundidade externa **17 m**, interna **11,75 m**, conforme LawSchool. Os novos laboratórios das extremidades usam 13,5 × 17 m, rotacionados para abrir para os corredores. Pé-direito aproximado **4,06 m**.
