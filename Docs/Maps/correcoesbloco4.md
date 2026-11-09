@@ -57,16 +57,16 @@
 - [x] Corrigir zumbis presos e incapaz de mover no campus da unimar
 - [x] Corrigir spawn do player no campus da Unimar quando ele vai da prisão para o campus
 - [x] No bloco de direito, acho que o chat não entendeu oq eu queria, ao entrar no bloco de direito, vai ter 2 chaves colacadas aleatoraimente em salas diferentes, que não sejam do corredor da sala de manuntenção, 1, vai ser chave da cela que vai disparar o alarme, a outra é a chave da sala de manuntenção, ou seja, a sala de manuntenção deve estar trancada ao entrar no bloco de direito
-- [] HUD da espingarda continua tendo partes dela para fora, deixei imagem na pasta docs/maps
-- [] Zumbis continuam sendo vistos sendo jogados no ar e caindo no chão ao ir para o campus da unimar
-- [] Zumbis não conseguem subir da grama para a calçada no campus, resolver
-- [] Zumbis devem fazer roaming, quando não estiverem perseguindo o player, ou seja, andando para direções aleatórais dentro de um raio de seu spawwn
-- [ ] Porta do bloco 4 continua sumindo quando se tenta sair de lá, dá para sair, mas a abertura mostra o vazio do mapa
-- [ ] Sala da manuntenção não está trancada no bloco de direito
-- [ ] Trocar sprite da chave no bloco de direito
-- [] Alguns zumbis continuam presos no chão e não conseguem andar
-- [] Reduzir em 20% a quantidade de zumbis do bloco de direito
-- [] Adicionar uma mecânica de lanterna no bloco de direito quando o alarme disparar
+- [x] HUD da espingarda continua tendo partes dela para fora, deixei imagem na pasta docs/maps
+- [x] Zumbis continuam sendo vistos sendo jogados no ar e caindo no chão ao ir para o campus da unimar
+- [x] Zumbis não conseguem subir da grama para a calçada no campus, resolver
+- [x] Zumbis devem fazer roaming, quando não estiverem perseguindo o player, ou seja, andando para direções aleatórais dentro de um raio de seu spawwn
+- [x] Porta do bloco 4 continua sumindo quando se tenta sair de lá, dá para sair, mas a abertura mostra o vazio do mapa
+- [x] Sala da manuntenção não está trancada no bloco de direito
+- [x] Trocar sprite da chave no bloco de direito
+- [x] Alguns zumbis continuam presos no chão e não conseguem andar
+- [x] Reduzir em 20% a quantidade de zumbis do bloco de direito
+- [x] Adicionar uma mecânica de lanterna no bloco de direito quando o alarme disparar
 
 
 IDEIA DO ALARME= AO ENTRAR NO BLOCO DE DIREITO, VAI TER 2 CHAVES, A DA CELA QUE VAI DISPARAR O ALARME E DA SALA DE MANUNTENÇÃO PARA ABRIR  A SALA DE MANUNTENÇÃO NO BLOCO, ENTÃO O JOGADOR DEVE ACHAR AS 2 CHAVES PARA PROSSEGUIR NO JOGO, É ISSO QUE EU QUERO QUE VC IMPLEMENTE
@@ -178,3 +178,20 @@ Cinco implementações restantes salvas. Os itens marcados indicam alteração d
 - Retorno FromPrison: altura calculada a partir do piso e do CharacterController real. Escolha próxima ao ponto autoral, com espaço para a cápsula e fora do trigger de retorno, evitando colisões e teleporte imediato de volta. Falta de posição segura produz erro de configuração em vez de colocar o player dentro de obstáculo.
 
 Sem prints, vídeos, abertura/foco de Unity, Play Mode, execução do jogo, compilação ou build nesta etapa, conforme solicitado.
+
+
+## Revis?o das novas tarefas ? 09/11/2026
+
+Os dez itens desta rodada foram implementados nos arquivos. `[x]` registra implementa??o, sem afirmar confirma??o em execu??o. N?o foram abertos Unity, jogo, Play Mode, previews, capturas ou v?deos; compila??o, build e testes de gameplay n?o executados, conforme orienta??o do usu?rio.
+
+- HUD da espingarda: a imagem fornecida mostra o corte inferior da arma acima da borda da tela. Acrescentado recuo inferior de 16% exclusivamente na defini??o da espingarda, preservando propor??o e ajustes por resolu??o; escala herdada da Image normalizada.
+- Campus: zumbis vivos usam Rigidbody cinem?tico e movimento apoiado no piso, evitando impulsos verticais de colis?o no carregamento. A c?psula ? apoiada tamb?m a cada passo e quando parada. Varredura elevada em 35 cm permite transpor meios-fios e mant?m verifica??o de paredes e espa?o para a cabe?a. Outros mapas conservam a f?sica anterior.
+- Roaming: preservado o sorteio de destinos num raio de 6 m do spawn, pausas e nova escolha ao encontrar bloqueios. Movimento no campus passa a executar esses destinos sem depender de agente NavMesh n?o vinculado; desvios durante a patrulha respeitam o raio.
+- Sa?da do Bloco 4: acrescentado fechamento visual s?lido atr?s do gatilho de transi??o, usando material de porta existente, para impedir vis?o do vazio exterior ao interior. N?o interfere na passagem nem na troca de cena. Material bilateral e limite pr?ximo da c?mera anteriores preservados.
+- Manuten??o de Direito: a exig?ncia da chave separada est? na porta da sala de manuten??o real, cujo objeto de porta conserva o nome hist?rico ?102?. Acrescentado volume s?lido fixo de trava, cobrindo as folgas da folha enquanto a chave est? ausente e liberado ao destrancar. A abertura continua por aproxima??o ap?s obter a chave.
+- Duas chaves do fluxo do alarme dispon?veis desde a entrada: cela 1 e manuten??o em salas distintas fora do corredor da manuten??o. Coletar a cela 1 inicia o alarme; a manuten??o exige a outra chave. As chaves adicionais das celas 2 e 3 permanecem nas salas 101/102, conforme a distribui??o das oito celas.
+- Sprite: adotada a chave prateada com plaqueta azul (`key_02`, atlas existente `keys_spritesheet.png`) para manuten??o. Suposi??o registrada: o pedido refere-se ? manuten??o, que ainda usava a chave antiga; a cela mant?m sua identifica??o 1. N?o foram geradas texturas ou alterados importadores.
+- Horda de Direito: nova redu??o de 20% sobre os 48 pontos atuais, arredondada para 38 chegadas (20,83%). Objetos dos pontos preservados; retirada somente de dez refer?ncias da lista ativa.
+- Lanterna de Direito: liga automaticamente com o alarme, permanece dispon?vel entre fases vermelhas e apag?es, alternada por F ou direcional para cima no controle. Feixe de 18 m, cone de 58?, cor quente e sombras; sprites dos inimigos respondem ao cone com obstru??o verificada. Removida ao resolver o alarme ou sair da cena. Menus, morte e carregamento bloqueiam o comando.
+
+Git: ?udios dos cr?ditos e imagem de refer?ncia preservados em commit antes do pull. Development integrado; conflitos de detec??o de renomea??o de `.meta` resolvidos mantendo os metadados pr?prios dos ?udios e dos sanit?rios. Nenhum arquivo de usu?rio descartado.

@@ -16,3 +16,10 @@ A rolagem cinematográfica foi conferida em modo de edição antes da instruçã
 
 
 Com a composição cinematográfica atual, a duração estimada em 1920 × 1080 é **4 min 39 s**, incluindo as pausas: conteúdo de 5484 unidades, viewport de 1080 e velocidade de 24 unidades/s. O texto inteiro atravessa a tela. Alterar texto, fonte, resolução ou velocidade altera essa estimativa.
+
+
+## Corre??es de 09/11/2026
+
+Espingarda: defini??o acrescenta hudBottomCropFraction=0.16 para esconder o corte da arma acima do fundo da m?o observado na refer?ncia fornecida. Encaixe proporcional e bordas preservados; Image tem escala normalizada.
+
+Implementa??o salva; sem abrir Unity, jogo, Play Mode, build, testes ou produzir capturas/previews/v?deos. Confer?ncia em execu??o fica a cargo do usu?rio.

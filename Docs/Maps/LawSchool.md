@@ -405,3 +405,10 @@ Validação em Edit Mode: configuração salva/reaberta, 32 locais após exclus�
 As duas chaves do fluxo alarme/manutenção são posicionadas na entrada: a chave da cela 1 usa o sorteio existente e a chave da manutenção usa outra sala elegível, excluindo a origem da primeira e mantendo a exclusão da ala de manutenção. A manutenção começa trancada; não é necessário iniciar o alarme para sua chave aparecer. Posse e escolha continuam no inventário persistente existente.
 
 O alarme só retoma quando a coleta local da chave de Direito tiver registrado law-school-local-key-collected. Ter uma chave obtida no Bloco 4 não inicia esse evento. Horda máxima de 48 e desligamento no quadro preservados. Implementação salva, sem executar testes, jogo ou Play Mode. Este contrato substitui o registro anterior de aparecimento da chave apenas após disparar o alarme.
+
+
+## Corre??es de 09/11/2026
+
+Manuten??o: chave independente desde a entrada, sorteada em sala distinta da chave da cela 1, fora do corredor da manuten??o. Porta com volume s?lido adicional de trava enquanto falta a chave. Sprite de manuten??o reutiliza key_02 do atlas global; cela 1 mant?m identifica??o numerada. Horda reduzida novamente de 48 para 38 chegadas. Lanterna autom?tica ao disparar o alarme: F/direcional para cima alterna, cone 58?, alcance 18 m; removida ao encerrar/sair.
+
+Implementa??o salva; sem abrir Unity, jogo, Play Mode, build, testes ou produzir capturas/previews/v?deos. Confer?ncia em execu??o fica a cargo do usu?rio.

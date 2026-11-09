@@ -496,3 +496,10 @@ Planta, apoios, mobiliário e validação atual registrados em [Docs/Maps/Campus
 CampusGrounding é compartilhado por Enemy e SceneArrivalPoint. Em CampusExterior, zumbis usam Rigidbody dinâmico com gravidade, são alinhados inicialmente ao suporte real e deixam de manter agente NavMesh habilitado fora de uma malha válida. As outras cenas continuam com seu controlador existente. No retorno FromPrison, o ponto autoral permanece, mas a altura final vem do piso e da cápsula do player; posições bloqueadas ou dentro do portal de retorno são evitadas em busca local de até 4 m. Se não houver posição segura, a transição informa configuração inválida.
 
 PrisonCampusPortal, exclusivo da prisão, adiciona três anéis animados à transição Basement → CampusExterior / FromPrison já existente. Não usa mídia externa ou novo sistema de carga. Scripts e metas persistentes; sem mudar geometria, spawns autorais, cenas ou prefabs nesta etapa. Não houve abertura/foco da Unity, jogo, Play Mode, compilação solicitada, build, prints ou vídeos; testes com o usuário.
+
+
+## Corre??es de 09/11/2026
+
+Zumbis do CampusExterior: movimento cinem?tico apoiado no piso a cada passo, sem impulsos de gravidade/colis?o ao carregar. Varredura deixa transpor degraus de at? 35 cm e preserva espa?o para cabe?a/paredes. Patrulha aleat?ria limitada ao raio do spawn, retomada ap?s busca sem alvo. Outros cen?rios conservam f?sica anterior.
+
+Implementa??o salva; sem abrir Unity, jogo, Play Mode, build, testes ou produzir capturas/previews/v?deos. Confer?ncia em execu??o fica a cargo do usu?rio.

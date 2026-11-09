@@ -88,3 +88,10 @@ Checkpoint anterior à mecânica: **0fb6abbf**, enviado ao remoto antes desta im
 As cinco pistas mudam para salas aleatórias distintas em cada apagão completo, sem a espera adicional de 180–300 s, sem chance de falhar e sem interromper as trocas após resolver o painel. Primeiro apagão em 8–15 s, próximos em 20–40 s. Mesmos 21 destinos na primeira fileira, mesmos pares e senha 24153.
 
 Saída: materiais da fachada de entrada passam a dupla face por instâncias locais em runtime, preservando os assets compartilhados. Near clip da câmera limitado a 0,06 m enquanto essa saída estiver carregada, com restauração ao destruir o objeto na troca de cena. Isso evita corte próximo e desaparecimento por face invertida. Porta, colisores e CampusExterior / FromCampusBlock4 mantidos. Sem Unity/Play Mode, build ou capturas nesta alteração; o usuário fará a validação.
+
+
+## Corre??es de 09/11/2026
+
+Sa?da recebe fechamento visual atr?s do gatilho, com material de porta existente, para ocultar o vazio da cena interior. Sem colis?o extra ou mudan?a no destino CampusExterior/FromCampusBlock4.
+
+Implementa??o salva; sem abrir Unity, jogo, Play Mode, build, testes ou produzir capturas/previews/v?deos. Confer?ncia em execu??o fica a cargo do usu?rio.

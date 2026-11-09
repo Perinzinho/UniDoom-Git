@@ -135,13 +135,13 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         if (gameObject.scene.name == "CampusExterior")
         {
-            // This outdoor scene uses collision-based steering. An enabled, unbound
-            // agent previously suppressed both steering and gravity on scene returns.
+            // Outdoor steering owns the capsule. Kinematic movement avoids launch
+            // impulses when the persistent player and actors overlap during scene load.
             if (agent) agent.enabled = false;
             if (body)
             {
-                body.isKinematic = false;
-                body.useGravity = true;
+                body.isKinematic = true;
+                body.useGravity = false;
                 body.constraints &= ~RigidbodyConstraints.FreezePosition;
                 body.constraints |= RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             }
@@ -150,7 +150,7 @@ public class Enemy : MonoBehaviour, IDamageable
             {
                 float offset = transform.position.y - capsule.bounds.min.y;
                 var grounded = new Vector3(transform.position.x, floor.point.y + offset + .02f, transform.position.z);
-                if (body) { body.position = grounded; body.linearVelocity = Vector3.zero; }
+                if (body) body.position = grounded;
                 else transform.position = grounded;
                 patrolOrigin = grounded;
                 progressPosition = grounded;
@@ -557,6 +557,24 @@ public class Enemy : MonoBehaviour, IDamageable
             Face(direction, Time.fixedDeltaTime);
         }
         float alignedSpeed = desiredSpeed * MovementAlignment(direction);
+        if (gameObject.scene.name == "CampusExterior" && capsule)
+        {
+            // Ground the capsule before physics, and step onto curbs without impulses.
+            // Sweeps still reject walls and other actors; only the lower 35 cm is stepped over.
+            Vector3 position = transform.position + direction * alignedSpeed * Time.fixedDeltaTime;
+            if (State == BehaviourState.Wandering && HorizontalDistance(position, patrolOrigin) > patrolRadius)
+            {
+                hasPatrolDestination = false;
+                position = transform.position;
+            }
+            float offset = transform.position.y - capsule.bounds.min.y;
+            if (UniDoom.Utils.CampusGrounding.TryFloor(position - Vector3.up * offset, out var floor))
+            {
+                position.y = floor.point.y + offset + .015f;
+                if (body) body.MovePosition(position); else transform.position = position;
+            }
+            return;
+        }
         if (body != null && !body.isKinematic)
             body.linearVelocity = direction * alignedSpeed + Vector3.up * body.linearVelocity.y;
         else if (direction.sqrMagnitude > .001f)
@@ -610,6 +628,12 @@ public class Enemy : MonoBehaviour, IDamageable
         Vector3 center = capsule != null ? capsule.bounds.center : transform.position;
         float distance = Mathf.Max(.3f, desiredSpeed * Time.fixedDeltaTime + .1f);
         Vector3 axis = Vector3.up * (halfHeight - radius);
+        if (gameObject.scene.name == "CampusExterior")
+        {
+            // Raise the bottom endpoint only: retain head clearance above a curb.
+            center += Vector3.up * .175f;
+            axis -= Vector3.up * Mathf.Min(.175f, axis.y);
+        }
         int count = Physics.CapsuleCastNonAlloc(center + axis, center - axis, radius, direction,
             movementHits, distance, obstacleLayers, QueryTriggerInteraction.Ignore);
         if (count == movementHits.Length) return false;

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 
 /// <summary>First playable slice: key pickup, red/black alarm and one finite group of zombies.</summary>
@@ -43,6 +44,7 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
     bool audioPaused;
     Camera view;
     Light nearbyLight;
+    bool flashlightOn = true;
     UnityEngine.UI.Image weaponHud;
     Color weaponHudColor;
 
@@ -192,7 +194,11 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
             if (paused) siren.Pause(); else siren.UnPause();
             audioPaused = paused;
         }
-        if (paused) return;
+        if (paused || UniDoom.UI.DeathScreen.IsVisible || UniDoom.UI.DoorReloadScreen.IsReloading) return;
+        if ((Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame) ||
+            (Gamepad.current != null && Gamepad.current.dpad.up.wasPressedThisFrame))
+            flashlightOn = !flashlightOn;
+        if (nearbyLight) nearbyLight.enabled = flashlightOn;
         Elapsed += Time.deltaTime;
         bool dark = Elapsed >= initialRedSeconds &&
             Mathf.Repeat(Elapsed - initialRedSeconds, blackoutSeconds + redSeconds) < blackoutSeconds;
@@ -217,7 +223,7 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         }
         foreach (var surface in surfaces) surface.Apply(dark);
         lighting.SetAlarmPhase(true, dark);
-        if (nearbyLight) nearbyLight.enabled = dark;
+        if (nearbyLight) nearbyLight.enabled = flashlightOn;
         TintActors();
     }
 
@@ -239,14 +245,14 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
             source.transform.localPosition = new Vector3(0,-.08f,.12f);
             nearbyLight = source.AddComponent<Light>();
             nearbyLight.type = LightType.Spot;
-            nearbyLight.spotAngle = 140;
-            nearbyLight.innerSpotAngle = 95;
-            nearbyLight.range = nearbyVisibilityRange;
-            nearbyLight.intensity = nearbyVisibilityIntensity;
-            nearbyLight.color = new Color(.45f,.52f,.65f);
+            nearbyLight.spotAngle = 58;
+            nearbyLight.innerSpotAngle = 30;
+            nearbyLight.range = 18;
+            nearbyLight.intensity = 55;
+            nearbyLight.color = new Color(1f,.92f,.78f);
             nearbyLight.shadows = LightShadows.Soft;
             nearbyLight.shadowNearPlane = .05f;
-            nearbyLight.enabled = IsBlackout;
+            nearbyLight.enabled = flashlightOn;
             nearbyLight.GetUniversalAdditionalLightData().additionalLightsShadowResolutionTier = 0;
         }
         if (!weaponHud)
@@ -266,6 +272,18 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
             if (actor.renderer)
             {
                 float proximity = view ? Mathf.Clamp01(1-Vector3.Distance(actor.renderer.bounds.center,view.transform.position)/nearbyVisibilityRange) : 0;
+                if (flashlightOn && view && nearbyLight)
+                {
+                    Vector3 delta = actor.renderer.bounds.center - view.transform.position;
+                    float cone = Mathf.InverseLerp(Mathf.Cos(29 * Mathf.Deg2Rad), Mathf.Cos(15 * Mathf.Deg2Rad),
+                        Vector3.Dot(view.transform.forward, delta.normalized));
+                    float beam = cone * Mathf.Clamp01(1 - delta.magnitude / nearbyLight.range);
+                    bool blocked = Physics.Linecast(view.transform.position, actor.renderer.bounds.center,
+                        out var obstruction, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+                    if (!blocked || (obstruction.collider &&
+                        obstruction.collider.GetComponentInParent<Enemy>() == actor.renderer.GetComponentInParent<Enemy>()))
+                        proximity = Mathf.Max(proximity, beam);
+                }
                 actor.renderer.color = actor.color * (IsBlackout ? new Color(.50f,.55f,.65f,1)*new Color(proximity,proximity,proximity,1) : SpriteRed);
             }
     }
