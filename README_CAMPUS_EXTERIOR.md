@@ -167,12 +167,12 @@ As posições dos pontos de chegada são do **root do jogador**, não da câmera
 
 1. `SceneTransitionDoor` usa `BoxCollider` de trigger e procura `PlayerMovement` no objeto que entrou ou em seus pais. Jogador morto ou transição em andamento não inicia outra passagem.
 2. Os campos `destinationScene` e `destinationSpawnId` devem ser válidos; chaves e estado de porta física também podem ser exigidos em outros portais do jogo.
-3. `DoorReloadScreen.TryLoadScene` valida o destino no Build Settings, cobre a tela, congela movimento/entrada, carrega com `LoadSceneAsync(..., Single)`, posiciona o jogador e restaura os estados ao finalizar.
+3. `DoorReloadScreen.TryLoadScene` valida o destino no Build Settings, cobre a tela, congela movimento/entrada, carrega com `LoadSceneAsync(..., Single)`, posiciona o jogador, aquece a coleção opcional e todos os shaders carregados, mantém o bloqueio por mais um frame e só então restaura os estados.
 4. `SceneArrivalPoint` encontra o ID na cena de destino, usa `Teleport`, sincroniza a física e reposiciona a orientação da Cinemachine. Há fallback para `SpawnPoint`, mas um ID incorreto ainda é erro de configuração.
 5. `GameManager` mantém a sessão com `DontDestroyOnLoad`, descarta managers duplicados e preserva o mesmo jogador/HUD durante as transições. Não reinicie vida, munição ou inventário ao entrar na biblioteca.
 6. A proteção contra retorno imediato depende de **sair do trigger antes de usá-lo novamente**: entradas durante um carregamento não são enfileiradas. Preserve essa regra ao alterar `OnTriggerEnter/Stay` ou o ponto de spawn.
 
-**Imagem e rótulos:** a nova biblioteca usa `BIBLIOTECA DO CAMPUS` e a chave de recurso **`Textures/UI/Transitions/CampusLibrary`**, carregada por `Resources.Load<Texture2D>`. O caminho é relativo a uma pasta `Resources`, sem extensão. `DoorReloadScreen`, `GameMenus` e `MouseSensitivityMenu` conhecem `CampusLibrary`. Não renomeie essa pasta ou recurso sem atualizar consumidores. O exterior não tem uma entrada própria na lista atual de `DestinationArtwork`; destinos sem arte específica usam a imagem compartilhada.
+**Imagem e rótulos:** cada destino de cena usa uma arte 16:9 baseada na visão real de chegada e carregada pela chave **`Textures/UI/Transitions/<Cena>`** via `Resources.Load<Texture2D>`. `CampusLibrary`, `CampusBlock4`, `LawSchool`, `CampusExterior` e `Basement` possuem artes próprias com acabamento cinematográfico consistente com `Cylinder`; os demais destinos preservam as artes específicas já existentes. O caminho é relativo a uma pasta `Resources`, sem extensão. Destinos desconhecidos ainda usam a imagem compartilhada. Não renomeie essas pastas ou recursos sem atualizar `DoorReloadScreen`.
 
 ## 6. Biblioteca do Campus: interior implementado
 

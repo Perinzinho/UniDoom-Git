@@ -43,9 +43,11 @@ public class OpenDoorWithKey : MonoBehaviour
     private BoxCollider proximityTrigger;
     private float openProgress;
     private float closeTimer;
+    private float contactOpenUntil;
     private bool unlocked;
     private float openingDirection = 1f;
 
+    private bool RequiresAnyKey => requiresKey01 || requiresKey02 || requiresKey03;
     public bool IsUnlocked => unlocked;
     public bool IsOpen => unlocked && openProgress >= .8f;
     public bool IsFullyOpen => unlocked && openProgress >= .999f;
@@ -71,6 +73,31 @@ public class OpenDoorWithKey : MonoBehaviour
             openingDirection = fixedOpeningDirection != 0 ? Mathf.Sign(fixedOpeningDirection) : (side >= 0f ? -1f : 1f);
         }
         unlocked = true;
+        return true;
+    }
+
+    /// <summary>
+    /// Portas comuns só recebem a solicitação de abertura quando o jogador empurra
+    /// fisicamente o collider da folha. Portas com chave e portas manuais continuam
+    /// usando seus fluxos próprios.
+    /// </summary>
+    public bool TryOpenByContact(PlayerPickupKey player, Collider surface)
+    {
+        if (!isActiveAndEnabled || RequiresAnyKey || requiresManualActivation || player == null ||
+            surface == null || door == null || !surface.transform.IsChildOf(door)) return false;
+
+        PlayerLife life = player.GetComponent<PlayerLife>();
+        if (life != null && life.IsDead) return false;
+
+        if (!unlocked)
+        {
+            float side = transform.InverseTransformPoint(player.transform.position).x - closedCenter.x;
+            openingDirection = fixedOpeningDirection != 0 ? Mathf.Sign(fixedOpeningDirection) :
+                (side >= 0f ? -1f : 1f);
+        }
+
+        unlocked = true;
+        contactOpenUntil = Time.time + Mathf.Max(0.2f, animationDuration * 0.5f);
         return true;
     }
 
@@ -167,7 +194,9 @@ public enum DoorReloadTriggerMode
             foreach (Collider other in stalePlayers) playerEntrySides.Remove(other);
         }
 
-        if (!unlocked && !requiresManualActivation)
+        // Portas com chave preservam o desbloqueio automático ao entrar no trigger.
+        // Portas sem chave aguardam o contato com a folha em TryOpenByContact.
+        if (!unlocked && !requiresManualActivation && RequiresAnyKey)
         {
             foreach (Collider other in nearbyPlayers)
             {
@@ -180,7 +209,8 @@ public enum DoorReloadTriggerMode
             }
         }
 
-        bool shouldOpen = unlocked && (stayOpenAfterUnlock || nearbyPlayers.Count > 0);
+        bool shouldOpen = unlocked && (stayOpenAfterUnlock || nearbyPlayers.Count > 0 ||
+            Time.time <= contactOpenUntil);
         if (shouldOpen && openProgress <= 0f)
         {
             if (!UniDoom.UI.DoorReloadScreen.IsReloading && Time.timeScale > 0f)
@@ -241,6 +271,11 @@ public enum DoorReloadTriggerMode
             float easedProgress = Mathf.SmoothStep(0f, 1f, openProgress);
             hinge.localRotation = Quaternion.Euler(0f, openingDirection * openAngle * easedProgress, 0f);
         }
+
+        // Depois de fechar, uma porta comum volta a exigir um novo contato físico.
+        if (!RequiresAnyKey && !requiresManualActivation && !stayOpenAfterUnlock && unlocked &&
+            openProgress <= 0f && nearbyPlayers.Count == 0 && Time.time > contactOpenUntil)
+            unlocked = false;
     }
 
     private bool TryTriggerReload()
@@ -272,6 +307,7 @@ public enum DoorReloadTriggerMode
         playerEntrySides.Clear();
         openProgress = 0f;
         closeTimer = 0f;
+        contactOpenUntil = 0f;
         if (hinge != null) hinge.localRotation = Quaternion.identity;
     }
 }
