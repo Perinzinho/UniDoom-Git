@@ -1,6 +1,6 @@
 # Campus Exterior e Biblioteca do Campus — contexto de implementação
 
-> Documento para continuar o trabalho sem reconstruir o contexto da conversa nem ler milhares de assets. Atualizado em **06/11/2026**, com os arquivos presentes e o histórico desta sessão. Base versionada: `development`, commit `494fdd18`. Alterações futuras podem mudar os números e parâmetros abaixo.
+> Documento para continuar o trabalho sem reconstruir o contexto da conversa nem ler milhares de assets. Atualizado em **07/11/2026**. A ampliação atual de CampusLibrary tem ficha em [Docs/Maps/CampusLibrary.md](Docs/Maps/CampusLibrary.md); registros anteriores abaixo conservam suas datas. Base histórica: `development`, commit `494fdd18`. Alterações futuras podem mudar os números e parâmetros abaixo.
 
 ## 1. Leitura rápida para a próxima IA
 
@@ -9,7 +9,7 @@
 - **`Library` é a biblioteca antiga do começo do jogo. Não foi substituída pela nova biblioteca.** Não confundir também `CampusExterior` com `EntranceGarden` ou `Main/SampleScene`.
 - O exterior e o interior já estão salvos em cenas, prefabs, meshes e materiais persistentes. **Não precisam ser gerados novamente para jogar.**
 - O exterior possui **12 vagas de estacionamento** demarcadas em três trechos viários, **12 bancos de concreto** nos três pátios sociais e uma **fonte ornamental exclusiva** no pátio entre o Bloco de Direito e a biblioteca, em `(-58, 0, 16)`.
-- A revisão mais recente da biblioteca corrigiu móveis apertados, peças flutuando, suportes, portas dos banheiros e circulação. Preserve essas correções.
+- A biblioteca foi ampliada em 07/11/2026 de aproximadamente **56 × 24 m para 56 × 42 m**, com leitura silenciosa, doze cabines adicionais, duas salas de estudo e trinta estantes adicionais. Após restaurar a organização de `32028565`, a fila revisou móveis e colisões em **mais 20%**, considerando o player de 2,12 m: cadeiras com 1,0956 m, estantes com 2,58 m e mesas novas a 0,96 m. Dois pares de estantes passaram à lateral norte para separar os sanitários por um vestíbulo; modelos locais, luz e placas também foram revistos. A [ficha da biblioteca](Docs/Maps/CampusLibrary.md) registra medidas e validações atuais; [tarefas](Docs/Maps/CampusLibrary-Tarefas.md) e [puzzles físicos](Docs/Maps/CampusLibrary-Puzzles-Caoticos.md) mantêm a fila e as propostas de gameplay, ainda sem implementação.
 - O jogador é persistente entre cenas pelo `GameManager`; não crie outro sistema de player, HUD, inventário ou carregamento para esses ambientes.
 - Antes de alterar, leia a seção correspondente abaixo e somente os scripts/assets envolvidos. Não despeje cenas, prefabs e arrays de vértices inteiros no contexto.
 - Respeite o [AGENTS.md](AGENTS.md). Preserve alterações locais, GUIDs, fileIDs e `.meta`. Exclusões definitivas exigem autorização explícita.
@@ -180,20 +180,32 @@ As posições dos pontos de chegada são do **root do jogador**, não da câmera
 
 A referência foi o infográfico **“Infográfico da Biblioteca UniDoom.png”** fornecido pelo usuário na conversa. O arquivo original estava fora do repositório, na Área de Trabalho; ele não é uma dependência necessária para abrir a cena. A interpretação implementada é um edifício térreo com desnível interno, e não uma nova biblioteca de múltiplos andares.
 
-- Planta de aproximadamente **56 × 24 m**, com entrada pela frente em `z` negativo.
+- Planta original de aproximadamente **56 × 24 m**, ampliada em 07/11 para aproximadamente **56 × 42 m**, com entrada pela frente em `z` negativo.
 - Hall de entrada, atendimento e espera no patamar superior, a **0,64 m** do nível inferior.
 - **Quatro degraus de 0,16 m**, com rota tátil azul e corrimãos, conectando hall e leitura/acervo.
 - Recepção com balcão, trecho rebaixado, computador de atendimento e quadro de avisos.
 - Área de leitura e estudo em grupo à esquerda, com mesas retangulares e redondas.
-- **Seis posições individuais de estudo** no patamar de entrada.
+- **Seis posições individuais de estudo** no patamar de entrada e **doze novas cabines** na ala norte: **18 posições individuais**.
 - **Oito computadores de pesquisa**, mais um de atendimento: **nove gabinetes** no total.
-- **32 estantes completas** e **51 cadeiras de leitura** no prefab atual.
+- **62 estantes completas** e **95 cadeiras de leitura** após a ampliação; antes eram 32 estantes e 51 cadeiras.
 - Dois banheiros, com **seis cabines no total**, bancadas, cubas, divisórias e acessórios.
 - Piso de granito, teto modular, vigas alaranjadas, pilares, luminárias, sinalização, plantas, extintores, lixeiras e detalhes de uso universitário.
 
 A geometria persistente está no prefab e nos meshes; a biblioteca não possui um gerador de layout necessário em runtime. O inventário histórico da biblioteca era de **252 meshes**, **24 materiais**, **1 perfil**, **1 prefab**, **1 cena** e **2 PNGs**, além dos `.meta`. Em 06/11, os 24 materiais e `GraniteSpeckle.png` passaram para `Global` para uso compartilhado com o Bloco 4, sem alterar bytes, GUIDs ou importadores. Sete meshes de cadeiras e estantes também passaram para `Global/Meshes/CampusInterior/` com os mesmos GUIDs e bytes. Com o quadro da recepção, a biblioteca conserva **247 meshes exclusivos**, **1 material fotográfico exclusivo**, **1 fotografia PNG**, perfil, prefab, cena e arte de carregamento.
 
+### Ampliação universitária — 07/11/2026
+
+A nova ala persistente **`North wing - university library`** ocupa `x = -28…28`, `z = 12…30.15`, no nível inferior existente. A antiga parede de fundo recebeu passagem central de **6 × 3,20 m**, com soleira no mesmo nível do piso. Não houve mudança dos portais, spawn IDs, hall, quatro degraus ou sanitários.
+
+A ampliação acrescenta **seis mesas de leitura silenciosa**, **duas salas de estudo com uma mesa cada**, **doze cabines individuais**, **44 cadeiras**, **quinze conjuntos de estantes duplas** e um carrinho de livros consultados. Acervo novo dividido por assunto, com corredores laterais de cerca de **3,26 m** e transversais de **1,70 m**. A área bruta nominal cresceu aproximadamente **76%**, sem esticar o player ou os modelos.
+
+O player global mede cerca de **2,121 m** em mundo, com olhos a aproximadamente **1,839 m dos pés**. As 51 cadeiras anteriores e as novas usam altura visual de **0,913 m**, em vez de 0,83 m, com colisões correspondentes e apoio no piso. Mesas novas têm tampo a **0,80 m**; estantes mantêm **2,15 m**. Medidas, planta, dependências e limites da validação estão em [Docs/Maps/CampusLibrary.md](Docs/Maps/CampusLibrary.md).
+
+Reutilizados meshes, materiais e texturas de `Global/*/CampusInterior/`; as superfícies novas ficam em `CampusLibrary/Meshes/NorthWing*.asset`. Não foram baixados novos modelos 3D. Autores já creditados — **Ulan Cabanilla, John Malcolm e James Ray Cock / Poly Haven, CC0** — foram associados à reutilização nos três MDs de créditos e em `Licenses/AssetSources/CampusLibrary/expansion-sources.json`. O inventário de 247 meshes exclusivos citado anteriormente representa a base anterior à ampliação.
+
 ### Quadro da recepção
+
+**Revisão da biblioteca em 08/11/2026:** as paredes dos dois sanitários agora chegam ao teto do salão (4,60 m), com as fendas de 0,20 m e a junta entre os conjuntos fechadas. Após a conferência do usuário, também foram fechadas as duas faixas frontais de 1,73 m e completados os painéis das seis cabines, mantendo as folhas estáticas e entreabertas com encaixe e colisão corrigidos. As entradas mantêm 2,50 m livres. As 55 inscrições estáticas do prefab usam faces de esmalte impressas em Liberation Sans, um atlas e um material local iluminado; os TMP originais ficam desabilitados para edição futura. Não houve mudança de spawn IDs, portais, player, mobiliário ou recursos compartilhados. Detalhes, dependências e testes atuais na [ficha da biblioteca](Docs/Maps/CampusLibrary.md#revisão-final-de-paredes-e-sinalização--08112026); os números históricos abaixo não substituem essa revisão.
 
 A fotografia original `Screenshot_1.png`, enviada pelo usuário, foi incorporada sem alterar seus bytes em `CampusLibrary/Textures/Campus library portrait.png`. O quadro **`Reception portrait easter egg`** fica na parede frontal interna, junto à recepção, em `(-11.2, 2.45, -11.94)`, voltado para o hall (Y = 180°). A foto tem 1,6 m de largura, preserva a proporção original e usa moldura de madeira compartilhada com os interiores do campus. A linha de visão desde o hall de entrada está livre. Não há legenda ou interação nova.
 
@@ -234,6 +246,14 @@ Existe a ferramenta anterior **`Assets/_TemporaryMenuCapture/Editor/CampusRoadRe
 Na implementação/revisão da biblioteca foram usadas ferramentas temporárias fora dos assets finais e o projeto isolado preexistente `.utmp/DirectorRoomValidation`. Esses caminhos não são dependências distribuídas do jogo. Relatórios e ferramentas em `Temp` podem desaparecer ao fechar a Unity; não recrie diretórios de auditoria, geradores, backups ou quarentenas permanentes para compensar isso.
 
 ## 8. Validações: o que foi feito e o que não foi
+
+### Ampliação de CampusLibrary — 07/11/2026
+
+A versão ampliada foi salva e reaberta na Unity 6000.5.7f1 / URP 17.5.0: **zero scripts ausentes, zero materiais inválidos, 62 estantes e 95 cadeiras**. **472 GUIDs resolvidos**, **3.186 fileIDs originais preservados**, sete meshes compartilhados e seis arquivos protegidos conferidos por SHA-256. As 18 rotas de NavMesh temporário passaram com agente de 2,141 m e raio de 0,27 m, inclusive chegada à ala nova, salas e cabines.
+
+Play Mode controlado com o player real confirmou cápsula de **2,121 m**, olhos a **1,838885 m dos pés**, travessia da passagem com `CharacterController.Move` e uma instância de jogador. Foram revistas oito capturas em 1920 × 1080, incluindo câmera na Head real. Essa captura de escala não valida input nem acompanhamento automático da câmera. `git diff --check` passou no delta rastreado da tarefa.
+
+**Não houve build, benchmark, percurso manual completo, teste auditivo ou nova ida/volta pelos portais e menus.** O Console já tinha a falha da ferramenta automática de estacionamento; no teste aditivo houve aviso de dois AudioListeners. Nenhum desses sistemas foi alterado nesta revisão. Evidências, limites e capturas estão na [ficha CampusLibrary](Docs/Maps/CampusLibrary.md#validação-desta-revisão); os testes históricos abaixo continuam separados dos atuais.
 
 ### Histórico da biblioteca, antes do incidente de exclusão
 
