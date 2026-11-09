@@ -86,6 +86,14 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!movementEnabled || Mathf.Abs(hit.normal.y) > .65f ||
             Vector3.Dot(horizontalMove, hit.normal) >= -.1f) return;
+
+        PlayerPickupKey keys = GetComponent<PlayerPickupKey>();
+        var door = hit.collider.GetComponentInParent<OpenDoorWithKey>();
+        if (door != null && door.TryOpenByContact(keys, hit.collider)) return;
+
+        var simpleDoor = hit.collider.GetComponentInParent<TotalChaosMaps.TCSimpleDoor>();
+        if (simpleDoor != null && simpleDoor.TryOpenByContact()) return;
+
         var audio = GameplayAudio.Instance;
         if (audio == null) return;
         var sealedDoor = hit.collider.GetComponent<LockedDoorSurface>();
@@ -94,7 +102,6 @@ public class PlayerMovement : MonoBehaviour
             audio.NotifyLockedDoorContact(sealedDoor);
             return;
         }
-        var door = hit.collider.GetComponentInParent<OpenDoorWithKey>();
         if (door != null && door.BlocksPlayer(hit.collider, GetComponent<PlayerPickupKey>()))
             audio.NotifyLockedDoorContact(door);
     }
