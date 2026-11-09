@@ -1,0 +1,122 @@
+{
+  "date": "2026-11-08",
+  "source": "Existing project teacher recordings; no speech synthesized or substituted.",
+  "edits": {
+    "henrique_line.wav": "Removed initial repeated calma; retained Vai Corinthians, per user.",
+    "bianca_line.wav": "Retained final yipeee celebration only, per user."
+  },
+  "processing": "70Hz high-pass, 10kHz low-pass, gentle 8dB adaptive FFT denoising, silence removal retaining natural short gaps, 3:1 speech peak compression, two-pass -18 LUFS normalization with -1.5 dBTP ceiling, 48kHz mono PCM16. Existing file paths, Unity GUIDs and importers retained.",
+  "validation": "All 11 durations, loudness and true peaks measured. Source teacher mappings preserved. No Unity playback or Play Mode.",
+  "records": [
+    {
+      "path": "Assets/_Project/Scenes/Basement/Prison/Audios/Teachers/bianca_line.wav",
+      "source_sha256": "da8ef8392e01611c2c2f14a62c33db4d9cebcca62ba0f13e6a9a8606ea81a1d7",
+      "edited_sha256": "6197e3564c7dfbcb2e149aa3cdd915e4c7a0a220adcf228777664b366e2d23a0",
+      "source_seconds": 6.442667,
+      "edited_seconds": 2.610542,
+      "removed_leading_seconds": 3.8,
+      "loudness_lufs": -18.3,
+      "true_peak_dbtp": -1.5
+    },
+    {
+      "path": "Assets/_Project/Scenes/Basement/Prison/Audios/Teachers/caio_line.wav",
+      "source_sha256": "d4dccf432186a32ef09a885ff2337ce74779b11fa271150709b8091ba38f876a",
+      "edited_sha256": "46c8352747d4d370a5416e5f5fa43961811d9e6b1531059ab4eca6a17e39d7bc",
+      "source_seconds": 2.496,
+      "edited_seconds": 2.441854,
+      "removed_leading_seconds": 0,
+      "loudness_lufs": -18.0,
+      "true_peak_dbtp": -4.71
+    },
+    {
+      "path": "Assets/_Project/Scenes/Basement/Prison/Audios/Teachers/cesar_line.wav",
+      "source_sha256": "b268803a323722b8952556c30645849035ca0ca0709f7140e3b922adfab2c8f3",
+      "edited_sha256": "91d18077c687122792887a554adb1552f96ab7a13259c1b9fed016eed061a3c0",
+      "source_seconds": 2.048,
+      "edited_seconds": 1.992167,
+      "removed_leading_seconds": 0,
+      "loudness_lufs": -18.02,
+      "true_peak_dbtp": -5.44
+    },
+    {
+      "path": "Assets/_Project/Scenes/Basement/Prison/Audios/Teachers/fabio_line.wav",
+      "source_sha256": "55cb888bbcd2692a5c9813384012680aba18c1f530214c6209bf74506c625628",
+      "edited_sha256": "fbf5d2b99c9aedbe9e747d828c00bc18f95574314517d0979c8da1427ce62b41",
+      "source_seconds": 2.453333,
+      "edited_seconds": 2.397146,
+      "removed_leading_seconds": 0,
+      "loudness_lufs": -18.01,
+      "true_peak_dbtp": -2.59
+    },
+    {
+      "path": "Assets/_Project/Scenes/Basement/Prison/Audios/Teachers/gustavo_line.wav",
+      "source_sha256": "1cb38c271cc3e8a49ea47892e7ae39d78d23a78897d4f4ba61616ec2fc9dce03",
+      "edited_sha256": "b313d36e41399e52120a3aaff315b84da40a5fe2e6509438985a47ab97bf8810",
+      "source_seconds": 1.941333,
+      "edited_seconds": 1.886313,
+      "removed_leading_seconds": 0,
+      "loudness_lufs": -17.99,
+      "true_peak_dbtp": -7.71
+    },
+    {
+      "path": "Assets/_Project/Scenes/Basement/Prison/Audios/Teachers/henrique_line.wav",
+      "source_sha256": "3aff3d43998c7ba7d24c289277a92eded54421c58fa7a595dfcc8a0ae4c11f04",
+      "edited_sha256": "ef08ca5ac23dffdd0874af6a49934acaa317a5d172781dec856baafc42982326",
+      "source_seconds": 6.485333,
+      "edited_seconds": 3.427125,
+      "removed_leading_seconds": 2.96,
+      "loudness_lufs": -18.0,
+      "true_peak_dbtp": -7.42
+    },
+    {
+      "path": "Assets/_Project/Scenes/Basement/Prison/Audios/Teachers/moacyr_line.wav",
+      "source_sha256": "9923de8a62a19ae5ad51a272f549dc0c50313d5988ff44435c80202ada88a792",
+      "edited_sha256": "6e19affb9a34059766abb9ef8e2391c3c4f4a2aa9935e2261860f6088e566bc5",
+      "source_seconds": 1.834667,
+      "edited_seconds": 1.779167,
+      "removed_leading_seconds": 0,
+      "loudness_lufs": -17.98,
+      "true_peak_dbtp": -6.25
+    },
+    {
+      "path": "Assets/_Project/Scenes/Basement/Prison/Audios/Teachers/paulinho_line.wav",
+      "source_sha256": "296f05e43ae884d3d952ca2024649a8a2648bc957c594413cd42369950f8a41d",
+      "edited_sha256": "8bd9ea1bb92af875b6b4118816f6b4d30ea42c80bcd4eb0f7db8483009347303",
+      "source_seconds": 1.9135,
+      "edited_seconds": 1.699833,
+      "removed_leading_seconds": 0,
+      "loudness_lufs": -18.0,
+      "true_peak_dbtp": -5.22
+    },
+    {
+      "path": "Assets/_Project/Scenes/Basement/Prison/Audios/Teachers/querino_line.wav",
+      "source_sha256": "0ea6c9047bf0e700689ae92fae755e58f0def9f45e13e9470bb436a90ea7b906",
+      "edited_sha256": "02734583dc7ba5c9c73cdb5b88d832135e41cfd881e83d866e4ce2bbef99f1e4",
+      "source_seconds": 2.858667,
+      "edited_seconds": 2.805292,
+      "removed_leading_seconds": 0,
+      "loudness_lufs": -18.0,
+      "true_peak_dbtp": -4.74
+    },
+    {
+      "path": "Assets/_Project/Scenes/Basement/Prison/Audios/Teachers/santi_line.wav",
+      "source_sha256": "55f8814879dd8b2c91dd1f25cccf10fd6b67a1187106a3b218c6e537582a42eb",
+      "edited_sha256": "21a1e62035f6bfe440bb559bebfe81f058a1b955dbe6059dc174e586fbd549d4",
+      "source_seconds": 3.9335,
+      "edited_seconds": 3.879688,
+      "removed_leading_seconds": 0,
+      "loudness_lufs": -18.01,
+      "true_peak_dbtp": -3.32
+    },
+    {
+      "path": "Assets/_Project/Scenes/Basement/Prison/Audios/Teachers/william_line.wav",
+      "source_sha256": "604b16c730e2789645be85485a5d9f8a5630692c2f0f5dcf340f34510e9e857c",
+      "edited_sha256": "f8190560e0f23e2eafb7ab1d21e441e23e9f40eecc4edc6d4e8474bdb3187907",
+      "source_seconds": 2.474667,
+      "edited_seconds": 2.421104,
+      "removed_leading_seconds": 0,
+      "loudness_lufs": -18.01,
+      "true_peak_dbtp": -2.63
+    }
+  ]
+}
