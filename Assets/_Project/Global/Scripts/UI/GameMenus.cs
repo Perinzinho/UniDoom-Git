@@ -30,13 +30,16 @@ namespace UniDoom.UI
         Button chooseMap, mapFirst;
         Button mainFirst, pauseFirst, deathRetry, deathBack, optionsBack, cancel;
         Slider sensitivity, volume;
-        Toggle invertY, fullscreen;
-        TMP_Text sensitivityValue, volumeValue, confirmText, error, deathHint;
+        Toggle invertY, fullscreen, showFps;
+        TMP_Text sensitivityValue, volumeValue, confirmText, error, deathHint, fpsCounter;
+        Image fpsBackground;
         Screen optionsOrigin, confirmOrigin;
         Action confirmAction;
         PlayerRespawn deadPlayer;
         DeathScreen deathOwner;
-        bool busy, ownsPause;
+        bool busy, ownsPause, fpsEnabled;
+        float fpsSampleTime;
+        int fpsSampleFrames;
         float previousTimeScale;
         bool previousAudioPause, previousMovement;
         PlayerMovement frozenPlayer;
@@ -50,6 +53,7 @@ namespace UniDoom.UI
         bool fitted;
         const string VolumeKey = "UniDoom_MasterVolume";
         const string FullscreenKey = "UniDoom_Fullscreen";
+        const string ShowFpsKey = "UniDoom_ShowFPS";
         Vector2Int windowedResolution = new(1600, 900);
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -68,6 +72,7 @@ namespace UniDoom.UI
             DontDestroyOnLoad(gameObject);
             AudioListener.volume = Mathf.Clamp01(PlayerPrefs.GetFloat(VolumeKey, 1));
             if (PlayerPrefs.HasKey(FullscreenKey)) ApplyFullscreen(PlayerPrefs.GetInt(FullscreenKey) == 1);
+            fpsEnabled = PlayerPrefs.GetInt(ShowFpsKey, 0) == 1;
             Build();
             SceneManager.sceneLoaded += OnSceneLoaded;
             SetScreen(Screen.Main);
@@ -84,6 +89,7 @@ namespace UniDoom.UI
 
         void Update()
         {
+            UpdateFpsCounter();
             if (busy) return;
             UpdateCreditsScroll();
             bool back = (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) ||
@@ -152,6 +158,7 @@ namespace UniDoom.UI
             }
             volume.SetValueWithoutNotify(AudioListener.volume);
             fullscreen.SetIsOnWithoutNotify(UnityEngine.Screen.fullScreen);
+            showFps.SetIsOnWithoutNotify(fpsEnabled);
             UpdateOptionsLabels();
             SetScreen(Screen.Options);
         }
@@ -522,6 +529,12 @@ namespace UniDoom.UI
             error.textWrappingMode = TextWrappingModes.Normal;
             fade = MenuStyle.Image("Transition", transform, 0, 0, 0, 0, Color.clear);
             MenuStyle.Stretch(fade.rectTransform);
+            fpsBackground = MenuStyle.Image("FPS background", layout, 1660, 24, 220, 52, new Color(.025f, .02f, .018f, .72f));
+            fpsBackground.raycastTarget = false;
+            fpsCounter = MenuStyle.Text("FPS counter", layout, "FPS: --", 1672, 24, 196, 52, 24, MenuStyle.Paper);
+            fpsCounter.alignment = TextAlignmentOptions.MidlineRight;
+            fpsCounter.raycastTarget = false;
+            SetFpsDisplayVisible(false);
             foreach (var label in layout.GetComponentsInChildren<TMP_Text>(true))
                 if (label.fontSize <= 30) smallLabels.Add((label, label.fontSize));
             Fit();
@@ -701,8 +714,9 @@ namespace UniDoom.UI
             invertY = Toggle("Inverter eixo Y", 600, value => MouseSensitivityMenu.Instance?.SetInvertY(value));
             fullscreen = Toggle("Tela cheia", 690, value =>
             { ApplyFullscreen(value); PlayerPrefs.SetInt(FullscreenKey, value ? 1 : 0); });
-            optionsBack = MenuStyle.Button(options.transform, "Back", "VOLTAR", 165, 850, 500, Back);
-            MenuStyle.Link(sensitivity, volume, invertY, fullscreen, optionsBack);
+            showFps = Toggle("Mostrar FPS", 780, SetFpsEnabled);
+            optionsBack = MenuStyle.Button(options.transform, "Back", "VOLTAR", 165, 880, 500, Back);
+            MenuStyle.Link(sensitivity, volume, invertY, fullscreen, showFps, optionsBack);
         }
 
         Slider Slider(string label, float y, float min, float max, UnityEngine.Events.UnityAction<float> change)
@@ -770,6 +784,40 @@ namespace UniDoom.UI
         {
             if (sensitivityValue != null) sensitivityValue.text = $"{sensitivity.value:0.00}x";
             if (volumeValue != null) volumeValue.text = $"{volume.value * 100:0}%";
+        }
+
+        void SetFpsEnabled(bool enabled)
+        {
+            fpsEnabled = enabled;
+            fpsSampleTime = 0;
+            fpsSampleFrames = 0;
+            if (fpsCounter != null) fpsCounter.text = "FPS: --";
+            PlayerPrefs.SetInt(ShowFpsKey, enabled ? 1 : 0);
+        }
+
+        void UpdateFpsCounter()
+        {
+            bool visible = fpsEnabled && CurrentScreen == Screen.Gameplay && !busy && !DoorReloadScreen.IsReloading;
+            SetFpsDisplayVisible(visible);
+            if (!visible)
+            {
+                fpsSampleTime = 0;
+                fpsSampleFrames = 0;
+                return;
+            }
+
+            fpsSampleTime += Time.unscaledDeltaTime;
+            fpsSampleFrames++;
+            if (fpsSampleTime < .5f) return;
+            fpsCounter.text = $"FPS: {fpsSampleFrames / fpsSampleTime:0}";
+            fpsSampleTime = 0;
+            fpsSampleFrames = 0;
+        }
+
+        void SetFpsDisplayVisible(bool visible)
+        {
+            if (fpsBackground != null) fpsBackground.gameObject.SetActive(visible);
+            if (fpsCounter != null) fpsCounter.gameObject.SetActive(visible);
         }
 
         void Quit()

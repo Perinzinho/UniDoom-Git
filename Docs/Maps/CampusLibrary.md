@@ -88,6 +88,12 @@ Luzes adicionais: pontos nas luminárias do teto e spots curtos nas doze luminá
 
 ## Dependências, conexões e preservação
 
+### Orientação das luminárias de tarefa — 09/11/2026
+
+As doze instâncias `Library reused task lamp` das cabines individuais estavam rotacionadas 180° no eixo Y, deixando braço e cúpula voltados para o lado oposto da bancada. As instâncias foram padronizadas em rotação local identidade (`0°, 0°, 0°`). Posições, escalas, mesh, material, collider, prefab de origem e as doze luzes Spot foram preservados; os Spots já apontavam para baixo e conservaram intensidade 1,25 e alcance 2,2 m.
+
+Conferência estática dos doze overrides e das referências. Unity, Play Mode, build e nova comparação visual não executados nesta alteração.
+
 ### Reutilização de modelos na fila de tarefas
 
 Foram integradas **31 instâncias** de recursos já baixados: seis vasos `Toilet Elongated A`, seis pias `Sink A`, cinco `Metal Trash Can`, dois `Korean Fire Extinguisher 01` e doze `Desk Lamp Arm 01`. Autores, CC0, fontes, conversões e movimentos estão em `Licenses/AssetSources/CampusLibrary/reused-props-sources.json` e nos três MDs de créditos. Não houve download de modelo novo; os móveis e a arquitetura específicos do mapa continuam autorais/reutilizados.

@@ -3,14 +3,15 @@
 ## Leitura rápida
 
 - Cena: `Assets/_Project/Scenes/Basement/Basement.unity`.
+- **Estado temporário:** as 14 celas começam fechadas, mas podem ser abertas com `E` sem chave durante a revisão. A reversão e as decisões sobre salas/chaves estão em [Basement-Celas-Pendencias.md](Basement-Celas-Pendencias.md).
 - Prefab principal: `Assets/_Project/Scenes/Basement/Prefabs/Basement.prefab`.
 - Cadeia carregada pelo jogo: `Basement.unity` → `BasementScenario.prefab` → `Basement.prefab`. A variante tem apenas dois overrides na área da prisão, ambos na continuação da parede do santuário; não sobrescreve o layout corrigido das celas.
 - Área das celas: `Assets/_Project/Scenes/Basement/Prison/`.
 - Arte da transição: `Assets/_Project/Scenes/Basement/Resources/Textures/UI/Transitions/Basement.png`, derivada da visão real de chegada `FromCampus` e tratada no mesmo padrão cinematográfico de `Cylinder`.
-- Quantidade atual: 13 celas e 13 professores.
-- Chaves: treze IDs próprios, um por cela, distribuídos entre Direito, Biblioteca e Bloco 4. A HUD lista todos os treze. Mapa de locais em [PrisonCellKeys.md](PrisonCellKeys.md).
+- Quantidade atual: 14 celas e 14 professores.
+- Chaves: existem treze pickups e sprites numerados, distribuídos entre Direito, Biblioteca e Bloco 4. A cela 14 de Bianca já possui ID de progressão, mas a chave 14 ainda não foi criada nem distribuída. Mapa de locais em [PrisonCellKeys.md](PrisonCellKeys.md).
 - Ocupação: exatamente um professor por cela; cada porta referencia somente o professor e a voz da própria cela.
-- Módulo compacto: passo de **3,20 m**, com área livre aproximada de **3,00 × 3,48 m**. Sete celas ficam à esquerda e seis à direita; conjunto de 22,40 m ao longo do corredor. Folha móvel de aproximadamente 1,47 m e trecho fixo de aproximadamente 1,41 m, alinhados dentro de cada módulo. Divisórias de 20 cm; corredor central livre de aproximadamente 2,97 m.
+- Módulo compacto: passo de **3,20 m**, com área livre aproximada de **3,00 × 3,48 m**. Sete celas ficam em cada lado; conjunto de 22,40 m ao longo do corredor. Folha móvel de aproximadamente 1,47 m e trecho fixo de aproximadamente 1,41 m, alinhados dentro de cada módulo. Divisórias de 20 cm; corredor central livre de aproximadamente 2,97 m.
 
 ## Professores
 
@@ -21,20 +22,33 @@ O mapeamento salvo no prefab principal é:
 | 01 | Caio | `caio_line.wav` |
 | 02 | Fábio | `fabio_line.wav` |
 | 03 | Henrique | `henrique_line.wav` |
-| 04 | Matheus Santi (prefab anterior `Teacher-santi`) | `santi_line.wav` |
+| 04 | Cesar (prefab legado `Teacher-santi`) | `cesar_line.wav` |
 | 05 | Navarro | arquivo de voz ainda não fornecido |
 | 06 | Matheus Ferraroni | arquivo de voz ainda não fornecido |
 | 07 | Paulinho | `paulinho_line.wav` |
-| 08 | Rafa | `rafa.wav` |
-| 09 | Gustavo Camossi | `gustavo-camossi.wav` |
-| 10 | Matheus Santi | `matheus-santi.wav` |
-| 11 | Moacyr | `moacyr.wav` |
-| 12 | Querino | `querino.wav` |
-| 13 | William | `william.wav` |
+| 08 | Rafa | `rafa.wav` (conteúdo fornecido como `audio_rafa_professor.wav`) |
+| 09 | Gustavo Camossi | `gustavo_line.wav` |
+| 10 | Matheus Santi | `santi_line.wav` |
+| 11 | Moacyr | `moacyr_line.wav` |
+| 12 | Querino | `querino_line.wav` |
+| 13 | William | `william_line.wav` |
+| 14 | Bianca | `bianca_line.wav` |
 
 Cada `PrisonCellGate` referencia o transform do único professor de sua cela. `PrisonController` consulta o `AudioSource` desse transform ao aceitar a abertura; os clipes não tocam ao carregar a cena (`Play On Awake` desabilitado). Não atribua falas de outras pessoas às celas 05 e 06: elas devem permanecer sem clipe até os arquivos corretos serem fornecidos.
 
-As treze imagens originais mantêm seu canvas 1536 × 1024 e seus bytes. Cada pose parada usa recorte próprio com margem de quatro pixels e pivô nos pés; PPU ajustado para altura visível de aproximadamente 1,75 m. Os oito sprites RGB usam o material de remoção do fundo preto já existente. Os cinco sprites RGBA usam `Prison/Materials/TeacherTransparent.mat`, com alpha da imagem habilitado e remoção de preto desabilitada, preservando roupas e cabelos escuros. GUIDs e IDs dos sprites foram mantidos. As vozes foram normalizadas anteriormente como WAV PCM mono, 44,1 kHz; esta revisão visual não modifica áudios.
+Em 09/11/2026, as referências legada (`m_audioClip`) e atual (`m_Resource`) do `AudioSource` foram sincronizadas nos prefabs de Gustavo Camossi, Matheus Santi, Moacyr, Querino e William. Assim, a verificação `AudioSource.clip` usada ao abrir a cela resolve a mesma gravação identificada pelo professor, sem reutilizar falas entre celas. Navarro e Matheus Ferraroni continuam intencionalmente sem clipe.
+
+Na revisão das identidades, a cela 04 foi corrigida de uma duplicação de Matheus Santi para Cesar e passou a usar `cesar_line.wav`. A cela 12 mantém Querino e passou a usar `querino_line.wav`. O caminho legado `Teacher-santi.prefab` foi preservado para manter seu GUID; somente o nome do objeto, o vínculo de áudio e os consumidores foram corrigidos.
+
+Na mesma conferência auditiva indicada pelo usuário, Gustavo Camossi e William passaram a usar respectivamente `gustavo_line.wav` e `william_line.wav`, substituindo as gravações alternativas de nomes semelhantes que estavam ligadas aos prefabs.
+
+Após conferência auditiva do usuário, o conteúdo das seis gravações trocadas foi realocado para os arquivos semânticos usados pelos respectivos prefabs: Matheus Santi recebeu a gravação antes ligada a Querino; Cesar, a de Matheus; Querino, a de Cesar; Gustavo, a de Moacyr; Moacyr, a de William; e William, a de Gustavo. Caminhos, `.meta` e GUIDs foram preservados. `rafa.wav` mantém o conteúdo fornecido como `audio_rafa_professor.wav`. Bianca passou a usar `bianca_line.wav` na cela 14.
+
+As quatorze imagens originais mantêm seu canvas 1536 × 1024 e seus bytes. Cada pose parada usa recorte próprio e pivô nos pés; o PPU mantém altura visual próxima dos demais professores. Bianca usa o recorte `bianca_Idle` de 144 × 336 px, PPU 186,66667 e altura de 1,80 m, com o material compartilhado de remoção do fundo preto. Os demais sprites preservam seus materiais RGB/RGBA anteriores. GUIDs e IDs dos sprites foram mantidos.
+
+## Inclusão da Bianca — 09/11/2026
+
+A Unity importou `Global/Sprites/teachers/sprite-bianca-professora.png` sem alterar os bytes da imagem, criou `Prison/Prefabs/Teacher-bianca.prefab` com `SpriteRenderer`, `Billboard` e `AudioSource`, e reconstruiu o prefab principal. A cela 14 ocupa o módulo direito final, em paralelo à cela 13, sem ampliar o corredor. A validação registrou 14 `PrisonCellGate`, IDs únicos de 1 a 14, `Professor Bianca - Cela 14` e clipe `bianca_line`. O prefab foi validado fora de Play Mode; abertura, áudio e comparação visual dentro do jogo ainda precisam de teste manual.
 
 ## Regra de capacidade
 
@@ -86,3 +100,9 @@ Adicionado `Prison/Prefabs/OpenFoodCan.prefab`: lata de alimento aberta enferruj
 Modelo **open can (junk)** de **p0ss**, [OpenGameArt](https://opengameart.org/content/open-can-junk), CC0 1.0. Autor incluído em `CreditsContent.txt` e `Docs/Maps/creditos.md`, sem links nos créditos exibidos. Origem, licença, hashes e conversão em `Licenses/AssetSources/Basement/open-food-can.json`.
 
 Conferência estática de referências, IDs, malha e posicionamento. Unity, compilação, Play Mode, build, comparação visual, screenshots e vídeo não executados. Sem commit, push ou desligamento.
+
+## Padronização dos pickups — 09/11/2026
+
+As 11 caixas de munição e os 9 medkits adicionados ao prefab principal foram reduzidos e padronizados. Todas as caixas usam escala `4 × 3 × 1` (altura visual aproximada de 0,33 m), inclusive as duas caixas centrais antes maiores; após a revisão visual, todos os medkits usam `0,09 × 0,09 × 1` (altura visual aproximada de 0,48 m) para não parecerem pequenos demais diante das caixas. O pivô vertical dos kits foi compensado em 0,031 m para preservar o apoio. Posições horizontais, quantidades, valores de munição/cura, prefabs globais, GUIDs e demais mapas foram preservados.
+
+Conferência estática dos 20 overrides de escala e das referências dos prefabs. Unity, compilação, Play Mode, build e comparação visual não executados nesta alteração.

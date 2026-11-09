@@ -1,13 +1,15 @@
 # Chaves numeradas das celas
 
-Atualizado em 09/11/2026. Treze chaves de cela e uma chave de manutenção, distribuídas em 5/5/4 por prédio. Direito utiliza sua cena independente; Biblioteca e Bloco 4 utilizam seus prefabs. O porão carrega `BasementScenario.prefab`, que instancia `Basement.prefab`.
+Atualizado em 09/11/2026. Há 14 celas, treze chaves de cela e uma chave de manutenção. As treze chaves existentes continuam distribuídas em 5/5/4 por prédio; a chave 14 de Bianca ainda não foi criada nem distribuída. Direito utiliza sua cena independente; Biblioteca e Bloco 4 utilizam seus prefabs. O porão carrega `BasementScenario.prefab`, que instancia `Basement.prefab`.
+
+> **Revisão temporária:** as 14 celas começam fechadas, mas podem ser abertas com `E` sem chave enquanto layout e progressão são avaliados. As treze chaves existentes e o contrato abaixo permanecem preservados; a chave 14 é uma pendência antes da futura reativação das fechaduras. Decisões e checklist: [Basement-Celas-Pendencias.md](Basement-Celas-Pendencias.md).
 
 | Chave/cela | Professor | Local da chave |
 |---|---|---|
 | 1 | Caio | Direito: chave original sorteada entre 33 ambientes, com alarme original |
 | 2 | Fabio | Direito: mesa docente da sala 110 |
 | 3 | Henrique | Direito: mesa docente da sala 121 |
-| 4 | Santi | Biblioteca: mesa de estudo individual |
+| 4 | Cesar | Biblioteca: mesa de estudo individual |
 | 5 | Navarro | Biblioteca: mesa de leitura em carvalho |
 | 6 | Matheus Ferraroni | Biblioteca: bancada de pesquisa |
 | 7 | Paulinho | Bloco 4: chave original do puzzle na bancada da 423 |
@@ -17,8 +19,9 @@ Atualizado em 09/11/2026. Treze chaves de cela e uma chave de manutenção, dist
 | 11 | Moacyr | Biblioteca: mesa da leitura silenciosa ao norte |
 | 12 | Querino | Bloco 4: mesa docente da sala 414 |
 | 13 | William | Bloco 4: mesa docente da sala 421 |
+| 14 | Bianca | Não definida; pickup e sprite da chave 14 ainda não criados |
 
-Inventário existente `PlayerCellKeys`, IDs `professor-cell-01` até `professor-cell-13`. `PrisonCellGate` exige exclusivamente sua chave. `PrisonProgress.CellCount = 13` define os limites do inventário, HUD e componentes. Não há chave universal ativa no porão. Os pickups originais do alarme/puzzle continuam responsáveis pelas chaves 1/7; os demais usam `CellKeyPickup`. Coleta e retorno ao mapa consultam o inventário persistente da sessão. Não foi criado outro sistema de save.
+Inventário existente `PlayerCellKeys`, com contrato de IDs `professor-cell-01` até `professor-cell-14`. `PrisonProgress.CellCount = 14` define os limites do inventário, HUD e componentes. Ainda não existe pickup que conceda `professor-cell-14`; enquanto a revisão sem chave estiver ativa, a cela de Bianca pode ser aberta apenas por esse modo temporário. Não há chave universal ativa no porão. Os pickups originais do alarme/puzzle continuam responsáveis pelas chaves 1/7; os demais usam `CellKeyPickup`. Coleta e retorno ao mapa consultam o inventário persistente da sessão. Não foi criado outro sistema de save.
 
 Sprites: todas as treze chaves usam o modelo aprovado de metal envelhecido com numeração gravada. Atlas compartilhados `Assets/_Project/Global/Resources/Textures/Pickups/CellKeys.png`, oito subassets `CellKey01`…`CellKey08`, e `CellKeys09-13.png`, cinco subassets `CellKey09`…`CellKey13`. Renderizadores usam o material de sprite URP e Billboard existentes. Fonte, geração, hashes e recortes em `Licenses/AssetSources/CellKeys/generated-sprites.json` e `generated-sprites-09-13.json`. Atlas original e seus oito IDs preservados.
 
@@ -28,7 +31,7 @@ Coleta sobre mesas: alcance horizontal dos triggers aumentado para aproximadamen
 
 Conferência desta alteração por arquivos: treze pickups ativos com IDs 1–13, imagens transparentes, correspondência dos treze sprites, referências locais e fileIDs preservados, escalas e triggers conferidos. Cópias antigas inativas continuam inativas. Sem abrir Unity, compilar, executar jogo/Play Mode, gerar capturas ou fazer commit/push. A coleta efetiva junto às mesas precisa de teste pelo usuário.
 
-Onze gravações existentes tratadas, mantendo caminhos, GUIDs, importadores e associações. Ruído moderado reduzido, silêncios retirados, volume medido entre −18,30 e −17,98 LUFS e pico verdadeiro máximo −1,50 dBTP. Cortes confirmados pelo usuário: Henrique sem “calma”, mantendo “Vai Corinthians”; Bianca somente “yipeee” final. Medições e hashes em `Licenses/AssetSources/Teachers/audio-edit.json`. Os professores Ferraroni, Navarro e Rafa já não tinham áudio associado; nenhum áudio de outro professor foi atribuído a eles. Todos os onze arquivos fornecidos foram processados, inclusive os ainda sem consumidor.
+As gravações tratadas mantêm caminhos, GUIDs e importadores. Cortes confirmados pelo usuário: Henrique sem “calma”, mantendo “Vai Corinthians”; Bianca somente “yipeee” final. Bianca agora consome `bianca_line.wav` na cela 14 e Rafa consome `rafa.wav`; Navarro e Matheus Ferraroni permanecem sem áudio. Medições e hashes da etapa de tratamento estão em `Licenses/AssetSources/Teachers/audio-edit.json`.
 
 Validação: matriz 8 × 8 de identidade, duplicatas, IDs inválidos e sprites carregados em objetos isolados no modo de edição; prefabs reabertos, referências e IDs preservados; previews fora de tela em `output/Campus-Ultimas-Chave-*.png`; hashes e métricas dos áudios conferidos. Sem executar jogo, Play Mode, ativar/focar janela ou testar coleta, retorno entre mapas, áudio/HUD em runtime, build ou FPS.
 
