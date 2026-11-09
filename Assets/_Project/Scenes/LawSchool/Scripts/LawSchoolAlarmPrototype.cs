@@ -143,7 +143,8 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         var life = player.GetComponent<PlayerLife>();
         if (life && life.IsDead) return false;
         var inventory = player.GetComponent<PlayerCellKeys>();
-        if (!inventory || !key || !inventory.HasKey(key.CellId)) return false;
+        if (!inventory || !key || !inventory.HasKey(key.CellId) ||
+            !inventory.HasKey(LawSchoolMaintenanceAccess.KeyId)) return false;
         inventory.CompleteEvent(EventId);
         IsResolved = true;
         RestorePresentation();
