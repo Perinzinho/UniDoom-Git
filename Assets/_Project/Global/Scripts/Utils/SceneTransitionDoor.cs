@@ -21,6 +21,9 @@ namespace UniDoom.Utils
         [SerializeField] private MonoBehaviour transitionGuard;
         private readonly HashSet<Collider> waitingPlayers = new HashSet<Collider>();
         private OpenDoorWithKey soundDoor;
+        readonly List<Material> entranceMaterials = new List<Material>();
+        Camera entranceCamera;
+        float previousNearClip;
 
         public string DestinationScene => destinationScene;
         public string DestinationSpawnId => destinationSpawnId;
@@ -30,6 +33,31 @@ namespace UniDoom.Utils
 
         private void Start()
         {
+            if (gameObject.scene.name == "CampusBlock4" && destinationScene == "CampusExterior")
+                BuildExitBacking();
+            if (gameObject.scene.name == "Basement" && destinationScene == "CampusExterior" &&
+                !GetComponent<PrisonCampusPortal>()) gameObject.AddComponent<PrisonCampusPortal>();
+            if (gameObject.scene.name == "CampusBlock4" && destinationScene == "CampusExterior")
+                foreach (var root in gameObject.scene.GetRootGameObjects())
+                    foreach (var renderer in root.GetComponentsInChildren<MeshRenderer>())
+                    {
+                        if (renderer.name != "Saved entrance and technical facade") continue;
+                        // This facade is approached from both sides. Keep the shared assets
+                        // intact and make only this entrance's material instances two-sided.
+                        var materials = renderer.sharedMaterials;
+                        for (int i = 0; i < materials.Length; i++)
+                        {
+                            if (!materials[i]) continue;
+                            var copy = new Material(materials[i]);
+                            if (copy.HasProperty("_Cull")) copy.SetFloat("_Cull", 0);
+                            if (copy.HasProperty("_CullMode")) copy.SetFloat("_CullMode", 0);
+                            materials[i] = copy;
+                            entranceMaterials.Add(copy);
+                        }
+                        renderer.sharedMaterials = materials;
+                        renderer.forceRenderingOff = false;
+                        renderer.allowOcclusionWhenDynamic = false;
+                    }
             soundDoor = physicalDoor;
             if (soundDoor != null) return;
             // Some legacy portals omit physicalDoor. Associate audio with the nearby leaf
@@ -43,6 +71,35 @@ namespace UniDoom.Utils
                 nearest = distance;
                 soundDoor = candidate;
             }
+        }
+
+        void BuildExitBacking()
+        {
+            // This interior is a separate scene. Keep a closed entrance behind the
+            // transition volume so approaching the exit never reveals the scene void.
+            Material surface = null;
+            float nearest = float.PositiveInfinity;
+            foreach (var root in gameObject.scene.GetRootGameObjects())
+                foreach (var renderer in root.GetComponentsInChildren<MeshRenderer>())
+                {
+                    if (!renderer.name.ToLowerInvariant().Contains("door")) continue;
+                    float distance = (renderer.bounds.center - transform.position).sqrMagnitude;
+                    if (distance >= nearest || !renderer.sharedMaterial) continue;
+                    surface = renderer.sharedMaterial;
+                    nearest = distance;
+                }
+            var box = GetComponent<BoxCollider>();
+            var backing = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            backing.name = "Closed exterior entrance backing";
+            backing.transform.SetParent(transform, false);
+            backing.transform.localPosition = box.center - Vector3.forward * (box.size.z * .5f + .18f);
+            backing.transform.localScale = new Vector3(box.size.x + .8f, box.size.y + 2.4f, .16f);
+            // The trigger performs the transition; no invisible extra obstacle.
+            var collision = backing.GetComponent<Collider>();
+            collision.enabled = false;
+            Destroy(collision);
+            if (surface) backing.GetComponent<MeshRenderer>().sharedMaterial = surface;
+            backing.GetComponent<MeshRenderer>().allowOcclusionWhenDynamic = false;
         }
 
         private void OnTriggerEnter(Collider other)
@@ -62,6 +119,22 @@ namespace UniDoom.Utils
 
         private void OnTriggerExit(Collider other) => waitingPlayers.Remove(other);
         private void OnDisable() => waitingPlayers.Clear();
+
+        private void LateUpdate()
+        {
+            if (gameObject.scene.name != "CampusBlock4" || destinationScene != "CampusExterior") return;
+            var camera = Camera.main;
+            if (!camera || camera.nearClipPlane <= .06f) return;
+            if (!entranceCamera) { entranceCamera = camera; previousNearClip = camera.nearClipPlane; }
+            camera.nearClipPlane = .06f;
+        }
+
+        private void OnDestroy()
+        {
+            if (entranceCamera && Mathf.Approximately(entranceCamera.nearClipPlane, .06f))
+                entranceCamera.nearClipPlane = previousNearClip;
+            foreach (var material in entranceMaterials) if (material) Destroy(material);
+        }
 
         private void TryTransition(Collider other)
         {

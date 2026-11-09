@@ -1,15 +1,37 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 /// <summary>One numbered teacher-cell key in the existing persistent player inventory.</summary>
 [DisallowMultipleComponent, RequireComponent(typeof(SphereCollider))]
 public sealed class CellKeyPickup : MonoBehaviour
 {
-    [SerializeField, Range(1, 8)] int cellId = 1;
+    [SerializeField, Range(1, PrisonProgress.CellCount)] int cellId = 1;
+    [SerializeField] bool showNumberLabel;
     bool collected;
     public int CellId => cellId;
 
-    void Awake() => GetComponent<SphereCollider>().isTrigger = true;
+    void Awake()
+    {
+        GetComponent<SphereCollider>().isTrigger = true;
+        if (!showNumberLabel) return;
+        var image = GetComponentInChildren<SpriteRenderer>();
+        if (!image) return;
+        // Reuse the existing key art; the number follows its billboard on the tag.
+        var labelObject = new GameObject("Cell key number", typeof(TextMeshPro));
+        labelObject.transform.SetParent(image.transform, false);
+        labelObject.transform.localPosition = new Vector3(.35f, 1.1f, -.03f);
+        labelObject.transform.localRotation = Quaternion.Euler(0, 0, -15);
+        var label = labelObject.GetComponent<TextMeshPro>();
+        label.text = cellId.ToString("00");
+        label.fontSize = 10;
+        label.alignment = TextAlignmentOptions.Center;
+        label.color = new Color(.95f, .91f, .8f, 1);
+        label.rectTransform.sizeDelta = new Vector2(2.4f, 1f);
+        var labelRenderer = label.GetComponent<MeshRenderer>();
+        labelRenderer.sortingLayerID = image.sortingLayerID;
+        labelRenderer.sortingOrder = image.sortingOrder + 1;
+    }
 
     IEnumerator Start()
     {

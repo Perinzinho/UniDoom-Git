@@ -133,6 +133,29 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        if (gameObject.scene.name == "CampusExterior")
+        {
+            // Outdoor steering owns the capsule. Kinematic movement avoids launch
+            // impulses when the persistent player and actors overlap during scene load.
+            if (agent) agent.enabled = false;
+            if (body)
+            {
+                body.isKinematic = true;
+                body.useGravity = false;
+                body.constraints &= ~RigidbodyConstraints.FreezePosition;
+                body.constraints |= RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            }
+            if (capsule && UniDoom.Utils.CampusGrounding.TryFloor(
+                    new Vector3(transform.position.x, capsule.bounds.min.y, transform.position.z), out var floor))
+            {
+                float offset = transform.position.y - capsule.bounds.min.y;
+                var grounded = new Vector3(transform.position.x, floor.point.y + offset + .02f, transform.position.z);
+                if (body) body.position = grounded;
+                else transform.position = grounded;
+                patrolOrigin = grounded;
+                progressPosition = grounded;
+            }
+        }
         if (agent != null && agent.enabled)
         {
             // Navigation is the sole owner of the transform on baked surfaces.
@@ -534,6 +557,24 @@ public class Enemy : MonoBehaviour, IDamageable
             Face(direction, Time.fixedDeltaTime);
         }
         float alignedSpeed = desiredSpeed * MovementAlignment(direction);
+        if (gameObject.scene.name == "CampusExterior" && capsule)
+        {
+            // Ground the capsule before physics, and step onto curbs without impulses.
+            // Sweeps still reject walls and other actors; only the lower 35 cm is stepped over.
+            Vector3 position = transform.position + direction * alignedSpeed * Time.fixedDeltaTime;
+            if (State == BehaviourState.Wandering && HorizontalDistance(position, patrolOrigin) > patrolRadius)
+            {
+                hasPatrolDestination = false;
+                position = transform.position;
+            }
+            float offset = transform.position.y - capsule.bounds.min.y;
+            if (UniDoom.Utils.CampusGrounding.TryFloor(position - Vector3.up * offset, out var floor))
+            {
+                position.y = floor.point.y + offset + .015f;
+                if (body) body.MovePosition(position); else transform.position = position;
+            }
+            return;
+        }
         if (body != null && !body.isKinematic)
             body.linearVelocity = direction * alignedSpeed + Vector3.up * body.linearVelocity.y;
         else if (direction.sqrMagnitude > .001f)
@@ -587,6 +628,12 @@ public class Enemy : MonoBehaviour, IDamageable
         Vector3 center = capsule != null ? capsule.bounds.center : transform.position;
         float distance = Mathf.Max(.3f, desiredSpeed * Time.fixedDeltaTime + .1f);
         Vector3 axis = Vector3.up * (halfHeight - radius);
+        if (gameObject.scene.name == "CampusExterior")
+        {
+            // Raise the bottom endpoint only: retain head clearance above a curb.
+            center += Vector3.up * .175f;
+            axis -= Vector3.up * Mathf.Min(.175f, axis.y);
+        }
         int count = Physics.CapsuleCastNonAlloc(center + axis, center - axis, radius, direction,
             movementHits, distance, obstacleLayers, QueryTriggerInteraction.Ignore);
         if (count == movementHits.Length) return false;
@@ -598,6 +645,14 @@ public class Enemy : MonoBehaviour, IDamageable
     private bool TryGround(Vector3 position, out Vector3 grounded)
     {
         float footOffset = capsule != null ? transform.position.y - capsule.bounds.min.y : 1f;
+        if (gameObject.scene.name == "CampusExterior")
+        {
+            grounded = position;
+            if (!UniDoom.Utils.CampusGrounding.TryFloor(position - Vector3.up * footOffset, out var support) ||
+                Mathf.Abs(support.point.y - (position.y - footOffset)) > .35f) return false;
+            grounded.y = support.point.y + footOffset;
+            return true;
+        }
         Vector3 origin = position + Vector3.up * .4f;
         int count = Physics.RaycastNonAlloc(origin, Vector3.down, movementHits, footOffset + .9f,
             obstacleLayers, QueryTriggerInteraction.Ignore);
