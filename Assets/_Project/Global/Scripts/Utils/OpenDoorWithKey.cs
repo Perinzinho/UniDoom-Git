@@ -24,6 +24,8 @@ public class OpenDoorWithKey : MonoBehaviour
     [Tooltip("0 chooses the player's side; -1 or 1 keeps a one-way hinge consistent after returning to the room.")]
     [Range(-1f, 1f)]
     [SerializeField] private float fixedOpeningDirection;
+    [Tooltip("Local approach axis: X for existing doors, passage normal for swing gates.")]
+    [SerializeField] private Vector3 openingSideAxis = Vector3.right;
 
     [Header("Tela de Reload / Aquecimento de Shaders")]
     [Tooltip("Exibe a tela de reload e warmup de shaders quando o jogador passar pela porta.")]
@@ -67,7 +69,7 @@ public class OpenDoorWithKey : MonoBehaviour
         if (life != null && life.IsDead) return false;
         if (!unlocked)
         {
-            float side = transform.InverseTransformPoint(player.transform.position).x - closedCenter.x;
+            float side = PlayerSide(player.transform.position);
             openingDirection = fixedOpeningDirection != 0 ? Mathf.Sign(fixedOpeningDirection) : (side >= 0f ? -1f : 1f);
         }
         unlocked = true;
@@ -148,7 +150,7 @@ public enum DoorReloadTriggerMode
             nearbyPlayers.Add(other);
             if (!playerEntrySides.ContainsKey(other))
             {
-                float side = transform.InverseTransformPoint(other.transform.position).x - closedCenter.x;
+                float side = PlayerSide(other.transform.position);
                 playerEntrySides[other] = side;
             }
         }
@@ -190,7 +192,7 @@ public enum DoorReloadTriggerMode
             {
                 PlayerPickupKey player = other.GetComponentInParent<PlayerPickupKey>();
                 if (player == null) continue;
-                float side = transform.InverseTransformPoint(player.transform.position).x - closedCenter.x;
+                float side = PlayerSide(player.transform.position);
                 openingDirection = fixedOpeningDirection != 0 ? Mathf.Sign(fixedOpeningDirection) : (side >= 0f ? -1f : 1f);
                 break;
             }
@@ -210,7 +212,7 @@ public enum DoorReloadTriggerMode
                 foreach (Collider other in nearbyPlayers)
                 {
                     if (other == null) continue;
-                    float currentSide = transform.InverseTransformPoint(other.transform.position).x - closedCenter.x;
+                    float currentSide = PlayerSide(other.transform.position);
                     if (playerEntrySides.TryGetValue(other, out float initialSide))
                     {
                         // Se iniciou em um dos lados e agora cruzou com folga mínima
@@ -256,6 +258,12 @@ public enum DoorReloadTriggerMode
         return (!requiresKey01 || player.key01) &&
             (!requiresKey02 || player.key02) &&
             (!requiresKey03 || player.key03);
+    }
+
+    private float PlayerSide(Vector3 position)
+    {
+        Vector3 axis = openingSideAxis.sqrMagnitude > .0001f ? openingSideAxis.normalized : Vector3.right;
+        return Vector3.Dot(transform.InverseTransformPoint(position) - closedCenter, axis);
     }
 
     private bool IsOutsideTrigger(Collider other)

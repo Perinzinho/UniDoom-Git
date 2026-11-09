@@ -32,6 +32,9 @@ namespace UniDoom.CampusBlock4
             if (player == null || player != GameManager.SessionPlayer ||
                 (player.TryGetComponent<PlayerLife>(out var life) && life.IsDead)) return false;
             if (!Block4PuzzleProgress.CollectTeacherCellKey()) return false;
+            var cellKeys = player.GetComponent<PlayerCellKeys>();
+            if (!cellKeys) cellKeys = player.gameObject.AddComponent<PlayerCellKeys>();
+            cellKeys.TryAddKey(Block4PuzzleProgress.TeacherCellKeyId);
             SFXManager.Instance?.PlayKeyPickupSound();
             keypad.ShowKeyCollected();
             gameObject.SetActive(false);

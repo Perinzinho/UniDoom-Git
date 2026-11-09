@@ -15,6 +15,8 @@ Leia este índice e **comece pela seção Leitura rápida da ficha do mapa solic
 
 Não carregue todas as cenas, este catálogo inteiro e os logs antigos por padrão. Localize caminhos com `rg --files`, consulte os campos afetados e amplie a leitura somente quando faltar evidência. Não marque um teste como executado apenas porque consta numa ficha anterior.
 
+Contrato compartilhado: [chaves numeradas das celas](PrisonCellKeys.md) — Direito, Biblioteca, Bloco 4 e porão.
+
 ## Encontros com zumbis — comportamento compartilhado
 
 - `Enemy.cs`: percepção próxima em todas as direções até 3,5 m, ainda limitada por alcance e obstáculos; patrulhas olham ao redor nas pausas. Movimento desacelera enquanto o corpo vira. Ataques corpo a corpo acompanham o alvo na preparação e ataques à distância também exigem orientação para o alvo.

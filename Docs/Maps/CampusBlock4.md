@@ -1,66 +1,74 @@
 # Bloco 4 — Tecnologia da Informação
 
-Atualizado: **2026-11-08**. Direção: `.codex/PROMPT_MESTRE.md` e `total-chaos-visual-direction` / `.codex/SKILL.md`. Esta ficha substitui as medidas e os testes da primeira revisão de 08/11. Histórico: [README_CAMPUS_EXTERIOR.md](../../README_CAMPUS_EXTERIOR.md), seção 12.
+Atualizado: **2026-11-08**, revisão de [correcoesbloco4.md](correcoesbloco4.md). Fontes normativas: `.codex/PROMPT_MESTRE.md` e `total-chaos-visual-direction` / `.codex/SKILL.md`. As medidas e os testes das revisões anteriores são históricos.
 
 ## Leitura rápida
 
-- Cena `Assets/_Project/Scenes/CampusBlock4/CampusBlock4.unity`; prefab `Prefabs/CampusBlock4.prefab` na mesma pasta. Uma instância; sem cena/menu novos.
-- **Hall de 15 m, quatro corredores de 8 m e 24 ambientes numerados 401–424.** Salas de **13,5 m** de largura; profundidade externa de **17 m**, interna de **11,75 m**, conforme os módulos medidos em LawSchool. Pé-direito aproximado de **4,06 m**. Player na escala original.
-- Cruzamentos em `z = ±16,25`; salas entre `x = ±7,5` e `±48`; banheiros nas extremidades laterais. Largura externa próxima de **144 m**, frente em `z ≈ −48,3`, fundo em `z ≈ 37,55`. O total de salas é menor que o de Direito; a implantação não tem a mesma extensão de LawSchool.
-- A espera/prolongamento do hall oposto à entrada foi removida; parede no limite do segundo cruzamento, `z = 20,25`. Salas externas ampliadas para 17 m; o espaço central posterior fica fora do interior acessível.
-- **20 ambientes de ensino com computadores**, auditório 424, copa 401, coordenação 410 e depósito compacto 419. Secretaria e quatro banheiros adicionais. Nomes de matérias permanecem somente nos nomes internos dos objetos.
-- Branco institucional, laranja à direita, portas/placas azuis, caixilhos escuros, piso quente, forro modular e fluorescentes preservam a identidade do Bloco 4. Materiais e fotografias originais inalterados.
-- Mesas metálicas, cadeiras de escritório e notebooks já importados substituem mobiliário simplificado. Três colunas: 12 estações nas salas externas, nove nas internas, mais mesa docente. Quatro estações conservam os monitores especiais do enigma.
-- Fontes e licenças: `Licenses/AssetSources/CampusBlock4/layout-revision.json`. Nenhum modelo externo novo baixado nesta revisão.
+- Cena `Assets/_Project/Scenes/CampusBlock4/CampusBlock4.unity`; prefab `Prefabs/CampusBlock4.prefab` na mesma pasta. Sem nova cena/menu.
+- **Salas 401–424, 426 e 428 em uso**; 425/427 inativas. **22 laboratórios**, incluindo a antiga sala de auditório 424, copa 401, **secretaria 404**, coordenação 410 e periféricos 419. Ambientes de apoio preservados por confirmação do usuário; quatro banheiros compartilhados entre os corredores.
+- Módulos preservados: largura **13,5 m**, profundidade externa **17 m**, interna **11,75 m**, conforme LawSchool. Os novos laboratórios das extremidades usam 13,5 × 17 m, rotacionados para abrir para os corredores. Pé-direito aproximado **4,06 m**.
+- Hall de **15 m** e quatro corredores de **8 m**, cruzamentos em `z = ±16,25`. **426/428 na fileira externa em frente aos banheiros**, com centro `x = 54,75`, frentes `z = −20,25 / +20,25`, footprint `x = 48…61,5`, profundidade até `z = ±37,25`. Antigos acessos nas extremidades fechados em `x = ±71,75`. O hall ainda termina em `z = 20,25`; a espera posterior não foi recriada.
+- **79 bancadas contínuas de quatro computadores**: 316 estações de alunos, mais mesas docentes. Três fileiras nas salas internas e quatro nas externas, incluindo a 424 convertida em laboratório. Tampos de **7,6 × 0,95 m**, topo a 0,90 m, com estrutura metálica, cadeiras, mini-PCs e canaletas. Mesas individuais antigas dos alunos inativas; 11 bancadas dos antigos laboratórios 404/425/427 também inativas.
+- Modelos novos de monitor 24 polegadas, teclado e mouse são CC0, com meshes/materiais compartilhados entre as instâncias. Professores e apoio reutilizam os modelos existentes. Fonte: `Licenses/AssetSources/CampusBlock4/corrections-models.json`.
+- Paleta laranja/azul conservada. Piso terrazzo e reboco padronizado reutilizam a base visual de Direito, em materiais exclusivos do Bloco 4. Paredes contínuas junto às lousas; janelas transparentes de observação restauradas nas frentes, ao lado das portas.
+- Quatro longarinas e quatro vasos do hall encostados às paredes, com folga geométrica de **15 mm**. Bancos mantêm orientação e escala; vasos girados para acomodar as folhagens. O vaso antes diante da secretaria foi levado para `z = −25,5`, junto à parede oeste perto da entrada; balcão, foto/símbolos e cruzamentos dos corredores livres.
 
-## Portas, catracas e textos
+- Pisos: 129 colisores ativos com tag `Eco` e superfície `Interior`. Energia: primeiro evento em 12–24 s, seguintes em 35–75 s, apagão de 2–4 s; 199 luzes e 182 difusores. Chaves de cela: **7** no puzzle da 423 e **8** na mesa docente da 428. Contrato compartilhado: [PrisonCellKeys.md](PrisonCellKeys.md).
 
-Catracas em `z = −42,15`, após a chegada. Quatro pedestais delimitam três folhas móveis, com passagem central mais larga. Vidros fixos e corrimãos completam a barreira até as paredes. O canto direito da entrada foi fechado para impedir desvio lateral.
+## Portas, catracas e identificação
 
-As 24 portas numeradas usam vão de **1,75 × 3,075 m**, folha de **1,726 × 3,051 m** e folga nominal de **12 mm** por borda. Batentes, folhas e ferragens ajustados em conjunto; secretaria encaixada no vão próprio. Controladores originais e trava da 423 preservados. **28 controladores ativos**: 24 ambientes, secretaria e três passagens da entrada.
+Portas numeradas com vão nominal de **1,75 × 3,075 m**, folhas de **1,746 × 3,071 m**, folga de **2 mm** por borda, batentes e vedação visual. A secretaria mantém a porta original da 404 para funcionários. Registros/fileIDs dos objetos antigos mantidos; geometrias e colisores substituídos ficam inativos. Duas caixas antigas do perímetro foram desativadas porque bloqueavam as novas portas das extremidades; após retirar 425/427, novos fechamentos sólidos vedam os finais oeste.
 
-Retiradas as placas de “Bloco 4 / Ciências da Computação” e “catracas / passagem livre”. Frentes identificadas somente por **401, 402, …, 424**. Textos fixos rasterizados em `Textures/Printed campus lettering.png`, atlas RGBA persistente aplicado às superfícies por meshes com UVs; TMPs de origem desabilitados. O estado variável do teclado permanece dinâmico no LCD físico.
+Na terceira lista, 426/428 passaram a abrir para as fileiras externas e os acessos anteriores nos finais leste também foram fechados. A barra restante da antiga porta da secretaria na entrada foi desativada, preservando parede e barreira das catracas.
 
-## Banheiros e apoio
+Catracas em `z = −42,15`: quatro pedestais, três passagens e barreira fixa até as paredes. `OpenDoorWithKey.openingSideAxis` mantém X como padrão para portas existentes; nas catracas usa o eixo de passagem, com sentido escolhido pela aproximação do jogador. Não houve travessia em Play Mode nesta revisão.
 
-Quatro conjuntos reproduzem geometria, materiais, pias, sanitários e disposição de cabines de **LawSchool**, sem modificar os assets de origem. Femininos à esquerda: **13,5 × 24,5 m**; masculinos à direita: **9,5 × 24,5 m**. Quatro cabines por conjunto, acessos pelos dois corredores. Folhas de cabine na posição estática aberta do modelo de Direito, sem controladores adicionais. Meshes exclusivos persistentes conservam UVs e materiais de origem.
+Frentes em uso identificadas por **401–424, 426 e 428**, sem placas de matérias. Textos estáticos permanecem aplicados por atlas/UVs. Placas gerais do bloco e de passagem livre continuam retiradas. Lousas novas têm **5,6 × 1,65 m**, centro a **2,45 m** e parede posterior fechada. Vidros frontais entre 1,05 e 2,85 m de altura permitem observar os interiores, com caixilhos e colisores.
 
-| Ambiente | Localização | Uso |
-|---|---|---|
-| Secretaria | Esquerda da entrada | Atendimento e quinta pista com retrato original |
-| Copa 401 | Primeiro corredor, esquerda | Pia, micro-ondas, bancada, mesas, cadeiras, armário e bebedouro |
-| Coordenação 410 | Primeiro corredor, direita | Mesas com computadores, atendimento, arquivo e copiadora |
-| Depósito 419 | Segundo corredor, direita | Pequeno espaço de cabos, periféricos e dispositivos, com estante e bancada |
-| Sala 423 | Segundo corredor, direita | Porta do puzzle, chave e espingarda coletável |
+## Secretaria, periféricos e apoio
 
-O depósito permanece compacto dentro do módulo. Objetos substituídos ficam inativos para preservar fileIDs. Geometria remanescente das salas limpa de móveis e equipamentos sobrepostos.
+Secretaria **substitui o laboratório 404**, conforme a orientação final do usuário. Usa o módulo interno de **13,5 × 11,75 m**, em `x = −21…−7,5`, `z = −12,25…−0,5`. O guichê de LawSchool foi reutilizado e voltado diretamente para o hall de 15 m, depois das catracas, em `x = −7,5`, centro `z = −6,375`; não há corredor de atendimento. Entrada de funcionários pela porta original da 404 no primeiro corredor. Mobiliário administrativo reutiliza prefabs existentes; retrato na parede interna oeste e quinta pista na tela do computador administrativo. Assentos do hall afastados da frente do balcão. Antiga secretaria junto à entrada e corredor de serviço inativos. As salas 416 e 422 continuam sendo laboratórios.
 
-## Puzzle e recompensas
+Sala 419 ocupa todo o módulo interno de **13,5 × 11,75 m**, sem as divisórias que limitavam o depósito a uma fração da sala. Frente liberada: estantes dianteiras, móveis do antigo depósito compacto e placa de cabos/periféricos fora de uso. Duas estantes posteriores e bancadas de diagnóstico mantidas; caixas empilhadas, cabos, monitores, teclados, notebooks e ferramentas acumulados no fundo como equipamentos em triagem. Modelos e materiais existentes reutilizados. Copa 401 e coordenação 410 mantidas.
 
-Scripts e configuração originais **inalterados**. Pistas: 402 quadrado=1, 407 triângulo=2, 414 círculo=3, 420 losango=4 e secretaria cruz=5. Ordem junto ao quadro: triângulo, losango, quadrado, cruz, círculo; senha **24153**. A inscrição mostra somente os símbolos.
+Quatro banheiros usam os módulos de LawSchool: um par masculino/feminino em cada lado do edifício, quatro cabines por banheiro e acesso pelos dois corredores. Femininos de **13,5 × 24,5 m**, masculinos de **9,5 × 24,5 m**. Quatro envelopes de colisores de caixa garantem paredes sólidas, preservando os acessos. Duas divisórias completas em `x = ±61,875` fecham o intervalo entre masculino e feminino.
 
-Quadro completo e quatro retratos conservam imagens, materiais e recortes UV originais. Geometria dos planos e alinhamento dos monitores corrigidos. Parede do quadro à direita do hall, próxima de `x = 5,85`, com face voltada ao hall.
+Na terceira lista, os quatro conjuntos de cabines receberam cinco divisórias laterais e fechamentos frontais contínuos por banheiro. Dezesseis vãos livres de **1,15 m**, folhas de **1,14 × 2,59 m**, folga de **5 mm** por borda, batentes e puxadores. Componentes de abertura automática preservados com eixo de dobradiça corrigido para dentro. Geometria antiga das cabines retirada dos lotes exclusivos do Bloco 4; pias, divisórias dos mictórios e os 16 vasos já orientados para o interior preservados. Malhas derivadas editadas mantendo GUIDs e importadores; **assets de origem de LawSchool inalterados**. Comportamento e travessia não testados em jogo.
 
-Teclado junto à porta da 423: aproximadamente **(21,30; 1,50; 20,095)**. Chave perto de **(23,10; 1,27; 34,15)**; espingarda atrás, perto de **(23,10; 1,06; 35,65)**. Chave mantém sprite, billboard e inventário `block4.teacher-cell`; arma usa pickup global.
+## Puzzle, painel e energia
 
-`Block4PuzzleProgress` preserva porta e chave durante a sessão. A chave coletada não reaparece. O pickup de espingarda é recriado ao recarregar a cena, conforme o sistema global, enquanto a arma carregada permanece no player persistente. Sem inventário paralelo ou gravação do puzzle em disco.
+Cinco pistas preservadas: 402 quadrado=1, 407 triângulo=2, 414 círculo=3, 420 losango=4 e secretaria 404 cruz=5. Ordem no quadro: triângulo, losango, quadrado, cruz, círculo. Senha **24153**; chave na bancada de alunos e espingarda na mesa docente da **423**, sem pedestal/suporte ou texto da arma. Sprite da chave reduzido; pickup, persistência e arma originais mantidos. Fotografias e definição do puzzle mantêm seus bytes/GUIDs. Os quatro monitores especiais acompanham a primeira estação das bancadas. Quadro personalizado, luminária, legenda e sequência de símbolos agora fixados na parede real do hall em `x = 7,5`, sem suporte isolado na circulação.
+
+Símbolos e números agora aparecem **dentro das telas**, sem placas acima dos monitores. Quatro pares ocupam a região inferior direita dos LCDs, preservando fotos e terminal; a quinta pista usa a tela do laptop administrativo da secretaria. Geometrias e atlas originais reutilizados com três materiais de tela compartilhados, sem novos bitmaps. Placas azuis/presilhas inativas, fileIDs e valores preservados.
+
+`Block4Keypad` conserva interação, pausa, teclado/controle, solução e restauração do controle. A interface agora representa uma caixa metálica com visor LCD, parafusos, indicadores e teclas. Erro: somente **“Senha incorreta”**, sem indicar onde procurar pistas. O estado variável do painel físico continua dinâmico; o HUD não foi aberto em execução.
+
+`Block4PowerFluctuation` pertence somente a este mapa. Primeiro evento em **12–24 s**, próximos em **35–75 s**, pisca e apaga por **2–4 s**, mantendo iluminação residual pontual. Restaura intensidades e propriedades dos difusores, suspende a contagem nos menus e restaura ao desabilitar. Referências salvas no prefab; comportamento não executado em jogo.
+
+`Block4PuzzleProgress` preserva porta e chave na sessão. A chave não reaparece depois da coleta. A espingarda segue o pickup global: o objeto do cenário pode reaparecer na recarga, enquanto a arma carregada pertence ao player persistente. Sem inventário paralelo ou gravação do puzzle em disco.
 
 ## Conexões
 
-Chegada e `SpawnPoint`: **(0; 1,11; −44,55)**, ID `FromCampusExterior`. Saída: **(0; 1,4; −47,70)**, destino `CampusExterior / FromCampusBlock4`. Contratos do exterior preservados. Loading: `Resources/Textures/UI/Transitions/CampusBlock4.png` dentro da pasta da cena.
+Chegada e `SpawnPoint`: **(0; 1,11; −44,55)**, ID `FromCampusExterior`. Saída: **(0; 1,4; −47,70)**, destino `CampusExterior / FromCampusBlock4`. Cena e contratos de transição preservados; exterior não alterado. Loading: `Resources/Textures/UI/Transitions/CampusBlock4.png` na pasta da cena.
 
 ## Validação desta revisão
 
-Unity **6000.5.7f1**, URP do projeto, Windows/D3D12, **AMD Radeon RX 6400**. Compilação, carregamento e salvamento via Unity API executados. Conferidos pisos dos 24 ambientes, folgas, numeração impressa, quatro banheiros, shaders, materiais, meshes, cinco pistas e referências das recompensas.
+Unity **6000.5.7f1**, URP do projeto, Windows/D3D12. Compilação e gravação via Unity API realizadas. Conferência por referências, matrizes, dimensões, colisores e previews em **1600 × 900**. Primeiras listas renderizadas em processo oculto/batch; terceira lista realizada **no editor já aberto**, em modo de edição, com prefab isolado e câmera fora de tela, **sem iniciar jogo ou Play Mode, abrir outro editor ou ativar/focar a janela existente**.
 
-Comparação preservou os **13.041 registros/fileIDs anteriores do prefab**, os **21 da cena**, os `.meta` existentes, os materiais/fotografias/scripts/configuração protegidos do Bloco 4 e os assets de origem de LawSchool.
+Previews atuais em `output/Bloco4-SegundaLista-*.png`: secretaria no hall/interior, janelas da 402, banheiros feminino/masculino, orientação do vaso, final oeste, quadro na parede, chave, espingarda, cinco pistas nas telas e planta. Capturas da primeira lista em `output/Bloco4-Correcoes-*.png` são históricas. Somente o teto é ocultado para o preview da planta.
 
-Estado final: **19.815 registros no prefab e 29 na cena**, 28 controladores de porta, **4.626 MeshRenderers ativos/habilitados** e **7.335.789 triângulos** somados em seus meshes antes do culling. Esses números incluem o mapa inteiro e não equivalem à geometria visível em um frame.
+Estado da terceira lista em `output/Bloco4-TerceiraLista-*.png`: entrada sem resquício, cabines, 424 como laboratório, 426/428 diante dos banheiros, depósito e planta atual. Capturas das listas anteriores registram os layouts anteriores; fotografias e pistas permanecem válidas. Nesta rodada foram mantidos todos os **37.492 IDs** existentes (**40.117 após acréscimos**), GUIDs/importadores, bytes da cena/scripts/fotos/puzzle e posições dos bancos/vasos do hall. Os **seis meshes novos** possuem referências persistentes; IDs locais e GUIDs externos resolvidos.
 
-**Play Mode executado com o player real**, cápsula de aproximadamente **0,473 × 2,121 m**: nova partida pelo menu; tentativa de passagem com as catracas fechadas ao longo dos 15 m da entrada; abertura e travessia das três folhas; percurso do hall e dos quatro corredores; fechamento do acesso à antiga espera posterior. As **25 portas** dos ambientes e da secretaria foram abertas e atravessadas pelo `CharacterController`, assim como os **oito acessos** dos banheiros. Código errado conservou a trava; **24153** abriu a 423 e devolveu o controle. Chave e espingarda coletadas pelos triggers reais. Recarga da cena conservou porta, chave, espingarda equipada e um único jogador. Cabines foram conferidas visualmente na posição aberta do modelo de Direito; não houve travessia individual de cada cabine.
+A disposição posterior dos bancos e vasos está em `output/Bloco4-Hall-Paredes-*.png` (central, entrada e retorno). Ajuste limitado às oito instâncias do hall, com todos os **37.492 IDs** do prefab preservados, sem alterar a cena, importadores existentes, modelos, materiais, scripts ou puzzle. Geometria de colisão considerada pelas suas transformações locais, pois os colisores do preview não recebem atualização de física. Prefab salvo/reaberto e folgas conferidas; sem Play Mode, jogo ou janela interativa.
 
-Capturas isoladas das outras cenas abertas, em **1600 × 900**, `output/Bloco4-Revisao-*.png`: entrada/catracas, hall, corredor, sala/porta 402, quadro, fim do hall, dois banheiros, recompensas 423, copa, coordenação e planta. Teto ocultado somente na captura da planta.
+Na segunda lista foram preservados os **35.352 registros existentes do prefab** (37.492 após os acréscimos), os **257 registros da cena**, os `.meta` anteriores, as fotografias/definição do puzzle e os assets de origem de LawSchool. IDs locais e GUIDs externos do prefab resolvidos; todos os novos meshes/materiais persistentes possuem consumidor. Scripts do painel, portas e evento de luzes foram alterados na primeira lista; seus bytes permaneceram intactos nesta segunda lista. Compilação e validação pela Unity API confirmaram cinco pistas, senha, chave/arma, 16 portas de cabine, quatro envelopes de banheiro, duas divisórias e desativação de 425/427. Pistas dimensionadas nos planos das telas e conferidas nos cinco previews dedicados.
 
-**Não executados:** build, recálculo de NavMesh/oclusão, benchmark CPU/GPU com Profiler e travessia real dos portais exterior/interior. Contagens não comprovam ganho de desempenho. Erros de ferramentas temporárias de outras cenas observados no Editor não foram atribuídos a esta revisão.
+**Não executados nesta revisão:** Play Mode, jogo, travessias/coletas em runtime, HUD em execução, evento de luzes em execução, build, benchmark de FPS, recálculo de NavMesh/oclusão e portais entre cenas. Os resultados de Play Mode documentados nas revisões antigas não validam este novo layout. Contagens de geometria não demonstram ganho de desempenho. Ferramentas temporárias de edição/preview retiradas após conferir resultados e dependências.
 
-Revisão visual pela skill: escala, materiais, fontes de luz, sombras navegáveis, contato dos props, legibilidade, identidade e pós-processamento conferidos nas capturas. Desgaste causal, variedade de enquadramentos e sinais de abandono permanecem parciais na base atual; desempenho não recebeu nota confirmada sem medição dedicada. A última correção decorativa reconstituiu a malha plana compartilhada das fotografias e refez as capturas, sem mudar colisões, portas ou scripts após o Play Mode. Ferramentas pontuais retiradas após verificar resultados persistentes e ausência de dependências em seus GUIDs.
+## Quarta lista — acesso e contratos compartilhados
+
+Dois fechamentos antigos sobrepostos às frentes de 426/428 foram reduzidos a `x = 61,5…71,75`, mantendo a vedação além das salas e liberando portas/janelas. Gatilhos de aproximação: 2,35 × 3,2 × 3 m. Teste geométrico em Edit Mode com controle negativo da folha fechada e cápsula livre em cinco posições por porta com folha posada aberta; não testa a animação automática em jogo.
+
+129 pisos receberam tag `Eco` e `FootstepSurface.Interior`. `Block4PowerFluctuation` tem primeiro evento em 12–24 s, intervalo de 35–75 s e apagão de 2–4 s no prefab, sem redistribuir as cinco pistas. Chave original do puzzle conectada à cela 7 no inventário persistente existente; nova chave 8 na mesa docente da 428. Código 24153, pistas, fotos, arma e coleta original preservados. Assets compartilhados e dependências em [PrisonCellKeys.md](PrisonCellKeys.md).
+
+Previews desta rodada: `output/Campus-Ultimas-Sala{426,428}-{Janela,VaoLivre}.png`, `Campus-Ultimas-Luzes-*.png` e `Campus-Ultimas-Chave-*.png`. Luzes e folhas foram posadas apenas para renderização fora de tela. Matrizes de chaves, duplicatas e IDs inválidos validados em objetos isolados no Editor. Cenas, importadores existentes, fotos/definição do puzzle preservados. Sem jogo, Play Mode, abertura/foco de janela, teste de gameplay, build ou FPS.

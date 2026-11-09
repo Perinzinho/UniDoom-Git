@@ -15,6 +15,8 @@ Atualizado: **2026-11-06**. Estado: chave sorteada por partida, placas gastas e 
 - Suprimentos: nas **36 salas de aula**, uma distribuição por partida reserva **6 salas para medkit, 10 para munição e 20 vazias**. Cada medkit cura até 50; cada pacote adiciona 20 à reserva da arma carregada. Ao voltar ao bloco, salas e itens coletados mantêm o estado da sessão.
 - Protótipo: **uma chave sorteada entre 33 ambientes, fora do corredor 2 e dos dois banheiros ligados a ele**. Coletar dispara sirene e vermelho/apagão: 2 s de vermelho inicial, depois 1,6 s de escuro e 3 s de vermelho, repetidos. Visão fraca até **4,5 m** no apagão; mão/arma acompanham as fases. Até **60 zumbis variados** chegam: **36 no hall central e 24 nos corredores**, com intervalo de 0,55 s. Para encerrar, entrar na manutenção 104, mirar o quadro a até 3 m e pressionar **E**. A chave é conservada e os zumbis presentes permanecem. Placas com tinta desbotada dificultam identificar as salas. **A saída fica bloqueada durante o alarme**, com aviso de proximidade; desligar o quadro libera a transição para o campus.
 
+- Chaves de cela (08/11/2026): chave original do alarme = cela 1, mantendo o sorteio entre 33 ambientes; novas chaves 2 e 3 nas mesas docentes das salas 101 e 102. Mesmo inventário persistente, sem alterar alarme/suprimentos/layout. Detalhes: [PrisonCellKeys.md](PrisonCellKeys.md). Validação desta adição somente em Edit Mode e previews, sem jogo/Play Mode.
+
 ## Pedido do usuário e decisões aceitas
 
 Criação: usar `.codex/reference/direito reference.png`, ligar o interior ao prédio do campus Unimar, incluir no menu temporário, aplicar a skill Total Chaos e o prompt mestre, otimizar e usar modelos 3D gratuitos compatíveis.
