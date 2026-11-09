@@ -140,7 +140,7 @@ public sealed class PrisonController : MonoBehaviour
         shownRevision = inventory ? inventory.Revision : -1;
         var ids = new List<string>();
         int first = 0;
-        for (int id = 1; id <= 8; id++)
+        for (int id = 1; id <= PrisonProgress.CellCount; id++)
             if (PrisonProgress.HasCellKey(id, inventory)) { ids.Add(id.ToString()); if (first == 0) first = id; }
         keyList.text = ids.Count > 0 ? "CHAVES DAS CELAS: " + string.Join(" · ", ids) : "";
         keyIcon.gameObject.SetActive(first != 0);

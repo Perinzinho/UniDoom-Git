@@ -14,3 +14,5 @@ Adicione novas tarefas ao final usando `- [ ]`. Priorizar a última tarefa pende
 - [x] Criar um MD exclusivo de puzzles/enigmas caóticos e difíceis com inimigos atrapalhando — [Puzzles caóticos](CampusLibrary-Puzzles-Caoticos.md), reescrito com seis ideias físicas novas após rejeição das propostas anteriores.
 
 - [ ] Revisar frestas das paredes, desobstruir a passagem para a ala de estudos, liberar o corredor sanitário do pilar e afastar mais as estantes dos banheiros.
+
+- [x] Escrever ideias simples de leitura e dedução para obter as cinco chaves da biblioteca — [proposta](CampusLibrary-Puzzles-Leitura.md). Documento escrito; implementação dos puzzles não solicitada nesta etapa.

@@ -32,7 +32,7 @@ internal static class PrisonPlayValidation
             SessionState.EraseBool(ActiveKey);
             SessionState.EraseString(ReportKey);
             Debug.Log($"[PrisonPlayValidation] {output}");
-            EditorApplication.Exit(0);
+            if (Application.isBatchMode) EditorApplication.Exit(0);
         }
     }
 
@@ -46,10 +46,12 @@ internal static class PrisonPlayValidation
             if (UniDoom.UI.GameMenus.Instance != null) Object.DestroyImmediate(UniDoom.UI.GameMenus.Instance.gameObject);
             var player = new GameObject("[Prison validation player]");
             var keys = player.AddComponent<PlayerPickupKey>();
+            var inventory = player.AddComponent<PlayerCellKeys>();
             PrisonProgress.Reset();
-            PrisonProgress.HasKey = true;
             var gates = Object.FindObjectsByType<PrisonCellGate>(FindObjectsInactive.Include, FindObjectsSortMode.None)
                 .OrderBy(g => g.CellId).ToArray();
+            foreach (var gate in gates)
+                inventory.TryAddKey(PrisonProgress.CellKeyId(gate.CellId));
             report.AppendLine($"gates={gates.Length}");
             foreach (var gate in gates)
             {

@@ -16,3 +16,7 @@ A rolagem cinematográfica foi conferida em modo de edição antes da instruçã
 
 
 Com a composição cinematográfica atual, a duração estimada em 1920 × 1080 é **4 min 39 s**, incluindo as pausas: conteúdo de 5484 unidades, viewport de 1080 e velocidade de 24 unidades/s. O texto inteiro atravessa a tela. Alterar texto, fonte, resolução ou velocidade altera essa estimativa.
+
+## HUD da espingarda — 09/11/2026
+
+A definição da espingarda usa `hudBottomCropFraction = 0.16` para ocultar abaixo da tela o corte inferior da arma visto na imagem fornecida. Proporção, encaixe por resolução e sprites originais preservados; escala da Image normalizada. Implementação salva, sem executar jogo ou gerar capturas.

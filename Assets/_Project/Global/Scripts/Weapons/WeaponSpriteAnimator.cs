@@ -175,7 +175,11 @@ public class WeaponSpriteAnimator : MonoBehaviour
             requestedHudPosition, minimumRightMargin, animationCanvas);
         Vector2 size = fit.size;
         imageRect.sizeDelta = size;
-        imageRect.anchoredPosition = new Vector2(fit.xMax - available.x, fit.yMin);
+        // The original shotgun art cuts the receiver above the bottom of the arm.
+        // Hide that entire cut below the screen, instead of exposing it in the HUD.
+        float crop = hudDefinition ? hudDefinition.HudBottomCropFraction : 0f;
+        imageRect.localScale = Vector3.one;
+        imageRect.anchoredPosition = new Vector2(fit.xMax - available.x, fit.yMin - size.y * crop);
     }
 
     // Match the actual sprite aspect before fitting: preserveAspect alone centres a smaller

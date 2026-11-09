@@ -1,5 +1,7 @@
 # Puzzles físicos sob pressão — Biblioteca da Unimar
 
+> Pedido posterior: para as cinco chaves da biblioteca, o usuário prefere enigmas simples de leitura e dedução. A proposta atual está em [Puzzles de leitura](CampusLibrary-Puzzles-Leitura.md). Este documento permanece como histórico de alternativas físicas; nenhuma foi implementada.
+
 **Ideias para escolha e protótipo; nenhuma implementada.** Linha escolhida pelo usuário: ferramentas, manipulação do cenário e perigo, com referências em Amnesia e Resident Evil. As propostas anteriores foram removidas.
 
 Mapa: `CampusLibrary`, a biblioteca da Unimar. [Contexto](../../Docs/Maps/CampusLibrary.md) · [Compatibilidade com o jogo](../../Docs/Maps/CampusLibrary-Mecanicas.md).
