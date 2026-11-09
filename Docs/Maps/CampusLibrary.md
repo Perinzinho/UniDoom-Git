@@ -218,3 +218,9 @@ Checklist visual da skill, avaliação interna limitada às capturas: escala 2, 
 - [Sala de estudo 1](../../output/CampusLibrary-Ampliada-Salas-de-Estudo.png)
 - [Mobiliário na altura dos olhos](../../output/CampusLibrary-Ampliada-Escala-Mobiliario.png)
 - [Câmera na Head do player em Play Mode](../../output/CampusLibrary-Ampliada-Player-Real.png)
+
+## Integração de development — 09/11/2026
+
+Merge em fix/library preserva a ampliação, a escala atual do mobiliário e as revisões de paredes, sanitários e sinalização. As três chaves recebidas de development foram incorporadas sem substituir o prefab da biblioteca: cela 4 na mesa individual original, cela 5 na mesa em carvalho e cela 6 na bancada de pesquisa original. Posições adaptadas à transformação atual de cada móvel, mantendo a posição relativa sobre o tampo: (6; 1,606; −9,464001), (−23,0839988; 0,96000004; −1,974) e (−26,174; 0,9420001; 10,546), respectivamente. Sprites e pickups mantêm IDs e referências recebidos.
+
+O prefab mantém todos os IDs de ambos os lados, com 6.632 registros. Veículos do exterior foram comparados por hierarquia, componentes e referências: conteúdo equivalente, com diferenças de IDs internos/ordenação; preservada a versão local e seus IDs. Ferramentas e capturas temporárias dos créditos, já retiradas a pedido do usuário, não foram reintroduzidas. Conferência estática de referências e merge; sem abrir/focar Unity, compilação, jogo, Play Mode, build, prints ou vídeos. Testes de gameplay com o usuário.

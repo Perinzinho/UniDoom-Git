@@ -5,6 +5,7 @@ Leia este índice e **comece pela seção Leitura rápida da ficha do mapa solic
 | Mapa | Cena | Ficha |
 |---|---|---|
 | Bloco de Direito | `Assets/_Project/Scenes/LawSchool/LawSchool.unity` | [LawSchool.md](LawSchool.md) |
+| Bloco 4 — Tecnologia da Informação | `Assets/_Project/Scenes/CampusBlock4/CampusBlock4.unity` | [CampusBlock4.md](CampusBlock4.md) |
 | Campus Exterior — Unimar | `Assets/_Project/Scenes/CampusExterior/CampusExterior.unity` | Dependência: seção Conexões de [LawSchool.md](LawSchool.md#conexões) |
 | Biblioteca do Campus — Unimar | `Assets/_Project/Scenes/CampusLibrary/CampusLibrary.unity` | [CampusLibrary.md](CampusLibrary.md); contexto e portais em [README_CAMPUS_EXTERIOR.md](../../README_CAMPUS_EXTERIOR.md) |
 
@@ -14,6 +15,10 @@ Leia este índice e **comece pela seção Leitura rápida da ficha do mapa solic
 - Regras de organização e preservação: [AGENTS.md](../../AGENTS.md).
 
 Não carregue todas as cenas, este catálogo inteiro e os logs antigos por padrão. Localize caminhos com `rg --files`, consulte os campos afetados e amplie a leitura somente quando faltar evidência. Não marque um teste como executado apenas porque consta numa ficha anterior.
+
+Contrato compartilhado: [chaves numeradas das celas](PrisonCellKeys.md) — Direito, Biblioteca, Bloco 4 e porão.
+
+Menu compartilhado: [créditos, música e HUD da espingarda](../Credits.md).
 
 ## Encontros com zumbis — comportamento compartilhado
 
