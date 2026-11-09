@@ -5,8 +5,8 @@ Atualizado em 08/11/2026. Prefabs persistentes de LawSchool, CampusLibrary, Camp
 | Chave/cela | Professor | Local da chave |
 |---|---|---|
 | 1 | Caio | Direito: chave original sorteada entre 33 ambientes, com alarme original |
-| 2 | Fabio | Direito: mesa docente da sala 101 |
-| 3 | Henrique | Direito: mesa docente da sala 102 |
+| 2 | Fabio | Biblioteca: mesa de estudo individual, ao lado da chave 4 |
+| 3 | Henrique | Biblioteca: mesa de leitura em carvalho, ao lado da chave 5 |
 | 4 | Santi | Biblioteca: mesa de estudo individual |
 | 5 | Matheus Ferraroni | Biblioteca: mesa de leitura em carvalho |
 | 6 | Navarro | Biblioteca: bancada de pesquisa |
@@ -23,4 +23,4 @@ Validação: matriz 8 × 8 de identidade, duplicatas, IDs inválidos e sprites c
 
 ## Chave da manutenção de Direito
 
-Além das oito chaves de cela, `law-school-maintenance` abre apenas a porta da manutenção 104. Ela é revelada pelo alarme da chave da cela 1, em sala diferente da origem do alarme. Não abre celas nem substitui as oito chaves numeradas. Usa o mesmo inventário persistente e um sprite sem número já existente; detalhes em [LawSchool.md](LawSchool.md).
+`law-school-maintenance` abre apenas a manutenção 104. Direito contém exatamente duas chaves ativas: cela 1, que dispara o alarme, e manutenção. Ambas aparecem desde a entrada, em salas diferentes fora do corredor da manutenção, com separação horizontal mínima de 45 m. A porta tem um colisor sólido salvo cobrindo todo o vão e liberado somente pela chave da manutenção. As chaves 2 e 3 foram transferidas para a biblioteca para preservar as oito celas. Não há chave universal. Detalhes em [LawSchool.md](LawSchool.md).

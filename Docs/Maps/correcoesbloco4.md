@@ -57,6 +57,8 @@
 - [x] Corrigir zumbis presos e incapaz de mover no campus da unimar
 - [x] Corrigir spawn do player no campus da Unimar quando ele vai da prisão para o campus
 - [x] No bloco de direito, acho que o chat não entendeu oq eu queria, ao entrar no bloco de direito, vai ter 2 chaves colacadas aleatoraimente em salas diferentes, que não sejam do corredor da sala de manuntenção, 1, vai ser chave da cela que vai disparar o alarme, a outra é a chave da sala de manuntenção, ou seja, a sala de manuntenção deve estar trancada ao entrar no bloco de direito
+
+
 - [x] HUD da espingarda continua tendo partes dela para fora, deixei imagem na pasta docs/maps
 - [x] Zumbis continuam sendo vistos sendo jogados no ar e caindo no chão ao ir para o campus da unimar
 - [x] Zumbis não conseguem subir da grama para a calçada no campus, resolver
@@ -179,19 +181,15 @@ Cinco implementações restantes salvas. Os itens marcados indicam alteração d
 
 Sem prints, vídeos, abertura/foco de Unity, Play Mode, execução do jogo, compilação ou build nesta etapa, conforme solicitado.
 
+## Revisão de 09/11/2026 e correção das duas chaves
 
-## Revis?o das novas tarefas ? 09/11/2026
+Itens implementados nos arquivos; `[x]` não afirma confirmação em execução. Sem Unity, jogo, Play Mode, previews, capturas, vídeos, compilação ou build, conforme orientação do usuário.
 
-Os dez itens desta rodada foram implementados nos arquivos. `[x]` registra implementa??o, sem afirmar confirma??o em execu??o. N?o foram abertos Unity, jogo, Play Mode, previews, capturas ou v?deos; compila??o, build e testes de gameplay n?o executados, conforme orienta??o do usu?rio.
+- Direito tem exatamente duas chaves ativas: cela 1 (dispara o alarme) e manutenção (abre apenas sua porta). As duas são posicionadas desde a entrada, em salas diferentes fora do corredor da manutenção, a pelo menos 45 m uma da outra. O inventário reavalia escolhas antigas que não respeitem a distância. As 33 salas configuradas têm de 15 a 28 destinos distantes elegíveis, conforme coordenadas do prefab.
+- A trava anterior era calculada pelo tamanho da folha. Agora há um colisor sólido persistente cobrindo todo o vão da manutenção, já ativo no prefab e liberado exclusivamente pela chave `law-school-maintenance`. A porta animada continua exigindo a mesma chave. O quadro também exige ambas as chaves para resolver o alarme.
+- As duas chaves extras de cela (2 e 3), que eu havia mantido indevidamente em Direito, foram transferidas para as mesas de estudo/carvalho da biblioteca. Os originais ficam inativos para preservar IDs; as oito celas continuam com chaves disponíveis.
+- Manutenção usa a chave prateada com plaqueta azul do atlas existente. Horda de Direito: 48 → 38 chegadas. Lanterna liga com o alarme, alterna em F/direcional para cima, alcance 18 m, cone 58°, removida ao encerrar/sair.
+- Bloco 4: primeira falha em 6–10 s, intervalos seguintes de 12–22 s, apagão de 2–4 s. Os cinco pares símbolo/número trocam de monitor no início de cada apagão completo, mantendo as regras de destinos e a senha.
+- Espingarda: recuo inferior de 16% para ocultar o corte da arma acima da mão; proporção preservada. Campus: movimento cinemático apoiado no chão, travessia de degraus até 35 cm e roaming limitado ao raio do spawn. Saída do Bloco 4 com fechamento visual atrás do gatilho para ocultar o vazio.
 
-- HUD da espingarda: a imagem fornecida mostra o corte inferior da arma acima da borda da tela. Acrescentado recuo inferior de 16% exclusivamente na defini??o da espingarda, preservando propor??o e ajustes por resolu??o; escala herdada da Image normalizada.
-- Campus: zumbis vivos usam Rigidbody cinem?tico e movimento apoiado no piso, evitando impulsos verticais de colis?o no carregamento. A c?psula ? apoiada tamb?m a cada passo e quando parada. Varredura elevada em 35 cm permite transpor meios-fios e mant?m verifica??o de paredes e espa?o para a cabe?a. Outros mapas conservam a f?sica anterior.
-- Roaming: preservado o sorteio de destinos num raio de 6 m do spawn, pausas e nova escolha ao encontrar bloqueios. Movimento no campus passa a executar esses destinos sem depender de agente NavMesh n?o vinculado; desvios durante a patrulha respeitam o raio.
-- Sa?da do Bloco 4: acrescentado fechamento visual s?lido atr?s do gatilho de transi??o, usando material de porta existente, para impedir vis?o do vazio exterior ao interior. N?o interfere na passagem nem na troca de cena. Material bilateral e limite pr?ximo da c?mera anteriores preservados.
-- Manuten??o de Direito: a exig?ncia da chave separada est? na porta da sala de manuten??o real, cujo objeto de porta conserva o nome hist?rico ?102?. Acrescentado volume s?lido fixo de trava, cobrindo as folgas da folha enquanto a chave est? ausente e liberado ao destrancar. A abertura continua por aproxima??o ap?s obter a chave.
-- Duas chaves do fluxo do alarme dispon?veis desde a entrada: cela 1 e manuten??o em salas distintas fora do corredor da manuten??o. Coletar a cela 1 inicia o alarme; a manuten??o exige a outra chave. As chaves adicionais das celas 2 e 3 permanecem nas salas 101/102, conforme a distribui??o das oito celas.
-- Sprite: adotada a chave prateada com plaqueta azul (`key_02`, atlas existente `keys_spritesheet.png`) para manuten??o. Suposi??o registrada: o pedido refere-se ? manuten??o, que ainda usava a chave antiga; a cela mant?m sua identifica??o 1. N?o foram geradas texturas ou alterados importadores.
-- Horda de Direito: nova redu??o de 20% sobre os 48 pontos atuais, arredondada para 38 chegadas (20,83%). Objetos dos pontos preservados; retirada somente de dez refer?ncias da lista ativa.
-- Lanterna de Direito: liga automaticamente com o alarme, permanece dispon?vel entre fases vermelhas e apag?es, alternada por F ou direcional para cima no controle. Feixe de 18 m, cone de 58?, cor quente e sombras; sprites dos inimigos respondem ao cone com obstru??o verificada. Removida ao resolver o alarme ou sair da cena. Menus, morte e carregamento bloqueiam o comando.
-
-Git: ?udios dos cr?ditos e imagem de refer?ncia preservados em commit antes do pull. Development integrado; conflitos de detec??o de renomea??o de `.meta` resolvidos mantendo os metadados pr?prios dos ?udios e dos sanit?rios. Nenhum arquivo de usu?rio descartado.
+Conferência desta rodada apenas por arquivos: referências do novo colisor, estado dos pickups e coordenadas dos locais. Gameplay não executado. Textos de revisões anteriores são históricos e substituídos por este contrato.

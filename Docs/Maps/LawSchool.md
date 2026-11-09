@@ -15,7 +15,7 @@ Atualizado: **2026-11-08**. Estado: chave sorteada por partida, placas gastas e 
 - Suprimentos: nas **36 salas de aula**, uma distribuição por partida reserva **6 salas para medkit, 10 para munição e 20 vazias**. Cada medkit cura até 50; cada pacote adiciona 20 à reserva da arma carregada. Ao voltar ao bloco, salas e itens coletados mantêm o estado da sessão.
 - Protótipo: **uma chave sorteada entre 33 ambientes, fora do corredor 2 e dos dois banheiros ligados a ele**. Coletar dispara sirene e vermelho/apagão: 2 s de vermelho inicial, depois 1,6 s de escuro e 3 s de vermelho, repetidos. Visão fraca até **4,5 m** no apagão; mão/arma acompanham as fases. Até **48 zumbis variados** chegam, redução de 20% sobre os 60 anteriores, com intervalo de 0,55 s. Ao disparar, aparece uma **chave da manutenção** em sala sorteada, diferente da sala da chave do alarme. A manutenção 104 começa trancada e exige essa chave separada. Para encerrar, pegar a nova chave, entrar na manutenção 104, mirar o quadro a até 3 m e pressionar **E**. A chave é conservada e os zumbis presentes permanecem. Placas com tinta desbotada dificultam identificar as salas. **A saída fica bloqueada durante o alarme**, com aviso de proximidade; desligar o quadro libera a transição para o campus.
 
-- Chaves de cela (08/11/2026): chave original do alarme = cela 1, mantendo o sorteio entre 33 ambientes; novas chaves 2 e 3 nas mesas docentes das salas 101 e 102. Mesmo inventário persistente, sem alterar alarme/suprimentos/layout. Detalhes: [PrisonCellKeys.md](PrisonCellKeys.md). Validação desta adição somente em Edit Mode e previews, sem jogo/Play Mode.
+- Chaves atuais: somente cela 1 e manutenção ativas em Direito; sorteadas desde a entrada em salas diferentes, fora da ala de manutenção e separadas por pelo menos 45 m. As chaves de cela 2/3 foram transferidas para a biblioteca. A manutenção começa bloqueada por colisor sólido salvo, liberado apenas pela chave específica. Detalhes: [PrisonCellKeys.md](PrisonCellKeys.md). Esta correção não recebeu teste de gameplay.
 
 ## Pedido do usuário e decisões aceitas
 
@@ -406,9 +406,10 @@ As duas chaves do fluxo alarme/manutenção são posicionadas na entrada: a chav
 
 O alarme só retoma quando a coleta local da chave de Direito tiver registrado law-school-local-key-collected. Ter uma chave obtida no Bloco 4 não inicia esse evento. Horda máxima de 48 e desligamento no quadro preservados. Implementação salva, sem executar testes, jogo ou Play Mode. Este contrato substitui o registro anterior de aparecimento da chave apenas após disparar o alarme.
 
+## Contrato atual das duas chaves — 09/11/2026
 
-## Corre??es de 09/11/2026
+Exatamente duas chaves ativas em Direito: cela 1, que inicia o alarme, e manutenção, que abre exclusivamente a manutenção. Ambas disponíveis desde a entrada em salas diferentes, fora da ala de manutenção e separadas por pelo menos 45 m. A escolha persistida é mantida apenas se ainda satisfizer essa distância. Há 15–28 opções válidas para cada uma das 33 salas de origem.
 
-Manuten??o: chave independente desde a entrada, sorteada em sala distinta da chave da cela 1, fora do corredor da manuten??o. Porta com volume s?lido adicional de trava enquanto falta a chave. Sprite de manuten??o reutiliza key_02 do atlas global; cela 1 mant?m identifica??o numerada. Horda reduzida novamente de 48 para 38 chegadas. Lanterna autom?tica ao disparar o alarme: F/direcional para cima alterna, cone 58?, alcance 18 m; removida ao encerrar/sair.
+A entrada da manutenção possui colisor sólido salvo e ativo cobrindo todo o vão, separado da folha móvel. `LawSchoolMaintenanceAccess.entranceBarrier` só libera quando existe `law-school-maintenance` no inventário. `OpenDoorWithKey` também exige essa chave. O quadro exige as duas chaves. Originais das celas 2/3 em Direito inativos; pickups transferidos para a biblioteca para preservar a progressão das oito celas.
 
-Implementa??o salva; sem abrir Unity, jogo, Play Mode, build, testes ou produzir capturas/previews/v?deos. Confer?ncia em execu??o fica a cargo do usu?rio.
+Horda: máximo 38 chegadas. Lanterna automática durante o alarme, F/direcional para cima alterna; feixe de 18 m/58°. Sem abrir Unity ou executar gameplay, testes, compilação, build ou capturas nesta rodada.

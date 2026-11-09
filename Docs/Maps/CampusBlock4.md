@@ -13,7 +13,7 @@ Atualizado: **2026-11-08**, revisão de [correcoesbloco4.md](correcoesbloco4.md)
 - Paleta laranja/azul conservada. Piso terrazzo e reboco padronizado reutilizam a base visual de Direito, em materiais exclusivos do Bloco 4. Paredes contínuas junto às lousas; janelas transparentes de observação restauradas nas frentes, ao lado das portas.
 - Quatro longarinas e quatro vasos do hall encostados às paredes, com folga geométrica de **15 mm**. Bancos mantêm orientação e escala; vasos girados para acomodar as folhagens. O vaso antes diante da secretaria foi levado para `z = −25,5`, junto à parede oeste perto da entrada; balcão, foto/símbolos e cruzamentos dos corredores livres.
 
-- Pisos: 129 colisores ativos com tag `Eco` e superfície `Interior`. Energia: primeiro evento em 8–15 s, seguintes em 20–40 s, apagão de 2–4 s; 199 luzes e 182 difusores. Chaves de cela: **7** no puzzle da 423 e **8** na mesa docente da 428. Contrato compartilhado: [PrisonCellKeys.md](PrisonCellKeys.md).
+- Pisos: 129 colisores ativos com tag `Eco` e superfície `Interior`. Energia: primeiro evento em 6–10 s, seguintes em 12–22 s, apagão de 2–4 s; 199 luzes e 182 difusores. Chaves de cela: **7** no puzzle da 423 e **8** na mesa docente da 428. Contrato compartilhado: [PrisonCellKeys.md](PrisonCellKeys.md).
 
 ## Portas, catracas e identificação
 
@@ -89,9 +89,6 @@ As cinco pistas mudam para salas aleatórias distintas em cada apagão completo,
 
 Saída: materiais da fachada de entrada passam a dupla face por instâncias locais em runtime, preservando os assets compartilhados. Near clip da câmera limitado a 0,06 m enquanto essa saída estiver carregada, com restauração ao destruir o objeto na troca de cena. Isso evita corte próximo e desaparecimento por face invertida. Porta, colisores e CampusExterior / FromCampusBlock4 mantidos. Sem Unity/Play Mode, build ou capturas nesta alteração; o usuário fará a validação.
 
+## Energia e saída — atualização de 09/11/2026
 
-## Corre??es de 09/11/2026
-
-Sa?da recebe fechamento visual atr?s do gatilho, com material de porta existente, para ocultar o vazio da cena interior. Sem colis?o extra ou mudan?a no destino CampusExterior/FromCampusBlock4.
-
-Implementa??o salva; sem abrir Unity, jogo, Play Mode, build, testes ou produzir capturas/previews/v?deos. Confer?ncia em execu??o fica a cargo do usu?rio.
+Primeira falha em 6–10 s, próximas em 12–22 s; apagão de 2–4 s preservado. Cada apagão completo redistribui os cinco pares símbolo/número conforme as regras existentes. A saída recebe fechamento visual atrás do gatilho para ocultar o vazio, sem colisão extra ou alteração do destino. Sem Unity, jogo, testes, previews, capturas ou vídeos.
