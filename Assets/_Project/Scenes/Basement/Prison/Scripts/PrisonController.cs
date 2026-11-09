@@ -3,6 +3,7 @@ using UniDoom.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 /// <summary>Prison interaction, cell-specific voices and the post-boss menu arrival.</summary>
 [DisallowMultipleComponent]
@@ -16,6 +17,9 @@ public sealed class PrisonController : MonoBehaviour
     Canvas hud;
     TMP_Text prompt;
     Image keyIcon;
+    TMP_Text keyList;
+    PlayerCellKeys shownInventory;
+    int shownRevision = -1;
     AudioSource activeVoice;
     PlayerMovement player;
     Camera view;
@@ -89,6 +93,12 @@ public sealed class PrisonController : MonoBehaviour
         keyIcon.preserveAspect = true;
         keyIcon.raycastTarget = false;
         keyIcon.gameObject.SetActive(false);
+        keyList = MenuStyle.Text("Numbered cell keys", root.transform, "", 0, 0, 500, 40, 20, MenuStyle.Paper);
+        var listRect = keyList.rectTransform;
+        listRect.anchorMin = listRect.anchorMax = listRect.pivot = Vector2.one;
+        listRect.anchoredPosition = new Vector2(-28, -106);
+        keyList.alignment = TextAlignmentOptions.Right;
+        keyList.raycastTarget = false;
     }
 
     void Update()
@@ -99,24 +109,42 @@ public sealed class PrisonController : MonoBehaviour
             !DoorReloadScreen.IsReloading && Time.timeScale > 0;
         hud.enabled = playing;
         if (!playing) return;
-        keyIcon.gameObject.SetActive(PrisonProgress.HasKey);
+        var inventory = player.GetComponent<PlayerCellKeys>();
+        if (inventory != shownInventory || (inventory ? inventory.Revision : -1) != shownRevision)
+            RefreshKeys(inventory);
         prompt.text = "";
         if (view == null || !view.gameObject.activeInHierarchy) view = Camera.main;
         if (view == null || !Physics.Raycast(view.transform.position, view.transform.forward,
                 out var hit, interactionDistance, ~0, QueryTriggerInteraction.Ignore)) return;
         var gate = hit.collider.GetComponentInParent<PrisonCellGate>();
         if (gate == null || gate.IsOpen) return;
-        prompt.text = PrisonProgress.HasKey ? "[E] ABRIR CELA " + gate.CellId : "CELA TRANCADA — ENCONTRE A CHAVE DA PRISÃO";
+        bool hasCellKey = PrisonProgress.HasCellKey(gate.CellId, inventory);
+        if (hasCellKey) keyIcon.sprite = CellKeySprites.Get(gate.CellId) ?? keySprite;
+        prompt.text = hasCellKey ? "[E] ABRIR CELA " + gate.CellId :
+            "CELA " + gate.CellId + " TRANCADA — ENCONTRE A CHAVE " + gate.CellId;
         bool interact = (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame) ||
             (Gamepad.current != null && Gamepad.current.buttonWest.wasPressedThisFrame);
         if (!interact) return;
-        if (!PrisonProgress.HasKey)
+        if (!hasCellKey)
         {
             GameplayAudio.Instance?.NotifyLockedDoorContact(gate);
             return;
         }
         if (!TryOpenCell(gate, player.GetComponent<PlayerPickupKey>())) return;
         prompt.text = "";
+    }
+
+    void RefreshKeys(PlayerCellKeys inventory)
+    {
+        shownInventory = inventory;
+        shownRevision = inventory ? inventory.Revision : -1;
+        var ids = new List<string>();
+        int first = 0;
+        for (int id = 1; id <= 8; id++)
+            if (PrisonProgress.HasCellKey(id, inventory)) { ids.Add(id.ToString()); if (first == 0) first = id; }
+        keyList.text = ids.Count > 0 ? "CHAVES DAS CELAS: " + string.Join(" · ", ids) : "";
+        keyIcon.gameObject.SetActive(first != 0);
+        if (first != 0) keyIcon.sprite = CellKeySprites.Get(first) ?? keySprite;
     }
 
     public bool TryOpenCell(PrisonCellGate gate, PlayerPickupKey playerKeys)

@@ -1,0 +1,73 @@
+{
+  "date": "2026-11-08",
+  "tool": "built-in image_gen.imagegen",
+  "origin": "Generated for this project; no external model or stock asset downloaded.",
+  "asset": "Assets/_Project/Global/Resources/Textures/Pickups/CellKeys.png",
+  "sha256": "40c1366339b3e1268d0bab0f6547762f39e0086352ca22cb44af5be2a79f5eba",
+  "dimensions": [
+    1254,
+    1254
+  ],
+  "transparent_background": true,
+  "prompt": "Create ONE cohesive game sprite atlas asset: eight numbered prison-cell keys, laid out in an EXACT uniform 4-column by 2-row grid with equal square cells on a genuinely transparent background. Top row left-to-right keys 1,2,3,4; bottom row left-to-right keys 5,6,7,8. This is a single production sprite sheet for a dark gritty retro first-person survival-horror game inspired by classic Doom sprites and realistic worn institutional metal. Each key is a clearly readable heavy old jail key, diagonal from bottom-left shaft to upper-right bow, oxidized iron with brass wear highlights, subtly differing cut teeth, strong crisp silhouette, restrained pixel-art dithering, no glow, no ground shadows. Each key has a substantial small square metal identification tag integrated into its bow displaying its one large highly legible white engraved number 1 through 8. Center each key in its own cell; all keys same apparent size and orientation, all artwork within middle 75% of each cell, generous transparent padding. Exact grid alignment is essential for slicing in Unity. No surrounding frames, no grid lines, no captions outside the keys, no checkerboard backdrop. Square 2048x2048 atlas if possible.",
+  "processing": "Original PNG copied without pixel editing; alpha bounds analyzed for Unity multiple-sprite slicing; original 8 imported sprite IDs retained.",
+  "slices": [
+    {
+      "id": 1,
+      "x": 7,
+      "y": 703,
+      "width": 302,
+      "height": 361
+    },
+    {
+      "id": 2,
+      "x": 323,
+      "y": 692,
+      "width": 300,
+      "height": 372
+    },
+    {
+      "id": 3,
+      "x": 637,
+      "y": 692,
+      "width": 300,
+      "height": 372
+    },
+    {
+      "id": 4,
+      "x": 950,
+      "y": 691,
+      "width": 300,
+      "height": 373
+    },
+    {
+      "id": 5,
+      "x": 10,
+      "y": 171,
+      "width": 299,
+      "height": 370
+    },
+    {
+      "id": 6,
+      "x": 324,
+      "y": 177,
+      "width": 299,
+      "height": 364
+    },
+    {
+      "id": 7,
+      "x": 637,
+      "y": 171,
+      "width": 299,
+      "height": 370
+    },
+    {
+      "id": 8,
+      "x": 950,
+      "y": 167,
+      "width": 300,
+      "height": 374
+    }
+  ],
+  "contract": "Docs/Maps/PrisonCellKeys.md"
+}

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ShotgunDefinition
   m_EditorClassIdentifier: Assembly-CSharp::WeaponDefinition
   gunPrefab: {fileID: 11400000, guid: 6d6ae4f55a5431a297f7fa60a83f39a4, type: 3}
+  axePrefab: {fileID: 0}
   pickupPrefab: {fileID: 4786408415445628171, guid: 9ec7d785828adb3c2d8571823af96aa0, type: 3}
   idleFrames:
   - {fileID: -401562691, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
@@ -40,6 +41,157 @@ MonoBehaviour:
   - {fileID: -1249267017, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
   idleFrameRate: 12
   shootFrameRate: 20
+  shootFrameDurations: []
   rechargeFrameRate: 25
   hudOffset: {x: -8, y: 0}
   hudSize: {x: 500, y: 402}
+  hudViewportLimit: {x: 0.36, y: 0.42}
+  hudAttachToScreenEdges: 1
+  hudFrameBounds:
+  - sprite: {fileID: -401562691, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 30
+      y: 826
+      width: 145
+      height: 115
+  - sprite: {fileID: 432235278, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 212
+      y: 661
+      width: 191
+      height: 143
+  - sprite: {fileID: 1815807466, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 417
+      y: 661
+      width: 189
+      height: 158
+  - sprite: {fileID: 1596288279, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 634
+      y: 661
+      width: 165
+      height: 150
+  - sprite: {fileID: 1249275435, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 847
+      y: 661
+      width: 151
+      height: 134
+  - sprite: {fileID: -1858405222, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 32
+      y: 496
+      width: 141
+      height: 120
+  - sprite: {fileID: -1304702986, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 238
+      y: 496
+      width: 139
+      height: 108
+  - sprite: {fileID: 1493358697, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 439
+      y: 496
+      width: 148
+      height: 103
+  - sprite: {fileID: -1946729236, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 641
+      y: 496
+      width: 151
+      height: 105
+  - sprite: {fileID: 768257191, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 841
+      y: 496
+      width: 162
+      height: 110
+  - sprite: {fileID: 1022560857, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 15
+      y: 331
+      width: 176
+      height: 118
+  - sprite: {fileID: 766458428, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 215
+      y: 331
+      width: 183
+      height: 127
+  - sprite: {fileID: 1798957077, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 418
+      y: 331
+      width: 188
+      height: 127
+  - sprite: {fileID: 360597643, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 624
+      y: 331
+      width: 187
+      height: 127
+  - sprite: {fileID: 2015568859, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 830
+      y: 331
+      width: 185
+      height: 126
+  - sprite: {fileID: 442399568, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 9
+      y: 166
+      width: 187
+      height: 127
+  - sprite: {fileID: -1621286101, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 213
+      y: 166
+      width: 187
+      height: 127
+  - sprite: {fileID: -54458962, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 421
+      y: 166
+      width: 182
+      height: 127
+  - sprite: {fileID: 1633983736, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 629
+      y: 166
+      width: 175
+      height: 119
+  - sprite: {fileID: 1306732499, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 842
+      y: 166
+      width: 160
+      height: 114
+  - sprite: {fileID: -1249267017, guid: 3ac1043a415159c4cb785939f9d92a62, type: 3}
+    opaqueRect:
+      serializedVersion: 2
+      x: 30
+      y: 1
+      width: 146
+      height: 108
