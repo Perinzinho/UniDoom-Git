@@ -18,6 +18,7 @@ namespace UniDoom.CampusBlock4
         int phase = -1;
         int pulses;
         public bool IsBlackout => phase == 1;
+        public event System.Action BlackoutStarted;
 
         void Awake()
         {
@@ -39,7 +40,7 @@ namespace UniDoom.CampusBlock4
             if(phase==0)
             {
                 pulses++;SetPower(pulses%2==0);
-                if(pulses>=6){phase=1;SetPower(false);remaining=Random.Range(blackoutDuration.x,blackoutDuration.y);}
+                if(pulses>=6){phase=1;SetPower(false);remaining=Random.Range(blackoutDuration.x,blackoutDuration.y);BlackoutStarted?.Invoke();}
                 else remaining=Random.Range(.07f,.16f);
                 return;
             }

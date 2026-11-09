@@ -9,6 +9,8 @@ namespace UniDoom.CampusBlock4
         public const string TeacherCellKeyId = "professor-cell-07";
         public static bool DoorUnlocked { get; private set; }
         public static bool HasTeacherCellKey { get; private set; }
+        internal static int[] MonitorDestinations;
+        internal static float NextClueShiftAt;
         internal static void UnlockDoor() => DoorUnlocked = true;
         internal static bool CollectTeacherCellKey()
         {
@@ -22,6 +24,8 @@ namespace UniDoom.CampusBlock4
         {
             DoorUnlocked = false;
             HasTeacherCellKey = false;
+            MonitorDestinations = null;
+            NextClueShiftAt = 0;
         }
     }
 }

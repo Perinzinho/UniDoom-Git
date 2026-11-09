@@ -1565,6 +1565,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 5482416570085587231}
@@ -11492,6 +11493,111 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &244619095008025838
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9085469705316812927}
+  - component: {fileID: 5281447763817058665}
+  - component: {fileID: 636187665704958106}
+  m_Layer: 0
+  m_Name: "Chave de manuten\xE7\xE3o"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9085469705316812927
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 244619095008025838}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.096, z: 0}
+  m_LocalScale: {x: 0.1275, y: 0.1275, z: 0.1275}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3925213393069943016}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &5281447763817058665
+SpriteRenderer:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 244619095008025838}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 21300000, guid: 24ba5eab46b34db2b55cbd7c6002d6a8, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1.5058824}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
+--- !u!114 &636187665704958106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 244619095008025838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98221062abc2032479f6f0e42a63103e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Billboard
 --- !u!1 &249008020697700143
 GameObject:
   m_ObjectHideFlags: 0
@@ -12353,6 +12459,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 8703727624917148515}
@@ -16378,6 +16485,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 602578501803064215}
@@ -20934,6 +21042,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1753194355620383056}
@@ -27650,6 +27759,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 389145844900296734}
@@ -34232,6 +34342,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 8936600378223618488}
@@ -36639,6 +36750,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 7854885347642205213}
@@ -40919,6 +41031,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 5880882187289696956}
@@ -47761,6 +47874,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 4214867260808756830}
@@ -48157,6 +48271,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1612217327462152155}
@@ -49964,6 +50079,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1208160272746888585}
@@ -52431,6 +52547,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 8891486873046343693}
@@ -64705,6 +64822,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 8047186752579051901}
@@ -67302,6 +67420,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 2533909757229183972}
@@ -84243,6 +84362,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 2775864016541462679}
@@ -96206,6 +96326,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 8515486201788619611}
@@ -97263,6 +97384,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 6243711197468025009}
@@ -97433,6 +97555,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 410358226849922813}
@@ -139563,6 +139686,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 5619622241674107831}
@@ -147065,6 +147189,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 757051376817644}
@@ -147834,6 +147959,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 3666803177798993796}
@@ -148596,6 +148722,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1128677244529890471}
@@ -160450,6 +160577,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 8924579325181786895}
@@ -163267,6 +163395,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1807321889829973059}
@@ -164146,6 +164275,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 103714913836033773}
@@ -172992,6 +173122,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 7080366573775140752}
@@ -181735,6 +181866,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 2709239745077238099}
@@ -181974,6 +182106,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 7649934981111240190}
@@ -182411,6 +182544,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 2025192610197708382}
@@ -190075,6 +190209,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 3726249501378961773}
@@ -192910,6 +193045,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 623912544078768401}
@@ -202665,6 +202801,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 6004022917875939142}
@@ -204505,6 +204642,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 8266917133002253650}
@@ -205078,6 +205216,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 7188284538596466996}
@@ -214823,6 +214962,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 3410268876989777762}
@@ -221652,6 +221792,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 8095373281785633553}
@@ -221788,6 +221929,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 8038433250007846069}
@@ -224906,6 +225048,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 5110136568923680808}
@@ -228206,6 +228349,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1024309021353058991}
@@ -238079,6 +238223,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 6117391289855246893}
@@ -240947,6 +241092,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 3713154216408226922}
@@ -241628,6 +241774,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 6193409741881748310}
@@ -252275,6 +252422,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 8336091242846562142}
@@ -259596,6 +259744,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 67943168793123218}
@@ -260717,6 +260866,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: law-school-maintenance
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 2549849043129317267}
@@ -262501,6 +262651,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 8717824652771981246}
@@ -271511,6 +271662,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1562607308085595604}
@@ -274580,6 +274732,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 3964336472461097396}
@@ -278339,6 +278492,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 857303810664953445}
@@ -278832,6 +278986,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 2784800220269105446}
@@ -280361,6 +280516,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 26091084396637680}
@@ -299012,6 +299168,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 2863159193618867258}
@@ -309342,6 +309499,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 649835260110943312}
@@ -310904,6 +311062,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 6193218651200022941}
@@ -316803,6 +316962,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 920195035077760327}
@@ -316886,6 +317046,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 682132596510641995}
@@ -317112,6 +317273,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1221768817296246220}
@@ -319727,6 +319889,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 8447672813383116414}
@@ -329229,6 +329392,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 7287449467678579483}
@@ -332893,6 +333057,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 7143473443072744932}
@@ -337304,6 +337469,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1583983655021627211}
@@ -347247,6 +347413,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 3636881677498515661}
@@ -358251,6 +358418,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 3845493281558836462}
@@ -359338,6 +359506,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 6871529998264047674}
@@ -359601,6 +359770,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 3348454765781755583}
@@ -368786,6 +368956,7 @@ Transform:
   - {fileID: 8986255034938078712}
   - {fileID: 3260932884691081868}
   - {fileID: 3328496393653971756}
+  - {fileID: 3925213393069943016}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5669977466691801625
@@ -371582,6 +371753,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 5035411431684923943}
@@ -376602,6 +376774,73 @@ Transform:
   - {fileID: 4527275670849257492}
   m_Father: {fileID: 4428807233398979419}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7670235980943934615
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3925213393069943016}
+  - component: {fileID: 3617713092794055118}
+  - component: {fileID: 866010568519123974}
+  m_Layer: 0
+  m_Name: "Chave da manuten\xE7\xE3o 104 \u2014 revelada pelo alarme"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &3925213393069943016
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7670235980943934615}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.052000016, z: 64}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 9085469705316812927}
+  m_Father: {fileID: 2076245242412422770}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &3617713092794055118
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7670235980943934615}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.34
+  m_Center: {x: 0, y: 0.12, z: 0}
+--- !u!114 &866010568519123974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7670235980943934615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38c8fbe899c0f6243a748856216d92ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LawSchoolMaintenanceKeyPickup
 --- !u!1 &7672746357759497670
 GameObject:
   m_ObjectHideFlags: 0
@@ -377144,6 +377383,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 9088650697298643385}
@@ -385195,6 +385435,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 5463393685256950492}
@@ -403234,6 +403475,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 8110498040225420600}
@@ -405270,6 +405512,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 8958307364310491291}
@@ -408565,6 +408808,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 2520121472563792123}
@@ -410346,6 +410590,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 2129799549017921053}
@@ -411617,6 +411862,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 8326248364096503564}
@@ -418260,6 +418506,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 2947758379093177507}
@@ -420455,6 +420702,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 6098936763345709256}
@@ -422794,6 +423042,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 5339989992161015280}
@@ -430211,6 +430460,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 6329207139067876559}
@@ -433007,6 +433257,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 6844946198298853268}
@@ -439505,6 +439756,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 4261577256030079048}
@@ -443050,6 +443302,7 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 5124490375185163384}
@@ -444343,6 +444596,7 @@ GameObject:
   - component: {fileID: 8986255034938078712}
   - component: {fileID: 4353305589906910651}
   - component: {fileID: 6143082929033892165}
+  - component: {fileID: 5256466564355404405}
   m_Layer: 0
   m_Name: "Prot\xF3tipo \u2014 chave de cela e alarme"
   m_TagString: Untagged
@@ -444393,62 +444647,50 @@ MonoBehaviour:
   - {fileID: 2680637190286623761}
   - {fileID: 4123941723664002971}
   - {fileID: 1465363747899070151}
-  - {fileID: 3063107170092269057}
   - {fileID: 6423099420557569897}
   - {fileID: 1336161083256236274}
   - {fileID: 9173015340209642503}
   - {fileID: 7780728519893721384}
-  - {fileID: 1208527974892485745}
   - {fileID: 5072257944602157887}
   - {fileID: 3610503977088379035}
   - {fileID: 3260913700823192406}
   - {fileID: 5144815680085757661}
-  - {fileID: 4599871432212590077}
   - {fileID: 6021535253796425505}
   - {fileID: 1473805188922833322}
   - {fileID: 2372135874865386663}
   - {fileID: 1896242039699859167}
-  - {fileID: 1550861940074198168}
   - {fileID: 1244264646252025587}
   - {fileID: 4846167345716238163}
   - {fileID: 941080583989373902}
   - {fileID: 3966916718713073921}
-  - {fileID: 5187371366860951185}
   - {fileID: 2596397052054788005}
   - {fileID: 5747147621025004525}
   - {fileID: 824423104238863499}
   - {fileID: 3807168535445676216}
-  - {fileID: 8230324215993668245}
   - {fileID: 1402741658824783277}
   - {fileID: 1496064001805811872}
   - {fileID: 7281812434398753482}
   - {fileID: 4670890734530672986}
-  - {fileID: 4539784995522733872}
   - {fileID: 6345086290682717167}
   - {fileID: 9090372415916633852}
   - {fileID: 1627813298128218566}
   - {fileID: 8050052880177943797}
-  - {fileID: 8728428775888085877}
   - {fileID: 3414562882786698684}
   - {fileID: 3726322538487078036}
   - {fileID: 5210672540087650899}
   - {fileID: 1113401513237880000}
-  - {fileID: 6588156100244492349}
   - {fileID: 7116519309674413855}
   - {fileID: 1024330908325085270}
   - {fileID: 2652737982352359078}
   - {fileID: 3830478515882334249}
-  - {fileID: 6644433386047018189}
   - {fileID: 285828755764971578}
   - {fileID: 7506758300852272769}
   - {fileID: 976826704063197440}
   - {fileID: 3146882479821991091}
-  - {fileID: 6556622812208816795}
   - {fileID: 8561484944265150063}
   - {fileID: 2587294521123196093}
   - {fileID: 841677965345943410}
   - {fileID: 8761784450648084003}
-  - {fileID: 2399613009226204277}
   keyLocations:
   - {fileID: 4716034863394142572}
   - {fileID: 5335203519079319684}
@@ -444591,6 +444833,54 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5256466564355404405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8958305468814227970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa6cf6c542082be428d7cd2b6cbb05a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LawSchoolMaintenanceAccess
+  alarm: {fileID: 4353305589906910651}
+  key: {fileID: 866010568519123974}
+  locations:
+  - {fileID: 4716034863394142572}
+  - {fileID: 5335203519079319684}
+  - {fileID: 648029425531272926}
+  - {fileID: 192949291918207366}
+  - {fileID: 5154190494350419863}
+  - {fileID: 692201162466357824}
+  - {fileID: 439844554267393734}
+  - {fileID: 6228490117757157509}
+  - {fileID: 2584431538835956828}
+  - {fileID: 8023323750963820677}
+  - {fileID: 2066644918827578775}
+  - {fileID: 6406508889564349091}
+  - {fileID: 6614369318087550354}
+  - {fileID: 1785207929080253539}
+  - {fileID: 945325372542937390}
+  - {fileID: 3380895461071860919}
+  - {fileID: 2239110421989735749}
+  - {fileID: 5395634118591905731}
+  - {fileID: 2445563979605379733}
+  - {fileID: 8791302010175769085}
+  - {fileID: 6929784465080336115}
+  - {fileID: 2518656695430739566}
+  - {fileID: 8603529515355135753}
+  - {fileID: 2166264313790631873}
+  - {fileID: 8786139570907955497}
+  - {fileID: 387829314339140486}
+  - {fileID: 7179142061823630207}
+  - {fileID: 4733470395728090957}
+  - {fileID: 4331619922514095681}
+  - {fileID: 875352956927629078}
+  - {fileID: 7812336413564763887}
+  - {fileID: 4400949150803339531}
+  - {fileID: 7489722646542137531}
 --- !u!1 &8958413690967101266
 GameObject:
   m_ObjectHideFlags: 0
