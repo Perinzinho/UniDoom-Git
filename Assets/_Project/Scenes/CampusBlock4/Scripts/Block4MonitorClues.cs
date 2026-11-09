@@ -11,8 +11,8 @@ namespace UniDoom.CampusBlock4
         [SerializeField] Transform[] displays;
         [SerializeField] Transform[] firstRowMonitors;
         [SerializeField] int[] initialDestinations;
-        [SerializeField] Vector2 shiftCooldown = new Vector2(180, 300);
-        [SerializeField, Range(0, 1)] float blackoutShiftChance = .25f;
+        [SerializeField] Vector2 shiftCooldown = Vector2.zero;
+        [SerializeField, Range(0, 1)] float blackoutShiftChance = 1;
 
         void OnEnable() { if (power) power.BlackoutStarted += OnBlackout; }
         void OnDisable() { if (power) power.BlackoutStarted -= OnBlackout; }
@@ -27,7 +27,7 @@ namespace UniDoom.CampusBlock4
 
         void OnBlackout()
         {
-            if (!isActiveAndEnabled || Block4PuzzleProgress.DoorUnlocked || Time.time < Block4PuzzleProgress.NextClueShiftAt ||
+            if (!isActiveAndEnabled || Time.time < Block4PuzzleProgress.NextClueShiftAt ||
                 UnityEngine.Random.value >= blackoutShiftChance) return;
             var next = ChooseDestinations(firstRowMonitors.Length, Block4PuzzleProgress.MonitorDestinations);
             ApplyDestinations(next);

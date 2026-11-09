@@ -32,6 +32,7 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
     public bool IsResolved { get; private set; }
     public string SelectedKeyRoom { get; private set; }
     public const string EventId = "law-school-cell-key-alarm";
+    public const string TriggeredEventId = "law-school-local-key-collected";
 
     readonly List<LightState> lights = new List<LightState>();
     readonly List<Surface> surfaces = new List<Surface>();
@@ -106,7 +107,7 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         if (!keys) keys = player.gameObject.AddComponent<PlayerCellKeys>();
         ChooseKeyRoom(keys);
         IsResolved = keys.HasCompletedEvent(EventId);
-        if (keys.HasKey(key.CellId) && !IsResolved) BeginAlarm();
+        if (keys.HasCompletedEvent(TriggeredEventId) && !IsResolved) BeginAlarm();
     }
 
     void ChooseKeyRoom(PlayerCellKeys inventory)

@@ -133,6 +133,29 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        if (gameObject.scene.name == "CampusExterior")
+        {
+            // This outdoor scene uses collision-based steering. An enabled, unbound
+            // agent previously suppressed both steering and gravity on scene returns.
+            if (agent) agent.enabled = false;
+            if (body)
+            {
+                body.isKinematic = false;
+                body.useGravity = true;
+                body.constraints &= ~RigidbodyConstraints.FreezePosition;
+                body.constraints |= RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            }
+            if (capsule && UniDoom.Utils.CampusGrounding.TryFloor(
+                    new Vector3(transform.position.x, capsule.bounds.min.y, transform.position.z), out var floor))
+            {
+                float offset = transform.position.y - capsule.bounds.min.y;
+                var grounded = new Vector3(transform.position.x, floor.point.y + offset + .02f, transform.position.z);
+                if (body) { body.position = grounded; body.linearVelocity = Vector3.zero; }
+                else transform.position = grounded;
+                patrolOrigin = grounded;
+                progressPosition = grounded;
+            }
+        }
         if (agent != null && agent.enabled)
         {
             // Navigation is the sole owner of the transform on baked surfaces.
@@ -598,6 +621,14 @@ public class Enemy : MonoBehaviour, IDamageable
     private bool TryGround(Vector3 position, out Vector3 grounded)
     {
         float footOffset = capsule != null ? transform.position.y - capsule.bounds.min.y : 1f;
+        if (gameObject.scene.name == "CampusExterior")
+        {
+            grounded = position;
+            if (!UniDoom.Utils.CampusGrounding.TryFloor(position - Vector3.up * footOffset, out var support) ||
+                Mathf.Abs(support.point.y - (position.y - footOffset)) > .35f) return false;
+            grounded.y = support.point.y + footOffset;
+            return true;
+        }
         Vector3 origin = position + Vector3.up * .4f;
         int count = Physics.RaycastNonAlloc(origin, Vector3.down, movementHits, footOffset + .9f,
             obstacleLayers, QueryTriggerInteraction.Ignore);
