@@ -21,7 +21,7 @@ namespace UniDoom.UI
         [SerializeField, Min(0f)] private float fadeOutDuration = 0.65f;
         [SerializeField, Min(0f)] private float minDisplayDuration = 1.6f;
         [Header("Aquecimento de shaders")]
-        [Tooltip("Coleção opcional de variantes prioritárias. Toda passagem também aquece os shaders carregados antes de devolver o controle.")]
+        [Tooltip("Coleção opcional de variantes prioritárias. O cenário renderiza sob a tela de transição antes de devolver o controle, sem aquecimento global de shaders internos.")]
         [SerializeField] private ShaderVariantCollection shaderVariants;
         [Header("Prévia")]
         [SerializeField] private bool enableDebugKey = true;
@@ -252,13 +252,12 @@ namespace UniDoom.UI
                     yield return null;
                     try
                     {
-                        // The collection warms curated variants first; the global pass covers runtime-created
-                        // screens and destinations that do not have a collection assigned in the inspector.
+                        // Warm only an explicit collection. Global warmup also touches internal URP/debug
+                        // passes without their required buffers and fails on the reported D3D12 path.
                         if (shaderVariants != null) shaderVariants.WarmUp();
-                        Shader.WarmupAllShaders();
                     }
                     catch (Exception e) { Debug.LogWarning($"[DoorReloadScreen] Shader warmup: {e.Message}"); }
-                    // Keep the cover and input lock for the first frame produced with the warmed shaders.
+                    // Render the destination normally behind the opaque cover before releasing input.
                     yield return null;
                 }
                 while (Time.realtimeSinceStartup - started < minDisplayDuration) yield return null;
