@@ -4,8 +4,8 @@ Atualizado: **2026-11-08**, revisão de [correcoesbloco4.md](correcoesbloco4.md)
 
 ## Leitura rápida
 
-- Chaves 7/8/12/13 com o mesmo estilo de metal envelhecido e número gravado; triggers de coleta ampliados para raio de aproximadamente 1,05 m, para alcançar a chave sobre a mesa. Chave 7 continua exigindo a solução do puzzle e a porta totalmente aberta. Conferência estática; sem Unity/Play Mode. [Contrato dos sprites e coleta](PrisonCellKeys.md).
-- Distribuição atual: quatro chaves de cela, **7/8/12/13**. Chave 7 preserva o puzzle da 423; 8 na mesa da 428; 12 e 13 nas mesas docentes da 414 e 421. O pedido de distribuição equilibrada substitui contagens anteriores. [Contrato atual](PrisonCellKeys.md).
+- **Acesso à biblioteca (09/11/2026):** uma chave em aço com etiqueta azul, ID `campus-library-block-4`, na bancada da sala 423 atrás da porta com senha. Puzzle resolvido e porta totalmente aberta continuam obrigatórios; trigger de coleta preservado.
+- Antigas chaves de cela **7/8/12/13 retiradas**: a recompensa original da 423 foi convertida para acesso à biblioteca; os três pickups adicionais ficaram inativos. Nada foi transferido para a biblioteca. [Contrato de acesso](CampusLibrary.md#acesso-com-duas-chaves--09112026).
 - Cena `Assets/_Project/Scenes/CampusBlock4/CampusBlock4.unity`; prefab `Prefabs/CampusBlock4.prefab` na mesma pasta. Sem nova cena/menu.
 - **Salas 401–424, 426 e 428 em uso**; 425/427 inativas. **22 laboratórios**, incluindo a antiga sala de auditório 424, copa 401, **secretaria 404**, coordenação 410 e periféricos 419. Ambientes de apoio preservados por confirmação do usuário; quatro banheiros compartilhados entre os corredores.
 - Módulos preservados: largura **13,5 m**, profundidade externa **17 m**, interna **11,75 m**, conforme LawSchool. Os novos laboratórios das extremidades usam 13,5 × 17 m, rotacionados para abrir para os corredores. Pé-direito aproximado **4,06 m**.
@@ -15,7 +15,7 @@ Atualizado: **2026-11-08**, revisão de [correcoesbloco4.md](correcoesbloco4.md)
 - Paleta laranja/azul conservada. Piso terrazzo e reboco padronizado reutilizam a base visual de Direito, em materiais exclusivos do Bloco 4. Paredes contínuas junto às lousas; janelas transparentes de observação restauradas nas frentes, ao lado das portas.
 - Quatro longarinas e quatro vasos do hall encostados às paredes, com folga geométrica de **15 mm**. Bancos mantêm orientação e escala; vasos girados para acomodar as folhagens. O vaso antes diante da secretaria foi levado para `z = −25,5`, junto à parede oeste perto da entrada; balcão, foto/símbolos e cruzamentos dos corredores livres.
 
-- Pisos: 129 colisores ativos com tag `Eco` e superfície `Interior`. Energia: primeiro evento em 6–10 s, seguintes em 12–22 s, apagão de 2–4 s; 199 luzes e 182 difusores. Chaves de cela: **7** no puzzle da 423 e **8** na mesa docente da 428. Contrato compartilhado: [PrisonCellKeys.md](PrisonCellKeys.md).
+- Pisos: 129 colisores ativos com tag `Eco` e superfície `Interior`. Energia: primeiro evento em **30–45 s**, seguintes em **60–90 s** após restaurar a energia; apagão de 2–4 s. As cinco pistas continuam mudando no apagão. 199 luzes e 182 difusores. Chave de acesso à biblioteca somente na recompensa do puzzle da 423; antigas chaves de cela retiradas. Contrato compartilhado: [PrisonCellKeys.md](PrisonCellKeys.md).
 
 ## Portas, catracas e identificação
 
@@ -39,13 +39,13 @@ Na terceira lista, os quatro conjuntos de cabines receberam cinco divisórias la
 
 ## Puzzle, painel e energia
 
-Cinco pares preservados: quadrado=1, triângulo=2, círculo=3, losango=4 e cruz=5. Distribuição inicial atual: 402, 407, 414, 420 e **406**, respectivamente; os destinos podem mudar nos apagões, conforme o contrato abaixo. Ordem no quadro: triângulo, losango, quadrado, cruz, círculo. Senha **24153**; chave na bancada de alunos e espingarda na mesa docente da **423**, sem pedestal/suporte ou texto da arma. Sprite da chave reduzido; pickup, persistência e arma originais mantidos. Fotografias e definição do puzzle mantêm seus bytes/GUIDs. Os quatro monitores especiais acompanham a primeira estação das bancadas. Quadro personalizado, luminária, legenda e sequência de símbolos agora fixados na parede real do hall em `x = 7,5`, sem suporte isolado na circulação.
+Cinco pares preservados: quadrado=1, triângulo=2, círculo=3, losango=4 e cruz=5. Distribuição inicial atual: 402, 407, 414, 420 e **406**, respectivamente; os destinos podem mudar nos apagões, conforme o contrato abaixo. Ordem no quadro: triângulo, losango, quadrado, cruz, círculo. Senha **24153**; chave de acesso à biblioteca na bancada de alunos e espingarda na mesa docente da **423**, sem pedestal/suporte ou texto da arma. Sprite da chave reduzido; pickup, persistência e arma originais mantidos. Fotografias e definição do puzzle mantêm seus bytes/GUIDs. Os quatro monitores especiais acompanham a primeira estação das bancadas. Quadro personalizado, luminária, legenda e sequência de símbolos agora fixados na parede real do hall em `x = 7,5`, sem suporte isolado na circulação.
 
 Símbolos e números aparecem **dentro das telas**, sem placas acima dos monitores. Os cinco pares ocupam a região inferior direita dos LCDs da primeira fileira, preservando as fotos e o terminal nos monitores originais. Geometrias e atlas originais reutilizados com três materiais de tela compartilhados, sem novos bitmaps. Placas azuis/presilhas inativas, fileIDs e valores preservados.
 
 `Block4Keypad` conserva interação, pausa, teclado/controle, solução e restauração do controle. A interface agora representa uma caixa metálica com visor LCD, parafusos, indicadores e teclas. Erro: somente **“Senha incorreta”**, sem indicar onde procurar pistas. O estado variável do painel físico continua dinâmico; o HUD não foi aberto em execução.
 
-`Block4PowerFluctuation` pertence somente a este mapa. Primeiro evento em **12–24 s**, próximos em **35–75 s**, pisca e apaga por **2–4 s**, mantendo iluminação residual pontual. Restaura intensidades e propriedades dos difusores, suspende a contagem nos menus e restaura ao desabilitar. Referências salvas no prefab; comportamento não executado em jogo.
+`Block4PowerFluctuation` pertence somente a este mapa. Primeiro evento em **30–45 s**, próximos em **60–90 s** após restaurar a energia; pisca e apaga por **2–4 s**, mantendo iluminação residual pontual. Restaura intensidades e propriedades dos difusores, suspende a contagem nos menus e restaura ao desabilitar. Defaults do script e valores salvos no prefab atualizados em conjunto. Referências preservadas; comportamento não executado em jogo.
 
 `Block4PuzzleProgress` preserva porta e chave na sessão. A chave não reaparece depois da coleta. A espingarda segue o pickup global: o objeto do cenário pode reaparecer na recarga, enquanto a arma carregada pertence ao player persistente. Sem inventário paralelo ou gravação do puzzle em disco.
 
@@ -94,3 +94,11 @@ Saída: materiais da fachada de entrada passam a dupla face por instâncias loca
 ## Energia e saída — atualização de 09/11/2026
 
 Primeira falha em 6–10 s, próximas em 12–22 s; apagão de 2–4 s preservado. Cada apagão completo redistribui os cinco pares símbolo/número conforme as regras existentes. A saída recebe fechamento visual atrás do gatilho para ocultar o vazio, sem colisão extra ou alteração do destino. Sem Unity, jogo, testes, previews, capturas ou vídeos.
+
+Verificação do acesso de 09/11: cena e prefab reabertos, uma recompensa de acesso à biblioteca, zero chaves de cela ativas, referências da porta/painel e trigger preservadas. Sprite azul novo e texto de inventário atualizados. Conferência de edição; sem coleta real, senha por input ou novo Play Mode. [Resultados do acesso](CampusLibrary.md#verificação-do-acesso--09112026).
+
+## Energia menos frequente — 09/11/2026
+
+O primeiro evento passou de 6–10 s para **30–45 s** após carregar o componente. A pausa entre o fim de um evento e o início do seguinte passou de 12–22 s para **60–90 s**. A sequência de piscadas, o apagão de 2–4 s e a redistribuição aleatória dos cinco símbolos durante o apagão foram preservados; não foi criada uma segunda contagem de troca de pistas. Código e valores serializados do prefab concordam, e a cena não possui overrides desses intervalos.
+
+Conferência estática dos campos, evento `BlackoutStarted` e referências; somente o componente de energia foi alterado no prefab, mantendo todos os IDs. Compilação C# isolada passou sem erros, com avisos preexistentes. Sem abrir Unity, executar jogo/Play Mode, build, capturas, commit ou push nesta alteração. Tempos das revisões anteriores acima são históricos.

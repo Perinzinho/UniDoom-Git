@@ -8,8 +8,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
-// One-time editor migration. No runtime generation, no scene YAML rewriting.
-[InitializeOnLoad]
+// Explicit editor migration. Never regenerate user assets on import/domain reload.
 public static class CampusParkingVehicleSetup
 {
     const string Base = "Assets/_Project/Scenes/CampusExterior/";
@@ -19,8 +18,7 @@ public static class CampusParkingVehicleSetup
     const string MeshPath = Base + "Meshes/StreetParkingBays.asset";
     const string AppliedLabel = "CampusParkingVehiclesRevision1Applied";
     const string GroupName = "Parked vehicles - 5 cars and 3 motorcycles";
-    static bool attempted, applying;
-    static double retryAfter;
+    static bool applying;
 
     [Serializable] public class MaterialSpec
     {
@@ -44,26 +42,6 @@ public static class CampusParkingVehicleSetup
     static readonly Bay[] Bays = Enumerable.Range(0, 4).Select(i => new Bay(-91 + 6 * i, -1.55f, 90))
         .Concat(Enumerable.Range(0, 4).Select(i => new Bay(16.35f, 55 + 6 * i, 0)))
         .Concat(Enumerable.Range(0, 4).Select(i => new Bay(75.15f, -56 + 6 * i, 0))).ToArray();
-
-    static CampusParkingVehicleSetup() => EditorApplication.update += TryApplyOnce;
-
-    static void TryApplyOnce()
-    {
-        if (attempted || applying || EditorApplication.timeSinceStartup < retryAfter) return;
-        retryAfter = EditorApplication.timeSinceStartup + 3;
-        if (EditorApplication.isCompiling || EditorApplication.isUpdating || EditorApplication.isPlayingOrWillChangePlaymode ||
-            PrefabStageUtility.GetCurrentPrefabStage() != null || HasDirtyScenes()) return;
-        var layout = AssetDatabase.LoadAssetAtPath<GameObject>(LayoutPath);
-        if (layout != null && AssetDatabase.GetLabels(layout).Contains(AppliedLabel)) { attempted = true; return; }
-        // Do not interrupt a user working in an unsaved scene or a Prefab Stage.
-        attempted = true;
-        try { Apply(); }
-        catch (Exception error)
-        {
-            Debug.LogError("Campus parking migration was not completed. Correct the reported issue, then use " +
-                "Tools/UniDoom/Campus/Apply Parking Vehicles. Existing user scenes were not discarded.\n" + error);
-        }
-    }
 
     static bool HasDirtyScenes()
     {
@@ -326,8 +304,13 @@ public static class CampusParkingVehicleSetup
             marking = new GameObject("Street Parking Bays - 12").transform; marking.SetParent(campus, false);
         }
         marking.SetPositionAndRotation(Vector3.zero, Quaternion.identity); marking.localScale = Vector3.one;
-        var filter = marking.GetComponent<MeshFilter>() ?? marking.gameObject.AddComponent<MeshFilter>(); filter.sharedMesh = mesh;
-        var renderer = marking.GetComponent<MeshRenderer>() ?? marking.gameObject.AddComponent<MeshRenderer>();
+        // Unity can return a missing-component wrapper whose CLR reference is non-null.
+        // Use Unity's lifetime check rather than the null-coalescing operator.
+        var filter = marking.GetComponent<MeshFilter>();
+        if (!filter) filter = marking.gameObject.AddComponent<MeshFilter>();
+        filter.sharedMesh = mesh;
+        var renderer = marking.GetComponent<MeshRenderer>();
+        if (!renderer) renderer = marking.gameObject.AddComponent<MeshRenderer>();
         renderer.sharedMaterial = paint; renderer.shadowCastingMode = ShadowCastingMode.Off;
     }
 

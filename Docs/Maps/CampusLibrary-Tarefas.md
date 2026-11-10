@@ -13,6 +13,10 @@ Adicione novas tarefas ao final usando `- [ ]`. Priorizar a última tarefa pende
 - [x] Gerar arquivo MD de possíveis mecânicas para esse espaço, não sabemos oq podemos fazer para inovar nesse mapaT
 - [x] Criar um MD exclusivo de puzzles/enigmas caóticos e difíceis com inimigos atrapalhando — [Puzzles caóticos](CampusLibrary-Puzzles-Caoticos.md), reescrito com seis ideias físicas novas após rejeição das propostas anteriores.
 
-- [ ] Revisar frestas das paredes, desobstruir a passagem para a ala de estudos, liberar o corredor sanitário do pilar e afastar mais as estantes dos banheiros.
+- [x] Revisar frestas das paredes, desobstruir a passagem para a ala de estudos, liberar o corredor sanitário do pilar e afastar mais as estantes dos banheiros.
 
 - [x] Escrever ideias simples de leitura e dedução para obter as cinco chaves da biblioteca — [proposta](CampusLibrary-Puzzles-Leitura.md). Documento escrito; implementação dos puzzles não solicitada nesta etapa.
+
+- [x] Substituir as oito chaves de cela de Direito/Bloco 4 por duas chaves de acesso à biblioteca, trocar seus sprites e exigir ambas na porta, com indicação visual.
+
+As correções de paredes/circulação estão registradas nas revisões de 07–08/11 da ficha; a alteração de acesso de 09/11 preserva esse interior. As validações do novo acesso estão na seção correspondente da documentação.

@@ -2,20 +2,22 @@
 
 Atualizado em **09/11/2026**. Este documento acompanha o estado temporário das celas e as decisões necessárias antes de fechar a progressão definitiva.
 
+> **Conciliação após integrar development:** a retirada das oito chaves de cela de Direito/Bloco 4 e as duas chaves de acesso à biblioteca foram preservadas. Permanecem cinco pickups de cela na biblioteca (4/5/6/10/11), além dos dois de acesso e da manutenção. O gerador continua como implementação futura. A distribuição 5/5/4 e as alternativas de chaves individuais abaixo são propostas/histórico da revisão recebida, não restauração dos pickups retirados. Estado vigente: [PrisonCellKeys.md](PrisonCellKeys.md).
+
 ## Estado temporário atual
 
 - As **14 celas começam fechadas**, mostram `[E] ABRIR CELA XX` e podem ser abertas sem chave para permitir revisão de layout, professores, circulação, áudio e leitura visual.
 - O acesso temporário é controlado somente por `PrisonProgress.AllowKeylessCellOpeningForLayoutReview = true`.
 - O prefab e o estado inicial permanecem fechados; a porta só gira depois da interação do jogador.
-- As 13 chaves, pickups, sprites e sua distribuição atual continuam preservados. A cela 14 de Bianca possui ID de gate/progresso, sprite e áudio, mas ainda não possui chave 14, pickup ou sprite de chave. Nenhuma chave é consumida ou concedida automaticamente.
+- Os 13 sprites e o contrato dos IDs existentes continuam preservados; apenas os cinco pickups de cela da biblioteca permanecem ativos. A cela 14 de Bianca possui ID de gate/progresso, sprite de personagem e áudio, mas ainda não possui chave 14, pickup ou sprite de chave. Nenhuma chave é consumida ou concedida automaticamente.
 - Para voltar ao comportamento trancado, alterar a constante para `false`, compilar e executar a validação indicada no fim deste documento.
 - A estrutura principal das 14 celas usa as mesmas medidas, escalas e colisores. Seis grupos antigos de objetos importados, presentes somente nas celas 1–6, foram desativados e preservados para remover a diferença estrutural aparente.
 
 ## Decisão recomendada: quantidade de chaves
 
-Existem **13 chaves de cela** para 14 professores/celas. Antes de reativar as fechaduras, decidir se será criada uma chave 14 individual para Bianca ou se sua cela seguirá outra regra. Para manter o princípio de uma chave por professor, a recomendação é criar e distribuir a chave 14.
+Na proposta histórica de **13 chaves de cela** para 14 professores/celas, seria necessário criar uma chave 14 individual para Bianca ou definir outra regra. Essa proposta deve ser reconsiderada junto ao gerador futuro antes de reativar as fechaduras; não altera o estado vigente de cinco pickups de cela ativos.
 
-Distribuição atual das 13 chaves:
+Distribuição histórica das 13 chaves, anterior à conversão dos blocos:
 
 | Mapa | Celas/chaves | Quantidade |
 |---|---|---:|
@@ -24,7 +26,7 @@ Distribuição atual das 13 chaves:
 | Bloco 4 | 7, 8, 12 e 13 | 4 |
 | **Total** | **1–13** | **13** |
 
-Direito possui ainda uma chave separada da manutenção. Portanto, o jogo tem atualmente **14 pickups de chave relacionados a essa progressão**, mas somente 13 abrem celas.
+Direito também tinha uma chave separada da manutenção. Aquele inventário somava **14 pickups de chave relacionados à progressão**; a configuração vigente contém cinco pickups de cela, dois de acesso à biblioteca e manutenção.
 
 Alternativas que exigiriam reestruturação:
 

@@ -3,19 +3,19 @@ using UnityEngine;
 namespace UniDoom.CampusBlock4
 {
     // Run inventory: survives scene transitions and checkpoint reloads, never a new game.
-    // The existing puzzle key also grants cell 07 in PlayerCellKeys; Key01..03 stay separate.
+    // The puzzle reward grants only the Block 4 library access key.
     public static class Block4PuzzleProgress
     {
-        public const string TeacherCellKeyId = "professor-cell-07";
+        public const string LibraryAccessKeyId = CampusLibraryAccess.Block4KeyId;
         public static bool DoorUnlocked { get; private set; }
-        public static bool HasTeacherCellKey { get; private set; }
+        public static bool HasLibraryAccessKey { get; private set; }
         internal static int[] MonitorDestinations;
         internal static float NextClueShiftAt;
         internal static void UnlockDoor() => DoorUnlocked = true;
-        internal static bool CollectTeacherCellKey()
+        internal static bool CollectLibraryAccessKey()
         {
-            if (!DoorUnlocked || HasTeacherCellKey) return false;
-            HasTeacherCellKey = true;
+            if (!DoorUnlocked || HasLibraryAccessKey) return false;
+            HasLibraryAccessKey = true;
             return true;
         }
 
@@ -23,7 +23,7 @@ namespace UniDoom.CampusBlock4
         public static void ResetSession()
         {
             DoorUnlocked = false;
-            HasTeacherCellKey = false;
+            HasLibraryAccessKey = false;
             MonitorDestinations = null;
             NextClueShiftAt = 0;
         }

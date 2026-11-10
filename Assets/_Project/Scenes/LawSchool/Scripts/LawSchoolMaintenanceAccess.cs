@@ -12,13 +12,41 @@ public sealed class LawSchoolMaintenanceAccess : MonoBehaviour
     [SerializeField] Transform[] locations;
     [SerializeField] BoxCollider entranceBarrier;
     [SerializeField, Min(1f)] float minimumKeySeparation = 45f;
+    [SerializeField, Min(.5f)] float warningDistance = 2.5f;
+    const string WarningText = "A porta está trancada";
+    GUIStyle warningStyle;
+    public bool WarningVisible { get; private set; }
 
     void Awake() { if (entranceBarrier) entranceBarrier.enabled = true; }
     void Update()
     {
+        WarningVisible = false;
         var player = GameManager.SessionPlayer;
         var inventory = player ? player.GetComponent<PlayerCellKeys>() : null;
-        if (entranceBarrier) entranceBarrier.enabled = !inventory || !inventory.HasKey(KeyId);
+        bool locked = !inventory || !inventory.HasKey(KeyId);
+        if (entranceBarrier) entranceBarrier.enabled = locked;
+        if (!locked || !entranceBarrier || !player || Time.timeScale <= 0 ||
+            UniDoom.UI.GameMenus.BlocksGameplay || UniDoom.UI.DeathScreen.IsVisible ||
+            UniDoom.UI.DoorReloadScreen.IsReloading ||
+            gameObject.scene != UnityEngine.SceneManagement.SceneManager.GetActiveScene()) return;
+        var life = player.GetComponent<PlayerLife>();
+        if (life && life.IsDead) return;
+        var controller = player.GetComponent<CharacterController>();
+        Vector3 position = controller ? controller.bounds.center : player.transform.position;
+        WarningVisible = entranceBarrier.bounds.SqrDistance(position) <= warningDistance * warningDistance;
+    }
+
+    void OnGUI()
+    {
+        if (!WarningVisible || !entranceBarrier || !entranceBarrier.enabled) return;
+        warningStyle ??= new GUIStyle(GUI.skin.box)
+        {
+            alignment = TextAnchor.MiddleCenter,
+            wordWrap = true,
+            fontSize = Mathf.RoundToInt(19 * Mathf.Clamp(Screen.height / 900f, .8f, 1.6f))
+        };
+        float width = Mathf.Min(520, Screen.width - 40);
+        GUI.Box(new Rect((Screen.width - width) * .5f, Screen.height * .76f, width, 52), WarningText, warningStyle);
     }
 
     bool IsDistant(Transform point)
@@ -35,7 +63,7 @@ public sealed class LawSchoolMaintenanceAccess : MonoBehaviour
     }
 
     void OnEnable() { if (alarm) alarm.StateChanged += Sync; }
-    void OnDisable() { if (alarm) alarm.StateChanged -= Sync; }
+    void OnDisable() { WarningVisible = false; if (alarm) alarm.StateChanged -= Sync; }
     IEnumerator Start()
     {
         while (!GameManager.SessionPlayer) yield return null;

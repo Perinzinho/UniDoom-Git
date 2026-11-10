@@ -9,7 +9,7 @@
 - Área das celas: `Assets/_Project/Scenes/Basement/Prison/`.
 - Arte da transição: `Assets/_Project/Scenes/Basement/Resources/Textures/UI/Transitions/Basement.png`, derivada da visão real de chegada `FromCampus` e tratada no mesmo padrão cinematográfico de `Cylinder`.
 - Quantidade atual: 14 celas e 14 professores.
-- Chaves: existem treze pickups e sprites numerados, distribuídos entre Direito, Biblioteca e Bloco 4. A cela 14 de Bianca já possui ID de progressão, mas a chave 14 ainda não foi criada nem distribuída. Mapa de locais em [PrisonCellKeys.md](PrisonCellKeys.md).
+- Chaves: os treze sprites numerados continuam preservados, mas só as cinco chaves de cela 4/5/6/10/11, na biblioteca, permanecem ativas. Os oito pickups antigos de Direito/Bloco 4 foram retirados ou convertidos em duas chaves de acesso à biblioteca; manutenção continua separada. A cela 14 de Bianca já possui ID de progressão, sem chave própria criada/distribuída. No modo temporário de revisão, as 14 celas abrem com `E` sem chave. Contrato conciliado em [PrisonCellKeys.md](PrisonCellKeys.md).
 - Ocupação: exatamente um professor por cela; cada porta referencia somente o professor e a voz da própria cela.
 - Módulo compacto: passo de **3,20 m**, com área livre aproximada de **3,00 × 3,48 m**. Sete celas ficam em cada lado; conjunto de 22,40 m ao longo do corredor. Folha móvel de aproximadamente 1,47 m e trecho fixo de aproximadamente 1,41 m, alinhados dentro de cada módulo. Divisórias de 20 cm; corredor central livre de aproximadamente 2,97 m.
 

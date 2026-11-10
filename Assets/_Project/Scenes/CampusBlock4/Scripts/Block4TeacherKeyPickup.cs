@@ -13,11 +13,11 @@ namespace UniDoom.CampusBlock4
         {
             GetComponent<SphereCollider>().isTrigger = true;
             if (visual != null) restPosition = visual.localPosition;
-            if (Block4PuzzleProgress.HasTeacherCellKey) gameObject.SetActive(false);
+            if (Block4PuzzleProgress.HasLibraryAccessKey) gameObject.SetActive(false);
         }
         void Update()
         {
-            if (Block4PuzzleProgress.HasTeacherCellKey) { gameObject.SetActive(false); return; }
+            if (Block4PuzzleProgress.HasLibraryAccessKey) { gameObject.SetActive(false); return; }
             if (visual == null) return;
             visual.localPosition = restPosition + Vector3.up * (Mathf.Sin(Time.time * 2) * .035f);
         }
@@ -25,16 +25,16 @@ namespace UniDoom.CampusBlock4
         void OnTriggerStay(Collider other) => TryCollect(other);
         bool TryCollect(Collider other)
         {
-            if (!Block4PuzzleProgress.DoorUnlocked || Block4PuzzleProgress.HasTeacherCellKey || keypad == null ||
+            if (!Block4PuzzleProgress.DoorUnlocked || Block4PuzzleProgress.HasLibraryAccessKey || keypad == null ||
                 !keypad.LockedDoor.IsFullyOpen || Time.timeScale <= 0 || GameMenus.BlocksGameplay ||
                 DeathScreen.IsVisible || DoorReloadScreen.IsReloading) return false;
             var player = other.GetComponentInParent<PlayerMovement>();
             if (player == null || player != GameManager.SessionPlayer ||
                 (player.TryGetComponent<PlayerLife>(out var life) && life.IsDead)) return false;
-            if (!Block4PuzzleProgress.CollectTeacherCellKey()) return false;
+            if (!Block4PuzzleProgress.CollectLibraryAccessKey()) return false;
             var cellKeys = player.GetComponent<PlayerCellKeys>();
             if (!cellKeys) cellKeys = player.gameObject.AddComponent<PlayerCellKeys>();
-            cellKeys.TryAddKey(Block4PuzzleProgress.TeacherCellKeyId);
+            cellKeys.TryAddKey(Block4PuzzleProgress.LibraryAccessKeyId);
             SFXManager.Instance?.PlayKeyPickupSound();
             keypad.ShowKeyCollected();
             gameObject.SetActive(false);
