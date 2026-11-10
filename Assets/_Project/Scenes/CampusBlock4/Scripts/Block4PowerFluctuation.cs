@@ -8,8 +8,8 @@ namespace UniDoom.CampusBlock4
     {
         [SerializeField] Light[] fixtures;
         [SerializeField] Renderer[] diffusers;
-        [SerializeField] Vector2 interval = new Vector2(12, 22);
-        [SerializeField] Vector2 firstEventDelay = new Vector2(6, 10);
+        [SerializeField] Vector2 interval = new Vector2(60, 90);
+        [SerializeField] Vector2 firstEventDelay = new Vector2(30, 45);
         [SerializeField] Vector2 blackoutDuration = new Vector2(2, 4);
         float[] intensities;
         MaterialPropertyBlock[] originalBlocks;

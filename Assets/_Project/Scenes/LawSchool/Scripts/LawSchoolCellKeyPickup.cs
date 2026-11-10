@@ -1,10 +1,10 @@
 using UnityEngine;
 
-/// <summary>A specific teacher-cell key; deliberately independent of the old three door keys.</summary>
+/// <summary>The randomized library access key; independent of prison and maintenance keys.</summary>
 [DisallowMultipleComponent, RequireComponent(typeof(BoxCollider))]
 public sealed class LawSchoolCellKeyPickup : MonoBehaviour
 {
-    [SerializeField] string cellId = "professor-cell-01";
+    [SerializeField] string cellId = CampusLibraryAccess.LawSchoolKeyId;
     [SerializeField] LawSchoolAlarmPrototype alarm;
     bool collected;
 
