@@ -119,13 +119,14 @@ public sealed class PrisonController : MonoBehaviour
         var gate = hit.collider.GetComponentInParent<PrisonCellGate>();
         if (gate == null || gate.IsOpen) return;
         bool hasCellKey = PrisonProgress.HasCellKey(gate.CellId, inventory);
+        bool canOpen = PrisonProgress.CanOpenCell(gate.CellId, inventory);
         if (hasCellKey) keyIcon.sprite = CellKeySprites.Get(gate.CellId) ?? keySprite;
-        prompt.text = hasCellKey ? "[E] ABRIR CELA " + gate.CellId :
+        prompt.text = canOpen ? "[E] ABRIR CELA " + gate.CellId :
             "CELA " + gate.CellId + " TRANCADA — ENCONTRE A CHAVE " + gate.CellId;
         bool interact = (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame) ||
             (Gamepad.current != null && Gamepad.current.buttonWest.wasPressedThisFrame);
         if (!interact) return;
-        if (!hasCellKey)
+        if (!canOpen)
         {
             GameplayAudio.Instance?.NotifyLockedDoorContact(gate);
             return;

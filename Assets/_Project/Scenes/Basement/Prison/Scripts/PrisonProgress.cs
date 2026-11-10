@@ -4,7 +4,10 @@ using UnityEngine;
 /// <summary>Prison progress lasts for the current run, including checkpoint reloads.</summary>
 public static class PrisonProgress
 {
-    public const int CellCount = 13;
+    public const int CellCount = 14;
+    // Temporary layout-review state. Set to false when the cell/key design is approved.
+    // Checklist: Docs/Maps/Basement-Celas-Pendencias.md.
+    public const bool AllowKeylessCellOpeningForLayoutReview = true;
     public static bool BossDefeated { get; set; }
     public static string CellKeyId(int id) => id >= 1 && id <= CellCount ? "professor-cell-" + id.ToString("00") : string.Empty;
     public static bool HasCellKey(int id, PlayerCellKeys inventory) =>
@@ -21,6 +24,8 @@ public static class PrisonProgress
     }
     static readonly HashSet<int> openedCells = new();
 
+    public static bool CanOpenCell(int id, PlayerCellKeys inventory) =>
+        AllowKeylessCellOpeningForLayoutReview || HasCellKey(id, inventory);
     public static bool IsCellOpen(int id) => openedCells.Contains(id);
     public static void OpenCell(int id) => openedCells.Add(id);
 
