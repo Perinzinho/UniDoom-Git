@@ -51,8 +51,8 @@ namespace UniDoom.CampusBlock4
             if (prompt != null) prompt.gameObject.SetActive(gameplay && !Block4PuzzleProgress.DoorUnlocked && CanInteract());
             if (inventory != null)
             {
-                inventory.gameObject.SetActive(gameplay && Block4PuzzleProgress.HasTeacherCellKey);
-                inventory.text = Time.unscaledTime < toastUntil ? "CHAVE COLETADA\nChave da cela 7 • guardada no inventário" : "CHAVE DA CELA 7  /  NO INVENTÁRIO";
+                inventory.gameObject.SetActive(gameplay && Block4PuzzleProgress.HasLibraryAccessKey);
+                inventory.text = Time.unscaledTime < toastUntil ? "CHAVE COLETADA\nBiblioteca • Bloco 4 • guardada no inventário" : "CHAVE DA BIBLIOTECA • BLOCO 4  /  NO INVENTÁRIO";
             }
             if (!IsOpen || closing || Time.frameCount == openedFrame) return;
             var keyboard = Keyboard.current;

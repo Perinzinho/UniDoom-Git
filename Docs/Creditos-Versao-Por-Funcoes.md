@@ -186,3 +186,7 @@ Rascunho: preencher os nomes em cada área, repetindo quem participou de mais de
 [NOME / GRUPO / INSTITUIÇÃO]
 
 [MENSAGEM OPCIONAL DE AGRADECIMENTO]
+
+## Sprites das chaves de acesso à biblioteca
+
+Dois sprites criados para o projeto com a ferramenta integrada `imagegen`: chave de Direito em latão com etiqueta ocre e chave do Bloco 4 em aço com etiqueta azul. Sem modelo ou sprite de terceiros baixado. Prompts, caminhos e SHA-256: `Licenses/AssetSources/CampusLibrary/library-access-key-sprites.json`.

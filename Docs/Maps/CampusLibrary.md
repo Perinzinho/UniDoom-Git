@@ -15,6 +15,44 @@
 - Paleta e mobiliário de `Global/Materials/CampusInterior/` e `Global/Meshes/CampusInterior/`. Meshes exclusivos novos: `CampusLibrary/Meshes/NorthWing*.asset`.
 - Nenhum novo download de modelo 3D. Fontes e hashes da reutilização: `Licenses/AssetSources/CampusLibrary/expansion-sources.json` e `reused-props-sources.json` da mesma pasta; os três documentos de créditos registram o uso nesta ala.
 
+## Acesso com duas chaves — 09/11/2026
+
+A entrada pelo CampusExterior exige **as duas chaves de acesso à biblioteca**, guardadas no inventário persistente `PlayerCellKeys`. Uma chave sozinha, chaves de cela ou a chave da manutenção não liberam a entrada. As chaves de acesso permanecem no inventário, permitindo voltar à biblioteca na mesma sessão; a saída continua livre e os spawn IDs foram preservados.
+
+| Chave de acesso | Obtenção | Identidade |
+| --- | --- | --- |
+| Direito | Sorteada por partida pelos pontos já configurados em LawSchool; posição mantida ao retornar ao prédio. Alarme e manutenção preservados | `campus-library-law-school`; latão, etiqueta ocre “BIBLIOTECA / DIREITO” |
+| Bloco 4 | Recompensa na sala 423, atrás da porta com senha; exige puzzle resolvido e porta totalmente aberta | `campus-library-block-4`; aço, etiqueta azul “BIBLIOTECA / BLOCO 4” |
+
+A porta externa recebe chapa metálica com **duas fechaduras identificadas**, os dois desenhos de chave e contador **0/2 → 1/2 → 2/2**. Cada indicador responde à sua chave. Uma travessa e um bloqueio sólido permanecem enquanto falta alguma; ambos são liberados com as duas. `CampusLibraryEntranceLock` implementa o guard já aceito por `SceneTransitionDoor`; nenhum sistema paralelo de inventário ou carregamento foi criado.
+
+Conforme a resposta explícita do usuário, as antigas chaves de cela **1/2/3/9**, em Direito, e **7/8/12/13**, no Bloco 4, foram retiradas do gameplay. Os dois pickups principais foram convertidos para acesso; os seis adicionais foram desativados, com objetos/fileIDs preservados. **Não foram transferidas para a biblioteca.** As cinco chaves que já estavam na biblioteca permanecem nesta rodada. O gerador e a mecânica que abrirão as celas serão implementados depois; os oito IDs retirados ainda não têm nova forma de abertura.
+
+Sprites finais: `Global/Textures/Pickups/LibraryAccessLawSchool.png` e `LibraryAccessBlock4.png`, sob `Assets/_Project/`. PNGs gerados com alpha transparente, importados como sprites individuais; imagens numeradas anteriores preservadas. Fonte, prompts e SHA-256: `Licenses/AssetSources/CampusLibrary/library-access-key-sprites.json`. Os três MDs de créditos registram a geração integrada por imagegen. A troca visual não altera os triggers de coleta.
+
+As mudanças foram aplicadas às **cenas jogáveis e aos prefabs independentes** de Direito, Bloco 4 e CampusExterior. A cena independente de LawSchool não depende do prefab para receber a mudança. O interior e o layout da biblioteca foram preservados.
+
+### Verificação do acesso — 09/11/2026
+
+Unity 6000.5.7f1, URP do projeto, Windows/D3D11, modo de edição. Cenas e prefabs de Direito, Bloco 4 e CampusExterior reabertos; componentes e referências do novo acesso conferidos.
+
+| Verificação | Resultado |
+| --- | --- |
+| Pickups nos blocos | Uma chave de biblioteca em cada bloco; zero pickups de cela ativos nos dois. Manutenção de Direito preservada |
+| Sorteio de Direito | 33 pontos preservados; política de escolha estável na mesma sessão testada em inventário isolado; PlayerPrefs temporário restaurado |
+| Puzzle do Bloco 4 | Referências ao keypad e à porta preservadas, junto aos checks de solução e abertura total; código 24153 mantido |
+| Exigência de duas chaves | Cinco casos executados no componente: nenhuma, somente Direito, somente Bloco 4, ambas, todas as antigas chaves de cela. Somente ambas liberam o guard e a barreira |
+| Apresentação real da porta | Quatro combinações de inventário aplicadas ao guard da cena; contador 0/2, 1/2 e 2/2, indicadores, barreira e travessa conferidos. Recortes das fechaduras persistentes e barreira alinhada à frente da chapa |
+| Sprites | PNGs 1254 × 1254 com alpha transparente; importação individual, limite 1024, 512 pixels/unidade. Altura de quadro aproximada 0,28 m, sem redimensionar os triggers |
+| Progressão das celas | Chaves de biblioteca não concedem chave de cela; cinco pickups já existentes dentro da biblioteca mantidos. Gerador futuro ainda sem implementação |
+| Preservação | IDs anteriores dos seis assets-alvo mantidos; interior/cena CampusLibrary, Player, Library antiga e PrisonProgress com conteúdo preservado |
+
+Capturas em 1600 × 900, FOV 50°: `output/Biblioteca-Acesso-Duas-Chaves.png` (0/2) e `output/Biblioteca-Acesso-Estado-{1,2,3}.png` (Direito, Bloco 4, ambas). Inventários de teste foram destruídos e o player anterior restaurado; os estados de teste não foram gravados nas cenas.
+
+Nesta rodada não foram executados Play Mode, coleta real, ida/volta pelos portais, uso do teclado por input, build/executável ou benchmark. Os testes de Play Mode nas revisões anteriores desta ficha continuam históricos, sem serem contabilizados como novos.
+
+`LawSchoolCellKeyPickup` e `Block4TeacherKeyPickup` conservam seus nomes de classe/GUIDs por compatibilidade com os assets; seus papéis atuais são as duas chaves de biblioteca. Inventário e guard: `Global/Scripts/Player/CampusLibraryAccess.cs` e `Global/Scripts/Utils/CampusLibraryEntranceLock.cs`. As ferramentas pontuais de Editor foram retiradas depois da verificação de dependências; os resultados persistentes bastam para jogar.
+
 ## Função, layout e circulação
 
 O edifício continua térreo, com hall elevado a **0,64 m** e quatro degraus de **0,16 m** até o piso do acervo. A ala adicional fica no nível inferior. Uma abertura de **6 × 3,20 m** na antiga parede de fundo conecta os ambientes sem carregamento de cena. A parede mantém seus objetos, GUID e fileID do mesh; geometria e colisões contornam a abertura.
@@ -35,7 +73,7 @@ A ala acrescenta **8 mesas**, **12 cabines**, **44 cadeiras** e **30 estantes**.
 
 Dois conjuntos duplos, antes em `(17.42, 0, 3.5)` e `(17.42, 0, 7.6)`, passam para `(26.6, 0, 16.8)` e `(26.6, 0, 21.15)` na lateral do acervo norte. Foram movidas as quatro estantes, suas duas colisões e placas; continuam **62 estantes** ao todo. As coordenadas indicam os centros dos conjuntos em planta.
 
-Um anteparo de reboco em `x = 16`, entre `z = 2.6–12.15`, separa livros e acesso dos banheiros. O vestíbulo comum tem aproximadamente **2,84 m livres**, entrada de **2,00 m** e lintel com **2,60 m livres**. Um pilar existente reduz localmente a faixa, sem ter sido removido. As duas plantas sanitárias, suas seis cabines e instalações permanecem nas posições anteriores. A medida resolve a proximidade com o acervo sem refazer a organização geral restaurada.
+Um anteparo de reboco em `x = 16`, entre `z = 2.6–12.15`, separa livros e acesso dos banheiros. O vestíbulo comum tem aproximadamente **2,84 m livres**, entrada de **2,00 m** e lintel com **2,60 m livres**. Na correção de circulação, o pilar foi incorporado à parede oeste, liberando a faixa de passagem. As duas plantas sanitárias, suas seis cabines e instalações permanecem nas posições anteriores. A medida resolve a proximidade com o acervo sem refazer a organização geral restaurada.
 
 Capturas de conferência: `output/CampusLibrary-Sanitarios-{Acesso,Separacao,Acervo}.png`. Não usar as fotografias institucionais como comprovação dessa planta: o anteparo é uma adaptação ao mapa do jogo.
 

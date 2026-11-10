@@ -4,6 +4,8 @@
 
 ## 1. Leitura rápida para a próxima IA
 
+- **Acesso à biblioteca — 09/11/2026:** o portal externo exige as duas chaves de biblioteca: uma sorteada em Direito e outra na sala 423 do Bloco 4 após o puzzle. Duas fechaduras, ícones e contador na porta indicam o progresso. As oito chaves de cela desses blocos foram retiradas; a chave da manutenção continua separada, e o gerador das celas será implementado depois. [Contrato e validação](Docs/Maps/CampusLibrary.md#acesso-com-duas-chaves--09112026).
+
 - **Campus Exterior** é o cenário com gramados, árvores, avenidas, portaria UNIMAR, fachadas e caixa-d'água: cena **`CampusExterior`**.
 - A nova biblioteca desse campus tem interior separado: cena **`CampusLibrary`**. Entrar e sair usa a transição existente do jogo, ao tocar no volume da porta.
 - **`Library` é a biblioteca antiga do começo do jogo. Não foi substituída pela nova biblioteca.** Não confundir também `CampusExterior` com `EntranceGarden` ou `Main/SampleScene`.

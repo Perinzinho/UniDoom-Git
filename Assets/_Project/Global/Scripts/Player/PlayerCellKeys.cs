@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>Cell-specific keys carried by the persistent player during this run.</summary>
+/// <summary>Specific quest and cell keys carried by the persistent player during this run.</summary>
 [DisallowMultipleComponent]
 public sealed class PlayerCellKeys : MonoBehaviour
 {
