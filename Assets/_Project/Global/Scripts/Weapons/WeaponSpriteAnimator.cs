@@ -34,7 +34,14 @@ public class WeaponSpriteAnimator : MonoBehaviour
     private bool attachToScreenEdges;
     private WeaponDefinition hudDefinition;
     private Vector2 animationCanvas;
+    private Vector2 fittedHudPosition;
+    private Vector2 weaponBobOffset;
+    private PlayerMovement bobPlayer;
     private readonly Dictionary<Sprite, Sprite> hudFrames = new Dictionary<Sprite, Sprite>();
+
+    [Header("Doom-style walk bob")]
+    [SerializeField] private Vector2 walkBobAmplitude = new Vector2(14f, 8f);
+    [SerializeField, Min(.01f)] private float walkBobBlendSpeed = 14f;
 
     void Start()
     {
@@ -151,7 +158,11 @@ public class WeaponSpriteAnimator : MonoBehaviour
         FitHudLayout();
     }
 
-    private void LateUpdate() => FitHudLayout();
+    private void LateUpdate()
+    {
+        FitHudLayout();
+        ApplyWalkBob();
+    }
 
     private void FitHudLayout()
     {
@@ -179,7 +190,28 @@ public class WeaponSpriteAnimator : MonoBehaviour
         // Hide that entire cut below the screen, instead of exposing it in the HUD.
         float crop = hudDefinition ? hudDefinition.HudBottomCropFraction : 0f;
         imageRect.localScale = Vector3.one;
-        imageRect.anchoredPosition = new Vector2(fit.xMax - available.x, fit.yMin - size.y * crop);
+        fittedHudPosition = new Vector2(fit.xMax - available.x, fit.yMin - size.y * crop);
+        imageRect.anchoredPosition = fittedHudPosition + weaponBobOffset;
+    }
+
+    private void ApplyWalkBob()
+    {
+        if (!hasDefaultHudLayout || weaponImage == null) return;
+        if (bobPlayer == null) bobPlayer = GameManager.SessionPlayer;
+
+        Vector2 target = Vector2.zero;
+        if (bobPlayer != null)
+        {
+            float phase = bobPlayer.WalkBobPhase;
+            float weight = bobPlayer.WalkBobWeight;
+            // Keep the configured weapon position as the rest pose; walking only swings and dips it.
+            target.x = Mathf.Sin(phase) * walkBobAmplitude.x * weight;
+            target.y = (Mathf.Cos(phase * 2f) - 1f) * walkBobAmplitude.y * weight;
+        }
+
+        float blend = 1f - Mathf.Exp(-walkBobBlendSpeed * Time.unscaledDeltaTime);
+        weaponBobOffset = Vector2.Lerp(weaponBobOffset, target, blend);
+        weaponImage.rectTransform.anchoredPosition = fittedHudPosition + weaponBobOffset;
     }
 
     // Match the actual sprite aspect before fitting: preserveAspect alone centres a smaller
