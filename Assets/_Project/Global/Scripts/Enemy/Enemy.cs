@@ -63,6 +63,7 @@ public class Enemy : MonoBehaviour, IDamageable
     private PlayerLife targetLife;
     private CharacterController targetController;
     private NavMeshAgent agent;
+    private UniDoom.CampusLibrary.LibraryEnemyRestriction libraryRestriction;
     private NavMeshPath patrolPath;
     private Vector3 patrolOrigin, patrolDestination, lastSeenPosition, desiredDirection;
     private float desiredSpeed, nextPerception, nextTargetSearch, searchEndsAt, nextPathUpdate, waitUntil;
@@ -117,6 +118,7 @@ public class Enemy : MonoBehaviour, IDamageable
         body = GetComponent<Rigidbody>();
         capsule = GetComponent<CapsuleCollider>();
         agent = GetComponent<NavMeshAgent>();
+        libraryRestriction = GetComponent<UniDoom.CampusLibrary.LibraryEnemyRestriction>();
         spriteAnimator = GetComponentInChildren<EnemySpriteAnimator>();
         patrolPath = new NavMeshPath();
         patrolOrigin = transform.position;
@@ -319,6 +321,7 @@ public class Enemy : MonoBehaviour, IDamageable
     private bool HasClearSight()
     {
         if (target == null) return false;
+        if (libraryRestriction != null && !libraryRestriction.CanTarget(target.position)) return false;
         Vector3 eye = transform.position + Vector3.up * eyeHeight;
         Vector3 aim = targetController != null ? targetController.bounds.center : target.position;
         Vector3 direction = aim - eye;
