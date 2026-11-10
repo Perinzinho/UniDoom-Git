@@ -4,13 +4,35 @@ namespace UniDoom.Utils
 {
     public static class CampusGrounding
     {
+        static RaycastHit[] floorHits = new RaycastHit[32];
+
         public static bool TryFloor(Vector3 feet, out RaycastHit floor)
         {
+            Vector3 origin = feet + Vector3.up * .8f;
+            int count;
+            // A full buffer does not prove that all hits were returned. Grow and query again.
+            while ((count = Physics.RaycastNonAlloc(origin, Vector3.down, floorHits, 16,
+                        Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore)) == floorHits.Length)
+                System.Array.Resize(ref floorHits, checked(floorHits.Length * 2));
+
+            bool found = SelectFloor(floorHits, count, out floor, out bool tied);
+            if (!tied) return found;
+
+            // Preserve the original first-hit choice for equally close valid supports.
+            // NonAlloc does not promise the same ordering as RaycastAll in that case.
+            var originalHits = Physics.RaycastAll(origin, Vector3.down, 16,
+                Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+            return SelectFloor(originalHits, originalHits.Length, out floor, out _);
+        }
+
+        static bool SelectFloor(RaycastHit[] hits, int count, out RaycastHit floor, out bool tied)
+        {
             floor = default;
+            tied = false;
             float nearest = float.PositiveInfinity;
-            foreach (var hit in Physics.RaycastAll(feet + Vector3.up * .8f, Vector3.down, 16,
-                         Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+            for (int i = 0; i < count; i++)
             {
+                var hit = hits[i];
                 var col = hit.collider;
                 if (col.gameObject.scene.name != "CampusExterior" || hit.normal.y < .65f ||
                     col.GetComponentInParent<IDamageable>() != null || col.GetComponentInParent<PlayerMovement>() != null) continue;
@@ -19,9 +41,12 @@ namespace UniDoom.Utils
                 bool ground = name.Contains("ground") || name.Contains("asphalt") || name.Contains("sidewalk") ||
                     name.Contains("pavement") || name.Contains("terrain") || name.Contains("floor") ||
                     (size.y < 1.2f && size.x > 2 && size.z > 2);
-                if (!ground || hit.distance >= nearest) continue;
+                if (!ground) continue;
+                if (hit.distance == nearest) { tied = true; continue; }
+                if (hit.distance >= nearest) continue;
                 nearest = hit.distance;
                 floor = hit;
+                tied = false;
             }
             return nearest < float.PositiveInfinity;
         }
