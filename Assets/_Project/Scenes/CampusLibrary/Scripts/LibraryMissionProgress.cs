@@ -10,8 +10,10 @@ namespace UniDoom.CampusLibrary
     {
         public static LibraryMissionStage Stage { get; private set; }
         static int fuseMask;
+        static int installedFuseCount;
         public static int SequenceStep { get; private set; }
         public static int FuseCount => (HasFuse(0) ? 1 : 0) + (HasFuse(1) ? 1 : 0) + (HasFuse(2) ? 1 : 0);
+        public static int InstalledFuseCount => installedFuseCount;
         public static bool IsLibraryGeneratorPowered => Stage == LibraryMissionStage.GeneratorOn;
         public static event Action Changed;
         public static event Action OnLibraryGeneratorPowered;
@@ -31,8 +33,10 @@ namespace UniDoom.CampusLibrary
         }
         internal static bool Install()
         {
-            if (Stage != LibraryMissionStage.FusesCollected || fuseMask != 7) return false;
-            Stage = LibraryMissionStage.FusesInstalled; Changed?.Invoke(); return true;
+            if (Stage != LibraryMissionStage.FusesCollected || fuseMask != 7 || installedFuseCount >= 3) return false;
+            installedFuseCount++;
+            if (installedFuseCount == 3) Stage = LibraryMissionStage.FusesInstalled;
+            Changed?.Invoke(); return true;
         }
         internal static bool Press(int button, int[] sequence, out bool correct)
         {
@@ -62,7 +66,7 @@ namespace UniDoom.CampusLibrary
         }
         public static void ResetSession()
         {
-            Stage = LibraryMissionStage.NotDiscovered; fuseMask = SequenceStep = 0;
+            Stage = LibraryMissionStage.NotDiscovered; fuseMask = installedFuseCount = SequenceStep = 0;
             Changed?.Invoke();
         }
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
