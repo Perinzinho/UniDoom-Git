@@ -15,6 +15,7 @@ public sealed class LawSchoolMirror : MonoBehaviour
     MeshRenderer surface;
     double nextFrame;
     Camera lastSource;
+    readonly Plane[] frustum=new Plane[6];
     readonly List<Renderer> playerRenderers=new List<Renderer>(8);
     readonly List<bool> playerVisibility=new List<bool>(8);
     static bool rendering;
@@ -25,7 +26,9 @@ public sealed class LawSchoolMirror : MonoBehaviour
     {
         if(rendering||!surface||!surface.enabled||source.cameraType!=CameraType.Game&&source.cameraType!=CameraType.SceneView||source==reflectionCamera||Application.isPlaying&&source.cameraType==CameraType.SceneView)return;
         Vector3 normal=-transform.forward;float distance=Vector3.Distance(source.transform.position,transform.position);
-        if(distance>maximumDistance||Vector3.Dot(source.transform.position-transform.position,normal)<=.03f||!GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(source),surface.bounds))return;
+        if(distance>maximumDistance||Vector3.Dot(source.transform.position-transform.position,normal)<=.03f)return;
+        GeometryUtility.CalculateFrustumPlanes(source,frustum);
+        if(!GeometryUtility.TestPlanesAABB(frustum,surface.bounds))return;
         if(lastSource==source&&Time.realtimeSinceStartupAsDouble<nextFrame&&source.cameraType==CameraType.Game)return;
         lastSource=source;
         nextFrame=Time.realtimeSinceStartupAsDouble+1.0/15;
