@@ -16,6 +16,11 @@ public sealed class PrisonCellGate : MonoBehaviour
     public bool IsOpen { get; private set; }
     public AudioSource Voice => teacher != null ? teacher.GetComponent<AudioSource>() : null;
 
+    public void SetTeacherVisible(bool visible)
+    {
+        if (teacher != null) teacher.gameObject.SetActive(visible);
+    }
+
     void Awake()
     {
         closedRotation = transform.localRotation;

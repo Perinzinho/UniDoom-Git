@@ -90,6 +90,14 @@ namespace UniDoom.UI
             creditsMusic.Play();
         }
 
+        public void PlayEndingCredits()
+        {
+            if (busy || CurrentScreen != Screen.Gameplay) return;
+            creditsFinishSession = true;
+            AcquirePause();
+            SetScreen(Screen.Credits);
+        }
+
         void UpdateCreditsScroll()
         {
             if (CurrentScreen != Screen.Credits || !creditsRollText) return;
@@ -101,7 +109,11 @@ namespace UniDoom.UI
                 return;
             }
             if (creditsEndAt < 0) creditsEndAt = Time.unscaledTime + (creditsSettings ? creditsSettings.EndHold : 3);
-            if (Time.unscaledTime >= creditsEndAt) SetScreen(Screen.Main);
+            if (Time.unscaledTime >= creditsEndAt)
+            {
+                if (creditsFinishSession) { creditsFinishSession = false; ReturnToMain(); }
+                else SetScreen(Screen.Main);
+            }
         }
     }
 }

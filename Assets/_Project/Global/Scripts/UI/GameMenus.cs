@@ -38,6 +38,7 @@ namespace UniDoom.UI
         PlayerRespawn deadPlayer;
         DeathScreen deathOwner;
         bool busy, ownsPause, fpsEnabled;
+        bool creditsFinishSession;
         float fpsSampleTime;
         int fpsSampleFrames;
         float previousTimeScale;
@@ -170,7 +171,10 @@ namespace UniDoom.UI
             {
                 case Screen.Pause: Resume(); break;
                 case Screen.Options: PlayerPrefs.Save(); SetScreen(optionsOrigin); break;
-                case Screen.Credits: SetScreen(Screen.Main); break;
+                case Screen.Credits:
+                    if (creditsFinishSession) { creditsFinishSession = false; ReturnToMain(); }
+                    else SetScreen(Screen.Main);
+                    break;
                 case Screen.MapSelect: SetScreen(Screen.Main); Select(chooseMap); break;
                 case Screen.Confirm: SetScreen(confirmOrigin); break;
             }
@@ -263,15 +267,19 @@ namespace UniDoom.UI
 
         void StartAtPrison() => StartNewGameAtScene("Assets/_Project/Scenes/Basement/Basement.unity", startAtPrison: true);
 
-        void StartNewGameAtScene(string scene, bool startAtBoss = false, bool startAtPrison = false)
+        void StartFinaleTest() => StartNewGameAtScene(
+            "Assets/_Project/Scenes/Basement/Basement.unity", startAtPrison: true, startAtFinale: true);
+
+        void StartNewGameAtScene(string scene, bool startAtBoss = false, bool startAtPrison = false,
+            bool startAtFinale = false)
         {
             if (busy) return;
             if (string.IsNullOrEmpty(scene) || !Application.CanStreamedLevelBeLoaded(scene))
             { error.text = "O mapa não está disponível no Build Settings."; return; }
-            StartCoroutine(NewGame(scene, startAtBoss, startAtPrison));
+            StartCoroutine(NewGame(scene, startAtBoss, startAtPrison, startAtFinale));
         }
 
-        IEnumerator NewGame(string scene, bool startAtBoss, bool startAtPrison)
+        IEnumerator NewGame(string scene, bool startAtBoss, bool startAtPrison, bool startAtFinale)
         {
             busy = true;
             for (float t = 0; t < .2f; t += Time.unscaledDeltaTime) { SetFade(t / .2f); yield return null; }
@@ -280,6 +288,7 @@ namespace UniDoom.UI
             if (oldPlayer != null) oldPlayer.GetComponent<PlayerRespawn>()?.PrepareForMainMenu();
             ReleasePause();
             GameManager.EndSession();
+            if (startAtFinale) PrisonProgress.BeginFinaleTest();
             yield return null;
             AsyncOperation load = null;
             bool startConfigured = !startAtBoss && !startAtPrison;
@@ -497,10 +506,11 @@ namespace UniDoom.UI
             mainFirst = ColumnButton(main, "NewGame", "NOVO JOGO", StartNewGame);
             chooseMap = ColumnButton(main, "TemporaryMapSelect", "ESCOLHER MAPA (TEMP.)", OpenMapSelection);
             var prisonShortcut = ColumnButton(main, "PrisonShortcut", "PRISÃO — APÓS O BOSS", StartAtPrison);
+            var finaleShortcut = ColumnButton(main, "FinaleShortcut", "TESTAR FINAL", StartFinaleTest);
             var mainOptions = ColumnButton(main, "Options", "OPÇÕES", OpenOptions);
             var creditButton = ColumnButton(main, "Credits", "CRÉDITOS", () => SetScreen(Screen.Credits));
             var quit = ColumnButton(main, "Quit", "SAIR", Quit);
-            MenuStyle.Link(mainFirst, chooseMap, prisonShortcut, mainOptions, creditButton, quit);
+            MenuStyle.Link(mainFirst, chooseMap, prisonShortcut, finaleShortcut, mainOptions, creditButton, quit);
             ColumnFooter(main);
             BuildMapSelection();
             StandardHeader(pause, 1);

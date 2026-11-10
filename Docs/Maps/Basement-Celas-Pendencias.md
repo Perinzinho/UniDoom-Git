@@ -1,6 +1,6 @@
 # Celas do porão — decisões e pendências
 
-Atualizado em **09/11/2026**. Este documento acompanha o estado temporário das celas e as decisões necessárias antes de fechar a progressão definitiva.
+Atualizado em **10/11/2026**. Este documento acompanha o estado temporário das celas e as decisões necessárias antes de fechar a progressão definitiva.
 
 > **Conciliação após integrar development:** a retirada das oito chaves de cela de Direito/Bloco 4 e as duas chaves de acesso à biblioteca foram preservadas. Permanecem cinco pickups de cela na biblioteca (4/5/6/10/11), além dos dois de acesso e da manutenção. O gerador continua como implementação futura. A distribuição 5/5/4 e as alternativas de chaves individuais abaixo são propostas/histórico da revisão recebida, não restauração dos pickups retirados. Estado vigente: [PrisonCellKeys.md](PrisonCellKeys.md).
 
@@ -12,6 +12,8 @@ Atualizado em **09/11/2026**. Este documento acompanha o estado temporário das 
 - Os 13 sprites e o contrato dos IDs existentes continuam preservados; apenas os cinco pickups de cela da biblioteca permanecem ativos. A cela 14 de Bianca possui ID de gate/progresso, sprite de personagem e áudio, mas ainda não possui chave 14, pickup ou sprite de chave. Nenhuma chave é consumida ou concedida automaticamente.
 - Para voltar ao comportamento trancado, alterar a constante para `false`, compilar e executar a validação indicada no fim deste documento.
 - A estrutura principal das 14 celas usa as mesmas medidas, escalas e colisores. Seis grupos antigos de objetos importados, presentes somente nas celas 1–6, foram desativados e preservados para remover a diferença estrutural aparente.
+- Abrir a 14ª cela agora conclui o resgate: todos os sprites dos professores somem no mesmo frame e o prompt padronizado das celas passa a mostrar, no centro da tela, `Uma surpresa te espera! Retorne para Unimar`. A próxima travessia do portal do porão para `CampusExterior` inicia a sequência final.
+- O final posiciona os 14 professores na chegada da portaria UNIMAR, faz o grupo saltar diante de fogos procedurais, escurece a tela e inicia os créditos compartilhados. O menu principal contém `TESTAR FINAL`, que inicia uma sessão limpa na prisão após o boss, mantém as 14 celas fechadas e libera sua abertura sem chaves para validar o fluxo completo até os créditos.
 
 ## Decisão recomendada: quantidade de chaves
 
@@ -49,12 +51,12 @@ Pendências de design das salas:
 
 - [ ] Decidir e implementar a chave 14 de Bianca, incluindo sprite, pickup e sala de origem.
 - [ ] Confirmar se as 14 celas são obrigatórias ou opcionais.
-- [ ] Definir a condição final: uma cela, quantidade mínima ou todas as 14.
+- [x] Definir a condição final: todas as 14 celas abertas.
 - [ ] Definir a ação que libera cada pickup; hoje várias chaves estão apenas colocadas sobre mesas.
 - [ ] Revisar as cinco propostas de puzzle da Biblioteca e escolher quais serão implementadas.
 - [ ] Confirmar se o alarme de Direito deve continuar disparando com a primeira chave relevante coletada.
 - [ ] Confirmar se a chave 7 continuará vinculada ao puzzle da sala 423 do Bloco 4.
-- [ ] Definir feedback após cada resgate e um resumo de professores libertados.
+- [x] Definir feedback de conclusão após o último resgate e retorno à UNIMAR.
 - [ ] Decidir se o progresso precisa sobreviver apenas à sessão atual ou também a salvar/carregar o jogo.
 
 ## Para trancar as celas novamente

@@ -6,6 +6,9 @@
 
 ## 1. Leitura rápida para a próxima IA
 
+- **Final do jogo — 10/11/2026:** depois que as 14 celas forem abertas, a travessia `Basement` → `CampusExterior/FromPrison` ativa uma comemoração na chegada da portaria: 14 professores alinhados e saltando, fogos procedurais, fade e créditos. O elenco persistente está em `Assets/_Project/Global/Resources/Finale/FinaleCast.asset`; a lógica está em `Global/Scripts/Finale/FinaleDirector.cs`. O atalho `TESTAR FINAL` começa na prisão após o boss, com as celas fechadas e abertura sem chave habilitada apenas para percorrer o fluxo completo.
+- No modo final, todos os `Enemy` e `EnemySpawner` do campus são desativados antes do primeiro frame jogável da comemoração; os zumbis continuam normais nas visitas comuns a `CampusExterior`.
+
 - **Acesso à biblioteca — 09/11/2026:** o portal externo exige as duas chaves de biblioteca: uma sorteada em Direito e outra na sala 423 do Bloco 4 após o puzzle. Na porta aparecem somente dois cadeados físicos, sem revelar os blocos; ao se aproximar, o aviso diz “Porta trancada, você precisa de uma chave.” Cada chave remove um cadeado e ambas liberam a entrada. As oito chaves de cela desses blocos foram retiradas; a chave da manutenção continua separada. O gerador da biblioteca está implementado, e sua integração com as celas continua pendente. [Contrato e validação](Docs/Maps/CampusLibrary.md#acesso-com-duas-chaves--09112026).
 
 - **Campus Exterior** é o cenário com gramados, árvores, avenidas, portaria UNIMAR, fachadas e caixa-d'água: cena **`CampusExterior`**.

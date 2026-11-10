@@ -11,6 +11,7 @@ public class EnemySpawner : MonoBehaviour
 
     private void Start()
     {
+        if (gameObject.scene.name == "CampusExterior" && PrisonProgress.FinaleStarted) return;
         SpawnAllEnemies();
     }
 
