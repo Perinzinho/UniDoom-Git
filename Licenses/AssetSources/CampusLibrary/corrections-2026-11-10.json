@@ -1,0 +1,33 @@
+{
+  "date": "2026-11-10",
+  "scene": "CampusLibrary",
+  "new_external_model_downloads": 0,
+  "generated_fuse": {
+    "path": "Assets/_Project/Scenes/CampusLibrary/Textures/Library maintenance fuse.png",
+    "sha256": "d548d554a7d2e101f9d77f82542ee7560f7795857303fd870b9c4cc0d3407761",
+    "mode": "imagegen built-in",
+    "transparent_background": true,
+    "prompt": "Create a single game pickup sprite for an oppressive realistic survival horror Unity game inspired by industrial decay. One old industrial cartridge fuse, horizontal left-to-right, side view with very slight three-quarter depth. Off-white aged ceramic cylindrical body with restrained grime, oxidized brass end caps on both ends, thin faded red identification band around the porcelain. Physically believable hand-sized electrical fuse, unmistakable silhouette, readable at small on-screen size. Detailed hand-painted photographic texture with subdued shading compatible with classic Doom billboard pickups, no cast shadow. Center it with 8 percent transparent padding, fill most of canvas width. Absolutely no text, letters, numbers, hands, environment, floor, spark effects, halo, outline, or extra objects. True transparent background and clean alpha silhouette.",
+    "integration": "Single sprite, 1024 import limit, shared scene-local material using the existing Zombie Sprite shader with source alpha and no silhouette mask. Existing Billboard script. World frame width 0.40m. Original three target IDs and colliders retained. Original mesh renderers disabled."
+  },
+  "native_lettering": {
+    "method": "Native System.Drawing rasterization of authored text, paper, enamel, borders and restrained edge wear; no AI for lettering.",
+    "font": "Assets/TextMesh Pro/Fonts/LiberationSans.ttf",
+    "font_license": "Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt",
+    "files": [
+      { "path": "Assets/_Project/Scenes/CampusLibrary/Textures/Library maintenance signs.png", "sha256": "1a56deb30667d544ad5b8556484f20acf46e72c8d5f8d283d26f6a9a41184f81" },
+      { "path": "Assets/_Project/Scenes/CampusLibrary/Textures/Library maintenance note 0.png", "sha256": "0a0a4f03a0bc6b24418a8e47e4fe320963209066d26ebe1e3cf17a1ddd601ec4" },
+      { "path": "Assets/_Project/Scenes/CampusLibrary/Textures/Library maintenance note 1.png", "sha256": "1843121ed8408cd6ac22aa346cb29bbbe61f4c42b195d00306ba51008b1617ff" },
+      { "path": "Assets/_Project/Scenes/CampusLibrary/Textures/Library maintenance note 2.png", "sha256": "dc9e180c8b9de9da28688ccc1e6fbac3c73350d9b609c473bb60695e68150b46" }
+    ]
+  },
+  "reused_books": {
+    "asset": "Book Encyclopedia Set 01",
+    "author": "John Malcolm",
+    "source": "https://polyhaven.com/a/book_encyclopedia_set_01",
+    "license": "CC0-1.0, existing import",
+    "prior_provenance": "Licenses/AssetSources/CampusLibrary/expansion-sources.json",
+    "changes": "Existing cover/page meshes rotated so spines face aisles; two empty rows filled with 40 additional low-poly volumes per shelf. Two scene-local persistent meshes reuse the existing cover/page materials and atlas. Shared global source meshes/textures unchanged."
+  },
+  "geometry_and_materials": "Existing CampusLibrary cube mesh and Global/CampusInterior materials reused for staff partitions, workbench, control housing, paper thickness and enamel sign backing. No third-party 3D model added. Existing navigation asset rebuilt preserving GUID/fileID."
+}
