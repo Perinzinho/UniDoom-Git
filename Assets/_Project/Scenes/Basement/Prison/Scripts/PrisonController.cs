@@ -173,7 +173,7 @@ public sealed class PrisonController : MonoBehaviour
         {
             var rect = prompt.rectTransform;
             rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(.5f, .5f);
-            rect.anchoredPosition = Vector2.zero;
+            rect.anchoredPosition = new Vector2(0, -400);
             rect.sizeDelta = new Vector2(1200, 70);
             prompt.alignment = TextAlignmentOptions.Center;
             prompt.text = "Uma surpresa te espera! Retorne para Unimar";
