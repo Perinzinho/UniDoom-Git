@@ -33,8 +33,6 @@ namespace UniDoom.Utils
 
         private void Start()
         {
-            if (gameObject.scene.name == "CampusBlock4" && destinationScene == "CampusExterior")
-                BuildExitBacking();
             if (gameObject.scene.name == "Basement" && destinationScene == "CampusExterior" &&
                 !GetComponent<PrisonCampusPortal>()) gameObject.AddComponent<PrisonCampusPortal>();
             if (gameObject.scene.name == "CampusBlock4" && destinationScene == "CampusExterior")
@@ -71,35 +69,6 @@ namespace UniDoom.Utils
                 nearest = distance;
                 soundDoor = candidate;
             }
-        }
-
-        void BuildExitBacking()
-        {
-            // This interior is a separate scene. Keep a closed entrance behind the
-            // transition volume so approaching the exit never reveals the scene void.
-            Material surface = null;
-            float nearest = float.PositiveInfinity;
-            foreach (var root in gameObject.scene.GetRootGameObjects())
-                foreach (var renderer in root.GetComponentsInChildren<MeshRenderer>())
-                {
-                    if (!renderer.name.ToLowerInvariant().Contains("door")) continue;
-                    float distance = (renderer.bounds.center - transform.position).sqrMagnitude;
-                    if (distance >= nearest || !renderer.sharedMaterial) continue;
-                    surface = renderer.sharedMaterial;
-                    nearest = distance;
-                }
-            var box = GetComponent<BoxCollider>();
-            var backing = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            backing.name = "Closed exterior entrance backing";
-            backing.transform.SetParent(transform, false);
-            backing.transform.localPosition = box.center - Vector3.forward * (box.size.z * .5f + .18f);
-            backing.transform.localScale = new Vector3(box.size.x + .8f, box.size.y + 2.4f, .16f);
-            // The trigger performs the transition; no invisible extra obstacle.
-            var collision = backing.GetComponent<Collider>();
-            collision.enabled = false;
-            Destroy(collision);
-            if (surface) backing.GetComponent<MeshRenderer>().sharedMaterial = surface;
-            backing.GetComponent<MeshRenderer>().allowOcclusionWhenDynamic = false;
         }
 
         private void OnTriggerEnter(Collider other)
