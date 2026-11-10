@@ -17,16 +17,16 @@ Cena: `Assets/_Project/Scenes/CampusLibrary/CampusLibrary.unity`, instância de 
 
 ## Progressão e controles
 
-Girar a visão horizontal e usar **E** ou **X do controle**, alcance de 2,8 m, jogador vivo, gameplay ativo e bloqueio de entradas repetidas. Ignição, sete botões e porta-fusíveis a **1,85 m**, compatíveis com a altura dos olhos. O porta-fusíveis fica à esquerda do painel, em `(-25,25; 1,85; 43,65)`, para não disputar a mira vertical com os botões. Fusíveis e bilhetes sobre móveis aceitam direção horizontal em cone de aproximadamente 12°, distância original e linha de visão dos olhos ao objeto: não exigem inclinar a câmera nem permitem atravessar obstáculos. A lista desses alvos é armazenada uma vez na inicialização.
+Girar a visão horizontal e usar **E** ou **X do controle**, alcance de 2,8 m, jogador vivo, gameplay ativo e bloqueio de entradas repetidas. Toda a instalação e abertura do puzzle acontecem no próprio gerador. O quadro físico de sete terminais, o porta-fusíveis de parede, suas placas, indicadores e colisores foram desativados. Fusíveis e bilhetes sobre móveis aceitam direção horizontal em cone de aproximadamente 12°, distância original e linha de visão dos olhos ao objeto: não exigem inclinar a câmera nem permitem atravessar obstáculos. A lista desses alvos é armazenada uma vez na inicialização.
 
-O painel permanece no mundo. Bilhetes usam o leitor de documentos já existente, com pausa, cursor e retorno ao jogo; nenhum sistema paralelo de inventário/UI.
+O puzzle existe somente como modal de tela. Com os três itens coletados, usar **E diretamente no gerador** insere os fusíveis no seu corpo; os três indicadores verticais passam a aparecer na frente do equipamento. A interação seguinte com o gerador abre o modal industrial com quatro controles na fileira superior e três na inferior. `GameMenus.Screen.Interaction` pausa a simulação, bloqueia movimento, câmera, armas e HUD, libera o cursor e intercepta cliques sobre o fundo. O botão **SAIR**, Escape ou fechamento externo restauram exatamente o estado anterior. Bilhetes continuam usando o leitor de documentos existente; nenhum sistema paralelo de inventário ou progressão foi criado.
 
 1. `NotDiscovered`: três fusíveis inteiramente inativos. Luz normal desligada, vermelhas com pulsação suave de 0,55 Hz e ambiente mínimo estável.
 2. Proximidade do gerador: `SearchingFuses`, toast inferior e ativação de exatamente três IDs **0, 1 e 2**. Reaproximar-se não reinicia nada.
 3. Cada coleta registra seu bit exclusivo e desativa somente aquele item; IDs inválidos/repetidos são recusados. Aviso imediato **Fusível coletado (N/3)** durante 4,5 s, independente do foco e da fila de notificações. Terceiro item: `FusesCollected`, sem instalação automática, com orientação para retornar.
-4. Usar **E — Instalar 3 fusíveis** no porta-fusíveis separado: `FusesInstalled`, três indicadores preenchidos e botões liberados. A ignição não instala os itens.
-5. Sequência inicial **3 → 1 → 5 → 2 → 7 → 4 → 6**, em sete botões físicos numerados. Erro reinicia somente a tentativa. Segmentos verdes mostram avanço. Solução travada em `PuzzleSolved`.
-6. Usar **Ligar gerador** no comando frontal: `GeneratorOn`, vermelhas apagadas, luz/ambiente normais restaurados e reforços encerrados. Resolver o painel não aciona o gerador sozinho.
+4. Usar **E no gerador — Inserir 3 fusíveis**: `FusesInstalled`, três fusíveis/indicadores visíveis no corpo do equipamento e puzzle liberado para a interação seguinte.
+5. Usar **E no gerador** e clicar nos sete terminais do modal. Sequência inicial **3 → 1 → 5 → 2 → 7 → 4 → 6**. Cada clique válido alterna um único passo visual; erro reinicia somente a tentativa e produz feedback vermelho/sonoro. Barra, LEDs, estados `ON/OFF/TRAVADO` e segmentos físicos derivam do mesmo `SequenceStep`.
+6. Ao acertar o sétimo terminal, a progressão passa por `PuzzleSolved` e liga imediatamente o gerador em `GeneratorOn`: vermelhas apagadas, luz/ambiente normais restaurados e reforços encerrados. Não existe uma segunda interação de ignição após o puzzle.
 
 Campo `sequence` de `LibraryMissionController`: sete números distintos de 1 a 7. **A ordem não é exibida ao jogador.** Cada botão tem número e função: 1 aquecer, 2 rotação, 3 admissão, 4 sincronia, 5 pressão, 6 carga, 7 excitação. Três registros dão relações entre operações, sem lista numérica pronta; as relações determinam uma única ordem. Alterar a sequência exige revisar as pistas, que não são geradas automaticamente a partir da resposta.
 
@@ -34,13 +34,15 @@ Campo `sequence` de `LibraryMissionController`: sete números distintos de 1 a 7
 |---|---|---|
 | 0 — Anotação do plantão | Quadro no hall restrito, `(-25,9; 1,8; 34,21)` | Admissão inicia; aquecimento vem depois; pressão antes da rotação |
 | 1 — Ocorrência da oficina | Bancada, `(-14,7; 1,005; 41,6)` | Aquecimento antes da pressão; rotação antes da excitação; excitação antes da sincronia |
-| 2 — Aviso ao próximo turno | Mesa pública, `(-10,7; 1,025; 37,6)` | Carga encerra; sincronia imediatamente antes; ignição é uma ação separada |
+| 2 — Aviso ao próximo turno | Mesa pública, `(-10,7; 1,025; 37,6)` | Carga encerra; sincronia imediatamente antes |
 
 | ID | Local | Pivô do fusível |
 |---|---|---|
-| 0 | Carrinho de apoio do novo acervo | `(9,4; 0,825; 34,5)` |
-| 1 | Mesa da nova área de estudo | `(-11; 1,025; 37,3)` |
-| 2 | Balcão existente da recepção | `(-6; 2,09; -8,25)` |
+| 0 | Mesa da nova área de estudo, esquerda (posição temporária de teste) | `(-11,35; 1,025; 37,3)` |
+| 1 | Mesa da nova área de estudo, centro (posição temporária de teste) | `(-11; 1,025; 37,3)` |
+| 2 | Mesa da nova área de estudo, direita (posição temporária de teste) | `(-10,65; 1,025; 37,3)` |
+
+Os três fusíveis estão temporariamente reunidos sobre a mesma mesa, com 35 cm entre os pivôs, para agilizar o teste da coleta e instalação. IDs, ativação após descobrir o gerador, indicadores e coleta individual foram preservados.
 
 Destaque luminoso moderado acompanha o coletável, inativo antes da descoberta. Sons existentes de coleta, acionamento mecânico, botão e erro. Sem inventário global novo.
 
@@ -76,7 +78,8 @@ Scripts em `Assets/_Project/Scenes/CampusLibrary/Scripts/`:
 | Script | Responsabilidade |
 |---|---|
 | `LibraryMissionProgress.cs` | Estados, IDs, sequência, flag e eventos da sessão |
-| `LibraryMissionController.cs` | Descoberta, interações, mensagens, indicadores e pista |
+| `LibraryMissionController.cs` | Descoberta, interação no mundo, intenção dos terminais, mensagens, áudio e indicadores físicos |
+| `LibraryGeneratorPanel.cs` | Estado de abertura/fechamento, modal industrial, hit-testing por cursor, views dos terminais e eventos `PanelOpened`, `PanelClosed`, `SwitchToggled` e `PuzzleCompleted` |
 | `LibraryMissionTarget.cs` | Identificação de fusíveis, botões, comando e esquema |
 | `LibraryLightingController.cs` | Emergência e restauração de luzes/ambiente |
 | `LibraryMaintenanceSafety.cs` | Volume protegido e colisão seletiva |
@@ -91,7 +94,7 @@ Ferramentas/logs temporários em `Temp/LibraryMission/` e na cópia isolada pree
 
 ## Validação desta implementação
 
-Executada na Unity **6000.5.7f1**, na cópia isolada sincronizada com os arquivos atuais, usando player/cena reais:
+Executada na Unity **6000.5.7f1**, na cópia isolada sincronizada com os arquivos atuais, usando player/cena reais. Os itens abaixo são históricos da implementação física anterior ao modal:
 
 - Compilação, abertura de prefab/cena e resolução de scripts, materiais e shaders.
 - `CharacterController` pela passagem, corredor da ala e entrada da manutenção. Rotas do NavMesh persistente até a ala e aproximações das mesas.
@@ -114,7 +117,17 @@ Não houve build, benchmark/Profiler, sessão manual completa ou teste com contr
 
 ## Teste manual de ponta a ponta
 
-Começar partida nova e entrar pelo campus. Conferir ausência dos fusíveis. Ir ao fundo leste do acervo norte, cruzar **Acervo complementar** e seguir à esquerda para **Manutenção**. Descobrir o gerador, coletar os três itens da tabela e voltar para instalar. Tentar botão errado, ler o esquema e executar a ordem correta; só então acionar o gerador. Sair/voltar para conferir persistência. Durante a busca, eliminar o reforço e observar a reposição segura; atraí-lo até a manutenção para verificar o bloqueio.
+Começar partida nova e entrar pelo campus. Conferir ausência dos fusíveis. Ir ao fundo leste do acervo norte, cruzar **Acervo complementar** e seguir à esquerda para **Manutenção**. Descobrir o gerador, coletar os três itens da tabela e voltar. Usar E no gerador para inserir os três fusíveis, conferir sua representação no corpo do equipamento e usar E novamente para abrir o puzzle. Confirmar cursor livre e câmera/personagem imóveis, clicar um terminal errado, fechar/reabrir e então executar a ordem correta. Conferir também clique fora/terminal travado, Escape, restauração dos controles, alinhamento em outra resolução e persistência ao sair/voltar. Durante a busca, eliminar o reforço e observar a reposição segura; atraí-lo até a manutenção para verificar o bloqueio.
+
+## Painel modal por mouse — 10/11/2026
+
+O painel foi adaptado conforme `Docs/SKILL_painel_interativo_jogo.md`, reutilizando `GameMenus` como gerenciador do modo de input e `LibraryMissionProgress` como regra independente. A ordem, os três fusíveis, os bilhetes, a persistência de sessão e os indicadores físicos foram preservados. O modal é criado uma vez por instância da missão e reusado nas reaberturas, sem acumular listeners. Depois dos três fusíveis instalados, somente o gerador abre o modal; completar a sequência liga o gerador imediatamente. Fechamento por Escape, botão, morte/transição ou destruição do controlador passa pelo mesmo proprietário de interação.
+
+Validação desta revisão: compilação do conjunto de runtime com o Roslyn e as referências geradas pela Unity 6000.5.7f1, sem erros. Avisos existentes de APIs `Find*` obsoletas e um campo não usado em Direito permanecem fora desta mudança. A instância aberta estava executando uma cena e adiou a recompilação automática da Unity após a correção inicial; Play Mode, cliques reais, comparação visual, controle físico, build e teste em resoluções diferentes não foram executados nesta revisão.
+
+Fluxo de ativação revisto em 10/11/2026: o modal passou a abrir exclusivamente pela interação com o gerador depois da instalação dos três fusíveis, e o sétimo acerto liga a energia sem uma segunda interação. Compilação direta do runtime concluída sem erros; somente os avisos preexistentes citados acima. Play Mode não executado.
+
+Inserção direta revista em 10/11/2026: 42 objetos do antigo quadro físico e porta-fusíveis separado foram desativados no prefab, incluindo placas, números, segmentos, textos e colisores de interação. Os três indicadores foram reposicionados na frente do gerador. Compilação direta concluída sem erros e referências estáticas conferidas; Play Mode e comparação visual não executados.
 
 ## Integração com development — 10/11/2026
 

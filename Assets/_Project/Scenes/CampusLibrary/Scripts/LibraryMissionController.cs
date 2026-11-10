@@ -30,11 +30,11 @@ namespace UniDoom.CampusLibrary
         string pickupMessage;
         MaterialPropertyBlock block;
         LibraryMissionTarget[] lowTargets;
+        LibraryGeneratorPanel panel;
         public LibraryMissionTarget[] Fuses => (LibraryMissionTarget[])fuses.Clone();
         public LibraryMissionTarget[] Buttons => (LibraryMissionTarget[])buttons.Clone();
         public LibraryMissionTarget Generator => generator;
         public string Clue => "Consulte os bilhetes no acesso restrito, na oficina e nas mesas de estudo.";
-        static readonly string[] terminalRoles = { "", "Aquecer", "Rotação", "Admissão", "Sincronia", "Pressão", "Carga", "Excitação" };
         public static bool GameplayAvailable => Time.timeScale > 0 && !GameMenus.BlocksGameplay && !DeathScreen.IsVisible && !DoorReloadScreen.IsReloading &&
             GameManager.SessionPlayer != null && (!GameManager.SessionPlayer.TryGetComponent<PlayerLife>(out var life) || !life.IsDead);
 
@@ -55,6 +55,10 @@ namespace UniDoom.CampusLibrary
             foreach (var target in transform.root.GetComponentsInChildren<LibraryMissionTarget>(true))
                 if (target.Mission == this && (target.Kind == LibraryTargetKind.Fuse || target.Kind == LibraryTargetKind.Clue)) reachable.Add(target);
             lowTargets = reachable.ToArray();
+            panel = GetComponent<LibraryGeneratorPanel>();
+            if (!panel) panel = gameObject.AddComponent<LibraryGeneratorPanel>();
+            panel.Configure(this);
+            if (feedback) feedback.ignoreListenerPause = true;
             Refresh();
         }
         void Update()
@@ -91,7 +95,7 @@ namespace UniDoom.CampusLibrary
             }
             if (focus && ((Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame) ||
                 (Gamepad.current != null && Gamepad.current.buttonWest.wasPressedThisFrame))) TryInteract(focus);
-            if (errorUntil > 0 && Time.time >= errorUntil) { errorUntil = 0; Refresh(); }
+            if (errorUntil > 0 && Time.unscaledTime >= errorUntil) { errorUntil = 0; Refresh(); }
         }
         LibraryMissionTarget Focus()
         {
@@ -132,12 +136,14 @@ namespace UniDoom.CampusLibrary
             {
                 case LibraryTargetKind.Fuse: return key + "Coletar fusível";
                 case LibraryTargetKind.Clue: return key + "Ler bilhete de manutenção";
-                case LibraryTargetKind.Button: return key + "Terminal " + target.Id + " — " + terminalRoles[Mathf.Clamp(target.Id, 1, 7)] + "  /  " + LibraryMissionProgress.SequenceStep + "/7";
+                case LibraryTargetKind.Button: return key + "Usar o gerador para abrir o painel";
                 case LibraryTargetKind.FuseSocket:
-                    return key + (LibraryMissionProgress.Stage == LibraryMissionStage.FusesCollected ? "Instalar 3 fusíveis" :
-                        LibraryMissionProgress.Stage >= LibraryMissionStage.FusesInstalled ? "Fusíveis instalados" : "Inspecionar porta-fusíveis");
+                    return key + "Inserir os fusíveis diretamente no gerador";
                 default:
-                    return key + (LibraryMissionProgress.Stage == LibraryMissionStage.PuzzleSolved ? "Ligar gerador" :
+                    return key + (LibraryMissionProgress.Stage == LibraryMissionStage.FusesCollected ? "Inserir 3 fusíveis no gerador" :
+                        LibraryMissionProgress.Stage == LibraryMissionStage.FusesInstalled ?
+                        "Abrir puzzle do gerador  /  " + LibraryMissionProgress.SequenceStep + "/7" :
+                        LibraryMissionProgress.Stage == LibraryMissionStage.PuzzleSolved ? "Ligar gerador" :
                         LibraryMissionProgress.IsLibraryGeneratorPowered ? "Energia restaurada" : "Inspecionar gerador");
             }
         }
@@ -160,29 +166,57 @@ namespace UniDoom.CampusLibrary
                     if (target.Document && GameMenus.Instance) return GameMenus.Instance.TryOpenDocument(target.Document, target);
                     Notify(Clue); return false;
                 case LibraryTargetKind.FuseSocket:
-                    if (LibraryMissionProgress.Install()) { Sound(buttonSound); Notify("3 fusíveis instalados. Resolva o painel de energia."); return true; }
-                    Notify(LibraryMissionProgress.Stage >= LibraryMissionStage.FusesInstalled ? "Os 3 fusíveis já estão instalados." :
-                        $"Encontre os 3 fusíveis antes de instalar ({LibraryMissionProgress.FuseCount}/3).");
+                    Notify("Insira os fusíveis diretamente no gerador.");
                     return false;
                 case LibraryTargetKind.Button:
-                    if (LibraryMissionProgress.Stage < LibraryMissionStage.FusesInstalled) { Notify("Instale os 3 fusíveis antes de usar o painel."); return false; }
-                    if (!LibraryMissionProgress.Press(target.Id, sequence, out bool correct)) return false;
-                    Sound(correct ? buttonSound : errorSound);
-                    if (!correct) { errorUntil = Time.time + .7f; target.SetIndicator(new Color(.9f, .08f, .025f)); Notify("Sequência incorreta. Tente novamente."); }
-                    else if (LibraryMissionProgress.Stage == LibraryMissionStage.PuzzleSolved) Notify("Circuito restaurado. Acione o gerador.");
-                    return true;
+                    Notify(LibraryMissionProgress.Stage < LibraryMissionStage.FusesInstalled ?
+                        "Instale os 3 fusíveis e use o gerador." : "Use E diretamente no gerador para abrir o puzzle.");
+                    return false;
                 default:
                     if (LibraryMissionProgress.Stage == LibraryMissionStage.NotDiscovered)
                     {
                         if (LibraryMissionProgress.Discover()) Notify("O gerador está sem energia. Encontre os 3 fusíveis para ligá-lo.");
                         return true;
                     }
+                    if (LibraryMissionProgress.Stage == LibraryMissionStage.FusesCollected && LibraryMissionProgress.Install())
+                    {
+                        Sound(buttonSound);
+                        Notify("3 fusíveis inseridos no gerador. Pressione E novamente para abrir o puzzle.");
+                        return true;
+                    }
+                    if (LibraryMissionProgress.Stage == LibraryMissionStage.FusesInstalled)
+                        return panel != null && panel.Open();
                     if (LibraryMissionProgress.PowerOn()) { Sound(generatorSound); Notify("Gerador ligado! Energia da biblioteca restaurada."); return true; }
                     Notify(LibraryMissionProgress.Stage < LibraryMissionStage.FusesCollected ? $"Faltam {3 - LibraryMissionProgress.FuseCount} fusíveis para restaurar o gerador." :
-                        LibraryMissionProgress.Stage == LibraryMissionStage.FusesCollected ? "Use o porta-fusíveis abaixo dos terminais para instalar os três fusíveis." :
-                        LibraryMissionProgress.IsLibraryGeneratorPowered ? "Energia da biblioteca restaurada." : "Resolva o painel de energia. Consulte os bilhetes da manutenção.");
+                        LibraryMissionProgress.Stage == LibraryMissionStage.FusesCollected ? "Insira os três fusíveis diretamente no gerador." :
+                        LibraryMissionProgress.IsLibraryGeneratorPowered ? "Energia da biblioteca restaurada." : "Use E no gerador para abrir o puzzle de energia.");
                     return false;
             }
+        }
+        internal bool TryPressFromPanel(int id, out bool correct)
+        {
+            correct = false;
+            if (!isActiveAndEnabled || LibraryMissionProgress.Stage != LibraryMissionStage.FusesInstalled ||
+                !LibraryMissionProgress.Press(id, sequence, out correct)) return false;
+            Sound(correct ? buttonSound : errorSound);
+            if (!correct)
+            {
+                errorUntil = Time.unscaledTime + .7f;
+                Notify("Sequência incorreta. O circuito foi reiniciado.");
+            }
+            else if (LibraryMissionProgress.Stage == LibraryMissionStage.PuzzleSolved && LibraryMissionProgress.PowerOn())
+            {
+                Sound(generatorSound);
+                Notify("Gerador ligado! Energia da biblioteca restaurada.");
+            }
+            return true;
+        }
+        internal bool PanelTerminalOn(int id)
+        {
+            if (LibraryMissionProgress.Stage >= LibraryMissionStage.PuzzleSolved) return true;
+            for (int i = 0; i < LibraryMissionProgress.SequenceStep; i++)
+                if (sequence[i] == id) return true;
+            return false;
         }
         void Sound(AudioClip clip) { if (feedback && clip) feedback.PlayOneShot(clip, .6f); }
         static void Notify(string message, float duration = 4.5f) => DeathScreen.Instance?.ShowNotification(message, duration);
@@ -201,8 +235,8 @@ namespace UniDoom.CampusLibrary
             for (int i = 0; i < circuitSegments.Length; i++) Paint(circuitSegments[i], i < LibraryMissionProgress.SequenceStep);
             foreach (var button in buttons) if (button) button.SetIndicator(LibraryMissionProgress.Stage >= LibraryMissionStage.FusesInstalled ? new Color(.46f, .57f, .38f) : new Color(.16f, .17f, .15f));
             if (worldStatus) worldStatus.text = LibraryMissionProgress.IsLibraryGeneratorPowered ? "ENERGIA RESTAURADA" :
-                LibraryMissionProgress.Stage == LibraryMissionStage.PuzzleSolved ? "CIRCUITO OK • ACIONE O GERADOR" :
-                LibraryMissionProgress.Stage == LibraryMissionStage.FusesInstalled ? $"CIRCUITO {LibraryMissionProgress.SequenceStep}/7" : $"FUSÍVEIS {LibraryMissionProgress.FuseCount}/3 • INSTALAR";
+                LibraryMissionProgress.Stage == LibraryMissionStage.PuzzleSolved ? "CIRCUITO OK • GERADOR LIGANDO" :
+                LibraryMissionProgress.Stage == LibraryMissionStage.FusesInstalled ? $"USE O GERADOR • CIRCUITO {LibraryMissionProgress.SequenceStep}/7" : $"FUSÍVEIS {LibraryMissionProgress.FuseCount}/3 • INSTALAR";
         }
         void OnDisable() { LibraryMissionProgress.Changed -= Refresh; if (hud) hud.SetActive(false); }
         void OnDestroy() { DeathScreen.Instance?.ClearNotifications(); if (hud) Destroy(hud); }
