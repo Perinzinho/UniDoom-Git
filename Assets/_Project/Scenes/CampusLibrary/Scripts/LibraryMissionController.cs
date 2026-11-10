@@ -154,7 +154,7 @@ namespace UniDoom.CampusLibrary
                     return key + "Inserir os fusíveis diretamente no gerador";
                 default:
                     return key + (LibraryMissionProgress.Stage == LibraryMissionStage.FusesCollected ?
-                        $"Inserir fusível no gerador  ({LibraryMissionProgress.InstalledFuseCount}/3)" :
+                        "Instalar fusíveis e abrir puzzle do gerador" :
                         LibraryMissionProgress.Stage == LibraryMissionStage.FusesInstalled ?
                         "Abrir puzzle do gerador  /  " + LibraryMissionProgress.SequenceStep + "/7" :
                         LibraryMissionProgress.Stage == LibraryMissionStage.PuzzleSolved ? "Ligar gerador" :
@@ -192,13 +192,17 @@ namespace UniDoom.CampusLibrary
                         if (LibraryMissionProgress.Discover()) Notify("O gerador está sem energia. Encontre os 3 fusíveis para ligá-lo.");
                         return true;
                     }
-                    if (LibraryMissionProgress.Stage == LibraryMissionStage.FusesCollected && LibraryMissionProgress.Install())
+                    if (LibraryMissionProgress.Stage == LibraryMissionStage.FusesCollected)
                     {
-                        Sound(buttonSound);
-                        int installed = LibraryMissionProgress.InstalledFuseCount;
-                        Notify(installed == 3 ? "3 fusíveis inseridos no gerador. Pressione E novamente para abrir o puzzle." :
-                            $"Fusível inserido no gerador ({installed}/3). Pressione E para inserir o próximo.");
-                        return true;
+                        // Keep every installed-count transition for the GLB variants, including
+                        // a partially installed session, then open the puzzle in this same action.
+                        bool installed = false;
+                        while (LibraryMissionProgress.Install()) installed = true;
+                        if (installed)
+                        {
+                            Sound(buttonSound);
+                            Notify("3 fusíveis inseridos no gerador. Complete o puzzle para restaurar a energia.");
+                        }
                     }
                     if (LibraryMissionProgress.Stage == LibraryMissionStage.FusesInstalled)
                         return panel != null && panel.Open();
