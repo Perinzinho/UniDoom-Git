@@ -37,6 +37,7 @@ public sealed class PrisonController : MonoBehaviour
             passage?.RevealImmediately();
         }
         BuildHUD();
+        if (PrisonProgress.AllCellsOpened) CompleteCellRescue(false);
     }
 
     void RememberVictory() => PrisonProgress.BossDefeated = true;
@@ -99,6 +100,7 @@ public sealed class PrisonController : MonoBehaviour
         listRect.anchoredPosition = new Vector2(-28, -106);
         keyList.alignment = TextAlignmentOptions.Right;
         keyList.raycastTarget = false;
+
     }
 
     void Update()
@@ -112,6 +114,11 @@ public sealed class PrisonController : MonoBehaviour
         var inventory = player.GetComponent<PlayerCellKeys>();
         if (inventory != shownInventory || (inventory ? inventory.Revision : -1) != shownRevision)
             RefreshKeys(inventory);
+        if (PrisonProgress.AllCellsOpened)
+        {
+            prompt.text = "Uma surpresa te espera! Retorne para Unimar";
+            return;
+        }
         prompt.text = "";
         if (view == null || !view.gameObject.activeInHierarchy) view = Camera.main;
         if (view == null || !Physics.Raycast(view.transform.position, view.transform.forward,
@@ -154,7 +161,23 @@ public sealed class PrisonController : MonoBehaviour
         if (activeVoice != null) activeVoice.Stop();
         activeVoice = gate.Voice;
         if (activeVoice != null && activeVoice.clip != null) activeVoice.Play();
+        if (PrisonProgress.AllCellsOpened) CompleteCellRescue(true);
         return true;
+    }
+
+    void CompleteCellRescue(bool stopVoice)
+    {
+        if (stopVoice && activeVoice != null) activeVoice.Stop();
+        foreach (var cell in GetComponentsInChildren<PrisonCellGate>(true)) cell.SetTeacherVisible(false);
+        if (prompt != null)
+        {
+            var rect = prompt.rectTransform;
+            rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(.5f, .5f);
+            rect.anchoredPosition = Vector2.zero;
+            rect.sizeDelta = new Vector2(1200, 70);
+            prompt.alignment = TextAlignmentOptions.Center;
+            prompt.text = "Uma surpresa te espera! Retorne para Unimar";
+        }
     }
 
     void OnDisable()

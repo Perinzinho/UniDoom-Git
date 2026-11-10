@@ -152,8 +152,11 @@ namespace UniDoom.Utils
             if (physicalDoor != null && !physicalDoor.IsUnlocked) return;
             if (waitForPhysicalDoorToOpen && physicalDoor != null && !physicalDoor.IsFullyOpen) return;
 
+            bool startsFinale = gameObject.scene.name == "Basement" && destinationScene == "CampusExterior" &&
+                PrisonProgress.AllCellsOpened;
             if (UI.DoorReloadScreen.TryLoadScene(destinationScene, destinationSpawnId, destinationLabel))
             {
+                if (startsFinale) PrisonProgress.BeginFinale();
                 // A physical leaf already plays when opening. Bare portals play on successful entry.
                 if (soundDoor == null) GameplayAudio.Instance?.PlayDoorOpening();
                 waitingPlayers.Clear();
