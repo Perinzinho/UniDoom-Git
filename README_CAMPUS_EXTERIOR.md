@@ -1,10 +1,12 @@
 # Campus Exterior e Biblioteca do Campus — contexto de implementação
 
+**Missão da biblioteca — 09/11/2026:** implementada em `CampusLibrary`, com ala adicional, manutenção segura, três fusíveis habilitados pela descoberta, painel físico de sete terminais, acionamento separado e restauração permanente da luz durante a partida. Zumbis existentes em baixa densidade, sem reforços após a conclusão. Portais/spawn IDs anteriores preservados; nenhuma abertura de cela acrescentada. Flag/evento, estado, posições, arquivos e validações em [CampusLibrary-Gerador.md](Docs/Maps/CampusLibrary-Gerador.md). Medidas históricas abaixo precedem essa ampliação.
+
 > Documento para continuar o trabalho sem reconstruir o contexto da conversa nem ler milhares de assets. Atualizado em **07/11/2026**. A ampliação atual de CampusLibrary tem ficha em [Docs/Maps/CampusLibrary.md](Docs/Maps/CampusLibrary.md); registros anteriores abaixo conservam suas datas. Base histórica: `development`, commit `494fdd18`. Alterações futuras podem mudar os números e parâmetros abaixo.
 
 ## 1. Leitura rápida para a próxima IA
 
-- **Acesso à biblioteca — 09/11/2026:** o portal externo exige as duas chaves de biblioteca: uma sorteada em Direito e outra na sala 423 do Bloco 4 após o puzzle. Na porta aparecem somente dois cadeados físicos, sem revelar os blocos; ao se aproximar, o aviso diz “Porta trancada, você precisa de uma chave.” Cada chave remove um cadeado e ambas liberam a entrada. As oito chaves de cela desses blocos foram retiradas; a chave da manutenção continua separada, e o gerador das celas será implementado depois. [Contrato e validação](Docs/Maps/CampusLibrary.md#acesso-com-duas-chaves--09112026).
+- **Acesso à biblioteca — 09/11/2026:** o portal externo exige as duas chaves de biblioteca: uma sorteada em Direito e outra na sala 423 do Bloco 4 após o puzzle. Na porta aparecem somente dois cadeados físicos, sem revelar os blocos; ao se aproximar, o aviso diz “Porta trancada, você precisa de uma chave.” Cada chave remove um cadeado e ambas liberam a entrada. As oito chaves de cela desses blocos foram retiradas; a chave da manutenção continua separada. O gerador da biblioteca está implementado, e sua integração com as celas continua pendente. [Contrato e validação](Docs/Maps/CampusLibrary.md#acesso-com-duas-chaves--09112026).
 
 - **Campus Exterior** é o cenário com gramados, árvores, avenidas, portaria UNIMAR, fachadas e caixa-d'água: cena **`CampusExterior`**.
 - Migração do estacionamento: execução somente pelo menu `Tools/UniDoom/Campus/Apply Parking Vehicles`; não recompõe veículos nem abre cenas automaticamente ao importar/recompilar. Falha de `MeshFilter` ausente corrigida; detalhes na seção final de manutenção da ferramenta.

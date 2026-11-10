@@ -2,6 +2,7 @@
 
 ## Leitura rápida
 
+- **Missão do gerador — 09/11/2026:** nova ala ao norte de aproximadamente 790 m², 12 estantes, seis mesas, 24 cadeiras e manutenção segura. Descoberta → três fusíveis → instalação → sete terminais → ignição → luz normal. Estado preservado em transições/checkpoints; um zumbi por vez, sem novos reforços ao concluir. Contratos, posições, arquivos, testes e limites em [CampusLibrary-Gerador.md](CampusLibrary-Gerador.md). As propostas anteriores continuam independentes fora do escopo desta missão.
 - Chaves 4/5/6/10/11 com metal envelhecido e número gravado, altura visual de aproximadamente 24 cm e raio de coleta de aproximadamente 1,05 m sobre as mesas. Distribuição e proposta dos puzzles preservadas. Conferência estática, sem Unity/Play Mode. [Contrato dos sprites e coleta](PrisonCellKeys.md).
 - Distribuição atual: cinco chaves de cela, **4/5/6/10/11**. Chaves 10 e 11 na cabine individual ao norte e na mesa da leitura silenciosa, respectivamente. [Proposta de puzzles curtos de leitura](CampusLibrary-Puzzles-Leitura.md); os enigmas ainda não estão implementados.
 - Cena: `Assets/_Project/Scenes/CampusLibrary/CampusLibrary.unity`; interior no prefab `Prefabs/CampusLibrary.prefab` da mesma pasta. A cena referencia o prefab; não há geração do mapa em runtime.
@@ -11,7 +12,7 @@
 - Contexto, portais e histórico: [README_CAMPUS_EXTERIOR.md](../../README_CAMPUS_EXTERIOR.md), seções 5, 6 e 7.
 - Revisão de 08/11/2026: fechamento dos sanitários até o teto do salão e inscrições físicas em atlas, descritos em [Revisão final de paredes e sinalização](#revisão-final-de-paredes-e-sinalização--08112026). As dimensões e a circulação do mobiliário permanecem as da revisão anterior.
 - Revisão de 07/11/2026: ampliação ao norte, a partir de `z = 12`, mantendo hall, atendimento, degraus, foto, pesquisa e sanitários. Após restaurar a organização do commit `32028565`, a fila de tarefas revisa escala do mobiliário, modelos, luz, sinalização e separação dos sanitários. Nova ala em `North wing - university library`, com leitura silenciosa, duas salas de estudo, cabines e acervo por assunto.
-- Envelope aproximado: **56 × 42 m**, antes **56 × 24 m**. Acréscimo de aproximadamente **1.016 m²**, cerca de **76%** sobre os 1.344 m² nominais anteriores; área bruta de planta, sem descontar paredes e móveis. Limite interno norte: `z = 30.15`.
+- Envelope atual aproximado: **56 × 56,5 m**, com limite norte interno em `z ≈ 44,3`. A missão de 09/11 acrescentou aproximadamente **790 m² / 33%** à planta de **56 × 42 m** entregue em 07/11; a base anterior àquela ampliação media **56 × 24 m**. São estimativas de área bruta, sem descontar paredes/móveis.
 - Paleta e mobiliário de `Global/Materials/CampusInterior/` e `Global/Meshes/CampusInterior/`. Meshes exclusivos novos: `CampusLibrary/Meshes/NorthWing*.asset`.
 - Nenhum novo download de modelo 3D. Fontes e hashes da reutilização: `Licenses/AssetSources/CampusLibrary/expansion-sources.json` e `reused-props-sources.json` da mesma pasta; os três documentos de créditos registram o uso nesta ala.
 
@@ -26,7 +27,7 @@ A entrada pelo CampusExterior exige **as duas chaves de acesso à biblioteca**, 
 
 A apresentação atual da porta externa usa **somente dois cadeados físicos**, sem placa de requisitos, ícones de chave, contador, indicadores coloridos ou nomes dos blocos. Cada chave de acesso retira o cadeado correspondente; a barreira sólida permanece enquanto faltar alguma. A até 2,5 m da barreira, aparece o aviso **“Porta trancada, você precisa de uma chave.”** enquanto a entrada estiver bloqueada. O aviso desaparece ao se afastar, liberar a entrada, pausar, abrir menus, morrer ou iniciar uma transição. `CampusLibraryEntranceLock` implementa o guard já aceito por `SceneTransitionDoor`; nenhum sistema paralelo de inventário ou carregamento foi criado.
 
-Conforme a resposta explícita do usuário, as antigas chaves de cela **1/2/3/9**, em Direito, e **7/8/12/13**, no Bloco 4, foram retiradas do gameplay. Os dois pickups principais foram convertidos para acesso; os seis adicionais foram desativados, com objetos/fileIDs preservados. **Não foram transferidas para a biblioteca.** As cinco chaves que já estavam na biblioteca permanecem nesta rodada. O gerador e a mecânica que abrirão as celas serão implementados depois; os oito IDs retirados ainda não têm nova forma de abertura.
+Conforme a resposta explícita do usuário, as antigas chaves de cela **1/2/3/9**, em Direito, e **7/8/12/13**, no Bloco 4, foram retiradas do gameplay. Os dois pickups principais foram convertidos para acesso; os seis adicionais foram desativados, com objetos/fileIDs preservados. **Não foram transferidas para a biblioteca.** As cinco chaves que já estavam na biblioteca permanecem nesta rodada. O gerador da biblioteca já está implementado na missão descrita acima; sua integração com a abertura das celas continua pendente. Os oito IDs retirados ainda não têm nova forma de abertura.
 
 Sprites finais: `Global/Textures/Pickups/LibraryAccessLawSchool.png` e `LibraryAccessBlock4.png`, sob `Assets/_Project/`. PNGs gerados com alpha transparente, importados como sprites individuais; imagens numeradas anteriores preservadas. Fonte, prompts e SHA-256: `Licenses/AssetSources/CampusLibrary/library-access-key-sprites.json`. Os três MDs de créditos registram a geração integrada por imagegen. A troca visual não altera os triggers de coleta.
 
@@ -60,6 +61,8 @@ Nesta rodada não foram executados Play Mode, coleta real, ida/volta pelos porta
 `LawSchoolCellKeyPickup` e `Block4TeacherKeyPickup` conservam seus nomes de classe/GUIDs por compatibilidade com os assets; seus papéis atuais são as duas chaves de biblioteca. Inventário e guard: `Global/Scripts/Player/CampusLibraryAccess.cs` e `Global/Scripts/Utils/CampusLibraryEntranceLock.cs`. As ferramentas pontuais de Editor foram retiradas depois da verificação de dependências; os resultados persistentes bastam para jogar.
 
 ## Função, layout e circulação
+
+Desde 09/11, a ala do gerador ocupa o trecho posterior a `z = 30,15`, com passagem de **4 × 3,25 m** em `x = 18,5`, seis mesas adicionais, doze estantes, circulação de combate e manutenção segura a oeste. O conjunto passa a **74 estantes e 119 cadeiras**. A descrição abaixo conserva a implantação da ala de 07/11; a extensão atual e seus testes estão na [ficha da missão](CampusLibrary-Gerador.md).
 
 O edifício continua térreo, com hall elevado a **0,64 m** e quatro degraus de **0,16 m** até o piso do acervo. A ala adicional fica no nível inferior. Uma abertura de **6 × 3,20 m** na antiga parede de fundo conecta os ambientes sem carregamento de cena. A parede mantém seus objetos, GUID e fileID do mesh; geometria e colisões contornam a abertura.
 

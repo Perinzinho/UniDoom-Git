@@ -2,6 +2,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 namespace UniDoom.UI
 {
@@ -20,6 +21,8 @@ namespace UniDoom.UI
         static readonly Vector2 ToastPosition = new Vector2(38, 206);
         float toastStarted, toastUntil, openedAt;
         bool deathActive, transitioning;
+        readonly Queue<(string message, float duration)> notifications = new();
+        bool showingMissionNotification;
 
         void Awake()
         {
@@ -67,10 +70,42 @@ namespace UniDoom.UI
         public void ShowCheckpoint(int index)
         {
             EnsureCheckpointNotification();
+            showingMissionNotification = false;
+            toastRect.sizeDelta = new Vector2(380, 38);
+            toastLabel.rectTransform.sizeDelta = new Vector2(350, 31);
             toastLabel.text = "UM LUGAR PARA VOLTAR";
             toast.alpha = 0;
             toastStarted = Time.unscaledTime;
             toastUntil = toastStarted + 3.2f;
+        }
+
+        // Shared lower-screen toast. Mission messages use the checkpoint typography/fade.
+        public void ShowNotification(string message, float duration = 4.5f)
+        {
+            if (string.IsNullOrWhiteSpace(message)) return;
+            if (showingMissionNotification && toastLabel != null && toastLabel.text == message && toastUntil > Time.unscaledTime) return;
+            foreach (var queued in notifications) if (queued.message == message) return;
+            if (notifications.Count >= 4) notifications.Dequeue();
+            notifications.Enqueue((message, Mathf.Max(2, duration)));
+        }
+
+        public void ClearNotifications()
+        {
+            notifications.Clear();
+            if (showingMissionNotification) { toastUntil = 0; toast.alpha = 0; }
+        }
+
+        void NextNotification()
+        {
+            var next = notifications.Dequeue();
+            showingMissionNotification = true;
+            toastRect.sizeDelta = new Vector2(1080, 68);
+            toastLabel.rectTransform.sizeDelta = new Vector2(1040, 62);
+            toastLabel.textWrappingMode = TextWrappingModes.Normal;
+            toastLabel.text = next.message;
+            toast.alpha = 0;
+            toastStarted = Time.unscaledTime;
+            toastUntil = toastStarted + next.duration;
         }
 
         public void ShowDeath()
@@ -79,6 +114,7 @@ namespace UniDoom.UI
             transitioning = false;
             openedAt = Time.unscaledTime;
             toastUntil = 0;
+            notifications.Clear();
             toast.alpha = 0;
             GameMenus.Instance.ShowDeath(player, this);
         }
@@ -92,12 +128,14 @@ namespace UniDoom.UI
         void Update()
         {
             EnsureCheckpointNotification();
+            if (toastUntil <= Time.unscaledTime && notifications.Count > 0 && !deathActive && Time.timeScale > 0 && !GameMenus.BlocksGameplay && !DoorReloadScreen.IsReloading)
+                NextNotification();
             float remaining = toastUntil - Time.unscaledTime;
             float appearing = Mathf.SmoothStep(0, 1, Mathf.Clamp01((Time.unscaledTime - toastStarted) / .5f));
             float fading = Mathf.SmoothStep(0, 1, Mathf.Clamp01(remaining / .9f));
             bool visible = remaining > 0 && !deathActive && Time.timeScale > 0 && !GameMenus.BlocksGameplay && !DoorReloadScreen.IsReloading;
             toast.alpha = Mathf.MoveTowards(toast.alpha, visible ? .82f * appearing * fading : 0, Time.unscaledDeltaTime * 3.5f);
-            toastRect.anchoredPosition = ToastPosition + Vector2.up * (Mathf.Lerp(-4, 0, appearing) + (1 - fading) * 3);
+            toastRect.anchoredPosition = (showingMissionNotification ? new Vector2(38, 170) : ToastPosition) + Vector2.up * (Mathf.Lerp(-4, 0, appearing) + (1 - fading) * 3);
         }
 
         public IEnumerator FadeToBlack()
