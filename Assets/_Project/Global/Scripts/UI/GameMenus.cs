@@ -663,6 +663,8 @@ namespace UniDoom.UI
         // Temporary shortcut: use the same fresh-session loading flow as New Game.
         void BuildMapSelection()
         {
+            // Six rows of 64px buttons must stay above Back at y=885.
+            const float rowSpacing = 90;
             MenuStyle.Text("Title", mapSelection.transform, "ESCOLHER MAPA", 165, 135, 1400, 100, 52, MenuStyle.Paper);
             MenuStyle.Text("Hint", mapSelection.transform, "Selecione onde começar uma nova partida.", 165, 245, 1400, 45, 26, MenuStyle.Muted);
             var controls = new List<Selectable>();
@@ -687,12 +689,12 @@ namespace UniDoom.UI
                     _ => sceneName
                 };
                 var button = MenuStyle.Button(mapSelection.transform, "Map_" + sceneName, label,
-                    165 + controls.Count % 2 * 830, 320 + controls.Count / 2 * 110, 760, () => StartNewGameAtScene(scene), 32);
+                    165 + controls.Count % 2 * 830, 320 + controls.Count / 2 * rowSpacing, 760, () => StartNewGameAtScene(scene), 32);
                 if (mapFirst == null) mapFirst = button;
                 controls.Add(button);
                 if (sceneName == "Basement")
                     controls.Add(MenuStyle.Button(mapSelection.transform, "Map_BasementBoss", "PORÃO — ARENA DO BOSS",
-                        165 + controls.Count % 2 * 830, 320 + controls.Count / 2 * 110, 760,
+                        165 + controls.Count % 2 * 830, 320 + controls.Count / 2 * rowSpacing, 760,
                         () => StartNewGameAtScene(scene, true), 32));
             }
             var back = MenuStyle.Button(mapSelection.transform, "Back", "VOLTAR   [ESC]", 165, 885, 1000, Back, 34);
