@@ -6,18 +6,31 @@ namespace UniDoom.UI
     [CreateAssetMenu(menuName = "UniDoom/Menu/Credits")]
     public sealed class CreditsSettings : ScriptableObject
     {
+        public const float RequiredScrollSpeed = 42;
+        public const string RequiredMusicResource = "Audio/Credits/HiddenKing";
         [SerializeField] TextAsset content;
         [SerializeField] AudioClip music;
         [SerializeField, Range(0, 1)] float musicVolume = .6f;
-        [SerializeField, Min(1)] float scrollSpeed = 24;
+        [SerializeField, Min(1)] float scrollSpeed = RequiredScrollSpeed;
         [SerializeField, Min(0)] float startDelay = 2;
         [SerializeField, Min(0)] float endHold = 3;
         public TextAsset Content => content;
-        public AudioClip Music => music;
+        public AudioClip Music
+        {
+            get
+            {
+                if (!music || music.name != "HiddenKing")
+                    music = Resources.Load<AudioClip>(RequiredMusicResource);
+                return music;
+            }
+        }
         public float MusicVolume => musicVolume;
         public float ScrollSpeed => Mathf.Max(1, scrollSpeed);
         public float StartDelay => startDelay;
         public float EndHold => endHold;
+
+        void OnEnable() => scrollSpeed = RequiredScrollSpeed;
+        void OnValidate() => scrollSpeed = RequiredScrollSpeed;
 
         public static float RollOffset(float elapsed, float contentHeight, float viewportHeight,
             float speed, float startDelay)

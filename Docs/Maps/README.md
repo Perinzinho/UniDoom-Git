@@ -19,9 +19,21 @@ Não carregue todas as cenas, este catálogo inteiro e os logs antigos por padr�
 
 ## Transições de ambiente — reload e arte de chegada
 
-- Toda troca de cena passa por `DoorReloadScreen`: a tela cobre a transição e bloqueia movimento/câmera, posiciona o jogador no `SceneArrivalPoint`, aquece primeiro a coleção opcional e depois todos os shaders carregados, aguarda um frame já aquecido e somente então libera o jogador.
+- Toda troca de cena passa por `DoorReloadScreen`: a tela cobre a transição e bloqueia movimento/câmera, posiciona o jogador no `SceneArrivalPoint`, aquece a coleção opcional quando atribuída e deixa o cenário renderizar sob a cobertura antes de liberar o jogador. O aquecimento global de todos os shaders foi removido em 10/11/2026 devido às falhas observadas nos passes internos de URP/Direct3D 12.
 - Cada destino conhecido usa `Resources/Textures/UI/Transitions/<Cena>.png`. As artes são 16:9, baseadas na visão real de chegada e mantêm o padrão cinematográfico iniciado em `Cylinder`. Destinos sem arte cadastrada usam `Global/Resources/Textures/UI/Transitions/AbandonedDoor.png`.
 Contrato compartilhado: [chaves numeradas das celas](PrisonCellKeys.md) — Direito, Biblioteca, Bloco 4 e porão.
+
+## Recuperação de texturas e sprites — 10/11/2026
+
+O commit `497be021` preservou as imagens, mas regenerou GUIDs de **455 importadores**: 405 PNGs, um JPG, um JPEG, um HDR, 20 FBX, um OBJ, 16 WAVs e dez OGGs. Materiais, prefabs e cenas continuavam apontando para os identificadores anteriores, deixando texturas brancas e sprites ausentes em vários mapas. Os importadores de sprites também perderam recortes e IDs de subassets. Nenhum dos 455 `.meta` sofreu outra alteração entre esse commit e `d34b0765`.
+
+Restaurados somente esses `.meta` a partir de `497be021^`, incluindo GUIDs, recortes, pivôs, escala de importação, canais alpha, normal maps e IDs dos sprites/modelos. As referências já existentes voltam a resolver sem reescrever cenas, materiais ou prefabs. As mudanças recentes de layout, manutenção, gerador, controles e demais sistemas foram preservadas. Os 804 arquivos de imagem/atlas rastreados estavam presentes e completos, sem ponteiros LFS pendentes; seu conteúdo foi conferido contra o Git/LFS e não foi editado.
+
+Conferências sem abrir Unity: os 455 importadores coincidem com a versão anterior ao defeito; 401 GUIDs antigos voltam a atender consumidores existentes; 802 referências de textura/sprite em 365 assets foram conferidas com os IDs restaurados. GUIDs de pacotes foram distinguidos dos assets do projeto. Não foram alteradas referências históricas remanescentes de debug de probes, componentes do perfil padrão e sprite padrão de TMP que não pertencem à regeneração de `497be021`.
+
+O log anterior da entrada no porão (`Logs/Editor-prev.log`) contém falhas de keyword space e buffers de shaders internos sob `Shader.WarmupAllShaders`, seguidas de crash nativo durante travessia de objetos pelo Mono. `DoorReloadScreen` deixou de chamar o aquecimento global; mantém a coleção opcional, a cobertura opaca e o bloqueio de controles até o primeiro quadro renderizado. Essa correção evita o caminho de aquecimento problemático identificado, mas a eliminação do crash precisa ser confirmada pelo usuário no jogo; não foi reproduzido nem certificado um diagnóstico exclusivo da falha nativa.
+
+Compilação C# isolada passou sem erros, com avisos preexistentes. Sem iniciar/focar Unity, reimportação forçada, Play Mode, jogo, build, screenshots ou vídeos. Nenhum cache foi apagado e nenhum backup/quarentena permanente foi criado; temporários de investigação removidos ao concluir.
 
 Menu compartilhado: [créditos, música e HUD da espingarda](../Credits.md).
 

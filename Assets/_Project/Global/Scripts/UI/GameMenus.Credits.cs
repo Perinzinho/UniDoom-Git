@@ -58,7 +58,7 @@ namespace UniDoom.UI
             FitCreditsRoll();
             if (!creditsRollText || !creditsViewport) return;
             float offset = CreditsSettings.RollOffset(elapsed, creditsRollText.rectTransform.rect.height,
-                creditsViewport.rect.height, creditsSettings ? creditsSettings.ScrollSpeed : 24,
+                creditsViewport.rect.height, creditsSettings ? creditsSettings.ScrollSpeed : CreditsSettings.RequiredScrollSpeed,
                 creditsSettings ? creditsSettings.StartDelay : 2);
             creditsRollText.rectTransform.anchoredPosition = new Vector2(0, offset);
         }
@@ -76,7 +76,10 @@ namespace UniDoom.UI
             Canvas.ForceUpdateCanvases();
             FitCreditsRoll(true);
             PositionCreditsRoll(0);
-            if (!Application.isPlaying || !creditsSettings || !creditsSettings.Music) return;
+            if (!Application.isPlaying) return;
+            var music = creditsSettings ? creditsSettings.Music :
+                Resources.Load<AudioClip>(CreditsSettings.RequiredMusicResource);
+            if (!music) return;
             if (!creditsMusic)
             {
                 creditsMusic = gameObject.AddComponent<AudioSource>();
@@ -85,8 +88,8 @@ namespace UniDoom.UI
                 creditsMusic.spatialBlend = 0;
                 creditsMusic.ignoreListenerPause = true;
             }
-            creditsMusic.clip = creditsSettings.Music;
-            creditsMusic.volume = creditsSettings.MusicVolume;
+            creditsMusic.clip = music;
+            creditsMusic.volume = creditsSettings ? creditsSettings.MusicVolume : .6f;
             creditsMusic.Play();
         }
 

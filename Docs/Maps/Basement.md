@@ -2,6 +2,7 @@
 
 ## Leitura rápida
 
+- Arte e entrada do porão (10/11/2026): importadores afetados por GUIDs regenerados foram recuperados, incluindo professores e recursos compartilhados. A transição deixou de aquecer globalmente shaders internos da Unity, caminho com falhas no log anterior ao crash. Layout, celas e progressão não foram revertidos; a entrada precisa do teste do usuário. [Diagnóstico compartilhado](README.md#recuperação-de-texturas-e-sprites--10112026).
 - Cena: `Assets/_Project/Scenes/Basement/Basement.unity`.
 - **Estado temporário:** as 14 celas começam fechadas, mas podem ser abertas com `E` sem chave durante a revisão. A reversão e as decisões sobre salas/chaves estão em [Basement-Celas-Pendencias.md](Basement-Celas-Pendencias.md).
 - Prefab principal: `Assets/_Project/Scenes/Basement/Prefabs/Basement.prefab`.
