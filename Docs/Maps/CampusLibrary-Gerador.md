@@ -4,6 +4,8 @@ Implementação de 09/11/2026 baseada no README fornecido pelo usuário, no proj
 
 Revisão de **10/11/2026**, solicitada em [correcoesBiblioteca.md](../correcoesBiblioteca.md): estantes alinhadas/preenchidas, inscrições em placas, fusíveis em sprite, área dos funcionários ampliada, instalação manual, quatro zumbis e três bilhetes. Os comandos respeitam a câmera horizontal do jogador. Validações desta revisão são registradas na fila; os testes de 09/11 abaixo são históricos.
 
+**Modelo final do gerador — 10/11/2026:** o bloco provisório foi substituído pelos quatro `.glb` fornecidos pelo usuário, representando 0, 1, 2 e 3 fusíveis. O importador local combina as peças de cada arquivo em um mesh, preserva as cores de vértice e usa shader URP exclusivo. A variante muda após cada inserção; visual antigo fica oculto, mas seus colliders e o alvo de interação são preservados.
+
 ## Cenário persistente
 
 Cena: `Assets/_Project/Scenes/CampusLibrary/CampusLibrary.unity`, instância de `Prefabs/CampusLibrary.prefab`. A ala **Emergency mission - annex and maintenance** está salva nesse prefab, sem geração de layout em runtime e sem overrides manuais na cena.
@@ -24,7 +26,7 @@ O puzzle existe somente como modal de tela. Com os três itens coletados, usar *
 1. `NotDiscovered`: três fusíveis inteiramente inativos. Luz normal desligada, vermelhas com pulsação suave de 0,55 Hz e ambiente mínimo estável.
 2. Proximidade do gerador: `SearchingFuses`, toast inferior e ativação de exatamente três IDs **0, 1 e 2**. Reaproximar-se não reinicia nada.
 3. Cada coleta registra seu bit exclusivo e desativa somente aquele item; IDs inválidos/repetidos são recusados. Aviso imediato **Fusível coletado (N/3)** durante 4,5 s, independente do foco e da fila de notificações. Terceiro item: `FusesCollected`, sem instalação automática, com orientação para retornar.
-4. Usar **E no gerador — Inserir 3 fusíveis**: `FusesInstalled`, três fusíveis/indicadores visíveis no corpo do equipamento e puzzle liberado para a interação seguinte.
+4. Usar **E no gerador** três vezes, inserindo um fusível por interação. `InstalledFuseCount` percorre 0 → 1 → 2 → 3 e seleciona a variante visual correspondente. Somente a terceira inserção avança para `FusesInstalled`; a interação seguinte abre o puzzle.
 5. Usar **E no gerador** e clicar nos sete terminais do modal. Sequência inicial **3 → 1 → 5 → 2 → 7 → 4 → 6**. Cada clique válido alterna um único passo visual; erro reinicia somente a tentativa e produz feedback vermelho/sonoro. Barra, LEDs, estados `ON/OFF/TRAVADO` e segmentos físicos derivam do mesmo `SequenceStep`.
 6. Ao acertar o sétimo terminal, a progressão passa por `PuzzleSolved` e liga imediatamente o gerador em `GeneratorOn`: vermelhas apagadas, luz/ambiente normais restaurados e reforços encerrados. Não existe uma segunda interação de ignição após o puzzle.
 
@@ -80,6 +82,7 @@ Scripts em `Assets/_Project/Scenes/CampusLibrary/Scripts/`:
 | `LibraryMissionProgress.cs` | Estados, IDs, sequência, flag e eventos da sessão |
 | `LibraryMissionController.cs` | Descoberta, interação no mundo, intenção dos terminais, mensagens, áudio e indicadores físicos |
 | `LibraryGeneratorPanel.cs` | Estado de abertura/fechamento, modal industrial, hit-testing por cursor, views dos terminais e eventos `PanelOpened`, `PanelClosed`, `SwitchToggled` e `PuzzleCompleted` |
+| `LibraryGeneratorModelVariants.cs` | Carrega as quatro variantes persistentes e mostra o estado de 0–3 fusíveis |
 | `LibraryMissionTarget.cs` | Identificação de fusíveis, botões, comando e esquema |
 | `LibraryLightingController.cs` | Emergência e restauração de luzes/ambiente |
 | `LibraryMaintenanceSafety.cs` | Volume protegido e colisão seletiva |
@@ -128,6 +131,8 @@ Validação desta revisão: compilação do conjunto de runtime com o Roslyn e a
 Fluxo de ativação revisto em 10/11/2026: o modal passou a abrir exclusivamente pela interação com o gerador depois da instalação dos três fusíveis, e o sétimo acerto liga a energia sem uma segunda interação. Compilação direta do runtime concluída sem erros; somente os avisos preexistentes citados acima. Play Mode não executado.
 
 Inserção direta revista em 10/11/2026: 42 objetos do antigo quadro físico e porta-fusíveis separado foram desativados no prefab, incluindo placas, números, segmentos, textos e colisores de interação. Os três indicadores foram reposicionados na frente do gerador. Compilação direta concluída sem erros e referências estáticas conferidas; Play Mode e comparação visual não executados.
+
+Integração dos modelos revista em 10/11/2026: quatro arquivos em `Resources/Generator`, importador `GlbVertexColorImporter.cs`, shader `GeneratorVertexColor.shader` e seleção por `InstalledFuseCount`. Compilações isoladas de runtime e Editor passaram sem erros; avisos preexistentes de APIs `Find*` e campos não usados permanecem. Importação visual, Play Mode, colisão em jogo e comparação de enquadramento não foram executados.
 
 ## Integração com development — 10/11/2026
 
