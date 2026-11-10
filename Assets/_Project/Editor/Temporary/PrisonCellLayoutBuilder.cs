@@ -6,6 +6,7 @@ using System.Text;
 using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEditor.U2D.Sprites;
 using UnityEngine;
 
 internal static class PrisonCellLayoutBuilder
@@ -14,6 +15,10 @@ internal static class PrisonCellLayoutBuilder
     private const float StartZ = 4f;
     private const float CellWidth = 3.2f;
     private const float EndZ = 26.4f;
+    private const string BiancaSpritePath = "Assets/_Project/Global/Sprites/teachers/sprite-bianca-professora.png";
+    private const string BiancaAudioPath = "Assets/_Project/Scenes/Basement/Prison/Audios/Teachers/bianca_line.wav";
+    private const string BiancaPrefabPath = "Assets/_Project/Scenes/Basement/Prison/Prefabs/Teacher-bianca.prefab";
+    private const string TeacherBlackMaterialPath = "Assets/_Project/Global/Materials/Teachers/TeacherBlackBackground.mat";
 
     private readonly struct TeacherSpec
     {
@@ -27,7 +32,7 @@ internal static class PrisonCellLayoutBuilder
         new("Caio", "Assets/_Project/Scenes/Basement/Prison/Prefabs/Teacher-caio.prefab"),
         new("Fábio", "Assets/_Project/Scenes/Basement/Prison/Prefabs/Teacher-fabio.prefab"),
         new("Henrique", "Assets/_Project/Scenes/Basement/Prison/Prefabs/Teacher-henrique.prefab"),
-        new("Matheus Santi (original)", "Assets/_Project/Scenes/Basement/Prison/Prefabs/Teacher-santi.prefab"),
+        new("Cesar", "Assets/_Project/Scenes/Basement/Prison/Prefabs/Teacher-santi.prefab"),
         new("Navarro", "Assets/_Project/Scenes/Basement/Prison/Prefabs/Teacher-navarro.prefab"),
         new("Matheus Ferraroni", "Assets/_Project/Scenes/Basement/Prison/Prefabs/Teacher-matheus-ferraroni.prefab"),
         new("Paulinho", "Assets/_Project/Scenes/Basement/Prison/Prefabs/Teacher-paulinho.prefab"),
@@ -36,11 +41,14 @@ internal static class PrisonCellLayoutBuilder
         new("Matheus Santi", "Assets/_Project/Scenes/Basement/Prison/Prefabs/Teacher-matheus-santi.prefab"),
         new("Moacyr", "Assets/_Project/Scenes/Basement/Prison/Prefabs/Teacher-moacyr.prefab"),
         new("Querino", "Assets/_Project/Scenes/Basement/Prison/Prefabs/Teacher-querino.prefab"),
-        new("William", "Assets/_Project/Scenes/Basement/Prison/Prefabs/Teacher-william.prefab")
+        new("William", "Assets/_Project/Scenes/Basement/Prison/Prefabs/Teacher-william.prefab"),
+        new("Bianca", BiancaPrefabPath)
     };
 
+    [MenuItem("Tools/UniDoom/Temporary/Rebuild Prison Cells")]
     public static void Build()
     {
+        ConfigureBiancaAssets();
         var root = PrefabUtility.LoadPrefabContents(BasementPrefab);
         try
         {
@@ -81,7 +89,7 @@ internal static class PrisonCellLayoutBuilder
                     left ? leftBackingPrototype : rightBackingPrototype);
             }
 
-            CreateBlindEndWall(prison);
+            if (Teachers.Length % 2 != 0) CreateBlindEndWall(prison);
             UnityEngine.Object.DestroyImmediate(leftPrototype);
             UnityEngine.Object.DestroyImmediate(rightPrototype);
             if (leftSignPrototype != null) UnityEngine.Object.DestroyImmediate(leftSignPrototype);
@@ -209,7 +217,7 @@ internal static class PrisonCellLayoutBuilder
             t.name == "Estrado enferrujado" || t.name == "Colchão abandonado" ||
             t.name == "Banco de concreto" ||
             t.name.StartsWith("Fundo gasto - Cela ", StringComparison.Ordinal) ||
-            t.name == "Fechamento compacto após a cela 12" ||
+            t.name.StartsWith("Fechamento compacto após a cela", StringComparison.Ordinal) ||
             (t.name.Length == 2 && int.TryParse(t.name, out _)) ||
             t.name == "Worn custody sign backing").ToArray();
         foreach (var item in remove) UnityEngine.Object.DestroyImmediate(item.gameObject);
@@ -228,7 +236,8 @@ internal static class PrisonCellLayoutBuilder
         foreach (var name in new[] { "Exit to CampusExterior", "Return from campus", "Campus transfer door surround" })
         {
             var item = FindDirect(prison, name);
-            if (item != null) item.localPosition += new Vector3(0, 0, 1.6f);
+            if (item != null && item.GetComponent<UniDoom.Utils.ParallaxPortalView>() == null)
+                item.localPosition += new Vector3(0, 0, 1.6f);
         }
         foreach (var item in DirectChildren(prison))
             if (item.name.StartsWith("CUSTÓDIA", StringComparison.Ordinal) ||
@@ -245,7 +254,7 @@ internal static class PrisonCellLayoutBuilder
             float side = id % 2 == 1 ? -1f : 1f;
             float start = StartZ + ((id - 1) / 2) * CellWidth;
             if (item.name.StartsWith("Medkit - Cela", StringComparison.Ordinal))
-                item.localPosition = new Vector3(side * 2.4f, .015f, start + 1.25f);
+                item.localPosition = new Vector3(side * 2.4f, .046f, start + 1.25f);
             else if (item.name.StartsWith("Caixa de municao - Cela", StringComparison.Ordinal))
                 item.localPosition = new Vector3(side * 2.5f, .34f, start + 2.35f);
         }
@@ -258,6 +267,7 @@ internal static class PrisonCellLayoutBuilder
             float oldCenter = 5.05f + ((id - 1) / 2) * 5f;
             float newCenter = StartZ + ((id - 1) / 2) * CellWidth + CellWidth * .5f;
             group.localPosition += new Vector3(0, 0, newCenter - oldCenter);
+            group.gameObject.SetActive(false);
         }
     }
 
@@ -304,10 +314,83 @@ internal static class PrisonCellLayoutBuilder
         var source = DirectChildren(prison).FirstOrDefault(t => t.name == "Parede frontal" && t.localPosition.x > 0);
         if (source == null) return;
         var wall = UnityEngine.Object.Instantiate(source.gameObject, prison);
-        wall.name = "Fechamento compacto após a cela 12";
+        wall.name = $"Fechamento compacto após a cela {Teachers.Length - 1:00}";
         wall.transform.localPosition = new Vector3(1.55f, 1.7f, 24.8f);
         wall.transform.localRotation = Quaternion.identity;
         wall.transform.localScale = new Vector3(.25f, 3.4f, CellWidth);
+    }
+
+    private static void ConfigureBiancaAssets()
+    {
+        AssetDatabase.ImportAsset(BiancaSpritePath, ImportAssetOptions.ForceSynchronousImport);
+        var importer = AssetImporter.GetAtPath(BiancaSpritePath) as TextureImporter ??
+            throw new InvalidOperationException("Bianca sprite sheet not found at " + BiancaSpritePath);
+        importer.GetSourceTextureWidthAndHeight(out int width, out int height);
+        if (width != 1536 || height != 1024)
+            throw new InvalidOperationException($"Bianca sprite sheet must be 1536x1024, found {width}x{height}.");
+        importer.textureType = TextureImporterType.Sprite;
+        importer.spriteImportMode = SpriteImportMode.Multiple;
+        importer.spritePixelsPerUnit = 186.666667f;
+        importer.mipmapEnabled = false;
+        importer.alphaIsTransparency = false;
+        importer.filterMode = FilterMode.Bilinear;
+        importer.wrapMode = TextureWrapMode.Clamp;
+        importer.textureCompression = TextureImporterCompression.Uncompressed;
+        importer.maxTextureSize = 2048;
+        var textureSettings = new TextureImporterSettings();
+        importer.ReadTextureSettings(textureSettings);
+        textureSettings.spriteMeshType = SpriteMeshType.FullRect;
+        textureSettings.spriteExtrude = 1;
+        importer.SetTextureSettings(textureSettings);
+        var factories = new SpriteDataProviderFactories();
+        factories.Init();
+        var provider = factories.GetSpriteEditorDataProviderFromObject(importer);
+        provider.InitSpriteEditorDataProvider();
+        var old = provider.GetSpriteRects().FirstOrDefault(rect => rect.name == "bianca_Idle");
+        var spriteRect = new SpriteRect
+        {
+            name = "bianca_Idle",
+            rect = new Rect(192, 24, 144, 336),
+            alignment = SpriteAlignment.Custom,
+            pivot = new Vector2(.5f, .012f),
+            spriteID = old != null ? old.spriteID : GUID.Generate()
+        };
+        provider.SetSpriteRects(new[] { spriteRect });
+        provider.GetDataProvider<ISpriteNameFileIdDataProvider>().SetNameFileIdPairs(
+            new List<SpriteNameFileIdPair> { new("bianca_Idle", spriteRect.spriteID) });
+        provider.Apply();
+        importer.SaveAndReimport();
+
+        var sprite = AssetDatabase.LoadAllAssetsAtPath(BiancaSpritePath).OfType<Sprite>()
+            .FirstOrDefault(item => item.name == "bianca_Idle") ??
+            throw new InvalidOperationException("Bianca idle sprite was not imported.");
+        var audio = AssetDatabase.LoadAssetAtPath<AudioClip>(BiancaAudioPath) ??
+            throw new InvalidOperationException("Bianca audio not found at " + BiancaAudioPath);
+        var material = AssetDatabase.LoadAssetAtPath<Material>(TeacherBlackMaterialPath) ??
+            throw new InvalidOperationException("Teacher black-background material not found.");
+        var existing = AssetDatabase.LoadAssetAtPath<GameObject>(BiancaPrefabPath);
+        var teacher = existing != null ? PrefabUtility.LoadPrefabContents(BiancaPrefabPath) : new GameObject("Teacher-bianca");
+        try
+        {
+            teacher.name = "Teacher-bianca";
+            var renderer = teacher.GetComponent<SpriteRenderer>();
+            if (!renderer) renderer = teacher.AddComponent<SpriteRenderer>();
+            renderer.sprite = sprite;
+            renderer.sharedMaterial = material;
+            if (teacher.GetComponent<Billboard>() == null) teacher.AddComponent<Billboard>();
+            var source = teacher.GetComponent<AudioSource>();
+            if (!source) source = teacher.AddComponent<AudioSource>();
+            source.clip = audio;
+            source.playOnAwake = false;
+            source.loop = false;
+            source.spatialBlend = 0;
+            PrefabUtility.SaveAsPrefabAsset(teacher, BiancaPrefabPath);
+        }
+        finally
+        {
+            if (existing != null) PrefabUtility.UnloadPrefabContents(teacher);
+            else UnityEngine.Object.DestroyImmediate(teacher);
+        }
     }
 
     private static void WriteValidation(GameObject root)

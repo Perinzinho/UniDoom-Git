@@ -3,14 +3,15 @@
 ## Leitura rápida
 
 - Cena: `Assets/_Project/Scenes/Basement/Basement.unity`.
+- **Estado temporário:** as 14 celas começam fechadas, mas podem ser abertas com `E` sem chave durante a revisão. A reversão e as decisões sobre salas/chaves estão em [Basement-Celas-Pendencias.md](Basement-Celas-Pendencias.md).
 - Prefab principal: `Assets/_Project/Scenes/Basement/Prefabs/Basement.prefab`.
 - Cadeia carregada pelo jogo: `Basement.unity` → `BasementScenario.prefab` → `Basement.prefab`. A variante tem apenas dois overrides na área da prisão, ambos na continuação da parede do santuário; não sobrescreve o layout corrigido das celas.
 - Área das celas: `Assets/_Project/Scenes/Basement/Prison/`.
 - Arte da transição: `Assets/_Project/Scenes/Basement/Resources/Textures/UI/Transitions/Basement.png`, derivada da visão real de chegada `FromCampus` e tratada no mesmo padrão cinematográfico de `Cylinder`.
-- Quantidade atual: 13 celas e 13 professores.
-- Chaves: treze IDs próprios, um por cela, distribuídos entre Direito, Biblioteca e Bloco 4. A HUD lista todos os treze. Mapa de locais em [PrisonCellKeys.md](PrisonCellKeys.md).
+- Quantidade atual: 14 celas e 14 professores.
+- Chaves: os treze sprites numerados continuam preservados, mas só as cinco chaves de cela 4/5/6/10/11, na biblioteca, permanecem ativas. Os oito pickups antigos de Direito/Bloco 4 foram retirados ou convertidos em duas chaves de acesso à biblioteca; manutenção continua separada. A cela 14 de Bianca já possui ID de progressão, sem chave própria criada/distribuída. No modo temporário de revisão, as 14 celas abrem com `E` sem chave. Contrato conciliado em [PrisonCellKeys.md](PrisonCellKeys.md).
 - Ocupação: exatamente um professor por cela; cada porta referencia somente o professor e a voz da própria cela.
-- Módulo compacto: passo de **3,20 m**, com área livre aproximada de **3,00 × 3,48 m**. Sete celas ficam à esquerda e seis à direita; conjunto de 22,40 m ao longo do corredor. Folha móvel de aproximadamente 1,47 m e trecho fixo de aproximadamente 1,41 m, alinhados dentro de cada módulo. Divisórias de 20 cm; corredor central livre de aproximadamente 2,97 m.
+- Módulo compacto: passo de **3,20 m**, com área livre aproximada de **3,00 × 3,48 m**. Sete celas ficam em cada lado; conjunto de 22,40 m ao longo do corredor. Folha móvel de aproximadamente 1,47 m e trecho fixo de aproximadamente 1,41 m, alinhados dentro de cada módulo. Divisórias de 20 cm; corredor central livre de aproximadamente 2,97 m.
 
 ## Professores
 
@@ -21,20 +22,33 @@ O mapeamento salvo no prefab principal é:
 | 01 | Caio | `caio_line.wav` |
 | 02 | Fábio | `fabio_line.wav` |
 | 03 | Henrique | `henrique_line.wav` |
-| 04 | Matheus Santi (prefab anterior `Teacher-santi`) | `santi_line.wav` |
+| 04 | Cesar (prefab legado `Teacher-santi`) | `cesar_line.wav` |
 | 05 | Navarro | arquivo de voz ainda não fornecido |
 | 06 | Matheus Ferraroni | arquivo de voz ainda não fornecido |
 | 07 | Paulinho | `paulinho_line.wav` |
-| 08 | Rafa | `rafa.wav` |
-| 09 | Gustavo Camossi | `gustavo-camossi.wav` |
-| 10 | Matheus Santi | `matheus-santi.wav` |
-| 11 | Moacyr | `moacyr.wav` |
-| 12 | Querino | `querino.wav` |
-| 13 | William | `william.wav` |
+| 08 | Rafa | `rafa.wav` (conteúdo fornecido como `audio_rafa_professor.wav`) |
+| 09 | Gustavo Camossi | `gustavo_line.wav` |
+| 10 | Matheus Santi | `santi_line.wav` |
+| 11 | Moacyr | `moacyr_line.wav` |
+| 12 | Querino | `querino_line.wav` |
+| 13 | William | `william_line.wav` |
+| 14 | Bianca | `bianca_line.wav` |
 
 Cada `PrisonCellGate` referencia o transform do único professor de sua cela. `PrisonController` consulta o `AudioSource` desse transform ao aceitar a abertura; os clipes não tocam ao carregar a cena (`Play On Awake` desabilitado). Não atribua falas de outras pessoas às celas 05 e 06: elas devem permanecer sem clipe até os arquivos corretos serem fornecidos.
 
-As treze imagens originais mantêm seu canvas 1536 × 1024 e seus bytes. Cada pose parada usa recorte próprio com margem de quatro pixels e pivô nos pés; PPU ajustado para altura visível de aproximadamente 1,75 m. Os oito sprites RGB usam o material de remoção do fundo preto já existente. Os cinco sprites RGBA usam `Prison/Materials/TeacherTransparent.mat`, com alpha da imagem habilitado e remoção de preto desabilitada, preservando roupas e cabelos escuros. GUIDs e IDs dos sprites foram mantidos. As vozes foram normalizadas anteriormente como WAV PCM mono, 44,1 kHz; esta revisão visual não modifica áudios.
+Em 09/11/2026, as referências legada (`m_audioClip`) e atual (`m_Resource`) do `AudioSource` foram sincronizadas nos prefabs de Gustavo Camossi, Matheus Santi, Moacyr, Querino e William. Assim, a verificação `AudioSource.clip` usada ao abrir a cela resolve a mesma gravação identificada pelo professor, sem reutilizar falas entre celas. Navarro e Matheus Ferraroni continuam intencionalmente sem clipe.
+
+Na revisão das identidades, a cela 04 foi corrigida de uma duplicação de Matheus Santi para Cesar e passou a usar `cesar_line.wav`. A cela 12 mantém Querino e passou a usar `querino_line.wav`. O caminho legado `Teacher-santi.prefab` foi preservado para manter seu GUID; somente o nome do objeto, o vínculo de áudio e os consumidores foram corrigidos.
+
+Na mesma conferência auditiva indicada pelo usuário, Gustavo Camossi e William passaram a usar respectivamente `gustavo_line.wav` e `william_line.wav`, substituindo as gravações alternativas de nomes semelhantes que estavam ligadas aos prefabs.
+
+Após conferência auditiva do usuário, o conteúdo das seis gravações trocadas foi realocado para os arquivos semânticos usados pelos respectivos prefabs: Matheus Santi recebeu a gravação antes ligada a Querino; Cesar, a de Matheus; Querino, a de Cesar; Gustavo, a de Moacyr; Moacyr, a de William; e William, a de Gustavo. Caminhos, `.meta` e GUIDs foram preservados. `rafa.wav` mantém o conteúdo fornecido como `audio_rafa_professor.wav`. Bianca passou a usar `bianca_line.wav` na cela 14.
+
+As quatorze imagens originais mantêm seu canvas 1536 × 1024 e seus bytes. Cada pose parada usa recorte próprio e pivô nos pés; o PPU mantém altura visual próxima dos demais professores. Bianca usa o recorte `bianca_Idle` de 144 × 336 px, PPU 186,66667 e altura de 1,80 m, com o material compartilhado de remoção do fundo preto. Os demais sprites preservam seus materiais RGB/RGBA anteriores. GUIDs e IDs dos sprites foram mantidos.
+
+## Inclusão da Bianca — 09/11/2026
+
+A Unity importou `Global/Sprites/teachers/sprite-bianca-professora.png` sem alterar os bytes da imagem, criou `Prison/Prefabs/Teacher-bianca.prefab` com `SpriteRenderer`, `Billboard` e `AudioSource`, e reconstruiu o prefab principal. A cela 14 ocupa o módulo direito final, em paralelo à cela 13, sem ampliar o corredor. A validação registrou 14 `PrisonCellGate`, IDs únicos de 1 a 14, `Professor Bianca - Cela 14` e clipe `bianca_line`. O prefab foi validado fora de Play Mode; abertura, áudio e comparação visual dentro do jogo ainda precisam de teste manual.
 
 ## Regra de capacidade
 
@@ -86,3 +100,27 @@ Adicionado `Prison/Prefabs/OpenFoodCan.prefab`: lata de alimento aberta enferruj
 Modelo **open can (junk)** de **p0ss**, [OpenGameArt](https://opengameart.org/content/open-can-junk), CC0 1.0. Autor incluído em `CreditsContent.txt` e `Docs/Maps/creditos.md`, sem links nos créditos exibidos. Origem, licença, hashes e conversão em `Licenses/AssetSources/Basement/open-food-can.json`.
 
 Conferência estática de referências, IDs, malha e posicionamento. Unity, compilação, Play Mode, build, comparação visual, screenshots e vídeo não executados. Sem commit, push ou desligamento.
+
+## Padronização dos pickups — 09/11/2026
+
+As 11 caixas de munição e os 9 medkits adicionados ao prefab principal foram reduzidos e padronizados. Todas as caixas usam escala `4 × 3 × 1` (altura visual aproximada de 0,33 m), inclusive as duas caixas centrais antes maiores; após a revisão visual, todos os medkits usam `0,09 × 0,09 × 1` (altura visual aproximada de 0,48 m) para não parecerem pequenos demais diante das caixas. O pivô vertical dos kits foi compensado em 0,031 m para preservar o apoio. Posições horizontais, quantidades, valores de munição/cura, prefabs globais, GUIDs e demais mapas foram preservados.
+
+Conferência estática dos 20 overrides de escala e das referências dos prefabs. Unity, compilação, Play Mode, build e comparação visual não executados nesta alteração.
+
+
+## Portal com vista do portão — 09/11/2026
+
+`Exit to CampusExterior` foi trazido do antigo Z=27,25 (atrás da parede) para Z=26,35 no espaço da prisão. A janela oval mede 2,50 × 3,15 m, fica centrada em Y=1,65 e em Z=26,425, a 2,5 cm da face acessível da parede do registro (Z=26,45). O trigger mede 2,15 × 2,70 × 0,22 m; a chegada `Return from campus` foi preservada. A conexão permanece `CampusExterior/FromPrison`.
+
+`Global/Scripts/Utils/ParallaxPortalView.cs` usa perspectiva assimétrica conforme a posição dos olhos. A prévia persistente `Prison/Prefabs/CampusGatePortalPreview.prefab` reutiliza as malhas/texturas da entrada UNIMAR, com recortes persistentes das três malhas que também continham a porta/antepátio da prisão, materiais de iluminação simples e uma malha persistente para o letreiro. O piso reaproveita a textura de asfalto existente. A prévia final tem 812 triângulos e 11 renderers. Não carrega a cena exterior, gameplay, física ou luzes do campus. A textura é 384 × 512, sem MSAA, mipmaps, HDR, sombras, depth/color copies ou pós-processamento; atualização limitada a 30 Hz, somente com mudança da posição dos olhos, dentro do enquadramento frontal e até 26 m. Prévia isolada na camada 31, com renderers ocultos fora da renderização manual; recursos liberados ao desativar o componente. `SceneTransitionDoor` não adiciona os anéis antigos quando encontra a janela nova.
+
+Validação desta alteração: compilação na Unity 6000.5.7f1, carregamento da cena real com sua cadeia de prefabs, preservação de todos os fileIDs anteriores do prefab principal, capturas centrais/laterais e diferença de pixels entre esquerda/direita. Verificados zero renders extras com câmera parada, portal fora do enquadramento ou além do alcance, e liberação da textura ao desativar. Em Play Mode, confirmados renderização por LateUpdate, atualização após deslocamento lateral do jogador, ausência dos anéis antigos, travessia por contato com o CharacterController até CampusExterior e limpeza da prévia ao descarregar a prisão. Build e perfil de CPU/GPU/FPS não executados; não há ganho de desempenho medido. As capturas de revisão são temporárias, fora de Assets.
+
+A ferramenta existente `PrisonCellLayoutBuilder` preserva a posição de saídas que já possuam `ParallaxPortalView`, evitando deslocar novamente a janela para trás da parede ao reconstruir as celas. Durante o teste de travessia, o aquecimento global `Shader.WarmupAllShaders` em `DoorReloadScreen` emitiu mensagens `Keyword state size mismatch` de shaders URP Lit/Unlit; a travessia concluiu. A origem dessas mensagens não foi investigada e nenhum ajuste na pipeline foi feito nesta tarefa. As ferramentas temporárias criadas para esta integração foram retiradas após verificar assets persistentes e referências; a prévia funciona sem elas.
+
+
+## Remoção dos suprimentos das celas — 09/11/2026
+
+A pedido do usuário, removidas do prefab principal 6 instâncias de `Medkit - Cela` e 6 de `Caixa de municao - Cela`, das celas 1–6. Todas as 14 celas ficaram sem kits e munição posicionados. Preservados os suprimentos do corredor de custódia, da arena e do santuário, os prefabs compartilhados, professores, chaves, portas e portal. A ferramenta de layout existente não gera esses pickups.
+
+Verificadas referências serializadas às instâncias antes da remoção. Cena real carregada na Unity 6000.5.7f1 com sua cadeia de prefabs: zero kits/munição dentro das celas, 14 portas e um portal. Compilação/importação executadas; Play Mode, build e comparação visual não executados nesta alteração. Nenhum asset de item compartilhado foi excluído; as instâncias podem ser recolocadas a partir dos prefabs globais. A ferramenta temporária desta tarefa foi retirada.

@@ -20,3 +20,7 @@ Com a composição cinematográfica atual, a duração estimada em 1920 × 1080 
 ## HUD da espingarda — 09/11/2026
 
 A definição da espingarda usa `hudBottomCropFraction = 0.16` para ocultar abaixo da tela o corte inferior da arma visto na imagem fornecida. Proporção, encaixe por resolução e sprites originais preservados; escala da Image normalizada. Implementação salva, sem executar jogo ou gerar capturas.
+
+## Contador de FPS — 09/11/2026
+
+A tela `OPÇÕES`, acessível pelo menu inicial e pelo menu de pausa, possui a opção `Mostrar FPS`. Ela fica desativada por padrão e é salva em `PlayerPrefs` pela chave `UniDoom_ShowFPS`. Quando ativada, exibe a média de quadros por segundo no canto superior direito somente durante o gameplay; menus, documentos, interações e carregamentos ocultam o indicador. A leitura usa tempo não escalado e é atualizada a cada meio segundo.
