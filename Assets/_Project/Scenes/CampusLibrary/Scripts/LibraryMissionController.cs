@@ -58,6 +58,9 @@ namespace UniDoom.CampusLibrary
             panel = GetComponent<LibraryGeneratorPanel>();
             if (!panel) panel = gameObject.AddComponent<LibraryGeneratorPanel>();
             panel.Configure(this);
+            var modelVariants = GetComponent<LibraryGeneratorModelVariants>();
+            if (!modelVariants) modelVariants = gameObject.AddComponent<LibraryGeneratorModelVariants>();
+            modelVariants.Configure();
             if (feedback) feedback.ignoreListenerPause = true;
             Refresh();
         }
@@ -104,6 +107,7 @@ namespace UniDoom.CampusLibrary
             {
                 var target = hit.collider.GetComponentInParent<LibraryMissionTarget>();
                 if (target && target.Mission == this) return target;
+                if (IsGeneratorSurface(hit.collider)) return generator;
             }
             // The player only turns horizontally. Tabletop items still require facing,
             // the original reach and a clear eye-to-object line, without pitching the camera.
@@ -127,7 +131,16 @@ namespace UniDoom.CampusLibrary
             var camera = view ? view : Camera.main;
             if (!camera || Vector3.Distance(camera.transform.position, target.transform.position) > distance) return false;
             if (!Physics.Linecast(camera.transform.position, target.transform.position, out var hit, ~0, QueryTriggerInteraction.Ignore)) return true;
-            return hit.collider.GetComponentInParent<LibraryMissionTarget>() == target;
+            if (hit.collider.GetComponentInParent<LibraryMissionTarget>() == target) return true;
+            return target == generator && IsGeneratorSurface(hit.collider);
+        }
+        bool IsGeneratorSurface(Collider collider)
+        {
+            if (!collider || !generator) return false;
+            if (collider.GetComponentInParent<LibraryMissionTarget>() == generator) return true;
+            string objectName = collider.gameObject.name;
+            return objectName == "Library backup generator" || objectName == "Generator ignition control pedestal" ||
+                objectName == "Generator install and ignition switch" || objectName.StartsWith("Generator model - ");
         }
         string Prompt(LibraryMissionTarget target)
         {
@@ -140,7 +153,8 @@ namespace UniDoom.CampusLibrary
                 case LibraryTargetKind.FuseSocket:
                     return key + "Inserir os fusíveis diretamente no gerador";
                 default:
-                    return key + (LibraryMissionProgress.Stage == LibraryMissionStage.FusesCollected ? "Inserir 3 fusíveis no gerador" :
+                    return key + (LibraryMissionProgress.Stage == LibraryMissionStage.FusesCollected ?
+                        $"Inserir fusível no gerador  ({LibraryMissionProgress.InstalledFuseCount}/3)" :
                         LibraryMissionProgress.Stage == LibraryMissionStage.FusesInstalled ?
                         "Abrir puzzle do gerador  /  " + LibraryMissionProgress.SequenceStep + "/7" :
                         LibraryMissionProgress.Stage == LibraryMissionStage.PuzzleSolved ? "Ligar gerador" :
@@ -181,7 +195,9 @@ namespace UniDoom.CampusLibrary
                     if (LibraryMissionProgress.Stage == LibraryMissionStage.FusesCollected && LibraryMissionProgress.Install())
                     {
                         Sound(buttonSound);
-                        Notify("3 fusíveis inseridos no gerador. Pressione E novamente para abrir o puzzle.");
+                        int installed = LibraryMissionProgress.InstalledFuseCount;
+                        Notify(installed == 3 ? "3 fusíveis inseridos no gerador. Pressione E novamente para abrir o puzzle." :
+                            $"Fusível inserido no gerador ({installed}/3). Pressione E para inserir o próximo.");
                         return true;
                     }
                     if (LibraryMissionProgress.Stage == LibraryMissionStage.FusesInstalled)
