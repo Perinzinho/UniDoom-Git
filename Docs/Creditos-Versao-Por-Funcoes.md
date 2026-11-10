@@ -192,3 +192,7 @@ Rascunho: preencher os nomes em cada área, repetindo quem participou de mais de
 Dois sprites criados para o projeto com a ferramenta integrada `imagegen`: chave de Direito em latão com etiqueta ocre e chave do Bloco 4 em aço com etiqueta azul. Sem modelo ou sprite de terceiros baixado. Prompts, caminhos e SHA-256: `Licenses/AssetSources/CampusLibrary/library-access-key-sprites.json`.
 
 Cadeados físicos da entrada: geometria criada para o projeto, com uma mesh de arco em U compartilhada e primitivas da Unity, reutilizando materiais já existentes. Sem download de modelo de terceiros. Proveniência: `Licenses/AssetSources/CampusLibrary/library-padlocks.json`.
+
+## Correções da biblioteca — 10/11/2026
+
+Sprite do fusível criado para o projeto com `imagegen` integrado, com transparência. Placas e bilhetes compostos com a fonte existente **Liberation Sans** (OFL). Livros adicionais reaproveitam **Book Encyclopedia Set 01**, de **John Malcolm / Poly Haven**, CC0, e os materiais já importados. Divisórias e oficina reutilizam a geometria e os materiais do projeto; nenhum modelo externo novo. Prompt, caminhos e hashes: `Licenses/AssetSources/CampusLibrary/corrections-2026-11-10.json`.

@@ -2,6 +2,8 @@
 
 Implementação de 09/11/2026 baseada no README fornecido pelo usuário, no projeto existente, Unity 6000.5.7f1 / URP 17.5.0. A biblioteca antiga `Scenes/Library` é independente.
 
+Revisão de **10/11/2026**, solicitada em [correcoesBiblioteca.md](../correcoesBiblioteca.md): estantes alinhadas/preenchidas, inscrições em placas, fusíveis em sprite, área dos funcionários ampliada, instalação manual, quatro zumbis e três bilhetes. Os comandos respeitam a câmera horizontal do jogador. Validações desta revisão são registradas na fila; os testes de 09/11 abaixo são históricos.
+
 ## Cenário persistente
 
 Cena: `Assets/_Project/Scenes/CampusLibrary/CampusLibrary.unity`, instância de `Prefabs/CampusLibrary.prefab`. A ala **Emergency mission - annex and maintenance** está salva nesse prefab, sem geração de layout em runtime e sem overrides manuais na cena.
@@ -9,22 +11,30 @@ Cena: `Assets/_Project/Scenes/CampusLibrary/CampusLibrary.unity`, instância de 
 - Acréscimo ao norte de aproximadamente **790 m²**, cerca de **33%** sobre a planta anterior, até `z ≈ 44,3`. Envelope nominal aproximado **56 × 56,5 m**; área bruta estimada, sem descontar móveis/paredes.
 - Passagem de **4 m**, centrada em `x = 18,5`, na parede de `z = 30,3`, altura livre **3,25 m**. Recorte de dois meshes exclusivos e adaptação do collider da parede, com identidades preservadas.
 - **12 estantes**, **6 mesas**, **24 cadeiras**, livros, notas e luminárias adicionais. Totais de estantes/cadeiras: **74 / 119**. Tampos a 0,96 m, com circulação entre os grupos.
-- Manutenção interna em aproximadamente `x = -27…-17`, `z = 36…44,3`. Acesso de **2,20 × 3,20 m**, em `(-21,5; 0; 36)`, gerador, sete terminais, três encaixes e esquema de partida.
+- Área restrita em aproximadamente `x = -27,05…-14`, `z = 34…44,3`: **13,05 × 10,3 m**, cerca de 134 m² brutos, antes aproximadamente 83 m². Hall de funcionários ao sul; divisória em `z = 38,8` separa sala do gerador a oeste e oficina a leste. Entrada **2,20 × 3,20 m**, em `(-21,5; 0; 34)`; passagens internas com 2 m / 1,6 m de largura e 3,2 m de altura. Bancada na oficina, quadro no hall, luminárias normal/vermelha ligadas aos estados existentes.
 - Entrada externa, chegada `FromCampusExterior`, saída, degraus, sanitários, foto, chaves numeradas e mobiliário anterior preservados. Sem segundo andar ou escada de subsolo.
-- Materiais, cube mesh persistente, estantes, cadeiras, fontes e sons reutilizados. Nenhum pacote, download ou mídia externa acrescentado; fontes/licenças anteriores de CampusLibrary continuam aplicáveis.
+- Materiais, cube mesh persistente, estantes, cadeiras, fontes e sons reutilizados. Sprite de fusível gerado com imagegen integrado; atlas de placas e três bilhetes compostos com Liberation Sans já existente. Sem download de modelo ou pacote. Créditos e hashes em `Licenses/AssetSources/CampusLibrary/corrections-2026-11-10.json`.
 
 ## Progressão e controles
 
-Olhar e usar **E** ou **X do controle**, com alcance de 2,8 m, raycast, obstáculo, jogador vivo, gameplay ativo e bloqueio de entradas repetidas. O painel permanece no mundo; não captura cursor/movimento ou abre um menu.
+Girar a visão horizontal e usar **E** ou **X do controle**, alcance de 2,8 m, jogador vivo, gameplay ativo e bloqueio de entradas repetidas. Ignição, sete botões e porta-fusíveis a **1,85 m**, compatíveis com a altura dos olhos. O porta-fusíveis fica à esquerda do painel, em `(-25,25; 1,85; 43,65)`, para não disputar a mira vertical com os botões. Fusíveis e bilhetes sobre móveis aceitam direção horizontal em cone de aproximadamente 12°, distância original e linha de visão dos olhos ao objeto: não exigem inclinar a câmera nem permitem atravessar obstáculos. A lista desses alvos é armazenada uma vez na inicialização.
+
+O painel permanece no mundo. Bilhetes usam o leitor de documentos já existente, com pausa, cursor e retorno ao jogo; nenhum sistema paralelo de inventário/UI.
 
 1. `NotDiscovered`: três fusíveis inteiramente inativos. Luz normal desligada, vermelhas com pulsação suave de 0,55 Hz e ambiente mínimo estável.
 2. Proximidade do gerador: `SearchingFuses`, toast inferior e ativação de exatamente três IDs **0, 1 e 2**. Reaproximar-se não reinicia nada.
-3. Cada coleta registra seu bit exclusivo e desativa somente aquele item; IDs inválidos/repetidos são recusados. Terceiro item: `FusesCollected`, sem instalação automática.
-4. Voltar ao comando frontal e usar **Instalar fusíveis**: `FusesInstalled`, três indicadores preenchidos e botões liberados.
+3. Cada coleta registra seu bit exclusivo e desativa somente aquele item; IDs inválidos/repetidos são recusados. Aviso imediato **Fusível coletado (N/3)** durante 4,5 s, independente do foco e da fila de notificações. Terceiro item: `FusesCollected`, sem instalação automática, com orientação para retornar.
+4. Usar **E — Instalar 3 fusíveis** no porta-fusíveis separado: `FusesInstalled`, três indicadores preenchidos e botões liberados. A ignição não instala os itens.
 5. Sequência inicial **3 → 1 → 5 → 2 → 7 → 4 → 6**, em sete botões físicos numerados. Erro reinicia somente a tentativa. Segmentos verdes mostram avanço. Solução travada em `PuzzleSolved`.
 6. Usar **Ligar gerador** no comando frontal: `GeneratorOn`, vermelhas apagadas, luz/ambiente normais restaurados e reforços encerrados. Resolver o painel não aciona o gerador sozinho.
 
-Campo `sequence` de `LibraryMissionController`: sete números distintos de 1 a 7. A pista física e a leitura contextual acompanham esse campo. O esquema está na parede leste da manutenção; E também mostra a ordem no toast existente.
+Campo `sequence` de `LibraryMissionController`: sete números distintos de 1 a 7. **A ordem não é exibida ao jogador.** Cada botão tem número e função: 1 aquecer, 2 rotação, 3 admissão, 4 sincronia, 5 pressão, 6 carga, 7 excitação. Três registros dão relações entre operações, sem lista numérica pronta; as relações determinam uma única ordem. Alterar a sequência exige revisar as pistas, que não são geradas automaticamente a partir da resposta.
+
+| Bilhete | Local | Conteúdo funcional |
+|---|---|---|
+| 0 — Anotação do plantão | Quadro no hall restrito, `(-25,9; 1,8; 34,21)` | Admissão inicia; aquecimento vem depois; pressão antes da rotação |
+| 1 — Ocorrência da oficina | Bancada, `(-14,7; 1,005; 41,6)` | Aquecimento antes da pressão; rotação antes da excitação; excitação antes da sincronia |
+| 2 — Aviso ao próximo turno | Mesa pública, `(-10,7; 1,025; 37,6)` | Carga encerra; sincronia imediatamente antes; ignição é uma ação separada |
 
 | ID | Local | Pivô do fusível |
 |---|---|---|
@@ -49,7 +59,7 @@ Destaque luminoso moderado acompanha o coletável, inativo antes da descoberta. 
 
 `CampusLibraryZombie.prefab` é variante do `Global/Prefabs/Enemy/Enemy.prefab`: reutiliza sprite padrão, animações, saúde, dano, morte e loot, acrescentando agente NavMesh e restrição local. Aparências alternativas desabilitadas somente nessa variante mantêm a cápsula normal.
 
-Entrada dentro da porta, `(0; 1,64; -8,5)`. Padrão **1 vivo**, configurável entre 1 e 2; reposição **4 segundos** após morte. Usa `EnemySpawnSafety`, mínimo **8 m**, câmera/visibilidade e NavMesh. Ponto inseguro aguarda; mortes repetidas não abrem slots extras. Corpos desses reforços removidos após 18 s. Sobreviventes continuam ativos após a energia; novos reforços param.
+Entrada original dentro da porta, `(0; 1,64; -8,5)`, preservada; três marcadores adicionais próximos de `(-8; 0; 23)`, `(18,5; 0; 32,5)` e `(3; 0; 40)`, ajustados ao NavMesh. Padrão do prefab **4 vivos**, configurável entre 1 e 4; reposição **4 segundos** após morte. Tenta os pontos em rodízio com `EnemySpawnSafety`, mínimo **8 m** sobre a posição efetiva de navegação, câmera/visibilidade e exclusão da área segura. Pontos inseguros aguardam; mortes repetidas não abrem slots extras. Saúde, dano e velocidade originais. Corpos desses reforços removidos após 18 s. Sobreviventes continuam ativos após a energia; novos reforços param.
 
 Proteção da manutenção:
 
