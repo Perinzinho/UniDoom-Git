@@ -24,7 +24,7 @@ A entrada pelo CampusExterior exige **as duas chaves de acesso à biblioteca**, 
 | Direito | Sorteada por partida pelos pontos já configurados em LawSchool; posição mantida ao retornar ao prédio. Alarme e manutenção preservados | `campus-library-law-school`; latão, etiqueta ocre “BIBLIOTECA / DIREITO” |
 | Bloco 4 | Recompensa na sala 423, atrás da porta com senha; exige puzzle resolvido e porta totalmente aberta | `campus-library-block-4`; aço, etiqueta azul “BIBLIOTECA / BLOCO 4” |
 
-A porta externa recebe chapa metálica com **duas fechaduras identificadas**, os dois desenhos de chave e contador **0/2 → 1/2 → 2/2**. Cada indicador responde à sua chave. Uma travessa e um bloqueio sólido permanecem enquanto falta alguma; ambos são liberados com as duas. `CampusLibraryEntranceLock` implementa o guard já aceito por `SceneTransitionDoor`; nenhum sistema paralelo de inventário ou carregamento foi criado.
+A apresentação atual da porta externa usa **somente dois cadeados físicos**, sem placa de requisitos, ícones de chave, contador, indicadores coloridos ou nomes dos blocos. Cada chave de acesso retira o cadeado correspondente; a barreira sólida permanece enquanto faltar alguma. A até 2,5 m da barreira, aparece o aviso **“Porta trancada, você precisa de uma chave.”** enquanto a entrada estiver bloqueada. O aviso desaparece ao se afastar, liberar a entrada, pausar, abrir menus, morrer ou iniciar uma transição. `CampusLibraryEntranceLock` implementa o guard já aceito por `SceneTransitionDoor`; nenhum sistema paralelo de inventário ou carregamento foi criado.
 
 Conforme a resposta explícita do usuário, as antigas chaves de cela **1/2/3/9**, em Direito, e **7/8/12/13**, no Bloco 4, foram retiradas do gameplay. Os dois pickups principais foram convertidos para acesso; os seis adicionais foram desativados, com objetos/fileIDs preservados. **Não foram transferidas para a biblioteca.** As cinco chaves que já estavam na biblioteca permanecem nesta rodada. O gerador e a mecânica que abrirão as celas serão implementados depois; os oito IDs retirados ainda não têm nova forma de abertura.
 
@@ -32,7 +32,13 @@ Sprites finais: `Global/Textures/Pickups/LibraryAccessLawSchool.png` e `LibraryA
 
 As mudanças foram aplicadas às **cenas jogáveis e aos prefabs independentes** de Direito, Bloco 4 e CampusExterior. A cena independente de LawSchool não depende do prefab para receber a mudança. O interior e o layout da biblioteca foram preservados.
 
-### Verificação do acesso — 09/11/2026
+### Revisão dos cadeados e do aviso — 09/11/2026
+
+O conjunto anterior foi desativado na cena e no prefab do exterior, preservando seus fileIDs. Os cadeados usam o material existente `Weathered campus steel`, detalhes escuros compartilhados e uma única mesh persistente de arco em U: `CampusExterior/Meshes/LibraryPadlockShackle.asset`. Não houve download de modelos ou mudança nos sprites dos pickups, locais das chaves, exigência das duas chaves, interior ou destinos dos portais. A mensagem não revela a localização das chaves. O desenho do aviso segue o padrão de `LawSchoolExitLock`, sem pausar o jogo.
+
+Validação desta revisão: compilação na Unity 6000.5.7f1; cena e prefab reabertos, sem textos/sprites ativos no conjunto da porta. Cinco inventários isolados aplicados ao componente real (nenhuma chave, cada chave separada, ambas e somente chaves antigas de cela), conferindo cadeados, barreira e aviso perto/longe; somente ambas liberam a entrada. Capturas de edição em 1600 × 900, FOV 50°, `output/Biblioteca-Cadeados-{0,3}.png`; comparação visual executada. O aviso foi verificado pela propriedade `WarningVisible`, sem captura do HUD em Play Mode. Não foram executados Play Mode, percurso real, build ou benchmark nesta revisão. Os testes da apresentação anterior abaixo são históricos.
+
+### Verificação inicial do acesso — 09/11/2026
 
 Unity 6000.5.7f1, URP do projeto, Windows/D3D11, modo de edição. Cenas e prefabs de Direito, Bloco 4 e CampusExterior reabertos; componentes e referências do novo acesso conferidos.
 

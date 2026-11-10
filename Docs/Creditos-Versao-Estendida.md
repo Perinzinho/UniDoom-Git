@@ -164,3 +164,5 @@ Obrigado por jogar UniDoom.
 ## Sprites das chaves de acesso à biblioteca
 
 Dois sprites criados para o projeto com a ferramenta integrada `imagegen`: chave de Direito em latão com etiqueta ocre e chave do Bloco 4 em aço com etiqueta azul. Sem modelo ou sprite de terceiros baixado. Prompts, caminhos e SHA-256: `Licenses/AssetSources/CampusLibrary/library-access-key-sprites.json`.
+
+Cadeados físicos da entrada: geometria criada para o projeto, com uma mesh de arco em U compartilhada e primitivas da Unity, reutilizando materiais já existentes. Sem download de modelo de terceiros. Proveniência: `Licenses/AssetSources/CampusLibrary/library-padlocks.json`.
