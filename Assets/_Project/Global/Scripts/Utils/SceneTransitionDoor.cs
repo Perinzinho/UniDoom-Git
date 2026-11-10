@@ -36,7 +36,8 @@ namespace UniDoom.Utils
             if (gameObject.scene.name == "CampusBlock4" && destinationScene == "CampusExterior")
                 BuildExitBacking();
             if (gameObject.scene.name == "Basement" && destinationScene == "CampusExterior" &&
-                !GetComponent<PrisonCampusPortal>()) gameObject.AddComponent<PrisonCampusPortal>();
+                !GetComponent<ParallaxPortalView>() && !GetComponent<PrisonCampusPortal>())
+                gameObject.AddComponent<PrisonCampusPortal>();
             if (gameObject.scene.name == "CampusBlock4" && destinationScene == "CampusExterior")
                 foreach (var root in gameObject.scene.GetRootGameObjects())
                     foreach (var renderer in root.GetComponentsInChildren<MeshRenderer>())

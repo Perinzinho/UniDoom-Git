@@ -236,7 +236,8 @@ internal static class PrisonCellLayoutBuilder
         foreach (var name in new[] { "Exit to CampusExterior", "Return from campus", "Campus transfer door surround" })
         {
             var item = FindDirect(prison, name);
-            if (item != null) item.localPosition += new Vector3(0, 0, 1.6f);
+            if (item != null && item.GetComponent<UniDoom.Utils.ParallaxPortalView>() == null)
+                item.localPosition += new Vector3(0, 0, 1.6f);
         }
         foreach (var item in DirectChildren(prison))
             if (item.name.StartsWith("CUSTÓDIA", StringComparison.Ordinal) ||
