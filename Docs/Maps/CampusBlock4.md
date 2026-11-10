@@ -15,7 +15,7 @@ Atualizado: **2026-11-08**, revisão de [correcoesbloco4.md](correcoesbloco4.md)
 - Paleta laranja/azul conservada. Piso terrazzo e reboco padronizado reutilizam a base visual de Direito, em materiais exclusivos do Bloco 4. Paredes contínuas junto às lousas; janelas transparentes de observação restauradas nas frentes, ao lado das portas.
 - Quatro longarinas e quatro vasos do hall encostados às paredes, com folga geométrica de **15 mm**. Bancos mantêm orientação e escala; vasos girados para acomodar as folhagens. O vaso antes diante da secretaria foi levado para `z = −25,5`, junto à parede oeste perto da entrada; balcão, foto/símbolos e cruzamentos dos corredores livres.
 
-- Pisos: 129 colisores ativos com tag `Eco` e superfície `Interior`. Energia: primeiro evento em 6–10 s, seguintes em 12–22 s, apagão de 2–4 s; 199 luzes e 182 difusores. Chave de acesso à biblioteca somente na recompensa do puzzle da 423; antigas chaves de cela retiradas. Contrato compartilhado: [PrisonCellKeys.md](PrisonCellKeys.md).
+- Pisos: 129 colisores ativos com tag `Eco` e superfície `Interior`. Energia: primeiro evento em **30–45 s**, seguintes em **60–90 s** após restaurar a energia; apagão de 2–4 s. As cinco pistas continuam mudando no apagão. 199 luzes e 182 difusores. Chave de acesso à biblioteca somente na recompensa do puzzle da 423; antigas chaves de cela retiradas. Contrato compartilhado: [PrisonCellKeys.md](PrisonCellKeys.md).
 
 ## Portas, catracas e identificação
 
@@ -45,7 +45,7 @@ Símbolos e números aparecem **dentro das telas**, sem placas acima dos monitor
 
 `Block4Keypad` conserva interação, pausa, teclado/controle, solução e restauração do controle. A interface agora representa uma caixa metálica com visor LCD, parafusos, indicadores e teclas. Erro: somente **“Senha incorreta”**, sem indicar onde procurar pistas. O estado variável do painel físico continua dinâmico; o HUD não foi aberto em execução.
 
-`Block4PowerFluctuation` pertence somente a este mapa. Primeiro evento em **12–24 s**, próximos em **35–75 s**, pisca e apaga por **2–4 s**, mantendo iluminação residual pontual. Restaura intensidades e propriedades dos difusores, suspende a contagem nos menus e restaura ao desabilitar. Referências salvas no prefab; comportamento não executado em jogo.
+`Block4PowerFluctuation` pertence somente a este mapa. Primeiro evento em **30–45 s**, próximos em **60–90 s** após restaurar a energia; pisca e apaga por **2–4 s**, mantendo iluminação residual pontual. Restaura intensidades e propriedades dos difusores, suspende a contagem nos menus e restaura ao desabilitar. Defaults do script e valores salvos no prefab atualizados em conjunto. Referências preservadas; comportamento não executado em jogo.
 
 `Block4PuzzleProgress` preserva porta e chave na sessão. A chave não reaparece depois da coleta. A espingarda segue o pickup global: o objeto do cenário pode reaparecer na recarga, enquanto a arma carregada pertence ao player persistente. Sem inventário paralelo ou gravação do puzzle em disco.
 
@@ -96,3 +96,9 @@ Saída: materiais da fachada de entrada passam a dupla face por instâncias loca
 Primeira falha em 6–10 s, próximas em 12–22 s; apagão de 2–4 s preservado. Cada apagão completo redistribui os cinco pares símbolo/número conforme as regras existentes. A saída recebe fechamento visual atrás do gatilho para ocultar o vazio, sem colisão extra ou alteração do destino. Sem Unity, jogo, testes, previews, capturas ou vídeos.
 
 Verificação do acesso de 09/11: cena e prefab reabertos, uma recompensa de acesso à biblioteca, zero chaves de cela ativas, referências da porta/painel e trigger preservadas. Sprite azul novo e texto de inventário atualizados. Conferência de edição; sem coleta real, senha por input ou novo Play Mode. [Resultados do acesso](CampusLibrary.md#verificação-do-acesso--09112026).
+
+## Energia menos frequente — 09/11/2026
+
+O primeiro evento passou de 6–10 s para **30–45 s** após carregar o componente. A pausa entre o fim de um evento e o início do seguinte passou de 12–22 s para **60–90 s**. A sequência de piscadas, o apagão de 2–4 s e a redistribuição aleatória dos cinco símbolos durante o apagão foram preservados; não foi criada uma segunda contagem de troca de pistas. Código e valores serializados do prefab concordam, e a cena não possui overrides desses intervalos.
+
+Conferência estática dos campos, evento `BlackoutStarted` e referências; somente o componente de energia foi alterado no prefab, mantendo todos os IDs. Compilação C# isolada passou sem erros, com avisos preexistentes. Sem abrir Unity, executar jogo/Play Mode, build, capturas, commit ou push nesta alteração. Tempos das revisões anteriores acima são históricos.

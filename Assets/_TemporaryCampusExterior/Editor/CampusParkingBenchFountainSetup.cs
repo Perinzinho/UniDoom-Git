@@ -31,7 +31,8 @@ public static class CampusParkingBenchFountainSetup
         var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
         var parking = FindSceneTransform(scene, "Street Parking Bays - 12")
             ?? throw new InvalidOperationException("Street Parking Bays - 12 was not found.");
-        var parkingFilter = parking.GetComponent<MeshFilter>() ?? parking.gameObject.AddComponent<MeshFilter>();
+        var parkingFilter = parking.GetComponent<MeshFilter>();
+        if (!parkingFilter) parkingFilter = parking.gameObject.AddComponent<MeshFilter>();
         parkingFilter.sharedMesh = BuildParkingMesh();
 
         var landscaping = FindSceneTransform(scene, "Campus Landscaping Additions")

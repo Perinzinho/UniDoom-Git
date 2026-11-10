@@ -7,6 +7,7 @@ Atualizado: **2026-11-08**. Estado: chave sorteada por partida, placas gastas e 
 ## Leitura rápida
 
 - **Fonte jogável:** `LawSchool.unity` contém o prédio desembrulhado, independente de `Prefabs/LawSchool.prefab`. Alterar somente esse prefab não altera o mapa carregado pelo jogo. Conferir e corrigir a cena real em mudanças de gameplay.
+- Manutenção 104: sem a chave específica, aproximar-se a até 2,5 m do vão exibe **“A porta está trancada”**. O aviso some ao obter a chave, afastar-se ou sair do gameplay; o bloqueio físico continua dependendo da chave. Distância salva tanto na cena independente quanto no prefab.
 - Unity **6000.5.7f1**, URP **17.5.0**, Windows/D3D12. Confirme versões nos arquivos do projeto somente se mudaram.
 - Interior térreo com hall central, quatro corredores, **36 salas de aula**, manutenção 104 com quadro de energia e ferramentas, quatro banheiros compartilhados entre pares de corredores, secretaria, uma coordenação, copa e auditório. As contagens de revisões anteriores são históricas.
 - A ampliação anterior de 2× recebeu **escala uniforme adicional de 1,25× em todo o bloco**, incluindo arquitetura, mobiliário, portas, placas e sanitários. A implantação ocupa aproximadamente **169 m × 100 m**. O prefab do player foi preservado.
@@ -451,3 +452,9 @@ Conferência por PNG/importador/referências e arrays serializados. Sem abrir Un
 Validação sem Editor: compilação C# isolada da lista real de fontes/referências de `Assembly-CSharp`, sem erros; apenas avisos preexistentes. Harness com os métodos reais extraídos e dublês de cena/apresentação passou nas 120 ordens das cinco chaves, incluindo 60 desligamentos antes de obter a chave 1, bloqueio sem manutenção, duplicatas, persistência e pickups em outros prédios. Não substitui teste dentro do jogo. Unity, Play Mode, build, capturas, commit, push e desligamento não executados; temporários de compilação/teste removidos ao concluir.
 
 Verificação do acesso de 09/11: cena independente e prefab reabertos, uma chave de biblioteca com 33 pontos, zero chaves de cela ativas e manutenção preservada. Componentes/IDs e sprites conferidos na Unity em modo de edição; sem nova coleta/alarme em Play Mode. Resultados completos na [ficha da biblioteca](CampusLibrary.md#verificação-do-acesso--09112026).
+
+## Aviso de proximidade da manutenção — 09/11/2026
+
+`LawSchoolMaintenanceAccess` usa o collider sólido já referenciado em `entranceBarrier` para medir a distância ao jogador em mundo. Sem `law-school-maintenance`, exibe o texto exato **“A porta está trancada”** a até 2,5 m. Considera o centro do `CharacterController`, com fallback para o transform do player. O aviso fica oculto com chave, à distância, em pausa/menu, durante morte/carregamento, em outra cena ativa ou ao desabilitar o componente. Caixa de texto alinhada ao padrão de avisos existente, sem novo Canvas ou textura.
+
+Somente o campo `warningDistance` foi acrescentado aos componentes existentes na cena jogável e no prefab; IDs e referências preservados. Porta, barreira, distribuição da chave e alarme não foram alterados. Compilação C# isolada de `Assembly-CSharp` passou sem erros, com avisos preexistentes; referências e campos serializados conferidos. Sem iniciar Unity, abrir cenas, executar jogo/Play Mode, build ou capturas. Exibição e aproximação finais precisam do teste do usuário.
