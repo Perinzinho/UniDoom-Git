@@ -12,6 +12,7 @@ namespace UniDoom.Finale
     /// <summary>Builds the rescued-teacher celebration when the prison portal returns to Unimar.</summary>
     public sealed class FinaleDirector : MonoBehaviour
     {
+        const string ApplauseResourcePath = "Audio/Finale/aplausos-professores-final";
         const float CelebrationDuration = 9f;
         const float FadeDuration = 3f;
         readonly List<Material> runtimeMaterials = new();
@@ -226,19 +227,21 @@ namespace UniDoom.Finale
 
         void BuildFinaleAudio()
         {
-            var applause = CreateApplauseClip();
+            var applause = Resources.Load<AudioClip>(ApplauseResourcePath);
             rocketClip = CreateRocketClip();
             explosionClip = CreateExplosionClip();
-            runtimeClips.Add(applause);
             runtimeClips.Add(rocketClip);
             runtimeClips.Add(explosionClip);
+            if (applause == null)
+                Debug.LogError("[Finale] Applause clip is missing at Resources/" +
+                    ApplauseResourcePath + ".wav.");
             applauseSource = gameObject.AddComponent<AudioSource>();
             applauseSource.playOnAwake = false;
             applauseSource.loop = true;
             applauseSource.spatialBlend = 0;
             applauseSource.volume = .72f;
             applauseSource.clip = applause;
-            applauseSource.Play();
+            if (applause != null) applauseSource.Play();
         }
 
         void PlayExplosionAudio(int number, Vector3 position)
@@ -258,66 +261,6 @@ namespace UniDoom.Finale
             source.pitch = .9f + number % 5 * .045f;
             source.Play();
             Destroy(host, explosionClip.length / source.pitch + .2f);
-        }
-
-        AudioClip CreateApplauseClip()
-        {
-            const int sampleRate = 44100;
-            const float duration = 9f;
-            int frames = Mathf.CeilToInt(sampleRate * duration);
-            var samples = new float[frames * 2];
-            var random = new System.Random(74031);
-            // Each virtual spectator has an independent cadence, loudness and stereo position.
-            for (int person = 0; person < 34; person++)
-            {
-                float time = (float)random.NextDouble() * .55f;
-                float cadence = Mathf.Lerp(.34f, .72f, (float)random.NextDouble());
-                float pan = Mathf.Lerp(-.92f, .92f, (float)random.NextDouble());
-                float strength = Mathf.Lerp(.035f, .085f, (float)random.NextDouble());
-                while (time < duration)
-                {
-                    AddClap(samples, frames, Mathf.RoundToInt(time * sampleRate), sampleRate,
-                        strength * Mathf.Lerp(.75f, 1.25f, (float)random.NextDouble()), pan, random);
-                    time += cadence * Mathf.Lerp(.72f, 1.32f, (float)random.NextDouble());
-                }
-            }
-            // A quiet diffuse audience bed prevents the many individual claps sounding isolated.
-            float bed = 0;
-            for (int frame = 0; frame < frames; frame++)
-            {
-                float noise = (float)random.NextDouble() * 2f - 1f;
-                bed = Mathf.Lerp(bed, noise, .035f);
-                samples[frame * 2] += bed * .012f;
-                samples[frame * 2 + 1] += bed * .011f;
-            }
-            Normalize(samples, .86f);
-            var clip = AudioClip.Create("Finale crowd applause", frames, 2, sampleRate, false);
-            clip.SetData(samples, 0);
-            return clip;
-        }
-
-        static void AddClap(float[] samples, int frames, int start, int sampleRate, float strength,
-            float pan, System.Random random)
-        {
-            int length = Mathf.RoundToInt(sampleRate * .085f);
-            float left = Mathf.Sqrt((1f - pan) * .5f);
-            float right = Mathf.Sqrt((1f + pan) * .5f);
-            float previousNoise = 0;
-            for (int i = 0; i < length; i++)
-            {
-                int frame = start + i;
-                if (frame < 0 || frame >= frames) break;
-                float t = (float)i / sampleRate;
-                float noise = (float)random.NextDouble() * 2f - 1f;
-                float crisp = noise - previousNoise * .72f;
-                previousNoise = noise;
-                float attack = 1f - Mathf.Exp(-t * 900f);
-                float envelope = attack * Mathf.Exp(-t * 52f);
-                float doubleHit = i > sampleRate * .018f ? .42f * Mathf.Exp(-(t - .018f) * 68f) : 0;
-                float value = (crisp * envelope + noise * doubleHit) * strength;
-                samples[frame * 2] += value * left;
-                samples[frame * 2 + 1] += value * right;
-            }
         }
 
         AudioClip CreateRocketClip()
