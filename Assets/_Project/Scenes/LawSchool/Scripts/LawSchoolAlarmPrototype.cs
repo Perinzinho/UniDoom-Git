@@ -285,6 +285,12 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         foreach (var actor in actors)
             if (actor.renderer)
             {
+                // Proximity and flashlight occlusion only affect the blackout tint.
+                if (!IsBlackout)
+                {
+                    actor.renderer.color = actor.color * SpriteRed;
+                    continue;
+                }
                 float proximity = view ? Mathf.Clamp01(1-Vector3.Distance(actor.renderer.bounds.center,view.transform.position)/nearbyVisibilityRange) : 0;
                 if (flashlightOn && view && nearbyLight)
                 {

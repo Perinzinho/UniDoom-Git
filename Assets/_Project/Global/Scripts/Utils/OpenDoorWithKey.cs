@@ -41,6 +41,7 @@ public class OpenDoorWithKey : MonoBehaviour
 
     private readonly HashSet<Collider> nearbyPlayers = new HashSet<Collider>();
     private readonly Dictionary<Collider, float> playerEntrySides = new Dictionary<Collider, float>();
+    private System.Predicate<Collider> outsideTrigger;
     private float lastReloadTime = -999f;
     private Vector3 closedCenter;
     private Transform hinge;
@@ -115,6 +116,7 @@ public enum DoorReloadTriggerMode
 
     private void Awake()
     {
+        outsideTrigger = IsOutsideTrigger;
         if (door == null) door = transform.Find("Door");
 
         if (door == null || door == transform)
@@ -189,7 +191,7 @@ public enum DoorReloadTriggerMode
     private void Update()
     {
         // Teleportes e colliders desabilitados/destruídos podem não enviar OnTriggerExit.
-        nearbyPlayers.RemoveWhere(IsOutsideTrigger);
+        if (nearbyPlayers.Count > 0) nearbyPlayers.RemoveWhere(outsideTrigger);
         // Remove remembered crossing sides too, so returning after a teleport starts a fresh crossing.
         if (playerEntrySides.Count > nearbyPlayers.Count)
         {

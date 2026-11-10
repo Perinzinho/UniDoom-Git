@@ -11,13 +11,15 @@ namespace UniDoom.CampusLibrary
     {
         [SerializeField] Enemy zombiePrefab;
         [SerializeField] Transform entryPoint;
+        [SerializeField] Transform[] additionalEntryPoints = System.Array.Empty<Transform>();
         [SerializeField] LibraryMaintenanceSafety safeArea;
-        [SerializeField, Range(1, 2)] int aliveLimit = 1;
+        [SerializeField, Range(1, 4)] int aliveLimit = 1;
         [SerializeField, Min(3)] float replacementDelay = 4;
         [SerializeField, Min(6)] float minimumSpawnDistance = 8;
         readonly Dictionary<Enemy, UnityAction<GameObject>> living = new();
         readonly List<Enemy> removed = new();
         float nextSpawn;
+        int nextEntry;
         public int LivingCount => living.Count;
         void Start()
         {
@@ -30,17 +32,29 @@ namespace UniDoom.CampusLibrary
             removed.Clear();
             foreach (var pair in living) if (!pair.Key || pair.Key.IsDead) removed.Add(pair.Key);
             foreach (var dead in removed) Unregister(dead);
-            if (Time.time < nextSpawn || living.Count >= Mathf.Clamp(aliveLimit, 1, 2)) return;
+            if (Time.time < nextSpawn || living.Count >= Mathf.Clamp(aliveLimit, 1, 4)) return;
             nextSpawn = Time.time + .5f;
-            if (!EnemySpawnSafety.CanSpawn(entryPoint.position, GameManager.SessionPlayer.transform, minimumSpawnDistance)) return;
-            if (!NavMesh.SamplePosition(entryPoint.position, out var hit, 1.5f, NavMesh.AllAreas) || safeArea.Contains(hit.position)) return;
-            var enemy = Instantiate(zombiePrefab, hit.position + Vector3.up, entryPoint.rotation);
+            if (!FindEntry(out var hit, out var rotation)) return;
+            var enemy = Instantiate(zombiePrefab, hit.position + Vector3.up, rotation);
             var restriction = enemy.GetComponent<LibraryEnemyRestriction>();
             if (!restriction) restriction = enemy.gameObject.AddComponent<LibraryEnemyRestriction>();
             restriction.Configure(safeArea);
             UnityAction<GameObject> callback = _ => Unregister(enemy);
             living.Add(enemy, callback); enemy.OnDeath.AddListener(callback);
             nextSpawn = Time.time + replacementDelay;
+        }
+        bool FindEntry(out NavMeshHit hit, out Quaternion rotation)
+        {
+            int count = 1 + additionalEntryPoints.Length;
+            for (int offset = 0; offset < count; offset++)
+            {
+                int index = (nextEntry + offset) % count;
+                var entry = index == 0 ? entryPoint : additionalEntryPoints[index - 1];
+                if (!entry || !NavMesh.SamplePosition(entry.position, out hit, 1.5f, NavMesh.AllAreas) || safeArea.Contains(hit.position) ||
+                    !EnemySpawnSafety.CanSpawn(hit.position, GameManager.SessionPlayer.transform, minimumSpawnDistance)) continue;
+                nextEntry = (index + 1) % count; rotation = entry.rotation; return true;
+            }
+            hit = default; rotation = Quaternion.identity; return false;
         }
         void Unregister(Enemy enemy)
         {
