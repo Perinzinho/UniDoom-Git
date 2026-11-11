@@ -17,7 +17,7 @@ public static class CampusParkingVehicleSetup
     const string LayoutPath = Base + "Prefabs/CampusParkedVehicles.prefab";
     const string MeshPath = Base + "Meshes/StreetParkingBays.asset";
     const string AppliedLabel = "CampusParkingVehiclesRevision1Applied";
-    const string GroupName = "Parked vehicles - 5 cars and 3 motorcycles";
+    const string GroupName = "CampusParkedVehicles";
     static bool applying;
 
     [Serializable] public class MaterialSpec
@@ -100,7 +100,7 @@ public static class CampusParkingVehicleSetup
             AssetDatabase.SaveAssets();
             AssetDatabase.SetLabels(layout, AssetDatabase.GetLabels(layout).Append(AppliedLabel).Distinct().ToArray());
             AssetDatabase.SaveAssets();
-            Debug.Log("Campus parking saved: 12 parallel bays (6 x 2.5 m), 5 cars and 3 motorcycles in 7 occupied bays. " +
+            Debug.Log("Campus parking saved: 12 parallel bays (6 x 2.5 m), 6 cars and 3 motorcycles in 8 occupied bays. " +
                 "Scene and reference prefab updated. Play Mode and visual review are still required.");
         }
         finally
@@ -217,6 +217,7 @@ public static class CampusParkingVehicleSetup
         try
         {
             AddVehicle(root.transform, road, grey, 0, 0, "W1 - grey hatchback");
+            AddVehicle(root.transform, road, blue, 1, 0, "W2 - blue hatchback");
             AddVehicle(root.transform, road, blue, 2, 0, "W3 - blue hatchback");
             AddVehicle(root.transform, road, bike, 3, -1.35f, "W4 - motorcycle A");
             AddVehicle(root.transform, road, bike, 3, 1.35f, "W4 - motorcycle B");
@@ -316,7 +317,7 @@ public static class CampusParkingVehicleSetup
 
     static void PlaceLayout(Transform campus, GameObject prefab)
     {
-        var previous = campus.GetComponentsInChildren<Transform>(true).FirstOrDefault(t => t.name == GroupName);
+        var previous = Find(campus.gameObject.scene, GroupName);
         if (previous != null)
         {
             if (PrefabUtility.GetCorrespondingObjectFromSource(previous.gameObject) != prefab)
@@ -330,9 +331,9 @@ public static class CampusParkingVehicleSetup
     static void Validate(Transform campus)
     {
         var group = campus.GetComponentsInChildren<Transform>(true).Single(t => t.name == GroupName);
-        if (group.childCount != 8 || group.GetComponentsInChildren<LODGroup>(true).Length != 8 ||
-            group.GetComponentsInChildren<BoxCollider>(true).Length != 8)
-            throw new InvalidOperationException("Parking must contain eight vehicles with LODs and colliders.");
+        if (group.childCount != 9 || group.GetComponentsInChildren<LODGroup>(true).Length != 9 ||
+            group.GetComponentsInChildren<BoxCollider>(true).Length != 9)
+            throw new InvalidOperationException("Parking must contain nine vehicles with LODs and colliders.");
         var colliders = group.GetComponentsInChildren<BoxCollider>(true);
         for (int i = 0; i < colliders.Length; i++)
             for (int j = i + 1; j < colliders.Length; j++)
