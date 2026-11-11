@@ -22,6 +22,7 @@ namespace UniDoom.CampusLibrary
         [SerializeField, Min(.5f)] float interactionDistance = 2.8f;
         [SerializeField] AudioSource feedback;
         [SerializeField] AudioClip buttonSound, errorSound, generatorSound;
+        [SerializeField] Sprite fuseHudSprite;
         string interactionPrompt;
         Camera view;
         int lastFrame = -1;
@@ -30,6 +31,7 @@ namespace UniDoom.CampusLibrary
         LibraryMissionTarget[] lowTargets;
         LibraryGeneratorPanel panel;
         AudioSource generatorAudio;
+        KeysUI keysUI;
         public LibraryMissionTarget[] Fuses => (LibraryMissionTarget[])fuses.Clone();
         public LibraryMissionTarget[] Buttons => (LibraryMissionTarget[])buttons.Clone();
         public LibraryMissionTarget Generator => generator;
@@ -73,6 +75,11 @@ namespace UniDoom.CampusLibrary
         }
         void Update()
         {
+            if (!keysUI && fuseHudSprite)
+            {
+                keysUI = FindFirstObjectByType<KeysUI>();
+                RefreshFuseHud();
+            }
             if (!GameplayAvailable) { interactionPrompt = null; return; }
             if (!view) view = Camera.main;
             if (Time.time >= nextDiscovery && LibraryMissionProgress.Stage == LibraryMissionStage.NotDiscovered)
@@ -242,6 +249,7 @@ namespace UniDoom.CampusLibrary
         }
         void Refresh()
         {
+            RefreshFuseHud();
             if (worldClue) worldClue.text = "REGISTROS DE MANUTENÇÃO\nConsulte os bilhetes do plantão.";
             foreach (var fuse in fuses) if (fuse) fuse.gameObject.SetActive(LibraryMissionProgress.Stage >= LibraryMissionStage.SearchingFuses && !LibraryMissionProgress.HasFuse(fuse.Id));
             for (int i = 0; i < fuseSockets.Length; i++) Paint(fuseSockets[i], LibraryMissionProgress.Stage >= LibraryMissionStage.FusesInstalled);
@@ -251,6 +259,16 @@ namespace UniDoom.CampusLibrary
                 LibraryMissionProgress.Stage == LibraryMissionStage.PuzzleSolved ? "CIRCUITO OK • GERADOR LIGANDO" :
                 LibraryMissionProgress.Stage == LibraryMissionStage.FusesInstalled ? $"USE O GERADOR • CIRCUITO {LibraryMissionProgress.SequenceStep}/7" : $"FUSÍVEIS {LibraryMissionProgress.FuseCount}/3 • INSTALAR";
         }
-        void OnDisable() { LibraryMissionProgress.Changed -= Refresh; interactionPrompt = null; }
+        void RefreshFuseHud()
+        {
+            if (keysUI && fuseHudSprite)
+                keysUI.SetMissionItems(fuseHudSprite, LibraryMissionProgress.FuseCount - LibraryMissionProgress.InstalledFuseCount);
+        }
+        void OnDisable()
+        {
+            LibraryMissionProgress.Changed -= Refresh;
+            if (keysUI) keysUI.ClearMissionItems();
+            interactionPrompt = null;
+        }
     }
 }
