@@ -4950,7 +4950,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7802830849618779609}
   m_Layer: 0
-  m_Name: Staff hall and workshop
+  m_Name: Generator room service fixtures
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8338,7 +8338,7 @@ GameObject:
   - component: {fileID: 1295713453313689674}
   - component: {fileID: 854687469569775650}
   m_Layer: 0
-  m_Name: Workshop bench leg
+  m_Name: Generator service bench leg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8353,7 +8353,7 @@ Transform:
   m_GameObject: {fileID: 407979999901706711}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.95, y: 0.43, z: 40.65}
+  m_LocalPosition: {x: -20.8, y: 0.43, z: 40.65}
   m_LocalScale: {x: 0.065, y: 0.86, z: 0.065}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10580,7 +10580,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &265656138500195691
 Transform:
   m_ObjectHideFlags: 0
@@ -13683,6 +13683,7 @@ Transform:
   m_Children:
   - {fileID: 5799171474932939534}
   - {fileID: 8494291612017629722}
+  - {fileID: 5126350139561236901}
   m_Father: {fileID: 3736151732366155778}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &659754812208113125
@@ -14436,7 +14437,7 @@ GameObject:
   - component: {fileID: 4675695441743787514}
   - component: {fileID: 1402108398653556119}
   m_Layer: 0
-  m_Name: Generator partition east
+  m_Name: Generator cabinet conduit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14451,8 +14452,8 @@ Transform:
   m_GameObject: {fileID: 696384841871445143}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -19.75, y: 2.3, z: 38.8}
-  m_LocalScale: {x: 3.5, y: 4.6, z: 0.2}
+  m_LocalPosition: {x: -14.38, y: 3.34, z: 41}
+  m_LocalScale: {x: 0.22, y: 1.8, z: 0.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7802830849618779609}
@@ -14490,7 +14491,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 24d318a1637f2334c84e0f3e92ac38ef, type: 2}
+  - {fileID: 2100000, guid: 9931e5f82368eb64da28c70204db6eae, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -22699,7 +22700,7 @@ GameObject:
   - component: {fileID: 2030825235927731628}
   - component: {fileID: 7178828334604953602}
   m_Layer: 0
-  m_Name: Workshop steel worktop
+  m_Name: Generator service worktop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22714,7 +22715,7 @@ Transform:
   m_GameObject: {fileID: 1107053318140368144}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.65, y: 0.92, z: 41.6}
+  m_LocalPosition: {x: -20.5, y: 0.92, z: 41.6}
   m_LocalScale: {x: 0.85, y: 0.1, z: 2.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -39935,7 +39936,8 @@ MonoBehaviour:
   feedback: {fileID: 4935184520249106542}
   buttonSound: {fileID: 8300000, guid: e40e33650aa54c38b866302273b412eb, type: 3}
   errorSound: {fileID: 8300000, guid: 872a7e78fd7d4307b8fe4ed3be6a2a5d, type: 3}
-  generatorSound: {fileID: 8300000, guid: d73bb815f05f4cb6a9d21987bed9ab37, type: 3}
+  generatorSound: {fileID: 8300000, guid: 76d01a6c39e346dfbb9f89d3c67e5c74, type: 3}
+  fuseHudSprite: {fileID: 21300000, guid: 5ba27ddd2af3f704eae3749c3847d38b, type: 3}
 --- !u!82 &4935184520249106542
 AudioSource:
   m_ObjectHideFlags: 0
@@ -44170,7 +44172,7 @@ GameObject:
   - component: {fileID: 2381995436656818493}
   - component: {fileID: 5982027349511512611}
   m_Layer: 0
-  m_Name: Workshop partition east
+  m_Name: Generator distribution cabinet B
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44185,8 +44187,8 @@ Transform:
   m_GameObject: {fileID: 2176057331713642127}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.5, y: 2.3, z: 38.8}
-  m_LocalScale: {x: 1, y: 4.6, z: 0.2}
+  m_LocalPosition: {x: -14.38, y: 1.25, z: 41}
+  m_LocalScale: {x: 0.48, y: 2.4, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7802830849618779609}
@@ -44224,7 +44226,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 24d318a1637f2334c84e0f3e92ac38ef, type: 2}
+  - {fileID: 2100000, guid: 9931e5f82368eb64da28c70204db6eae, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -48573,7 +48575,7 @@ GameObject:
   - component: {fileID: 2048086676751573519}
   - component: {fileID: 3393960360278172683}
   m_Layer: 0
-  m_Name: Workshop emergency diffuser
+  m_Name: Generator room emergency diffuser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -54610,7 +54612,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3411501122377863177
 Transform:
   m_ObjectHideFlags: 0
@@ -57210,7 +57212,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2260066926134899822
 Transform:
   m_ObjectHideFlags: 0
@@ -63141,7 +63143,7 @@ GameObject:
   - component: {fileID: 1352156625793095579}
   - component: {fileID: 2630914236454742019}
   m_Layer: 0
-  m_Name: Workshop partition west
+  m_Name: Generator distribution cabinet A
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -63156,8 +63158,8 @@ Transform:
   m_GameObject: {fileID: 3023026623479535462}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -17.3, y: 2.3, z: 38.8}
-  m_LocalScale: {x: 1.4, y: 4.6, z: 0.2}
+  m_LocalPosition: {x: -14.38, y: 1.25, z: 38}
+  m_LocalScale: {x: 0.48, y: 2.4, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7802830849618779609}
@@ -63195,7 +63197,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 24d318a1637f2334c84e0f3e92ac38ef, type: 2}
+  - {fileID: 2100000, guid: 9931e5f82368eb64da28c70204db6eae, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -73029,7 +73031,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6307749216587539722
 Transform:
   m_ObjectHideFlags: 0
@@ -80735,7 +80737,7 @@ GameObject:
   - component: {fileID: 2092437318750344860}
   - component: {fileID: 7412922967925763496}
   m_Layer: 0
-  m_Name: Generator doorway lintel
+  m_Name: Generator overhead cable tray
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -80750,8 +80752,8 @@ Transform:
   m_GameObject: {fileID: 3832364092641708908}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -22.5, y: 3.9, z: 38.8}
-  m_LocalScale: {x: 2, y: 1.4, z: 0.2}
+  m_LocalPosition: {x: -19.4, y: 4.32, z: 40.7}
+  m_LocalScale: {x: 10, y: 0.18, z: 0.38}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7802830849618779609}
@@ -80789,7 +80791,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 24d318a1637f2334c84e0f3e92ac38ef, type: 2}
+  - {fileID: 2100000, guid: 9931e5f82368eb64da28c70204db6eae, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -86560,7 +86562,7 @@ GameObject:
   - component: {fileID: 8786756261069928846}
   - component: {fileID: 856504332278099562}
   m_Layer: 0
-  m_Name: Workshop bench leg
+  m_Name: Generator service bench leg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -86575,7 +86577,7 @@ Transform:
   m_GameObject: {fileID: 4062310758312997585}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.35, y: 0.43, z: 40.65}
+  m_LocalPosition: {x: -20.2, y: 0.43, z: 40.65}
   m_LocalScale: {x: 0.065, y: 0.86, z: 0.065}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -90888,7 +90890,7 @@ Transform:
   m_GameObject: {fileID: 4231695387358496010}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7053843, y: -0.049325272, z: 0.049325272, w: 0.7053843}
-  m_LocalPosition: {x: -14.7, y: 1.005, z: 41.6}
+  m_LocalPosition: {x: -20.55, y: 1.005, z: 41.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -95991,7 +95993,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &552660371711562328
 Transform:
   m_ObjectHideFlags: 0
@@ -96818,7 +96820,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3859775305957764110
 Transform:
   m_ObjectHideFlags: 0
@@ -100534,7 +100536,7 @@ GameObject:
   - component: {fileID: 3440381757638702226}
   - component: {fileID: 8689250354730126590}
   m_Layer: 0
-  m_Name: Workshop bench leg
+  m_Name: Generator service bench leg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -100549,7 +100551,7 @@ Transform:
   m_GameObject: {fileID: 4781414207544271825}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.95, y: 0.43, z: 42.55}
+  m_LocalPosition: {x: -20.8, y: 0.43, z: 42.55}
   m_LocalScale: {x: 0.065, y: 0.86, z: 0.065}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -105267,7 +105269,7 @@ GameObject:
   - component: {fileID: 8380887842815771880}
   - component: {fileID: 7289454890282758478}
   m_Layer: 0
-  m_Name: Staff workshop ceiling light
+  m_Name: Generator room ceiling light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -129612,8 +129614,8 @@ Transform:
   m_GameObject: {fileID: 6216685902952455813}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.014}
-  m_LocalScale: {x: 3.4350002, y: 0.615, z: 0.035}
+  m_LocalPosition: {x: 0, y: 0, z: 0.045}
+  m_LocalScale: {x: 1.62, y: 1.1, z: 0.035}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7625332718619934372}
@@ -149544,7 +149546,7 @@ GameObject:
   - component: {fileID: 4262119861025150750}
   - component: {fileID: 1051477157157277139}
   m_Layer: 0
-  m_Name: Workshop bench leg
+  m_Name: Generator service bench leg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -149559,7 +149561,7 @@ Transform:
   m_GameObject: {fileID: 7132565973864256955}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.35, y: 0.43, z: 42.55}
+  m_LocalPosition: {x: -20.2, y: 0.43, z: 42.55}
   m_LocalScale: {x: 0.065, y: 0.86, z: 0.065}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -167874,7 +167876,7 @@ GameObject:
   - component: {fileID: 8973810310720762855}
   - component: {fileID: 4988397557393895686}
   m_Layer: 0
-  m_Name: Workshop fluorescent fixture
+  m_Name: Generator room fluorescent fixture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -172568,7 +172570,7 @@ GameObject:
   - component: {fileID: 6037106916957418787}
   - component: {fileID: 6588753589911930735}
   m_Layer: 0
-  m_Name: Workshop doorway lintel
+  m_Name: Generator overhead branch tray
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -172583,8 +172585,8 @@ Transform:
   m_GameObject: {fileID: 8211211988604769502}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -15.8, y: 3.9, z: 38.8}
-  m_LocalScale: {x: 1.6, y: 1.4, z: 0.2}
+  m_LocalPosition: {x: -16.8, y: 4.32, z: 41.7}
+  m_LocalScale: {x: 0.38, y: 0.18, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7802830849618779609}
@@ -172622,7 +172624,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 24d318a1637f2334c84e0f3e92ac38ef, type: 2}
+  - {fileID: 2100000, guid: 9931e5f82368eb64da28c70204db6eae, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -184970,8 +184972,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -21.5, y: 3.65}
-  m_SizeDelta: {x: 5, y: 0.5}
+  m_AnchoredPosition: {x: -18.5, y: 1.95}
+  m_SizeDelta: {x: 1.5, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &5015235478195189977
 MeshRenderer:
@@ -185042,7 +185044,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "MANUTEN\xC7\xC3O  /  GERADOR"
+  m_text: "ACESSO RESTRITO\nSOMENTE FUNCION\xC1RIOS"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -185052,7 +185054,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 0.85, g: 0.84, b: 0.7, a: 1}
+  m_fontColor: {r: 0.96, g: 0.76, b: 0.35, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -185069,13 +185071,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 1.35
-  m_fontSizeBase: 1.35
+  m_fontSize: 0.75
+  m_fontSizeBase: 0.75
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -186427,7 +186429,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8494291612017629722
 Transform:
   m_ObjectHideFlags: 0
@@ -191871,7 +191873,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &9100000000000061001
 Transform:
   m_ObjectHideFlags: 0
@@ -192044,7 +192046,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &9100000000000061101
 Transform:
   m_ObjectHideFlags: 0
@@ -192488,7 +192490,7 @@ GameObject:
   - component: {fileID: 6977335480071730995}
   - component: {fileID: 5403283807354732809}
   m_Layer: 0
-  m_Name: Staff workshop emergency light
+  m_Name: Generator room emergency light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -200737,3 +200739,95 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &5233450811634636533
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5126350139561236901}
+  - component: {fileID: 4623528593295753733}
+  m_Layer: 0
+  m_Name: Campus Library Sign cutout
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5126350139561236901
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5233450811634636533}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.02}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7625332718619934372}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &4623528593295753733
+SpriteRenderer:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5233450811634636533}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: c78ec4dd62104d9e8dc45d5df7e77891, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 21300000, guid: 4bfc1df6e62d4ae4b87fd0bb7656f310, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1.5, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
