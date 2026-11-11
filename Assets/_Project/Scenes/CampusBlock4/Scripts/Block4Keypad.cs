@@ -19,7 +19,8 @@ namespace UniDoom.CampusBlock4
         [SerializeField, Min(.5f)] float interactionDistance = 2.4f;
         GameObject panel, hud;
         RectTransform card;
-        TMP_Text digits, feedback, prompt, inventory;
+        TMP_Text digits, feedback, inventory;
+        bool promptVisible;
         Button[] keys;
         string entry = "";
         bool closing, replaceEntry;
@@ -48,12 +49,7 @@ namespace UniDoom.CampusBlock4
                 lockedDoor.TryUnlock(GameManager.SessionPlayer.GetComponent<PlayerPickupKey>());
             RefreshWorld();
             bool gameplay = !GameMenus.BlocksGameplay && Time.timeScale > 0 && !DeathScreen.IsVisible && !DoorReloadScreen.IsReloading;
-            if (prompt != null) prompt.gameObject.SetActive(gameplay && !Block4PuzzleProgress.DoorUnlocked && CanInteract());
-            if (inventory != null)
-            {
-                inventory.gameObject.SetActive(gameplay && Block4PuzzleProgress.HasLibraryAccessKey);
-                inventory.text = Time.unscaledTime < toastUntil ? "CHAVE COLETADA\nBiblioteca • Bloco 4 • guardada no inventário" : "CHAVE DA BIBLIOTECA • BLOCO 4  /  NO INVENTÁRIO";
-            }
+            promptVisible = gameplay && !Block4PuzzleProgress.DoorUnlocked && CanInteract();
             if (!IsOpen || closing || Time.frameCount == openedFrame) return;
             var keyboard = Keyboard.current;
             if (keyboard != null)
@@ -198,7 +194,7 @@ namespace UniDoom.CampusBlock4
             if (panel != null) Destroy(panel);
             if (hud != null) Destroy(hud);
         }
-        public void ShowKeyCollected() => toastUntil = Time.unscaledTime + 6;
+        public void ShowKeyCollected() => GameplayNotice.Show("Chave da biblioteca coletada. Guardada no inventário.", 6);
         void RefreshWorld()
         {
             if (worldStatus != null) worldStatus.text = Block4PuzzleProgress.DoorUnlocked ? "LIBERADO" : "TRANCADO";
@@ -287,13 +283,14 @@ namespace UniDoom.CampusBlock4
             var canvas = hud.GetComponent<Canvas>(); canvas.renderMode = RenderMode.ScreenSpaceOverlay; canvas.sortingOrder = 9000;
             var scaler = hud.GetComponent<CanvasScaler>(); scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920, 1080); scaler.matchWidthOrHeight = .5f;
-            prompt = MenuStyle.Text("Keypad interaction", hud.transform, "E / X   USAR TECLADO  •  SALA 423", 0, 0, 1000, 52, 27, MenuStyle.Paper);
-            prompt.alignment = TextAlignmentOptions.Center;
-            var pr = prompt.rectTransform; pr.anchorMin = pr.anchorMax = pr.pivot = new Vector2(.5f, 0); pr.anchoredPosition = new Vector2(0, 150);
             inventory = MenuStyle.Text("Teacher cell key inventory", hud.transform, "", 0, 0, 1000, 90, 26, MenuStyle.Paper);
             inventory.alignment = TextAlignmentOptions.Center;
             var ir = inventory.rectTransform; ir.anchorMin = ir.anchorMax = ir.pivot = new Vector2(.5f, 1); ir.anchoredPosition = new Vector2(0, -44);
-            prompt.gameObject.SetActive(false); inventory.gameObject.SetActive(false);
+            inventory.gameObject.SetActive(false);
+            inventory = null;
         }
+
+        // Same presentation as the other gameplay hints (GameplayNotice).
+        void OnGUI() { if (promptVisible) GameplayNotice.Draw("[E]  Usar teclado  •  Sala 423"); }
     }
 }

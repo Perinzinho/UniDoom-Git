@@ -15,6 +15,8 @@ Verificado em **2026-11-05**. Não leia este catálogo para uma mudança que nã
 
 A referência artística normativa do projeto é `.codex/SKILL.md`; as fotos reais orientam função/escala, e a skill orienta tratamento de abandono e luz. Não uniformize todos os ambientes com ferrugem ou névoa.
 
+**Estacionamento do CampusExterior (11/11/2026):** proporções de cupê, sedã e moto esportiva consultadas nas páginas CC0 de [Grab3D — Sports Car](https://grab3d.com/models/vehicles/sports-car/), [Innerscene — Graphite four-door sedan](https://www.innerscene.com/tools/library/3d-parts/graphite-four-door-sedan-eed96d12) e [Innerscene — Sport motorcycle](https://www.innerscene.com/tools/library/3d-parts/sport-motorcycle-e21e8303). Serviram apenas de referência visual e dimensional. Os sete prefabs novos foram modelados com primitivas e materiais do próprio projeto, sem baixar malhas ou texturas externas. Autores, licença declarada e uso exato: [vehicle-diversity.json](../../Licenses/AssetSources/CampusExterior/vehicle-diversity.json).
+
 ## Assets efetivamente usados e autores
 
 | Asset/fonte primária | Autor confirmado | Licença e aplicação |

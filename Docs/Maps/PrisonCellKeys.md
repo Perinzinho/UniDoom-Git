@@ -1,27 +1,27 @@
 # Chaves numeradas das celas
 
-Atualizado em 09/11/2026. **Há 14 celas. Oito chaves de cela foram retiradas de Direito e Bloco 4** para dar lugar a duas chaves de acesso à biblioteca. As cinco chaves de cela já existentes na biblioteca continuam ativas. A manutenção permanece separada. A cela 14 de Bianca ainda não tem pickup nem sprite de chave próprios. O gerador que abrirá as celas é trabalho futuro, ainda não implementado. [Contrato de acesso](CampusLibrary.md#acesso-com-duas-chaves--09112026). Direito utiliza sua cena independente; Biblioteca e Bloco 4 utilizam seus prefabs. O porão carrega `BasementScenario.prefab`, que instancia `Basement.prefab`.
+Atualizado em 11/11/2026. **As 14 celas exigem o gerador da CampusLibrary reparado**: três fusíveis instalados, puzzle concluído e estado `GeneratorOn`. A abertura individual continua em E. Os IDs e sprites numerados abaixo registram o inventário e a distribuição histórica das chaves. O acesso à biblioteca utiliza duas chaves próprias. [Contrato de acesso](CampusLibrary.md#acesso-com-duas-chaves--09112026). O porão carrega `BasementScenario.prefab`, que instancia `Basement.prefab`.
 
-> **Revisão temporária recebida de development:** as 14 celas começam fechadas, mas podem ser abertas com `E` sem chave enquanto layout e progressão são avaliados (`PrisonProgress.AllowKeylessCellOpeningForLayoutReview = true`). Esse modo temporário não restaura os pickups retirados dos blocos nem implementa o gerador. Decisões e checklist: [Basement-Celas-Pendencias.md](Basement-Celas-Pendencias.md).
+> `PrisonProgress.CanOpenCell` e `OpenCell` consultam `LibraryMissionProgress.IsLibraryGeneratorPowered`. A permissão temporária de revisão foi removida. Chaves numeradas não substituem o reparo do gerador. Validação e histórico em [Basement-Celas-Pendencias.md](Basement-Celas-Pendencias.md).
 
 | Chave/cela | Professor | Local da chave |
 |---|---|---|
-| 1 | Caio | Retirada do gameplay em 09/11; abertura futura pelo gerador da biblioteca |
-| 2 | Fabio | Retirada do gameplay em 09/11; abertura futura pelo gerador da biblioteca |
-| 3 | Henrique | Retirada do gameplay em 09/11; abertura futura pelo gerador da biblioteca |
+| 1 | Caio | Retirada do gameplay em 09/11; abertura pelo gerador da biblioteca |
+| 2 | Fabio | Retirada do gameplay em 09/11; abertura pelo gerador da biblioteca |
+| 3 | Henrique | Retirada do gameplay em 09/11; abertura pelo gerador da biblioteca |
 | 4 | Cesar | Biblioteca: mesa de estudo individual |
 | 5 | Navarro | Biblioteca: mesa de leitura em carvalho |
 | 6 | Matheus Ferraroni | Biblioteca: bancada de pesquisa |
-| 7 | Paulinho | Retirada do gameplay em 09/11; abertura futura pelo gerador da biblioteca |
-| 8 | Rafa | Retirada do gameplay em 09/11; abertura futura pelo gerador da biblioteca |
-| 9 | Gustavo Camossi | Retirada do gameplay em 09/11; abertura futura pelo gerador da biblioteca |
+| 7 | Paulinho | Retirada do gameplay em 09/11; abertura pelo gerador da biblioteca |
+| 8 | Rafa | Retirada do gameplay em 09/11; abertura pelo gerador da biblioteca |
+| 9 | Gustavo Camossi | Retirada do gameplay em 09/11; abertura pelo gerador da biblioteca |
 | 10 | Matheus Santi | Biblioteca: cabine individual ao norte |
 | 11 | Moacyr | Biblioteca: mesa da leitura silenciosa ao norte |
-| 12 | Querino | Retirada do gameplay em 09/11; abertura futura pelo gerador da biblioteca |
-| 13 | William | Retirada do gameplay em 09/11; abertura futura pelo gerador da biblioteca |
-| 14 | Bianca | Pickup e sprite próprios ainda não criados; abertura disponível no modo temporário de revisão |
+| 12 | Querino | Retirada do gameplay em 09/11; abertura pelo gerador da biblioteca |
+| 13 | William | Retirada do gameplay em 09/11; abertura pelo gerador da biblioteca |
+| 14 | Bianca | Pickup e sprite próprios ainda não criados; abertura pelo gerador da biblioteca |
 
-Inventário existente `PlayerCellKeys`, com contrato de IDs `professor-cell-01` até `professor-cell-14`. `PrisonProgress.CellCount = 14` define os limites do inventário, HUD e componentes. `PrisonCellGate` consulta `PrisonProgress.CanOpenCell`: no modo temporário de revisão permite abrir sem chave; fora dele exige a chave da própria cela. Não há chave universal ativa no porão. Os pickups originais do alarme/puzzle concedem somente as duas chaves de acesso à biblioteca, com IDs independentes; os seis pickups adicionais de cela nos blocos continuam inativos. As cinco chaves da biblioteca usam `CellKeyPickup`. Ainda não existe pickup que conceda `professor-cell-14`; gerador e progressão definitiva continuam pendentes. Coleta e retorno ao mapa consultam o inventário persistente da sessão. Não foi criado outro sistema de save.
+O inventário `PlayerCellKeys` conserva os IDs legados `professor-cell-01` a `professor-cell-14`. `PrisonProgress.CellCount = 14` define os limites das celas. A autorização atual depende do gerador reparado para todos os professores, incluindo Bianca. O estado acompanha a sessão em portas e checkpoints. `TESTAR FINAL` prepara o gerador como concluído pelo fluxo real de progresso em uma sessão de teste.
 
 Sprites: todas as treze chaves usam o modelo aprovado de metal envelhecido com numeração gravada. Atlas compartilhados `Assets/_Project/Global/Resources/Textures/Pickups/CellKeys.png`, oito subassets `CellKey01`…`CellKey08`, e `CellKeys09-13.png`, cinco subassets `CellKey09`…`CellKey13`. Renderizadores usam o material de sprite URP e Billboard existentes. Fonte, geração, hashes e recortes em `Licenses/AssetSources/CellKeys/generated-sprites.json` e `generated-sprites-09-13.json`. Atlas original e seus oito IDs preservados.
 

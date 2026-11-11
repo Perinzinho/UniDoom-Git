@@ -156,6 +156,7 @@ namespace UniDoom.Utils
                 PrisonProgress.AllCellsOpened;
             if (UI.DoorReloadScreen.TryLoadScene(destinationScene, destinationSpawnId, destinationLabel))
             {
+                keys?.MarkKeysUsed(requiresKey01, requiresKey02, requiresKey03);
                 if (startsFinale) PrisonProgress.BeginFinale();
                 // A physical leaf already plays when opening. Bare portals play on successful entry.
                 if (soundDoor == null) GameplayAudio.Instance?.PlayDoorOpening();
