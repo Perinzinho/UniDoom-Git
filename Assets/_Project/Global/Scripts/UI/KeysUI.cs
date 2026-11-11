@@ -78,11 +78,11 @@ public class KeysUI : MonoBehaviour
             Transform parent = keyIcons[0].transform.parent;
             for (int i = 0; i < missionIcons.Length; i++)
             {
-                var icon = MenuStyle.Image("Mission item " + (i + 1), parent, 0, 0, 42, 42, Color.white);
+                var icon = MenuStyle.Image("Mission item " + (i + 1), parent, 0, 0, 72, 72, Color.white);
                 var rect = icon.rectTransform;
                 rect.anchorMin = rect.anchorMax = new Vector2(0, 1);
                 rect.pivot = new Vector2(.5f, .5f);
-                rect.anchoredPosition = new Vector2(53 + i * 54, -146);
+                rect.anchoredPosition = new Vector2(68 + i * 84, -161);
                 icon.preserveAspect = true;
                 missionIcons[i] = icon;
             }
