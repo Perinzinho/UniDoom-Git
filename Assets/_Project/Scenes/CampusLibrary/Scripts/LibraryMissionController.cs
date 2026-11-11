@@ -22,12 +22,10 @@ namespace UniDoom.CampusLibrary
         [SerializeField, Min(.5f)] float interactionDistance = 2.8f;
         [SerializeField] AudioSource feedback;
         [SerializeField] AudioClip buttonSound, errorSound, generatorSound;
-        GameObject hud;
-        TMP_Text prompt, pickupNotice;
+        string interactionPrompt;
         Camera view;
         int lastFrame = -1;
-        float nextInput, errorUntil, nextDiscovery, pickupUntil;
-        string pickupMessage;
+        float nextInput, errorUntil, nextDiscovery;
         MaterialPropertyBlock block;
         LibraryMissionTarget[] lowTargets;
         LibraryGeneratorPanel panel;
@@ -66,17 +64,7 @@ namespace UniDoom.CampusLibrary
         }
         void Update()
         {
-            if (!GameplayAvailable) { if (hud) hud.SetActive(false); return; }
-            if (!hud && GameMenus.Instance)
-            {
-                hud = MenuStyle.Rect("Library interaction prompt", GameMenus.Instance.transform, 0, 0, 800, 40).gameObject;
-                var rect = (RectTransform)hud.transform;
-                rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(.5f, 0); rect.anchoredPosition = new Vector2(0, 102);
-                prompt = MenuStyle.Text("Prompt", hud.transform, "", 0, 0, 800, 40, 23, MenuStyle.Paper);
-                prompt.alignment = TextAlignmentOptions.Center;
-                pickupNotice = MenuStyle.Text("Fuse pickup notice", hud.transform, "", 0, -48, 800, 40, 25, MenuStyle.Paper);
-                pickupNotice.alignment = TextAlignmentOptions.Center;
-            }
+            if (!GameplayAvailable) { interactionPrompt = null; return; }
             if (!view) view = Camera.main;
             if (Time.time >= nextDiscovery && LibraryMissionProgress.Stage == LibraryMissionStage.NotDiscovered)
             {
@@ -88,14 +76,7 @@ namespace UniDoom.CampusLibrary
                 }
             }
             var focus = Focus();
-            if (hud)
-            {
-                bool showingPickup = Time.time < pickupUntil;
-                hud.SetActive(focus || showingPickup);
-                prompt.text = focus ? Prompt(focus) : "";
-                pickupNotice.gameObject.SetActive(showingPickup);
-                if (showingPickup) pickupNotice.text = pickupMessage;
-            }
+            interactionPrompt = focus ? Prompt(focus) : null;
             if (focus && ((Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame) ||
                 (Gamepad.current != null && Gamepad.current.buttonWest.wasPressedThisFrame))) TryInteract(focus);
             if (errorUntil > 0 && Time.unscaledTime >= errorUntil) { errorUntil = 0; Refresh(); }
@@ -171,10 +152,8 @@ namespace UniDoom.CampusLibrary
                 case LibraryTargetKind.Fuse:
                     if (!LibraryMissionProgress.Collect(target.Id)) return false;
                     SFXManager.Instance?.PlayKeyPickupSound();
-                    pickupMessage = $"Fusível coletado ({LibraryMissionProgress.FuseCount}/3)." +
-                        (LibraryMissionProgress.FuseCount == 3 ? " Volte ao gerador." : "");
-                    pickupUntil = Time.time + 4.5f;
-                    if (pickupNotice) { pickupNotice.text = pickupMessage; pickupNotice.gameObject.SetActive(true); hud.SetActive(true); }
+                    Notify($"Fusível coletado ({LibraryMissionProgress.FuseCount}/3)." +
+                        (LibraryMissionProgress.FuseCount == 3 ? " Volte ao gerador." : ""));
                     return true;
                 case LibraryTargetKind.Clue:
                     if (target.Document && GameMenus.Instance) return GameMenus.Instance.TryOpenDocument(target.Document, target);
@@ -239,7 +218,11 @@ namespace UniDoom.CampusLibrary
             return false;
         }
         void Sound(AudioClip clip) { if (feedback && clip) feedback.PlayOneShot(clip, .6f); }
-        static void Notify(string message, float duration = 4.5f) => DeathScreen.Instance?.ShowNotification(message, duration);
+        static void Notify(string message, float duration = 4.5f) => GameplayNotice.Show(message, duration);
+        void OnGUI()
+        {
+            if (GameplayAvailable && !GameplayNotice.IsShowing) GameplayNotice.Draw(interactionPrompt);
+        }
         void Paint(Renderer renderer, bool on)
         {
             if (!renderer) return;
@@ -258,7 +241,6 @@ namespace UniDoom.CampusLibrary
                 LibraryMissionProgress.Stage == LibraryMissionStage.PuzzleSolved ? "CIRCUITO OK • GERADOR LIGANDO" :
                 LibraryMissionProgress.Stage == LibraryMissionStage.FusesInstalled ? $"USE O GERADOR • CIRCUITO {LibraryMissionProgress.SequenceStep}/7" : $"FUSÍVEIS {LibraryMissionProgress.FuseCount}/3 • INSTALAR";
         }
-        void OnDisable() { LibraryMissionProgress.Changed -= Refresh; if (hud) hud.SetActive(false); }
-        void OnDestroy() { DeathScreen.Instance?.ClearNotifications(); if (hud) Destroy(hud); }
+        void OnDisable() { LibraryMissionProgress.Changed -= Refresh; interactionPrompt = null; }
     }
 }

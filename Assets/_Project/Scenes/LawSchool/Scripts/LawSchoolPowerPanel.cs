@@ -10,7 +10,6 @@ public sealed class LawSchoolPowerPanel : MonoBehaviour
     [SerializeField] Transform mainSwitch;
     Camera view;
     bool showPrompt;
-    GUIStyle promptStyle;
 
     public bool CanUse(PlayerPickupKey player)
     {
@@ -47,7 +46,6 @@ public sealed class LawSchoolPowerPanel : MonoBehaviour
     void OnGUI()
     {
         if (!showPrompt || !alarm || !alarm.IsActive) return;
-        if (promptStyle == null) promptStyle = new GUIStyle(GUI.skin.box) { alignment = TextAnchor.MiddleCenter, fontSize = 18 };
-        GUI.Box(new Rect((Screen.width-330)*.5f,Screen.height*.77f,330,38),"[E]  DESLIGAR ALARME",promptStyle);
+        UniDoom.UI.GameplayNotice.Draw("[E]  Desligar alarme");
     }
 }

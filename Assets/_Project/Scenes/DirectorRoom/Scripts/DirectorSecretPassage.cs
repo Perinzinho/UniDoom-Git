@@ -28,7 +28,6 @@ public sealed class DirectorSecretPassage : MonoBehaviour
     string message;
     float messageUntil;
     bool hadDeskKey;
-    GUIStyle promptStyle;
 
     static bool GameplayBlocked => GameMenus.BlocksGameplay || DoorReloadScreen.IsReloading ||
         DeathScreen.IsVisible || MouseSensitivityMenu.IsOpen || Time.timeScale == 0;
@@ -181,20 +180,6 @@ public sealed class DirectorSecretPassage : MonoBehaviour
 
     void OnGUI()
     {
-        string words = HintText;
-        if (string.IsNullOrEmpty(words)) return;
-        if (promptStyle == null) promptStyle = new GUIStyle(GUI.skin.label)
-        {
-            alignment = TextAnchor.MiddleCenter,
-            wordWrap = true
-        };
-        promptStyle.fontSize = Mathf.Clamp(Mathf.RoundToInt(Screen.height / 52f), 14, 24);
-        Rect rect = new Rect(Screen.width * .23f, Screen.height * .79f, Screen.width * .54f, 64);
-        Color previous = GUI.color;
-        GUI.color = new Color(0, 0, 0, .85f);
-        GUI.Label(new Rect(rect.x + 1, rect.y + 2, rect.width, rect.height), words, promptStyle);
-        GUI.color = new Color(.80f, .77f, .65f);
-        GUI.Label(rect, words, promptStyle);
-        GUI.color = previous;
+        if (!GameplayNotice.IsShowing) GameplayNotice.Draw(HintText);
     }
 }
