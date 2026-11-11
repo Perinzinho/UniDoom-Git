@@ -1,0 +1,40 @@
+name: Delete Branch After Merge
+
+on:
+  pull_request:
+    types:
+      - closed
+
+permissions:
+  contents: write
+
+jobs:
+  delete-branch:
+    name: Delete source branch
+    runs-on: ubuntu-latest
+
+  # se o pull request ja foi mergeado, 
+  # se o repositorio do pull request é o mesmo do repositorio atual,
+  # e se a branch não é main ou development, então deleta a branch
+
+    if: | 
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.head.repo.full_name == github.repository && 
+      githubevent.pull_request.head.ref != 'main' && 
+      github.event.pull_request.head.ref != 'development'
+
+    # apos a validação, deleta a branch do pull request usando a API do GitHub
+    steps:
+      - name: Delete merged branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          echo "Deleting branch $BRANCH"
+
+          gh api \
+            --method DELETE \
+            "repos/${{ github.repository }}/git/refs/heads/${BRANCH}"
+          
+          echo "Branch $BRANCH deleted successfully."
+    
