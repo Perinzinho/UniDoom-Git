@@ -23,6 +23,7 @@ namespace UniDoom.CampusLibrary
         [SerializeField, Min(.5f)] float interactionDistance = 2.8f;
         [SerializeField] AudioSource feedback;
         [SerializeField] AudioClip buttonSound, errorSound, generatorSound;
+        [SerializeField] Sprite fuseHudSprite;
         string interactionPrompt;
         Camera view;
         int lastFrame = -1;
@@ -30,6 +31,8 @@ namespace UniDoom.CampusLibrary
         MaterialPropertyBlock block;
         LibraryMissionTarget[] lowTargets;
         LibraryGeneratorPanel panel;
+        AudioSource generatorAudio;
+        KeysUI keysUI;
         public LibraryMissionTarget[] Fuses => (LibraryMissionTarget[])fuses.Clone();
         public LibraryMissionTarget[] Buttons => (LibraryMissionTarget[])buttons.Clone();
         public LibraryMissionTarget Generator => generator;
@@ -62,10 +65,23 @@ namespace UniDoom.CampusLibrary
             if (!modelVariants) modelVariants = gameObject.AddComponent<LibraryGeneratorModelVariants>();
             modelVariants.Configure();
             if (feedback) feedback.ignoreListenerPause = true;
+            generatorAudio = generator.GetComponent<AudioSource>();
+            if (!generatorAudio) generatorAudio = generator.gameObject.AddComponent<AudioSource>();
+            generatorAudio.playOnAwake = false;
+            generatorAudio.spatialBlend = 1f;
+            generatorAudio.rolloffMode = AudioRolloffMode.Logarithmic;
+            generatorAudio.minDistance = 2f;
+            generatorAudio.maxDistance = 14f;
+            generatorAudio.ignoreListenerPause = true;
             Refresh();
         }
         void Update()
         {
+            if (!keysUI && fuseHudSprite)
+            {
+                keysUI = FindFirstObjectByType<KeysUI>();
+                RefreshFuseHud();
+            }
             if (!GameplayAvailable) { interactionPrompt = null; return; }
             if (!view) view = Camera.main;
             if (Time.time >= nextDiscovery && LibraryMissionProgress.Stage == LibraryMissionStage.NotDiscovered)
@@ -187,7 +203,7 @@ namespace UniDoom.CampusLibrary
                     }
                     if (LibraryMissionProgress.Stage == LibraryMissionStage.FusesInstalled)
                         return panel != null && panel.Open();
-                    if (LibraryMissionProgress.PowerOn()) { Sound(generatorSound); Notify("Gerador ligado! Energia da biblioteca restaurada."); return true; }
+                    if (LibraryMissionProgress.PowerOn()) { PlayGeneratorStartup(); Notify("Gerador ligado! Energia da biblioteca restaurada."); return true; }
                     Notify(LibraryMissionProgress.Stage < LibraryMissionStage.FusesCollected ? $"Faltam {3 - LibraryMissionProgress.FuseCount} fusíveis para restaurar o gerador." :
                         LibraryMissionProgress.Stage == LibraryMissionStage.FusesCollected ? "Insira os três fusíveis diretamente no gerador." :
                         LibraryMissionProgress.IsLibraryGeneratorPowered ? "Energia da biblioteca restaurada." : "Use E no gerador para abrir o puzzle de energia.");
@@ -207,7 +223,7 @@ namespace UniDoom.CampusLibrary
             }
             else if (LibraryMissionProgress.Stage == LibraryMissionStage.PuzzleSolved && LibraryMissionProgress.PowerOn())
             {
-                Sound(generatorSound);
+                PlayGeneratorStartup();
                 Notify("Gerador ligado! Energia da biblioteca restaurada.");
             }
             return true;
@@ -230,6 +246,7 @@ namespace UniDoom.CampusLibrary
             return seq;
         }
         void Sound(AudioClip clip) { if (feedback && clip) feedback.PlayOneShot(clip, .6f); }
+        void PlayGeneratorStartup() { if (generatorAudio && generatorSound) generatorAudio.PlayOneShot(generatorSound, .8f); }
         static void Notify(string message, float duration = 4.5f) => GameplayNotice.Show(message, duration);
         void OnGUI()
         {
@@ -244,6 +261,7 @@ namespace UniDoom.CampusLibrary
         }
         void Refresh()
         {
+            RefreshFuseHud();
             if (worldClue)
             {
                 if (randomizeSequence && sequence != null && LibraryMissionProgress.ValidSequence(sequence))
@@ -259,6 +277,16 @@ namespace UniDoom.CampusLibrary
                 LibraryMissionProgress.Stage == LibraryMissionStage.PuzzleSolved ? "CIRCUITO OK • GERADOR LIGANDO" :
                 LibraryMissionProgress.Stage == LibraryMissionStage.FusesInstalled ? $"USE O GERADOR • CIRCUITO {LibraryMissionProgress.SequenceStep}/7" : $"FUSÍVEIS {LibraryMissionProgress.FuseCount}/3 • INSTALAR";
         }
-        void OnDisable() { LibraryMissionProgress.Changed -= Refresh; interactionPrompt = null; }
+        void RefreshFuseHud()
+        {
+            if (keysUI && fuseHudSprite)
+                keysUI.SetMissionItems(fuseHudSprite, LibraryMissionProgress.FuseCount - LibraryMissionProgress.InstalledFuseCount);
+        }
+        void OnDisable()
+        {
+            LibraryMissionProgress.Changed -= Refresh;
+            if (keysUI) keysUI.ClearMissionItems();
+            interactionPrompt = null;
+        }
     }
 }
