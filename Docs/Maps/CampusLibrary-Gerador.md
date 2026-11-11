@@ -13,7 +13,7 @@ Cena: `Assets/_Project/Scenes/CampusLibrary/CampusLibrary.unity`, instância de 
 - Acréscimo ao norte de aproximadamente **790 m²**, cerca de **33%** sobre a planta anterior, até `z ≈ 44,3`. Envelope nominal aproximado **56 × 56,5 m**; área bruta estimada, sem descontar móveis/paredes.
 - Passagem de **4 m**, centrada em `x = 18,5`, na parede de `z = 30,3`, altura livre **3,25 m**. Recorte de dois meshes exclusivos e adaptação do collider da parede, com identidades preservadas.
 - **12 estantes**, **6 mesas**, **24 cadeiras**, livros, notas e luminárias adicionais. Totais de estantes/cadeiras: **74 / 119**. Tampos a 0,96 m, com circulação entre os grupos.
-- Área restrita em aproximadamente `x = -27,05…-14`, `z = 34…44,3`: **13,05 × 10,3 m**, cerca de 134 m² brutos, antes aproximadamente 83 m². Hall de funcionários ao sul; divisória em `z = 38,8` separa sala do gerador a oeste e oficina a leste. Entrada **2,20 × 3,20 m**, em `(-21,5; 0; 34)`; passagens internas com 2 m / 1,6 m de largura e 3,2 m de altura. Bancada na oficina, quadro no hall, luminárias normal/vermelha ligadas aos estados existentes.
+- **Sala única do gerador — 10/11/2026:** a área restrita continua em aproximadamente `x = -27,05…-14`, `z = 34…44,3` (**13,05 × 10,3 m**), com a entrada original de **2,20 × 3,20 m** em `(-21,5; 0; 34)`. As divisórias do hall, da antiga sala do gerador e da oficina foram desativadas. A bancada e o bilhete 1 foram aproximados do gerador; quatro antigas peças de vão agora formam dois armários metálicos e dois dutos no teto, com um duto vertical até o armário. Luz normal/vermelha, ventilação, suportes e modelo do gerador permanecem. Na parede ao lado da entrada, a placa metálica diz **ACESSO RESTRITO / SOMENTE FUNCIONÁRIOS**. Os objetos e fileIDs originais foram preservados; Unity e Play Mode não puderam ser executados por falta de licença válida neste ambiente.
 - Entrada externa, chegada `FromCampusExterior`, saída, degraus, sanitários, foto, chaves numeradas e mobiliário anterior preservados. Sem segundo andar ou escada de subsolo.
 - Materiais, cube mesh persistente, estantes, cadeiras, fontes e sons reutilizados. Sprite de fusível gerado com imagegen integrado; atlas de placas e três bilhetes compostos com Liberation Sans já existente. Sem download de modelo ou pacote. Créditos e hashes em `Licenses/AssetSources/CampusLibrary/corrections-2026-11-10.json`.
 
@@ -34,8 +34,8 @@ Campo `sequence` de `LibraryMissionController`: sete números distintos de 1 a 7
 
 | Bilhete | Local | Conteúdo funcional |
 |---|---|---|
-| 0 — Anotação do plantão | Quadro no hall restrito, `(-25,9; 1,8; 34,21)` | Admissão inicia; aquecimento vem depois; pressão antes da rotação |
-| 1 — Ocorrência da oficina | Bancada, `(-14,7; 1,005; 41,6)` | Aquecimento antes da pressão; rotação antes da excitação; excitação antes da sincronia |
+| 0 — Anotação do plantão | Quadro junto à entrada restrita, `(-25,9; 1,8; 34,21)` | Admissão inicia; aquecimento vem depois; pressão antes da rotação |
+| 1 — Ocorrência da oficina | Bancada técnica do gerador, `(-20,55; 1,005; 41,6)` | Aquecimento antes da pressão; rotação antes da excitação; excitação antes da sincronia |
 | 2 — Aviso ao próximo turno | Mesa pública, `(-10,7; 1,025; 37,6)` | Carga encerra; sincronia imediatamente antes |
 
 | ID | Local | Pivô do fusível |
