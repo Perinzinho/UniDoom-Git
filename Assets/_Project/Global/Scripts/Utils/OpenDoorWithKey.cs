@@ -79,6 +79,7 @@ public class OpenDoorWithKey : MonoBehaviour
             openingDirection = fixedOpeningDirection != 0 ? Mathf.Sign(fixedOpeningDirection) : (side >= 0f ? -1f : 1f);
         }
         unlocked = true;
+        player.MarkKeysUsed(requiresKey01, requiresKey02, requiresKey03);
         return true;
     }
 
@@ -211,6 +212,7 @@ public enum DoorReloadTriggerMode
                 if (player != null && HasRequiredKey(player))
                 {
                     unlocked = true;
+                    player.MarkKeysUsed(requiresKey01, requiresKey02, requiresKey03);
                     break;
                 }
             }
