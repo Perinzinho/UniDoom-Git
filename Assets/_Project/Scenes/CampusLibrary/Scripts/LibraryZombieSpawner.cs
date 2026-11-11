@@ -13,7 +13,7 @@ namespace UniDoom.CampusLibrary
         [SerializeField] Transform entryPoint;
         [SerializeField] Transform[] additionalEntryPoints = System.Array.Empty<Transform>();
         [SerializeField] LibraryMaintenanceSafety safeArea;
-        [SerializeField, Range(1, 4)] int aliveLimit = 1;
+        [SerializeField, Range(1, 10)] int aliveLimit = 1;
         [SerializeField, Min(3)] float replacementDelay = 4;
         [SerializeField, Min(6)] float minimumSpawnDistance = 8;
         readonly Dictionary<Enemy, UnityAction<GameObject>> living = new();
@@ -32,7 +32,7 @@ namespace UniDoom.CampusLibrary
             removed.Clear();
             foreach (var pair in living) if (!pair.Key || pair.Key.IsDead) removed.Add(pair.Key);
             foreach (var dead in removed) Unregister(dead);
-            if (Time.time < nextSpawn || living.Count >= Mathf.Clamp(aliveLimit, 1, 4)) return;
+            if (Time.time < nextSpawn || living.Count >= Mathf.Clamp(aliveLimit, 1, 10)) return;
             nextSpawn = Time.time + .5f;
             if (!FindEntry(out var hit, out var rotation)) return;
             var enemy = Instantiate(zombiePrefab, hit.position + Vector3.up, rotation);

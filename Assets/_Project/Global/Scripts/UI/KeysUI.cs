@@ -6,11 +6,14 @@ public class KeysUI : MonoBehaviour
 {
     [SerializeField] private GameObject[] keyIcons; // Key01, Key02, Key03
     [SerializeField] private Sprite lifeSprite;
+    [SerializeField] private Sprite[] libraryKeySprites = new Sprite[2];
     private const int LifeSlots = 3;
     private const int MissionSlots = 3;
     private PlayerRespawn player;
     private Material livesMaterial;
     private Image[] missionIcons;
+    private Image[] libraryKeyIcons;
+    private PlayerCellKeys inventory;
     private static readonly int RemainingLivesId = Shader.PropertyToID("_RemainingLives");
 
     private void Awake()
@@ -25,6 +28,16 @@ public class KeysUI : MonoBehaviour
             rect.localScale = Vector3.one;
             rect.sizeDelta = new Vector2(42, 42);
             rect.anchoredPosition = new Vector2(53 + i * 54, -92);
+        }
+        libraryKeyIcons = new Image[libraryKeySprites.Length];
+        for (int i = 0; i < libraryKeyIcons.Length; i++)
+        {
+            var icon = MenuStyle.Image("Library access key " + (i + 1), keyIcons[0].transform.parent,
+                32 + i * 84, 71, 72, 72, Color.white);
+            icon.sprite = libraryKeySprites[i];
+            icon.preserveAspect = true;
+            icon.gameObject.SetActive(false);
+            libraryKeyIcons[i] = icon;
         }
         var hearts = MenuStyle.Image("Remaining lives", transform, 20, 8, 198, 66, Color.white);
         hearts.sprite = Resources.Load<Sprite>("Textures/UI/RemainingLives");
@@ -45,8 +58,13 @@ public class KeysUI : MonoBehaviour
     public void SetPlayer(PlayerRespawn newPlayer)
     {
         if (player != null) player.OnLivesChanged -= UpdateLives;
+        if (inventory != null) inventory.Changed -= RefreshLibraryKeys;
         player = newPlayer;
         if (player != null) player.OnLivesChanged += UpdateLives;
+        inventory = player != null ? player.GetComponent<PlayerCellKeys>() : null;
+        if (player != null && inventory == null) inventory = player.gameObject.AddComponent<PlayerCellKeys>();
+        if (inventory != null) inventory.Changed += RefreshLibraryKeys;
+        RefreshLibraryKeys();
         UpdateLives(player != null ? player.RemainingLives : 0);
     }
 
@@ -59,18 +77,42 @@ public class KeysUI : MonoBehaviour
     private void OnDestroy()
     {
         if (player != null) player.OnLivesChanged -= UpdateLives;
+        if (inventory != null) inventory.Changed -= RefreshLibraryKeys;
         if (livesMaterial != null) Destroy(livesMaterial);
     }
 
     public void ShowKey(int index)
     {
         keyIcons[index].SetActive(true);
+        RefreshLibraryKeys();
     }
 
     public void SetKeys(int ownedMask)
     {
         for (int i = 0; i < keyIcons.Length; i++)
             keyIcons[i].SetActive((ownedMask & (1 << i)) != 0);
+        RefreshLibraryKeys();
+    }
+
+    private void RefreshLibraryKeys()
+    {
+        if (libraryKeyIcons == null) return;
+        int firstSlot = 0;
+        foreach (var icon in keyIcons)
+            if (icon.activeSelf) firstSlot = keyIcons.Length;
+        bool hasLibraryKey = false;
+        for (int i = 0; i < libraryKeyIcons.Length; i++)
+        {
+            string keyId = i == 0 ? CampusLibraryAccess.LawSchoolKeyId : CampusLibraryAccess.Block4KeyId;
+            var icon = libraryKeyIcons[i];
+            icon.rectTransform.anchoredPosition = new Vector2(32 + firstSlot * 54 + i * 84, -71);
+            bool collected = inventory != null && inventory.HasKey(keyId) && icon.sprite != null;
+            icon.gameObject.SetActive(collected);
+            hasLibraryKey |= collected;
+        }
+        if (missionIcons != null)
+            for (int i = 0; i < missionIcons.Length; i++)
+                missionIcons[i].rectTransform.anchoredPosition = new Vector2(68 + i * 84, hasLibraryKey ? -191 : -161);
     }
 
     public void SetMissionItems(Sprite sprite, int count)
@@ -98,6 +140,7 @@ public class KeysUI : MonoBehaviour
             missionIcons[i].sprite = sprite;
             missionIcons[i].gameObject.SetActive(i < count);
         }
+        RefreshLibraryKeys();
     }
 
     public void ClearMissionItems()

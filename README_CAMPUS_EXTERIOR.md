@@ -1,5 +1,7 @@
 # Campus Exterior e Biblioteca do Campus — contexto de implementação
 
+**Gerador e celas — 11/11/2026:** as 14 celas do porão só aceitam abertura após reparar o gerador da CampusLibrary, instalando os três fusíveis e concluindo o puzzle. `PrisonProgress` consulta o estado real `IsLibraryGeneratorPowered` na autorização e no registro da abertura. O atalho `TESTAR FINAL` prepara esse estado concluído em uma sessão de teste. Contrato em [Basement-Celas-Pendencias.md](Docs/Maps/Basement-Celas-Pendencias.md).
+
 **Sorteio dos fusíveis da biblioteca — 10/11/2026:** três pontos entre 15 mesas/cabines existentes, com distância horizontal mínima de 18 m entre cada par. Cada partida evita os três locais anteriores, com memória em `PlayerPrefs`; o sorteio atual acompanha a sessão em transições/checkpoints. Referências, posições e validação isolada em [CampusLibrary-Gerador.md](Docs/Maps/CampusLibrary-Gerador.md#sorteio-dos-locais-dos-fusíveis--10112026).
 
 **Placa de funcionários da CampusLibrary — 10/11/2026:** a placa da entrada principal da manutenção usa a imagem fornecida pelo usuário, recortada com transparência e montada sobre o suporte metálico existente. A inscrição anterior em TextMeshPro está inativa. Posição, escala, asset e validação na [ficha do gerador](Docs/Maps/CampusLibrary-Gerador.md).

@@ -1,21 +1,23 @@
 # Celas do porão — decisões e pendências
 
-Atualizado em **10/11/2026**. Este documento acompanha o estado temporário das celas e as decisões necessárias antes de fechar a progressão definitiva.
+Atualizado em **11/11/2026**. A regra vigente é a liberação das 14 celas pela energia do gerador da CampusLibrary.
 
 > **Conciliação após integrar development:** a retirada das oito chaves de cela de Direito/Bloco 4 e as duas chaves de acesso à biblioteca foram preservadas. Permanecem cinco pickups de cela na biblioteca (4/5/6/10/11), além dos dois de acesso e da manutenção. O gerador continua como implementação futura. A distribuição 5/5/4 e as alternativas de chaves individuais abaixo são propostas/histórico da revisão recebida, não restauração dos pickups retirados. Estado vigente: [PrisonCellKeys.md](PrisonCellKeys.md).
 
-## Estado temporário atual
+## Regra atual
 
-- As **14 celas começam fechadas**, mostram `[E] ABRIR CELA XX` e podem ser abertas sem chave para permitir revisão de layout, professores, circulação, áudio e leitura visual.
-- O acesso temporário é controlado somente por `PrisonProgress.AllowKeylessCellOpeningForLayoutReview = true`.
+- As **14 celas começam fechadas**. Antes de reparar o gerador, o aviso indica `CELA XX TRANCADA — REPARE O GERADOR DA BIBLIOTECA`.
+- `PrisonProgress.CanOpenCell` exige um ID de 1 a 14 e `LibraryMissionProgress.IsLibraryGeneratorPowered`. Chaves numeradas, vitória sobre o boss e o antigo modo de revisão não liberam uma cela sem energia.
 - O prefab e o estado inicial permanecem fechados; a porta só gira depois da interação do jogador.
 - Os 13 sprites e o contrato dos IDs existentes continuam preservados; apenas os cinco pickups de cela da biblioteca permanecem ativos. A cela 14 de Bianca possui ID de gate/progresso, sprite de personagem e áudio, mas ainda não possui chave 14, pickup ou sprite de chave. Nenhuma chave é consumida ou concedida automaticamente.
-- Para voltar ao comportamento trancado, alterar a constante para `false`, compilar e executar a validação indicada no fim deste documento.
+- Depois dos três fusíveis instalados e do puzzle concluído, cada cela aceita `[E] ABRIR CELA XX`. `PrisonProgress.OpenCell` repete a condição de energia antes de registrar o resgate.
 - A estrutura principal das 14 celas usa as mesmas medidas, escalas e colisores. Seis grupos antigos de objetos importados, presentes somente nas celas 1–6, foram desativados e preservados para remover a diferença estrutural aparente.
 - Abrir a 14ª cela agora conclui o resgate: todos os sprites dos professores somem no mesmo frame e o prompt padronizado das celas passa a mostrar, no centro da tela, `Uma surpresa te espera! Retorne para Unimar`. A próxima travessia do portal do porão para `CampusExterior` inicia a sequência final.
-- O final posiciona os 14 professores na chegada da portaria UNIMAR, faz o grupo saltar diante de fogos procedurais, escurece a tela e inicia os créditos compartilhados. O menu principal contém `TESTAR FINAL`, que inicia uma sessão limpa na prisão após o boss, mantém as 14 celas fechadas e libera sua abertura sem chaves para validar o fluxo completo até os créditos.
+- O final posiciona os 14 professores na chegada da portaria UNIMAR, faz o grupo saltar diante de fogos procedurais, escurece a tela e inicia os créditos compartilhados. O menu principal contém `TESTAR FINAL`, que prepara o gerador pelo fluxo real de progresso em uma sessão limpa e inicia na prisão após o boss, com as 14 celas fechadas.
 
-## Decisão recomendada: quantidade de chaves
+## Propostas históricas sobre quantidade de chaves
+
+As propostas e listas abaixo registram o planejamento anterior à decisão de 11/11. A condição vigente de abertura é o gerador reparado, descrita acima.
 
 Na proposta histórica de **13 chaves de cela** para 14 professores/celas, seria necessário criar uma chave 14 individual para Bianca ou definir outra regra. Essa proposta deve ser reconsiderada junto ao gerador futuro antes de reativar as fechaduras; não altera o estado vigente de cinco pickups de cela ativos.
 
@@ -59,18 +61,16 @@ Pendências de design das salas:
 - [x] Definir feedback de conclusão após o último resgate e retorno à UNIMAR.
 - [ ] Decidir se o progresso precisa sobreviver apenas à sessão atual ou também a salvar/carregar o jogo.
 
-## Para trancar as celas novamente
+## Validação da liberação pelo gerador
 
-- [ ] Alterar `PrisonProgress.AllowKeylessCellOpeningForLayoutReview` para `false`.
-- [x] Confirmar as 14 instâncias de `PrisonCellGate`, IDs únicos de 1 a 14 e referências corretas de professor.
-- [ ] Criar o pickup da chave 14 e então confirmar os 14 pickups ativos e a correspondência entre chave, sprite, sala e cela.
-- [ ] Verificar que nenhuma sala recebe duas chaves e que nenhuma chave fica inacessível antes do próprio requisito.
-- [ ] Testar uma cela sem chave: colisão sólida, áudio de porta trancada e mensagem correta.
-- [ ] Testar uma cela com a chave correta e com uma chave incorreta.
-- [ ] Testar saída/retorno ao porão e recarga de checkpoint após abrir celas.
-- [ ] Testar HUD com 0, 1, 13 e 14 chaves após criar a chave de Bianca.
-- [ ] Testar falas, professores sem áudio e múltiplas celas abertas em sequência.
-- [ ] Executar Play Mode, build e comparação visual antes de considerar a progressão concluída.
+- [x] Remover as permissões temporárias de revisão e vincular autorização/registro de abertura ao estado real de energia.
+- [x] Verificação isolada dos métodos reais de progresso e abertura: 18 estados bloqueados × 14 celas, inclusive com chaves antigas e boss derrotado.
+- [x] Verificar conclusão do puzzle antes do acionamento: `PuzzleSolved` ainda bloqueia; `GeneratorOn` libera os IDs 1–14.
+- [x] Verificar IDs inválidos, jogador morto, pausa/menu, chamadas diretas e abertura repetida em objetos substitutos.
+- [x] Verificar restauração das celas abertas, resgate após 14 aberturas, reset de partida e preparação do atalho `TESTAR FINAL` em verificação isolada.
+- [x] Compilar C# do runtime com as referências locais da Unity, sem iniciar o Editor; avisos preexistentes.
+- [ ] Teste manual em jogo: chegar à prisão antes/depois do reparo, conferir colisão/aviso, falas, retorno entre mapas e checkpoint.
+- [ ] Play Mode, build e comparação visual pelo usuário.
 
 ## Arquivos afetados se o contrato mudar
 

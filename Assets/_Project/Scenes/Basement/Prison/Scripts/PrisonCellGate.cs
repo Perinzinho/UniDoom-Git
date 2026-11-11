@@ -39,8 +39,8 @@ public sealed class PrisonCellGate : MonoBehaviour
             UniDoom.UI.GameMenus.BlocksGameplay || Time.timeScale <= 0) return false;
         var life = player.GetComponent<PlayerLife>();
         if (life != null && life.IsDead) return false;
+        if (!PrisonProgress.OpenCell(cellId)) return false;
         IsOpen = true;
-        PrisonProgress.OpenCell(cellId);
         GameplayAudio.Instance?.PlayDoorOpening();
         return true;
     }
