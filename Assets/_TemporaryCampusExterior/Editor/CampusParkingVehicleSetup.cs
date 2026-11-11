@@ -70,9 +70,7 @@ public static class CampusParkingVehicleSetup
             EnsureFolder(Base + "Materials/ParkedVehicles");
             var carMeshes = ReadMeshes(carSpec);
             var bikeMeshes = ReadMeshes(bikeSpec);
-            var blue = BuildVehicle(carSpec, carMeshes, shader, "Blue", new Color(.24f, .33f, .38f));
             var grey = BuildVehicle(carSpec, carMeshes, shader, "Grey", new Color(.58f, .56f, .51f));
-            var maroon = BuildVehicle(carSpec, carMeshes, shader, "Maroon", new Color(.36f, .13f, .11f));
             var bike = BuildVehicle(bikeSpec, bikeMeshes, shader, "Teal", Color.white);
             if (opened) scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Additive);
             var campus = Find(scene, "Campus Exterior - Part 2") ?? throw new InvalidOperationException("Campus root is missing.");
@@ -85,7 +83,7 @@ public static class CampusParkingVehicleSetup
 
             var mesh = BuildParkingMesh(campus);
             SetMarkings(campus, mesh);
-            var layout = BuildLayout(road, grey, blue, maroon, bike);
+            var layout = BuildLayout(road, grey, bike);
             PlaceLayout(campus, layout);
             Validate(campus);
 
@@ -178,6 +176,8 @@ public static class CampusParkingVehicleSetup
             var material = new Material(shader) { name = name };
             material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>(source.texture));
             material.SetColor("_BaseColor", source.paint ? paint : source.glass ? new Color(.12f, .15f, .17f) : Color.white);
+            material.SetColor("_EmissionColor", Color.black);
+            material.DisableKeyword("_EMISSION");
             material.SetFloat("_Metallic", source.glass ? .4f : source.metallic);
             material.SetFloat("_Smoothness", source.smoothness);
             materials[i] = SaveAsset(material, Base + "Materials/ParkedVehicles/" + name + ".mat");
@@ -185,6 +185,7 @@ public static class CampusParkingVehicleSetup
         var root = new GameObject("Parked " + spec.name + " " + variant);
         try
         {
+            GameObjectUtility.SetStaticEditorFlags(root, StaticEditorFlags.BatchingStatic);
             var levels = new LOD[3];
             for (int lod = 0; lod < 3; lod++)
             {
@@ -211,20 +212,28 @@ public static class CampusParkingVehicleSetup
         finally { UnityEngine.Object.DestroyImmediate(root); }
     }
 
-    static GameObject BuildLayout(MeshCollider road, GameObject grey, GameObject blue, GameObject maroon, GameObject bike)
+    static GameObject BuildLayout(MeshCollider road, GameObject grey, GameObject bike)
     {
         var root = new GameObject(GroupName);
         try
         {
+            GameObjectUtility.SetStaticEditorFlags(root, StaticEditorFlags.BatchingStatic);
+            var coupeBlue = RequireAsset<GameObject>(Base + "Prefabs/CampusParkedLuxuryCoupeSapphire.prefab");
+            var coupeSilver = RequireAsset<GameObject>(Base + "Prefabs/CampusParkedLuxuryCoupeSilver.prefab");
+            var sedanGraphite = RequireAsset<GameObject>(Base + "Prefabs/CampusParkedExecutiveSedanGraphite.prefab");
+            var sedanWine = RequireAsset<GameObject>(Base + "Prefabs/CampusParkedExecutiveSedanWine.prefab");
+            var suv = RequireAsset<GameObject>(Base + "Prefabs/CampusParkedPremiumSUVPearl.prefab");
+            var sportBike = RequireAsset<GameObject>(Base + "Prefabs/CampusParkedSportBikeRed.prefab");
+            var touringBike = RequireAsset<GameObject>(Base + "Prefabs/CampusParkedTouringBikeBlack.prefab");
             AddVehicle(root.transform, road, grey, 0, 0, "W1 - grey hatchback");
-            AddVehicle(root.transform, road, blue, 1, 0, "W2 - blue hatchback");
-            AddVehicle(root.transform, road, blue, 2, 0, "W3 - blue hatchback");
-            AddVehicle(root.transform, road, bike, 3, -1.35f, "W4 - motorcycle A");
+            AddVehicle(root.transform, road, coupeBlue, 1, 0, "W2 - sapphire luxury coupe");
+            AddVehicle(root.transform, road, suv, 2, 0, "W3 - pearl premium SUV");
+            AddVehicle(root.transform, road, sportBike, 3, -1.35f, "W4 - red sport bike");
             AddVehicle(root.transform, road, bike, 3, 1.35f, "W4 - motorcycle B");
-            AddVehicle(root.transform, road, maroon, 4, 0, "N1 - maroon hatchback");
-            AddVehicle(root.transform, road, grey, 6, 0, "N3 - grey hatchback", true);
-            AddVehicle(root.transform, road, blue, 9, 0, "S2 - blue hatchback", true);
-            AddVehicle(root.transform, road, bike, 11, 0, "S4 - motorcycle");
+            AddVehicle(root.transform, road, sedanGraphite, 4, 0, "N1 - graphite executive sedan");
+            AddVehicle(root.transform, road, coupeSilver, 6, 0, "N3 - silver luxury coupe", true);
+            AddVehicle(root.transform, road, sedanWine, 9, 0, "S2 - wine executive sedan", true);
+            AddVehicle(root.transform, road, touringBike, 11, 0, "S4 - black touring bike");
             return PrefabUtility.SaveAsPrefabAsset(root, LayoutPath);
         }
         finally { UnityEngine.Object.DestroyImmediate(root); }
@@ -240,7 +249,9 @@ public static class CampusParkingVehicleSetup
         instance.transform.position = hit.point + Vector3.up * .004f;
         instance.transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal) * heading * Quaternion.Euler(0, reverse ? 180 : 0, 0);
         // Verify the full visual footprint, including mirrors, against the parking space.
-        var meshes = instance.GetComponentsInChildren<MeshFilter>(true).Where(f => f.transform.parent.name == "LOD0");
+        bool hasLodGroup = instance.GetComponent<LODGroup>() != null;
+        var meshes = instance.GetComponentsInChildren<MeshFilter>(true)
+            .Where(f => !hasLodGroup || f.transform.parent.name == "LOD0");
         foreach (var filter in meshes)
         {
             foreach (Vector3 vertex in filter.sharedMesh.vertices)
@@ -331,9 +342,9 @@ public static class CampusParkingVehicleSetup
     static void Validate(Transform campus)
     {
         var group = campus.GetComponentsInChildren<Transform>(true).Single(t => t.name == GroupName);
-        if (group.childCount != 9 || group.GetComponentsInChildren<LODGroup>(true).Length != 9 ||
-            group.GetComponentsInChildren<BoxCollider>(true).Length != 9)
-            throw new InvalidOperationException("Parking must contain nine vehicles with LODs and colliders.");
+        if (group.childCount != 9 || group.GetComponentsInChildren<BoxCollider>(true).Length != 9 ||
+            group.GetComponentsInChildren<Rigidbody>(true).Length != 0)
+            throw new InvalidOperationException("Parking must contain nine fixed vehicles with colliders.");
         var colliders = group.GetComponentsInChildren<BoxCollider>(true);
         for (int i = 0; i < colliders.Length; i++)
             for (int j = i + 1; j < colliders.Length; j++)
@@ -344,6 +355,13 @@ public static class CampusParkingVehicleSetup
 
     static Transform Find(Scene scene, string name) => scene.GetRootGameObjects()
         .SelectMany(r => r.GetComponentsInChildren<Transform>(true)).FirstOrDefault(t => t.name == name);
+
+    static T RequireAsset<T>(string path) where T : UnityEngine.Object
+    {
+        var asset = AssetDatabase.LoadAssetAtPath<T>(path);
+        if (asset == null) throw new FileNotFoundException("Required parking asset is missing: " + path);
+        return asset;
+    }
 
     static T SaveAsset<T>(T generated, string path) where T : UnityEngine.Object
     {
