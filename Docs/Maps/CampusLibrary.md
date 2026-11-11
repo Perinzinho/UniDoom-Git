@@ -2,6 +2,7 @@
 
 ## Leitura rápida
 
+- **Áudio do gerador — 10/11/2026:** ao concluir o puzzle e ligar o gerador, toca uma vez o trecho de partida `GeneratorStartup.mp3` (Freesound, CC0), com áudio espacial no próprio equipamento. Substitui a referência anterior ao som de porta pesada. Fonte e hash em `Licenses/AssetSources/CampusLibrary/generator-startup-sound.json`; teste em Play Mode pendente.
 - **Avisos e acesso ao gerador — 10/11/2026:** avisos de chave/fusível, descoberta, interação e entrada trancada usam `GameplayNotice`, com a apresentação compartilhada de `DirectorSecretPassage`. A sala do gerador recebe porta dupla azul com estrutura de aço e a inscrição **ENTRADA SOMENTE PARA FUNCIONÁRIOS**, na passagem interna `(-22,5; 0; 38,8)`. Placas de instrução antiga do gerador e “barreira de segurança” retiradas de exibição; sinalização funcional e bilhetes preservados. Detalhes e validação na ficha do gerador.
 
 - **Layout temporário de teste — 10/11/2026:** os três fusíveis da missão estão reunidos sobre a mesa da nova área de estudo, lado a lado, sem duplicação e preservando IDs e progressão. Posições exatas em [CampusLibrary-Gerador.md](CampusLibrary-Gerador.md).
