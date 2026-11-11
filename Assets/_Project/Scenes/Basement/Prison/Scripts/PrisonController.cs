@@ -163,13 +163,15 @@ public sealed class PrisonController : MonoBehaviour
     {
         if (stopVoice && activeVoice != null) activeVoice.Stop();
         foreach (var cell in GetComponentsInChildren<PrisonCellGate>(true)) cell.SetTeacherVisible(false);
-        prompt = RescueMessage;
-    }
-
-    // Same presentation as the other gameplay hints (GameplayNotice).
-    void OnGUI()
-    {
-        if (hud != null && hud.enabled && !string.IsNullOrEmpty(prompt)) GameplayNotice.Draw(prompt);
+        if (prompt != null)
+        {
+            var rect = prompt.rectTransform;
+            rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(.5f, .5f);
+            rect.anchoredPosition = new Vector2(0, -400);
+            rect.sizeDelta = new Vector2(1200, 70);
+            prompt.alignment = TextAlignmentOptions.Center;
+            prompt.text = "Uma surpresa te espera! Retorne para Unimar";
+        }
     }
 
     void OnDisable()
