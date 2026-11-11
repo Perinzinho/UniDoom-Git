@@ -20,6 +20,7 @@ namespace UniDoom.Finale
         PlayerMovement player;
         bool previousMovement;
         Image fade;
+        bool showTitle;
         float groundReference;
         AudioSource applauseSource;
         AudioClip rocketClip, explosionClip;
@@ -78,8 +79,10 @@ namespace UniDoom.Finale
             SpawnTeachers(settings, center, right);
             SpawnFireworks(center + forward * 8f, right);
             BuildFade();
+            showTitle = true;
 
             yield return new WaitForSecondsRealtime(CelebrationDuration);
+            showTitle = false;
             float elapsed = 0;
             while (elapsed < FadeDuration)
             {
@@ -462,25 +465,10 @@ namespace UniDoom.Finale
             rect.anchorMin = Vector2.zero;
             rect.anchorMax = Vector2.one;
             rect.offsetMin = rect.offsetMax = Vector2.zero;
-
-            var banner = MenuStyle.Image("Celebration title background", root.transform, 0, 0, 1040, 82,
-                new Color(.025f, .02f, .018f, .78f));
-            var bannerRect = banner.rectTransform;
-            bannerRect.anchorMin = bannerRect.anchorMax = new Vector2(.5f, 1);
-            bannerRect.pivot = new Vector2(.5f, 1);
-            bannerRect.anchoredPosition = new Vector2(0, -36);
-            banner.raycastTarget = false;
-            MenuStyle.Image("Menu rust accent", banner.transform, 0, 0, 1040, 3, MenuStyle.Rust);
-            var label = MenuStyle.Text("Celebration title", banner.transform,
-                "OS PROFESSORES ESTÃO A SALVO", 0, 0, 1040, 82, 34, MenuStyle.Paper);
-            MenuStyle.Stretch(label.rectTransform);
-            label.rectTransform.offsetMin = new Vector2(32, 0);
-            label.rectTransform.offsetMax = new Vector2(-32, 0);
-            label.fontStyle = FontStyles.Bold;
-            label.alignment = TextAlignmentOptions.Center;
-            label.characterSpacing = 1.5f;
-            label.raycastTarget = false;
         }
+
+        // Same presentation as the other gameplay messages (GameplayNotice).
+        void OnGUI() { if (showTitle) GameplayNotice.Draw("Os professores estão a salvo!"); }
 
         void OnDestroy()
         {

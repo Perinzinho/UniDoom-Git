@@ -2,6 +2,8 @@
 
 ## Leitura rápida
 
+- **Avisos e acesso ao gerador — 10/11/2026:** avisos de chave/fusível, descoberta, interação e entrada trancada usam `GameplayNotice`, com a apresentação compartilhada de `DirectorSecretPassage`. A sala do gerador recebe porta dupla azul com estrutura de aço e a inscrição **ENTRADA SOMENTE PARA FUNCIONÁRIOS**, na passagem interna `(-22,5; 0; 38,8)`. Placas de instrução antiga do gerador e “barreira de segurança” retiradas de exibição; sinalização funcional e bilhetes preservados. Detalhes e validação na ficha do gerador.
+
 - **Layout temporário de teste — 10/11/2026:** os três fusíveis da missão estão reunidos sobre a mesa da nova área de estudo, lado a lado, sem duplicação e preservando IDs e progressão. Posições exatas em [CampusLibrary-Gerador.md](CampusLibrary-Gerador.md).
 
 - **Modelo do gerador — 10/11/2026:** quatro variantes `.glb` fornecidas pelo usuário substituem o visual provisório e representam 0, 1, 2 e 3 fusíveis. Com os três coletados, um único E instala os restantes e abre o puzzle; a contagem interna notifica cada inserção na mesma interação. Importador e shader locais preservam as cores de vértice sem pacote externo. Validação isolada de 22 casos na [ficha da missão](CampusLibrary-Gerador.md).
