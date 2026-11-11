@@ -1,5 +1,7 @@
 # Campus Exterior e Biblioteca do Campus — contexto de implementação
 
+**Placa de funcionários da CampusLibrary — 10/11/2026:** a placa da entrada principal da manutenção usa a imagem fornecida pelo usuário, recortada com transparência e montada sobre o suporte metálico existente. A inscrição anterior em TextMeshPro está inativa. Posição, escala, asset e validação na [ficha do gerador](Docs/Maps/CampusLibrary-Gerador.md).
+
 **Padronização da biblioteca — 10/11/2026:** avisos da missão, chaves numeradas e aviso da entrada trancada passam à apresentação de `DirectorSecretPassage`, centralizada em `Global/Scripts/UI/GameplayNotice.cs`. Porta dupla de funcionários na passagem interna do gerador, com abertura por contato e sem chave adicional. Placas de instruções obsoletas e “barreira de segurança” retiradas de exibição, mantendo setores, manutenção e bilhetes. Contrato e validação em [CampusLibrary-Gerador.md](Docs/Maps/CampusLibrary-Gerador.md).
 
 **Recuperação de arte — 10/11/2026:** 455 `.meta` cujos GUIDs foram regenerados em `497be021` recuperados de `497be021^`, preservando as imagens e as mudanças recentes de gameplay. Isso restaura referências de texturas/sprites nos mapas, incluindo campus e biblioteca. Também retirado o aquecimento global de shaders internos das transições, devido às falhas registradas no caminho Direct3D 12 antes do crash do porão. Causa, escopo e limites de validação no [registro compartilhado](Docs/Maps/README.md#recuperação-de-texturas-e-sprites--10112026). Sem abrir Unity ou executar o jogo.
