@@ -43,6 +43,7 @@ public class Shotgun : Gun
     {
         if (SFXManager.Instance != null) SFXManager.Instance.PlayShotgunShootSound();
         Ray aimRay = CrosshairAim.CreateRay(playerCamera);
+        Transform owner = GetComponentInParent<PlayerLife>()?.transform;
 
 
         // Repeat shooting process according to pellet count.
@@ -71,7 +72,7 @@ public class Shotgun : Gun
 
 
             // Check if this pellet hit any Collider within range.
-            if (Physics.Raycast(ray, out RaycastHit hit, range))
+            if (WeaponHitQuery.TryRaycast(ray, range, owner, out RaycastHit hit))
             {
                 IDamageable damageable = hit.collider.GetComponentInParent<IDamageable>();
                 if (damageable != null && !damageable.IsDead)

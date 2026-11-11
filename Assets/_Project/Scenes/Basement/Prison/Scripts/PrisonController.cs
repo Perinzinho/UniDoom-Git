@@ -123,7 +123,7 @@ public sealed class PrisonController : MonoBehaviour
         bool canOpen = PrisonProgress.CanOpenCell(gate.CellId, inventory);
         if (hasCellKey) keyIcon.sprite = CellKeySprites.Get(gate.CellId) ?? keySprite;
         prompt = canOpen ? "[E] ABRIR CELA " + gate.CellId :
-            "CELA " + gate.CellId + " TRANCADA — ENCONTRE A CHAVE " + gate.CellId;
+            "CELA " + gate.CellId + " TRANCADA — REPARE O GERADOR DA BIBLIOTECA";
         bool interact = (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame) ||
             (Gamepad.current != null && Gamepad.current.buttonWest.wasPressedThisFrame);
         if (!interact) return;

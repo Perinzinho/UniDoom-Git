@@ -11,10 +11,12 @@ public sealed class PlayerCellKeys : MonoBehaviour
 
     public bool HasKey(string cellId) => !string.IsNullOrEmpty(cellId) && keys.Contains(cellId);
     public int Revision { get; private set; }
+    public event System.Action Changed;
     public bool TryAddKey(string cellId)
     {
         if (string.IsNullOrEmpty(cellId) || !keys.Add(cellId)) return false;
         Revision++;
+        Changed?.Invoke();
         return true;
     }
     public bool HasCompletedEvent(string eventId) => completedEvents.Contains(eventId);
