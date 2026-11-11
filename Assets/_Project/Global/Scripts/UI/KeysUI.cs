@@ -67,6 +67,12 @@ public class KeysUI : MonoBehaviour
         keyIcons[index].SetActive(true);
     }
 
+    public void SetKeys(int ownedMask)
+    {
+        for (int i = 0; i < keyIcons.Length; i++)
+            keyIcons[i].SetActive((ownedMask & (1 << i)) != 0);
+    }
+
     public void SetMissionItems(Sprite sprite, int count)
     {
         if (!sprite) { ClearMissionItems(); return; }
