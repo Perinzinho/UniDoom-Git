@@ -175,11 +175,15 @@ public static class CampusParkingVehicleSetup
             string name = spec.name + "_" + i + "_" + suffix;
             var material = new Material(shader) { name = name };
             material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>(source.texture));
-            material.SetColor("_BaseColor", source.paint ? paint : source.glass ? new Color(.12f, .15f, .17f) : Color.white);
+            bool frontLens = source.name == "clearlens" || source.name == "Original clear optical lens";
+            var color = frontLens ? new Color(.19f, .22f, .25f) :
+                source.paint ? paint : source.glass ? new Color(.12f, .15f, .17f) : Color.white;
+            material.SetColor("_BaseColor", color);
+            material.SetColor("_Color", color);
             material.SetColor("_EmissionColor", Color.black);
             material.DisableKeyword("_EMISSION");
             material.SetFloat("_Metallic", source.glass ? .4f : source.metallic);
-            material.SetFloat("_Smoothness", source.smoothness);
+            material.SetFloat("_Smoothness", frontLens ? .38f : source.smoothness);
             materials[i] = SaveAsset(material, Base + "Materials/ParkedVehicles/" + name + ".mat");
         }
         var root = new GameObject("Parked " + spec.name + " " + variant);
@@ -198,6 +202,11 @@ public static class CampusParkingVehicleSetup
                     var renderer = part.AddComponent<MeshRenderer>(); renderer.sharedMaterial = materials[i];
                     renderer.shadowCastingMode = ShadowCastingMode.On;
                     renderer.lightProbeUsage = LightProbeUsage.BlendProbes;
+                    if (spec.materials[i].name == "clearlens" || spec.materials[i].name == "redlens" ||
+                        spec.materials[i].name == "Original clear optical lens" ||
+                        spec.materials[i].name == "Original red optical lens" ||
+                        spec.materials[i].name == "Original amber optical lens")
+                        part.SetActive(false);
                     GameObjectUtility.SetStaticEditorFlags(part, StaticEditorFlags.BatchingStatic);
                     renderers[i] = renderer;
                 }
@@ -232,8 +241,8 @@ public static class CampusParkingVehicleSetup
             AddVehicle(root.transform, road, bike, 3, 1.35f, "W4 - motorcycle B");
             AddVehicle(root.transform, road, sedanGraphite, 4, 0, "N1 - graphite executive sedan");
             AddVehicle(root.transform, road, coupeSilver, 6, 0, "N3 - silver luxury coupe", true);
-            AddVehicle(root.transform, road, sedanWine, 9, 0, "S2 - wine executive sedan", true);
-            AddVehicle(root.transform, road, touringBike, 11, 0, "S4 - black touring bike");
+            AddVehicle(root.transform, road, sedanWine, 5, 0, "N2 - wine executive sedan", true);
+            AddVehicle(root.transform, road, touringBike, 7, 0, "N4 - black touring bike");
             return PrefabUtility.SaveAsPrefabAsset(root, LayoutPath);
         }
         finally { UnityEngine.Object.DestroyImmediate(root); }
