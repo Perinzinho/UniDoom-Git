@@ -2,6 +2,7 @@
 
 ## Leitura rápida
 
+- **HUD dos fusíveis — 10/11/2026:** cada fusível coletado mostra um ícone no HUD persistente `KeysUI`, em uma fileira abaixo das chaves dos primeiros mapas, reutilizando `Library maintenance fuse.png`. Os três ícones acompanham a contagem carregada, desaparecem ao instalar os fusíveis e são reconstruídos ao voltar à cena. Validação estática realizada; Play Mode pendente.
 - **Áudio do gerador — 10/11/2026:** ao concluir o puzzle e ligar o gerador, toca uma vez o trecho de partida `GeneratorStartup.mp3` (Freesound, CC0), com áudio espacial no próprio equipamento. Substitui a referência anterior ao som de porta pesada. Fonte e hash em `Licenses/AssetSources/CampusLibrary/generator-startup-sound.json`; teste em Play Mode pendente.
 - **Avisos e acesso ao gerador — 10/11/2026:** avisos de chave/fusível, descoberta, interação e entrada trancada usam `GameplayNotice`, com a apresentação compartilhada de `DirectorSecretPassage`. A sala do gerador recebe porta dupla azul com estrutura de aço e a inscrição **ENTRADA SOMENTE PARA FUNCIONÁRIOS**, na passagem interna `(-22,5; 0; 38,8)`. Placas de instrução antiga do gerador e “barreira de segurança” retiradas de exibição; sinalização funcional e bilhetes preservados. Detalhes e validação na ficha do gerador.
 
