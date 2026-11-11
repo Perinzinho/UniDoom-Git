@@ -1,0 +1,197 @@
+{
+  "title": "open can (junk)",
+  "author": "p0ss",
+  "license": "CC0 1.0",
+  "source": "https://opengameart.org/content/open-can-junk",
+  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "downloaded_on": "2026-11-09",
+  "source_files": {
+    "mesh": "https://opengameart.org/sites/default/files/can.blend",
+    "textures": "https://opengameart.org/sites/default/files/cantex.zip"
+  },
+  "adaptations": "Original Circle mesh triangulated and converted from Blender Z-up to Unity Y-up; original UVs retained. Bottom at y=0 and height 0.18 m including open lid. Native Unity mesh/prefab; no Blender import dependency. Original diffuse variant 3 and its normal map retained. Double-sided URP Lit material.",
+  "prefab": "Assets/_Project/Scenes/Basement/Prison/Prefabs/OpenFoodCan.prefab",
+  "prefab_guid": "4d8a55f559fe44f8b2b61e139f0b908d",
+  "import": {
+    "mesh_guid": "330f0dfaa2ed4f10abb1d60f475caf59",
+    "material_guid": "1d6eba31b84149ccba90478718054f9f",
+    "triangles": 60,
+    "vertices": 180,
+    "bounds_min": [
+      -0.05272444542913975,
+      0.0,
+      -0.08924844553789893
+    ],
+    "bounds_max": [
+      0.05272444542913975,
+      0.18,
+      0.08924844553789893
+    ],
+    "height_m": 0.18,
+    "source_vertices": 45,
+    "source_faces": 32,
+    "source_sha256": "ba9ccc897431b713a879c3dadb928b07b4ca015cfdabaa68fe2be037b47a43e9",
+    "textures": {
+      "can-tex3.png": {
+        "asset": "Assets/_Project/Scenes/Basement/Prison/Textures/OpenFoodCan-BaseColor.png",
+        "guid": "43bbf619efcf470a99a8c480556048ae",
+        "sha256": "ba503a3dd7d7a2a27546797f69552c5a121697d80ee44cc99a712bf8b4b60495"
+      },
+      "can-tex-nm3.png": {
+        "asset": "Assets/_Project/Scenes/Basement/Prison/Textures/OpenFoodCan-Normal.png",
+        "guid": "25d91f67b16849d9a038ac9f7ec00940",
+        "sha256": "3caa0cfee26ee6f6692e8b48922ceb4a326f3c82a0e1664bd84433fa4c652032"
+      }
+    }
+  },
+  "placements": [
+    {
+      "cell": 1,
+      "local_position": [
+        -4.45,
+        0.006,
+        6.45
+      ],
+      "yaw": 47
+    },
+    {
+      "cell": 2,
+      "local_position": [
+        4.45,
+        0.006,
+        6.45
+      ],
+      "yaw": 94
+    },
+    {
+      "cell": 3,
+      "local_position": [
+        -4.45,
+        0.006,
+        9.65
+      ],
+      "yaw": 141
+    },
+    {
+      "cell": 3,
+      "local_position": [
+        -4.15,
+        0.006,
+        9.3
+      ],
+      "yaw": 234
+    },
+    {
+      "cell": 4,
+      "local_position": [
+        4.45,
+        0.006,
+        9.65
+      ],
+      "yaw": 188
+    },
+    {
+      "cell": 5,
+      "local_position": [
+        -4.45,
+        0.006,
+        12.850000000000001
+      ],
+      "yaw": 235
+    },
+    {
+      "cell": 6,
+      "local_position": [
+        4.45,
+        0.006,
+        12.850000000000001
+      ],
+      "yaw": 282
+    },
+    {
+      "cell": 6,
+      "local_position": [
+        4.15,
+        0.006,
+        12.5
+      ],
+      "yaw": 15
+    },
+    {
+      "cell": 7,
+      "local_position": [
+        -4.45,
+        0.006,
+        16.05
+      ],
+      "yaw": 329
+    },
+    {
+      "cell": 8,
+      "local_position": [
+        4.45,
+        0.006,
+        16.05
+      ],
+      "yaw": 16
+    },
+    {
+      "cell": 9,
+      "local_position": [
+        -4.45,
+        0.006,
+        19.25
+      ],
+      "yaw": 63
+    },
+    {
+      "cell": 9,
+      "local_position": [
+        -4.15,
+        0.006,
+        18.900000000000002
+      ],
+      "yaw": 156
+    },
+    {
+      "cell": 10,
+      "local_position": [
+        4.45,
+        0.006,
+        19.25
+      ],
+      "yaw": 110
+    },
+    {
+      "cell": 11,
+      "local_position": [
+        -4.45,
+        0.006,
+        22.45
+      ],
+      "yaw": 157
+    },
+    {
+      "cell": 12,
+      "local_position": [
+        4.45,
+        0.006,
+        22.45
+      ],
+      "yaw": 204
+    },
+    {
+      "cell": 13,
+      "local_position": [
+        -4.45,
+        0.006,
+        25.650000000000002
+      ],
+      "yaw": 251
+    }
+  ],
+  "credits": "Assets/_Project/Global/Resources/Menus/CreditsContent.txt",
+  "verification": "Static file/reference/binary checks only. No Unity, Play Mode, build or screenshots.",
+  "source_archive_sha256": "8791d1664fdd3d3c1315cf257657af497ff0c039ea282e1599b88cfef181710c",
+  "converted_mesh_sha256": "13672984ca59e4324af158a154c08da1b8b352446a28148ac5e9a19754ba041b"
+}

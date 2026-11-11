@@ -21,7 +21,17 @@ namespace UniDoom.Utils
                 foreach (var point in root.GetComponentsInChildren<SceneArrivalPoint>())
                     if (point.spawnId == id)
                     {
-                        player.Teleport(point.transform.position, point.transform.rotation);
+                        Vector3 position = point.transform.position;
+                        if (scene.name == "CampusExterior" && id == "FromPrison")
+                        {
+                            Physics.SyncTransforms();
+                            if (!CampusGrounding.TryArrival(player, position, out position))
+                            {
+                                Debug.LogError("No clear ground position near the prison arrival.");
+                                return false;
+                            }
+                        }
+                        player.Teleport(position, point.transform.rotation);
                         foreach (var aim in player.GetComponentsInChildren<CinemachinePanTilt>(true))
                         {
                             aim.ReferenceFrame = CinemachinePanTilt.ReferenceFrames.World;

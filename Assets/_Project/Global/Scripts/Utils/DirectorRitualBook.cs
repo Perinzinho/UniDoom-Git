@@ -15,7 +15,6 @@ public sealed class DirectorRitualBook : MonoBehaviour
 
     readonly RaycastHit[] hits = new RaycastHit[24];
     MaterialPropertyBlock pageProperties;
-    GUIStyle hint;
     static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
     static DirectorRitualBook focusedBook;
     public static bool HasInteractionFocus => focusedBook != null && focusedBook.IsNearby;
@@ -93,14 +92,6 @@ public sealed class DirectorRitualBook : MonoBehaviour
     void OnGUI()
     {
         if (!IsNearby || GameMenus.BlocksGameplay) return;
-        if (hint == null) hint = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter };
-        hint.fontSize = Mathf.Clamp(Mathf.RoundToInt(Screen.height / 52f), 14, 24);
-        var rect = new Rect(Screen.width * .25f, Screen.height * .79f, Screen.width * .5f, 45);
-        var previous = GUI.color;
-        GUI.color = new Color(0, 0, 0, .9f);
-        GUI.Label(new Rect(rect.x + 1, rect.y + 2, rect.width, rect.height), interactionHint, hint);
-        GUI.color = new Color(.88f, .83f, .69f);
-        GUI.Label(rect, interactionHint, hint);
-        GUI.color = previous;
+        GameplayNotice.Draw(interactionHint);
     }
 }

@@ -101,9 +101,11 @@ public sealed class Axe : MonoBehaviour
                 // Measure that boss at the contact surface; keep zombie attack-range parity.
                 bool withinTargetRange = targetComponent is DirectorBoss ||
                     (targetComponent != null && Vector3.Distance(playerPosition, targetComponent.transform.position) <= range);
+                Vector3 sightLine = point - ray.origin;
                 if (withinTargetRange &&
                     Vector3.Distance(origin, point) <= range &&
-                    (!Physics.Linecast(ray.origin, point, out RaycastHit obstruction, ~0, QueryTriggerInteraction.Ignore) ||
+                    (!WeaponHitQuery.TryRaycast(new Ray(ray.origin, sightLine.normalized), sightLine.magnitude,
+                         owner, out RaycastHit obstruction, ~0) ||
                      obstruction.collider.GetComponentInParent<IDamageable>() == target))
                     target.TakeDamage(damage, gameObject);
             }

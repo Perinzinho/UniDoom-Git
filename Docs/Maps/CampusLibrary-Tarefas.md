@@ -1,0 +1,22 @@
+# Tarefas — Biblioteca da Unimar
+
+Mapa: `CampusLibrary`. Contexto: [documentação da biblioteca](CampusLibrary.md).
+
+Adicione novas tarefas ao final usando `- [ ]`. Priorizar a última tarefa pendente da lista, resolver uma por vez e marcar `- [x]` quando a alteração estiver concluída e verificada. Registrar os detalhes e limites da validação na documentação da biblioteca.
+
+- [x] Ajustar o tamanho dos móveis e objetos em relação ao player, preservando o layout restaurado e conferindo apoio no piso, colisões e circulação.
+- [x] Ajustar banheiros muito próximos as estantes, não faz sentido em uma estrutura de biblioteca
+- [x] Ajustar a placa de seçõse das estantes na entrada
+- [x] Ajustar iluminação
+- [x] Substituir objetos por modelos que já existem baixados, os que não existem baixados, procurar na internet, verificar se existem, se existir, substituir
+- [x] Se possível, procurar imagens da biblioteca da Unimar Marília para se basear na hora de ajustar- Fazer essa primeiro!
+- [x] Gerar arquivo MD de possíveis mecânicas para esse espaço, não sabemos oq podemos fazer para inovar nesse mapaT
+- [x] Criar um MD exclusivo de puzzles/enigmas caóticos e difíceis com inimigos atrapalhando — [Puzzles caóticos](CampusLibrary-Puzzles-Caoticos.md), reescrito com seis ideias físicas novas após rejeição das propostas anteriores.
+
+- [x] Revisar frestas das paredes, desobstruir a passagem para a ala de estudos, liberar o corredor sanitário do pilar e afastar mais as estantes dos banheiros.
+
+- [x] Escrever ideias simples de leitura e dedução para obter as cinco chaves da biblioteca — [proposta](CampusLibrary-Puzzles-Leitura.md). Documento escrito; implementação dos puzzles não solicitada nesta etapa.
+
+- [x] Substituir as oito chaves de cela de Direito/Bloco 4 por duas chaves de acesso à biblioteca, trocar seus sprites e exigir ambas na porta, com indicação visual.
+
+As correções de paredes/circulação estão registradas nas revisões de 07–08/11 da ficha; a alteração de acesso de 09/11 preserva esse interior. As validações do novo acesso estão na seção correspondente da documentação.

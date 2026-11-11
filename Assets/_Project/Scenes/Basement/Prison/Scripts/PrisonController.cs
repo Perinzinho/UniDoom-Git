@@ -3,6 +3,7 @@ using UniDoom.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 /// <summary>Prison interaction, cell-specific voices and the post-boss menu arrival.</summary>
 [DisallowMultipleComponent]
@@ -14,8 +15,12 @@ public sealed class PrisonController : MonoBehaviour
     [SerializeField] Sprite keySprite;
     [SerializeField, Min(1)] float interactionDistance = 3f;
     Canvas hud;
-    TMP_Text prompt;
+    const string RescueMessage = "Uma surpresa te espera! Retorne para Unimar";
+    string prompt = "";
     Image keyIcon;
+    TMP_Text keyList;
+    PlayerCellKeys shownInventory;
+    int shownRevision = -1;
     AudioSource activeVoice;
     PlayerMovement player;
     Camera view;
@@ -33,6 +38,7 @@ public sealed class PrisonController : MonoBehaviour
             passage?.RevealImmediately();
         }
         BuildHUD();
+        if (PrisonProgress.AllCellsOpened) CompleteCellRescue(false);
     }
 
     void RememberVictory() => PrisonProgress.BossDefeated = true;
@@ -75,13 +81,6 @@ public sealed class PrisonController : MonoBehaviour
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1920, 1080);
         scaler.matchWidthOrHeight = .5f;
-        prompt = MenuStyle.Text("Cell interaction", root.transform, "", 0, 0, 1000, 60, 27, MenuStyle.Paper);
-        var rect = prompt.rectTransform;
-        rect.anchorMin = rect.anchorMax = new Vector2(.5f, 0);
-        rect.pivot = new Vector2(.5f, 0);
-        rect.anchoredPosition = new Vector2(0, 100);
-        prompt.alignment = TextAlignmentOptions.Center;
-        prompt.raycastTarget = false;
         keyIcon = MenuStyle.Image("Prison key", root.transform, 0, 0, 52, 70, Color.white);
         keyIcon.rectTransform.anchorMin = keyIcon.rectTransform.anchorMax = keyIcon.rectTransform.pivot = Vector2.one;
         keyIcon.rectTransform.anchoredPosition = new Vector2(-28, -28);
@@ -89,6 +88,13 @@ public sealed class PrisonController : MonoBehaviour
         keyIcon.preserveAspect = true;
         keyIcon.raycastTarget = false;
         keyIcon.gameObject.SetActive(false);
+        keyList = MenuStyle.Text("Numbered cell keys", root.transform, "", 0, 0, 500, 40, 20, MenuStyle.Paper);
+        var listRect = keyList.rectTransform;
+        listRect.anchorMin = listRect.anchorMax = listRect.pivot = Vector2.one;
+        listRect.anchoredPosition = new Vector2(-28, -106);
+        keyList.alignment = TextAlignmentOptions.Right;
+        keyList.raycastTarget = false;
+
     }
 
     void Update()
@@ -99,24 +105,48 @@ public sealed class PrisonController : MonoBehaviour
             !DoorReloadScreen.IsReloading && Time.timeScale > 0;
         hud.enabled = playing;
         if (!playing) return;
-        keyIcon.gameObject.SetActive(PrisonProgress.HasKey);
-        prompt.text = "";
+        var inventory = player.GetComponent<PlayerCellKeys>();
+        if (inventory != shownInventory || (inventory ? inventory.Revision : -1) != shownRevision)
+            RefreshKeys(inventory);
+        if (PrisonProgress.AllCellsOpened)
+        {
+            prompt = RescueMessage;
+            return;
+        }
+        prompt = "";
         if (view == null || !view.gameObject.activeInHierarchy) view = Camera.main;
         if (view == null || !Physics.Raycast(view.transform.position, view.transform.forward,
                 out var hit, interactionDistance, ~0, QueryTriggerInteraction.Ignore)) return;
         var gate = hit.collider.GetComponentInParent<PrisonCellGate>();
         if (gate == null || gate.IsOpen) return;
-        prompt.text = PrisonProgress.HasKey ? "[E] ABRIR CELA " + gate.CellId : "CELA TRANCADA — ENCONTRE A CHAVE DA PRISÃO";
+        bool hasCellKey = PrisonProgress.HasCellKey(gate.CellId, inventory);
+        bool canOpen = PrisonProgress.CanOpenCell(gate.CellId, inventory);
+        if (hasCellKey) keyIcon.sprite = CellKeySprites.Get(gate.CellId) ?? keySprite;
+        prompt = canOpen ? "[E] ABRIR CELA " + gate.CellId :
+            "CELA " + gate.CellId + " TRANCADA — REPARE O GERADOR DA BIBLIOTECA";
         bool interact = (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame) ||
             (Gamepad.current != null && Gamepad.current.buttonWest.wasPressedThisFrame);
         if (!interact) return;
-        if (!PrisonProgress.HasKey)
+        if (!canOpen)
         {
             GameplayAudio.Instance?.NotifyLockedDoorContact(gate);
             return;
         }
         if (!TryOpenCell(gate, player.GetComponent<PlayerPickupKey>())) return;
-        prompt.text = "";
+        prompt = "";
+    }
+
+    void RefreshKeys(PlayerCellKeys inventory)
+    {
+        shownInventory = inventory;
+        shownRevision = inventory ? inventory.Revision : -1;
+        var ids = new List<string>();
+        int first = 0;
+        for (int id = 1; id <= PrisonProgress.CellCount; id++)
+            if (PrisonProgress.HasCellKey(id, inventory)) { ids.Add(id.ToString()); if (first == 0) first = id; }
+        keyList.text = "";
+        keyIcon.gameObject.SetActive(first != 0);
+        if (first != 0) keyIcon.sprite = CellKeySprites.Get(first) ?? keySprite;
     }
 
     public bool TryOpenCell(PrisonCellGate gate, PlayerPickupKey playerKeys)
@@ -125,7 +155,21 @@ public sealed class PrisonController : MonoBehaviour
         if (activeVoice != null) activeVoice.Stop();
         activeVoice = gate.Voice;
         if (activeVoice != null && activeVoice.clip != null) activeVoice.Play();
+        if (PrisonProgress.AllCellsOpened) CompleteCellRescue(true);
         return true;
+    }
+
+    void CompleteCellRescue(bool stopVoice)
+    {
+        if (stopVoice && activeVoice != null) activeVoice.Stop();
+        foreach (var cell in GetComponentsInChildren<PrisonCellGate>(true)) cell.SetTeacherVisible(false);
+        prompt = RescueMessage;
+    }
+
+    // Same presentation as the other gameplay hints (GameplayNotice).
+    void OnGUI()
+    {
+        if (hud != null && hud.enabled && !string.IsNullOrEmpty(prompt)) GameplayNotice.Draw(prompt);
     }
 
     void OnDisable()

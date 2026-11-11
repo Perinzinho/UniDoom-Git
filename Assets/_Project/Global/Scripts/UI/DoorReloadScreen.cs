@@ -21,7 +21,7 @@ namespace UniDoom.UI
         [SerializeField, Min(0f)] private float fadeOutDuration = 0.65f;
         [SerializeField, Min(0f)] private float minDisplayDuration = 1.6f;
         [Header("Aquecimento de shaders")]
-        [Tooltip("Coleção opcional de variantes usadas pelo jogo. O aquecimento global é evitado no URP.")]
+        [Tooltip("Coleção opcional de variantes prioritárias. O cenário renderiza sob a tela de transição antes de devolver o controle, sem aquecimento global de shaders internos.")]
         [SerializeField] private ShaderVariantCollection shaderVariants;
         [Header("Prévia")]
         [SerializeField] private bool enableDebugKey = true;
@@ -54,12 +54,17 @@ namespace UniDoom.UI
         {
             new DestinationArtwork("Cylinder"),
             new DestinationArtwork("Library"),
+            new DestinationArtwork("CampusLibrary"),
+            new DestinationArtwork("CampusBlock4"),
             new DestinationArtwork("ClassRoom"),
             new DestinationArtwork("DirectorRoom"),
-            new DestinationArtwork("EntranceGarden")
+            new DestinationArtwork("LawSchool"),
+            new DestinationArtwork("EntranceGarden"),
+            new DestinationArtwork("CampusExterior"),
+            new DestinationArtwork("Basement")
         };
         private static readonly string[] DebugSectors =
-            { "REDONDO", "BIBLIOTECA", "SALA DE AULA", "DIRETORIA", "CORREDOR DE ENTRADA" };
+            { "REDONDO", "BIBLIOTECA", "SALA DE AULA", "DIRETORIA", "CORREDOR DE ENTRADA", "BLOCO DE DIREITO" };
         private readonly Dictionary<string, Texture2D> destinationImages = new(StringComparer.OrdinalIgnoreCase);
         private Texture2D activePassageImage;
         private int debugDestinationIndex;
@@ -176,8 +181,13 @@ namespace UniDoom.UI
                 "EntranceGarden" => "JARDIM DO CAMPUS",
                 "Cylinder" => "REDONDO",
                 "Library" => "BIBLIOTECA",
+                "CampusLibrary" => "BIBLIOTECA DO CAMPUS",
+                "CampusBlock4" => "BLOCO 4",
                 "ClassRoom" => "SALA DE AULA",
                 "DirectorRoom" => "DIRETORIA",
+                "LawSchool" => "BLOCO DE DIREITO",
+                "CampusExterior" => "CAMPUS EXTERIOR",
+                "Basement" => "PORÃO / PRISÃO",
                 _ => destination
             };
             yield return Instance.ReloadRoutine(label, null, null, null, scenePath, restoreCheckpoint);
@@ -235,12 +245,20 @@ namespace UniDoom.UI
                         yield return null;
                     }
                 }
-                if (error == null && shaderVariants != null)
+                if (error == null)
                 {
-                    SetProgress(.92f, "Do outro lado...");
+                    SetProgress(.92f, "Preparando luz e materiais...");
+                    Canvas.ForceUpdateCanvases();
                     yield return null;
-                    try { shaderVariants.WarmUp(); }
+                    try
+                    {
+                        // Warm only an explicit collection. Global warmup also touches internal URP/debug
+                        // passes without their required buffers and fails on the reported D3D12 path.
+                        if (shaderVariants != null) shaderVariants.WarmUp();
+                    }
                     catch (Exception e) { Debug.LogWarning($"[DoorReloadScreen] Shader warmup: {e.Message}"); }
+                    // Render the destination normally behind the opaque cover before releasing input.
+                    yield return null;
                 }
                 while (Time.realtimeSinceStartup - started < minDisplayDuration) yield return null;
                 if (error != null)
@@ -287,11 +305,15 @@ namespace UniDoom.UI
                 : System.IO.Path.GetFileNameWithoutExtension(destination).Trim().ToUpperInvariant();
             switch (destination)
             {
-                case "HUB": case "CILINDRO": case "REDONDO": case "REDONDO": destination = "CYLINDER"; break;
+                case "HUB": case "CILINDRO": case "REDONDO": destination = "CYLINDER"; break;
                 case "BIBLIOTECA": destination = "LIBRARY"; break;
+                case "BLOCO 4": destination = "CAMPUSBLOCK4"; break;
                 case "SALA DE AULA": destination = "CLASSROOM"; break;
                 case "DIRETORIA": destination = "DIRECTORROOM"; break;
+                case "DIREITO": case "BLOCO DE DIREITO": destination = "LAWSCHOOL"; break;
                 case "ENTRANCEHALLWAY": case "CORREDOR DE ENTRADA": destination = "ENTRANCEGARDEN"; break;
+                case "CAMPUS": case "CAMPUS UNIMAR": case "CAMPUS EXTERIOR": destination = "CAMPUSEXTERIOR"; break;
+                case "PORAO": case "PORÃO": case "PRISAO": case "PRISÃO": destination = "BASEMENT"; break;
             }
 
             // Reset to the shared image on every request, so an unknown destination cannot show the previous room.

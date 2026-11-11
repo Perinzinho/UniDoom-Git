@@ -1,0 +1,117 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &2544139214000647490
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 45991328570233237, guid: 14d7b121502803d4faf13468c4cce1b2, type: 3}
+      propertyPath: m_Name
+      value: CampusLibraryZombie
+      objectReference: {fileID: 0}
+    - target: {fileID: 1236893388317887125, guid: 14d7b121502803d4faf13468c4cce1b2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.25179
+      objectReference: {fileID: 0}
+    - target: {fileID: 1236893388317887125, guid: 14d7b121502803d4faf13468c4cce1b2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1236893388317887125, guid: 14d7b121502803d4faf13468c4cce1b2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.48849
+      objectReference: {fileID: 0}
+    - target: {fileID: 1236893388317887125, guid: 14d7b121502803d4faf13468c4cce1b2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1236893388317887125, guid: 14d7b121502803d4faf13468c4cce1b2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1236893388317887125, guid: 14d7b121502803d4faf13468c4cce1b2, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1236893388317887125, guid: 14d7b121502803d4faf13468c4cce1b2, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1236893388317887125, guid: 14d7b121502803d4faf13468c4cce1b2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1236893388317887125, guid: 14d7b121502803d4faf13468c4cce1b2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1236893388317887125, guid: 14d7b121502803d4faf13468c4cce1b2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3049197986100325596, guid: 14d7b121502803d4faf13468c4cce1b2, type: 3}
+      propertyPath: alternateAppearances.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6743295283283433834, guid: 14d7b121502803d4faf13468c4cce1b2, type: 3}
+      propertyPath: m_UseGravity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6743295283283433834, guid: 14d7b121502803d4faf13468c4cce1b2, type: 3}
+      propertyPath: m_IsKinematic
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 45991328570233237, guid: 14d7b121502803d4faf13468c4cce1b2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7225279833847524013}
+    - targetCorrespondingSourceObject: {fileID: 45991328570233237, guid: 14d7b121502803d4faf13468c4cce1b2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6712001773485786430}
+  m_SourcePrefab: {fileID: 100100000, guid: 14d7b121502803d4faf13468c4cce1b2, type: 3}
+--- !u!1 &2589004620110707927 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 45991328570233237, guid: 14d7b121502803d4faf13468c4cce1b2, type: 3}
+  m_PrefabInstance: {fileID: 2544139214000647490}
+  m_PrefabAsset: {fileID: 0}
+--- !u!195 &7225279833847524013
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2589004620110707927}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.46
+  m_Speed: 3
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0.8
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 1
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &6712001773485786430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2589004620110707927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a6738701bf15994f914654f64f0ca93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UniDoom.CampusLibrary.LibraryEnemyRestriction
+  safeArea: {fileID: 0}

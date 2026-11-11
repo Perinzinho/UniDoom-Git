@@ -70,18 +70,19 @@ public sealed class ClassroomEncounterDirector : MonoBehaviour
         foreach (var point in returnGuards)
         {
             float waited = 0;
-            while (point != null && player != null && Vector3.Distance(player.transform.position, point.position) < minimumSpawnDistance && waited < 4f)
+            while (point != null && !EnemySpawnSafety.CanSpawn(point.position,
+                       player != null ? player.transform : null, minimumSpawnDistance) && waited < 12f)
             {
                 yield return new WaitForSeconds(.25f);
                 waited += .25f;
             }
-            Spawn(point);
+            Spawn(point, true);
             PendingSpawns--;
             yield return new WaitForSeconds(returnSpawnInterval);
         }
     }
 
-    void Spawn(Transform point)
+    void Spawn(Transform point, bool reinforcement = false)
     {
         if (point == null || zombiePrefab == null) return;
         if (player != null && Vector3.Distance(player.transform.position, point.position) < minimumSpawnDistance) return;
@@ -92,7 +93,11 @@ public sealed class ClassroomEncounterDirector : MonoBehaviour
         }
         var agent = zombiePrefab.GetComponent<NavMeshAgent>();
         float baseOffset = agent != null ? agent.baseOffset : 1f;
-        var instance = Instantiate(zombiePrefab, floor.position + Vector3.up * baseOffset, point.rotation, transform);
+        Vector3 position = floor.position + Vector3.up * baseOffset;
+        // Recheck the actual sampled position; never force a visible spawn after the timeout.
+        if (reinforcement && !EnemySpawnSafety.CanSpawn(position,
+                player != null ? player.transform : null, minimumSpawnDistance)) return;
+        var instance = Instantiate(zombiePrefab, position, point.rotation, transform);
         var enemy = instance.GetComponent<Enemy>();
         if (enemy != null) living.Add(enemy);
         SpawnedCount++;
