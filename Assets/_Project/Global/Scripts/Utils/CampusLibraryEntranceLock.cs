@@ -9,7 +9,6 @@ public sealed class CampusLibraryEntranceLock : MonoBehaviour, ISceneTransitionG
     [SerializeField] GameObject lawSchoolPadlock, block4Padlock;
     [SerializeField, Min(.5f)] float warningDistance = 2.5f;
     const string WarningText = "Porta trancada, você precisa de uma chave.";
-    GUIStyle warningStyle;
     public bool WarningVisible { get; private set; }
 
     public bool IsTransitionBlocked => !CampusLibraryAccess.CanEnter(Inventory);
@@ -43,15 +42,8 @@ public sealed class CampusLibraryEntranceLock : MonoBehaviour, ISceneTransitionG
 
     void OnGUI()
     {
-        if (!WarningVisible || !IsTransitionBlocked) return;
-        warningStyle ??= new GUIStyle(GUI.skin.box)
-        {
-            alignment = TextAnchor.MiddleCenter,
-            wordWrap = true,
-            fontSize = Mathf.RoundToInt(19 * Mathf.Clamp(Screen.height / 900f, .8f, 1.6f))
-        };
-        float width = Mathf.Min(680, Screen.width - 40);
-        GUI.Box(new Rect((Screen.width - width) * .5f, Screen.height * .76f, width, 64), WarningText, warningStyle);
+        if (WarningVisible && IsTransitionBlocked && !UniDoom.UI.GameplayNotice.IsShowing)
+            UniDoom.UI.GameplayNotice.Draw(WarningText);
     }
 
     void OnDisable() { WarningVisible = false; Refresh(); }
