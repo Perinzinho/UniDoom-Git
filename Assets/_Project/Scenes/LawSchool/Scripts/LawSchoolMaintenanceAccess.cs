@@ -51,13 +51,8 @@ public sealed class LawSchoolMaintenanceAccess : MonoBehaviour
 
     bool IsDistant(Transform point)
     {
-        if (!IsEligible(point, alarm.SelectedKeyRoom)) return false;
-        Transform alarmPoint = null;
-        foreach (var candidate in locations)
-            if (candidate && candidate.parent && candidate.parent.name == alarm.SelectedKeyRoom)
-            { alarmPoint = candidate; break; }
-        if (!alarmPoint) return false;
-        Vector3 delta = point.position - alarmPoint.position;
+        if (!alarm || !alarm.SelectedKeyLocation || !IsEligible(point, alarm.SelectedKeyRoom)) return false;
+        Vector3 delta = point.position - alarm.SelectedKeyLocation.position;
         delta.y = 0;
         return delta.sqrMagnitude >= minimumKeySeparation * minimumKeySeparation;
     }

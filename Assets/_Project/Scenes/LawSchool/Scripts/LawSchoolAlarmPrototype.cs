@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
@@ -32,6 +33,7 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
     public int SpawnedCount { get; private set; }
     public bool IsResolved { get; private set; }
     public string SelectedKeyRoom { get; private set; }
+    public Transform SelectedKeyLocation { get; private set; }
     public const string EventId = "law-school-cell-key-alarm";
     public const string TriggeredEventId = "law-school-local-key-collected";
 
@@ -114,15 +116,22 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         public void Restore() { if (renderer) renderer.SetPropertyBlock(original.isEmpty ? null : original, index); }
     }
 
-    void Start()
+    IEnumerator Start()
     {
         // Returning to this scene keeps the specific key owned by the persistent player.
+        while (!GameManager.SessionPlayer) yield return null;
         var player = GameManager.SessionPlayer;
-        if (!player || !key) return;
+        if (!key || !building)
+        {
+            Debug.LogError("LawSchool: configure a chave da biblioteca e a raiz do prédio.", this);
+            yield break;
+        }
         var keys = player.GetComponent<PlayerCellKeys>();
         if (!keys) keys = player.gameObject.AddComponent<PlayerCellKeys>();
         ChooseKeyRoom(keys);
         IsResolved = keys.HasCompletedEvent(EventId);
+        // Publish the initial placement too, so maintenance is available in this same initialization.
+        StateChanged?.Invoke();
         if (keys.HasCompletedEvent(TriggeredEventId) && !IsResolved) BeginAlarm();
     }
 
@@ -133,7 +142,7 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         var names = new List<string>();
         foreach (var location in keyLocations)
         {
-            if (!location) continue;
+            if (!location || !location.parent) continue;
             bool maintenance = false;
             if (excludedKeyAreas != null)
                 foreach (var area in excludedKeyAreas)
@@ -145,10 +154,16 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         }
         string chosen = inventory.GetOrChooseKeyLocation(key.CellId,names);
         int index = names.IndexOf(chosen);
-        if (index < 0) return;
-        SelectedKeyRoom = available[index].parent.name;
+        if (index < 0)
+        {
+            Debug.LogError("LawSchool: nenhum local válido para a chave da biblioteca.", this);
+            return;
+        }
+        SelectedKeyLocation = available[index];
+        SelectedKeyRoom = SelectedKeyLocation.parent.name;
         key.transform.SetParent(building,true);
         key.transform.position = available[index].position;
+        key.RefreshAvailability(inventory);
     }
 
     public bool TryResolve(PlayerPickupKey player)

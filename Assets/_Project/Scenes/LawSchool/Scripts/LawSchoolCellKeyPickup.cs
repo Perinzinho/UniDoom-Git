@@ -15,7 +15,13 @@ public sealed class LawSchoolCellKeyPickup : MonoBehaviour
     {
         var player = GameManager.SessionPlayer;
         var keys = player ? player.GetComponent<PlayerCellKeys>() : null;
-        if (keys && keys.HasKey(cellId)) HideCollectedKey();
+        if (keys) RefreshAvailability(keys);
+    }
+
+    internal void RefreshAvailability(PlayerCellKeys inventory)
+    {
+        collected = inventory.HasKey(cellId);
+        gameObject.SetActive(!collected);
     }
 
     void OnTriggerEnter(Collider other) => TryCollect(other);

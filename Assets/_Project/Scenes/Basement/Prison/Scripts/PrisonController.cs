@@ -15,7 +15,8 @@ public sealed class PrisonController : MonoBehaviour
     [SerializeField] Sprite keySprite;
     [SerializeField, Min(1)] float interactionDistance = 3f;
     Canvas hud;
-    TMP_Text prompt;
+    const string RescueMessage = "Uma surpresa te espera! Retorne para Unimar";
+    string prompt = "";
     Image keyIcon;
     TMP_Text keyList;
     PlayerCellKeys shownInventory;
@@ -80,13 +81,6 @@ public sealed class PrisonController : MonoBehaviour
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1920, 1080);
         scaler.matchWidthOrHeight = .5f;
-        prompt = MenuStyle.Text("Cell interaction", root.transform, "", 0, 0, 1000, 60, 27, MenuStyle.Paper);
-        var rect = prompt.rectTransform;
-        rect.anchorMin = rect.anchorMax = new Vector2(.5f, 0);
-        rect.pivot = new Vector2(.5f, 0);
-        rect.anchoredPosition = new Vector2(0, 100);
-        prompt.alignment = TextAlignmentOptions.Center;
-        prompt.raycastTarget = false;
         keyIcon = MenuStyle.Image("Prison key", root.transform, 0, 0, 52, 70, Color.white);
         keyIcon.rectTransform.anchorMin = keyIcon.rectTransform.anchorMax = keyIcon.rectTransform.pivot = Vector2.one;
         keyIcon.rectTransform.anchoredPosition = new Vector2(-28, -28);
@@ -116,10 +110,10 @@ public sealed class PrisonController : MonoBehaviour
             RefreshKeys(inventory);
         if (PrisonProgress.AllCellsOpened)
         {
-            prompt.text = "Uma surpresa te espera! Retorne para Unimar";
+            prompt = RescueMessage;
             return;
         }
-        prompt.text = "";
+        prompt = "";
         if (view == null || !view.gameObject.activeInHierarchy) view = Camera.main;
         if (view == null || !Physics.Raycast(view.transform.position, view.transform.forward,
                 out var hit, interactionDistance, ~0, QueryTriggerInteraction.Ignore)) return;
@@ -128,8 +122,8 @@ public sealed class PrisonController : MonoBehaviour
         bool hasCellKey = PrisonProgress.HasCellKey(gate.CellId, inventory);
         bool canOpen = PrisonProgress.CanOpenCell(gate.CellId, inventory);
         if (hasCellKey) keyIcon.sprite = CellKeySprites.Get(gate.CellId) ?? keySprite;
-        prompt.text = canOpen ? "[E] ABRIR CELA " + gate.CellId :
-            "CELA " + gate.CellId + " TRANCADA — ENCONTRE A CHAVE " + gate.CellId;
+        prompt = canOpen ? "[E] ABRIR CELA " + gate.CellId :
+            "CELA " + gate.CellId + " TRANCADA — REPARE O GERADOR DA BIBLIOTECA";
         bool interact = (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame) ||
             (Gamepad.current != null && Gamepad.current.buttonWest.wasPressedThisFrame);
         if (!interact) return;
@@ -139,7 +133,7 @@ public sealed class PrisonController : MonoBehaviour
             return;
         }
         if (!TryOpenCell(gate, player.GetComponent<PlayerPickupKey>())) return;
-        prompt.text = "";
+        prompt = "";
     }
 
     void RefreshKeys(PlayerCellKeys inventory)
@@ -150,7 +144,7 @@ public sealed class PrisonController : MonoBehaviour
         int first = 0;
         for (int id = 1; id <= PrisonProgress.CellCount; id++)
             if (PrisonProgress.HasCellKey(id, inventory)) { ids.Add(id.ToString()); if (first == 0) first = id; }
-        keyList.text = ids.Count > 0 ? "CHAVES DAS CELAS: " + string.Join(" · ", ids) : "";
+        keyList.text = "";
         keyIcon.gameObject.SetActive(first != 0);
         if (first != 0) keyIcon.sprite = CellKeySprites.Get(first) ?? keySprite;
     }

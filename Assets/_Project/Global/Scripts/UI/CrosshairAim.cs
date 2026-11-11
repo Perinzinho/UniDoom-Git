@@ -18,6 +18,10 @@ public sealed class CrosshairAim : MonoBehaviour
     public static Ray CreateRay(Camera camera)
     {
         Vector2 point = ViewportPoint;
-        return camera.ViewportPointToRay(new Vector3(point.x, point.y, 0f));
+        Ray ray = camera.ViewportPointToRay(new Vector3(point.x, point.y, 0f));
+        // The camera can be closer to a target than its near clip plane.
+        // Retain the viewport ray line while starting before that clipping plane.
+        ray.origin -= ray.direction * Vector3.Dot(ray.origin - camera.transform.position, ray.direction);
+        return ray;
     }
 }
