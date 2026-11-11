@@ -18,6 +18,7 @@ namespace UniDoom.CampusLibrary
         [SerializeField] TMP_Text worldStatus;
         [SerializeField] TMP_Text worldClue;
         [SerializeField] int[] sequence = { 3, 1, 5, 2, 7, 4, 6 };
+        [SerializeField] bool randomizeSequence = true;
         [SerializeField, Min(.5f)] float discoveryDistance = 3.2f;
         [SerializeField, Min(.5f)] float interactionDistance = 2.8f;
         [SerializeField] AudioSource feedback;
@@ -40,6 +41,7 @@ namespace UniDoom.CampusLibrary
         void OnEnable() { LibraryMissionProgress.Changed += Refresh; }
         void Start()
         {
+            if (randomizeSequence) sequence = GenerateRandomSequence();
             var ids = new HashSet<int>();
             bool valid = discoveryPoint && generator && LibraryMissionProgress.ValidSequence(sequence) && fuses.Length == 3 && buttons.Length == 7 &&
                 fuseSockets.Length == 3 && circuitSegments.Length == 7 && worldStatus;
@@ -217,6 +219,16 @@ namespace UniDoom.CampusLibrary
                 if (sequence[i] == id) return true;
             return false;
         }
+        static int[] GenerateRandomSequence()
+        {
+            int[] seq = { 1, 2, 3, 4, 5, 6, 7 };
+            for (int i = seq.Length - 1; i > 0; i--)
+            {
+                int j = UnityEngine.Random.Range(0, i + 1);
+                (seq[i], seq[j]) = (seq[j], seq[i]);
+            }
+            return seq;
+        }
         void Sound(AudioClip clip) { if (feedback && clip) feedback.PlayOneShot(clip, .6f); }
         static void Notify(string message, float duration = 4.5f) => GameplayNotice.Show(message, duration);
         void OnGUI()
@@ -232,7 +244,13 @@ namespace UniDoom.CampusLibrary
         }
         void Refresh()
         {
-            if (worldClue) worldClue.text = "REGISTROS DE MANUTENÇÃO\nConsulte os bilhetes do plantão.";
+            if (worldClue)
+            {
+                if (randomizeSequence && sequence != null && LibraryMissionProgress.ValidSequence(sequence))
+                    worldClue.text = $"SEQUÊNCIA DO CIRCUITO\nT{sequence[0]} → T{sequence[1]} → T{sequence[2]} → T{sequence[3]}\nT{sequence[4]} → T{sequence[5]} → T{sequence[6]}";
+                else
+                    worldClue.text = "REGISTROS DE MANUTENÇÃO\nConsulte os bilhetes do plantão.";
+            }
             foreach (var fuse in fuses) if (fuse) fuse.gameObject.SetActive(LibraryMissionProgress.Stage >= LibraryMissionStage.SearchingFuses && !LibraryMissionProgress.HasFuse(fuse.Id));
             for (int i = 0; i < fuseSockets.Length; i++) Paint(fuseSockets[i], LibraryMissionProgress.Stage >= LibraryMissionStage.FusesInstalled);
             for (int i = 0; i < circuitSegments.Length; i++) Paint(circuitSegments[i], i < LibraryMissionProgress.SequenceStep);
