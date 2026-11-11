@@ -38,13 +38,13 @@ public class Pistol : Gun
 
 
         // Cast the ray and check if it hit any collider.
-        if (Physics.Raycast(ray, out RaycastHit hit, range))
+        if (WeaponHitQuery.TryRaycast(ray, range, GetComponentInParent<PlayerLife>()?.transform, out RaycastHit hit))
         {
             IDamageable damageable = hit.collider.GetComponentInParent<IDamageable>();
             if (damageable != null && !damageable.IsDead)
                 damageable.TakeDamage(damage, gameObject);
         }
         
-        SFXManager.Instance.PlayPistolShootSound();
+        if (SFXManager.Instance != null) SFXManager.Instance.PlayPistolShootSound();
     }
 }

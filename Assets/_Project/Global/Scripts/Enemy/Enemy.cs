@@ -27,6 +27,7 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField, Min(.1f)] private float searchDuration = 4f;
     [SerializeField, Min(.5f)] private float searchRadius = 3f;
     [SerializeField, Min(.1f)] private float searchPause = .6f;
+    [SerializeField, Min(0f)] private float closeAwarenessRange = 3.5f;
 
     [Header("Group awareness")]
     [SerializeField, Min(0f)] private float alertRadius = 7f;
@@ -62,6 +63,7 @@ public class Enemy : MonoBehaviour, IDamageable
     private PlayerLife targetLife;
     private CharacterController targetController;
     private NavMeshAgent agent;
+    private UniDoom.CampusLibrary.LibraryEnemyRestriction libraryRestriction;
     private NavMeshPath patrolPath;
     private Vector3 patrolOrigin, patrolDestination, lastSeenPosition, desiredDirection;
     private float desiredSpeed, nextPerception, nextTargetSearch, searchEndsAt, nextPathUpdate, waitUntil;
@@ -116,6 +118,7 @@ public class Enemy : MonoBehaviour, IDamageable
         body = GetComponent<Rigidbody>();
         capsule = GetComponent<CapsuleCollider>();
         agent = GetComponent<NavMeshAgent>();
+        libraryRestriction = GetComponent<UniDoom.CampusLibrary.LibraryEnemyRestriction>();
         spriteAnimator = GetComponentInChildren<EnemySpriteAnimator>();
         patrolPath = new NavMeshPath();
         patrolOrigin = transform.position;
@@ -132,6 +135,30 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        if (gameObject.scene.name == "CampusExterior")
+        {
+            // Outdoor steering owns the capsule. Kinematic movement avoids launch
+            // impulses when the persistent player and actors overlap during scene load.
+            if (agent) agent.enabled = false;
+            if (body)
+            {
+                body.isKinematic = true;
+                body.useGravity = false;
+                body.constraints &= ~RigidbodyConstraints.FreezePosition;
+                body.constraints |= RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            }
+            // Probe from the root: an authored spawn may already have its feet below
+            // the road. Starting a ray below that surface cannot recover the actor.
+            if (capsule && UniDoom.Utils.CampusGrounding.TryFloor(transform.position, out var floor))
+            {
+                float offset = CampusFootOffset();
+                var grounded = new Vector3(transform.position.x, floor.point.y + offset + .02f, transform.position.z);
+                if (body) body.position = grounded;
+                else transform.position = grounded;
+                patrolOrigin = grounded;
+                progressPosition = grounded;
+            }
+        }
         if (agent != null && agent.enabled)
         {
             // Navigation is the sole owner of the transform on baked surfaces.
@@ -183,6 +210,9 @@ public class Enemy : MonoBehaviour, IDamageable
         if (meleeHitAt >= 0f || Time.time < meleeEndsAt)
         {
             StopMoving();
+            // Follow the approach during windup; commit the swing once it lands.
+            if (meleeHitAt >= 0f && target != null)
+                Face(target.position - transform.position, Time.deltaTime);
             if (meleeHitAt >= 0f && Time.time >= meleeHitAt)
             {
                 meleeHitAt = -1f;
@@ -283,7 +313,7 @@ public class Enemy : MonoBehaviour, IDamageable
         if (toTarget.sqrMagnitude > range * range) return false;
         toTarget.y = 0f;
         // Once acquired, a visible target can run around the enemy without cancelling pursuit.
-        if (!chasing && toTarget.sqrMagnitude > .001f &&
+        if (!chasing && toTarget.sqrMagnitude > closeAwarenessRange * closeAwarenessRange &&
             Vector3.Angle(transform.forward, toTarget) > fieldOfView * .5f) return false;
         return HasClearSight();
     }
@@ -291,6 +321,7 @@ public class Enemy : MonoBehaviour, IDamageable
     private bool HasClearSight()
     {
         if (target == null) return false;
+        if (libraryRestriction != null && !libraryRestriction.CanTarget(target.position)) return false;
         Vector3 eye = transform.position + Vector3.up * eyeHeight;
         Vector3 aim = targetController != null ? targetController.bounds.center : target.position;
         Vector3 direction = aim - eye;
@@ -410,7 +441,11 @@ public class Enemy : MonoBehaviour, IDamageable
         }
         if (!hasPatrolDestination)
         {
-            if (Time.time < waitUntil) return;
+            if (Time.time < waitUntil)
+            {
+                Face(Quaternion.Euler(0f, steeringSide * 60f * Time.deltaTime, 0f) * transform.forward, Time.deltaTime);
+                return;
+            }
             if (!ChoosePatrolDestination()) { waitUntil = Time.time + 1f; return; }
         }
         MoveTo(patrolDestination, patrolSpeed, .25f);
@@ -453,10 +488,14 @@ public class Enemy : MonoBehaviour, IDamageable
         if (UsingAgent)
         {
             desiredDirection = Vector3.zero;
-            agent.speed = speed;
             agent.stoppingDistance = stoppingDistance;
             agent.isStopped = false;
-            Face(agent.desiredVelocity, Time.deltaTime);
+            Vector3 heading = agent.desiredVelocity;
+            if (heading.sqrMagnitude < .001f)
+                heading = (agent.hasPath ? agent.steeringTarget : destination) - transform.position;
+            Face(heading, Time.deltaTime);
+            // Turn before advancing instead of sliding backwards toward the player.
+            agent.speed = speed * MovementAlignment(heading);
             if (Time.time >= nextPathUpdate)
             {
                 nextPathUpdate = Time.time + pathUpdateInterval;
@@ -521,11 +560,30 @@ public class Enemy : MonoBehaviour, IDamageable
             previousSteering = direction;
             Face(direction, Time.fixedDeltaTime);
         }
+        float alignedSpeed = desiredSpeed * MovementAlignment(direction);
+        if (gameObject.scene.name == "CampusExterior" && capsule)
+        {
+            // Ground the capsule before physics, and step onto curbs without impulses.
+            // Sweeps still reject walls and other actors; only the lower 35 cm is stepped over.
+            Vector3 position = transform.position + direction * alignedSpeed * Time.fixedDeltaTime;
+            if (State == BehaviourState.Wandering && HorizontalDistance(position, patrolOrigin) > patrolRadius)
+            {
+                hasPatrolDestination = false;
+                position = transform.position;
+            }
+            float offset = CampusFootOffset();
+            if (UniDoom.Utils.CampusGrounding.TryFloor(position - Vector3.up * offset, out var floor))
+            {
+                position.y = floor.point.y + offset + .015f;
+                if (body) body.MovePosition(position); else transform.position = position;
+            }
+            return;
+        }
         if (body != null && !body.isKinematic)
-            body.linearVelocity = direction * desiredSpeed + Vector3.up * body.linearVelocity.y;
+            body.linearVelocity = direction * alignedSpeed + Vector3.up * body.linearVelocity.y;
         else if (direction.sqrMagnitude > .001f)
         {
-            Vector3 position = transform.position + direction * desiredSpeed * Time.fixedDeltaTime;
+            Vector3 position = transform.position + direction * alignedSpeed * Time.fixedDeltaTime;
             if (body != null) body.MovePosition(position);
             else transform.position = position;
         }
@@ -574,6 +632,12 @@ public class Enemy : MonoBehaviour, IDamageable
         Vector3 center = capsule != null ? capsule.bounds.center : transform.position;
         float distance = Mathf.Max(.3f, desiredSpeed * Time.fixedDeltaTime + .1f);
         Vector3 axis = Vector3.up * (halfHeight - radius);
+        if (gameObject.scene.name == "CampusExterior")
+        {
+            // Raise the bottom endpoint only: retain head clearance above a curb.
+            center += Vector3.up * .175f;
+            axis -= Vector3.up * Mathf.Min(.175f, axis.y);
+        }
         int count = Physics.CapsuleCastNonAlloc(center + axis, center - axis, radius, direction,
             movementHits, distance, obstacleLayers, QueryTriggerInteraction.Ignore);
         if (count == movementHits.Length) return false;
@@ -584,6 +648,15 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private bool TryGround(Vector3 position, out Vector3 grounded)
     {
+        if (gameObject.scene.name == "CampusExterior")
+        {
+            float campusFootOffset = CampusFootOffset();
+            grounded = position;
+            if (!UniDoom.Utils.CampusGrounding.TryFloor(position - Vector3.up * campusFootOffset, out var support) ||
+                Mathf.Abs(support.point.y - (position.y - campusFootOffset)) > .35f) return false;
+            grounded.y = support.point.y + campusFootOffset;
+            return true;
+        }
         float footOffset = capsule != null ? transform.position.y - capsule.bounds.min.y : 1f;
         Vector3 origin = position + Vector3.up * .4f;
         int count = Physics.RaycastNonAlloc(origin, Vector3.down, movementHits, footOffset + .9f,
@@ -603,6 +676,17 @@ public class Enemy : MonoBehaviour, IDamageable
         return nearest < float.PositiveInfinity;
     }
 
+    private float CampusFootOffset()
+    {
+        if (!capsule) return 1f;
+        // Derive feet from the collider geometry, not the interpolated physics bounds.
+        // Appearance variants can change height/center while preserving the same feet.
+        Vector3 scale = transform.lossyScale;
+        float radius = capsule.radius * Mathf.Max(Mathf.Abs(scale.x), Mathf.Abs(scale.z));
+        float halfHeight = Mathf.Max(capsule.height * Mathf.Abs(scale.y) * .5f, radius);
+        return halfHeight - transform.TransformVector(capsule.center).y;
+    }
+
     private void Face(Vector3 direction, float deltaTime)
     {
         direction.y = 0f;
@@ -612,12 +696,19 @@ public class Enemy : MonoBehaviour, IDamageable
         else transform.rotation = rotation;
     }
 
+    private float MovementAlignment(Vector3 direction)
+    {
+        direction.y = 0f;
+        return direction.sqrMagnitude < .001f ? 1f :
+            Mathf.Lerp(.15f, 1f, Mathf.Clamp01(Vector3.Dot(FacingDirection, direction.normalized)));
+    }
+
     private void TryAttack()
     {
         EnemySpriteAppearance ranged = RangedAppearance;
         if (IsDead || target == null || (targetLife != null && targetLife.IsDead) ||
             Time.time - lastAttackTime < (ranged != null ? ranged.projectileCooldown : attackCooldown) ||
-            (ranged == null && Vector3.Angle(FacingDirection, target.position - transform.position) > 45f)) return;
+            Vector3.Angle(FacingDirection, target.position - transform.position) > 45f) return;
         lastAttackTime = Time.time;
         Attacked?.Invoke();
 

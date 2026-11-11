@@ -6,6 +6,7 @@ public class PlayerPickupKey : MonoBehaviour
     public bool key01, key02, key03;
 
     private KeysUI keysUI;
+    private int usedKeys;
 
     private void OnEnable()
     {
@@ -38,6 +39,22 @@ public class PlayerPickupKey : MonoBehaviour
     public void SetKeysUI(KeysUI ui)
     {
         keysUI = ui;
+        RefreshKeysUI();
+    }
+
+    public void MarkKeysUsed(bool usesKey01, bool usesKey02, bool usesKey03)
+    {
+        int nextUsed = usedKeys | (usesKey01 && key01 ? 1 : 0) |
+            (usesKey02 && key02 ? 2 : 0) | (usesKey03 && key03 ? 4 : 0);
+        if (nextUsed == usedKeys) return;
+        usedKeys = nextUsed;
+        RefreshKeysUI();
+    }
+
+    private void RefreshKeysUI()
+    {
+        int ownedKeys = (key01 ? 1 : 0) | (key02 ? 2 : 0) | (key03 ? 4 : 0);
+        if (keysUI != null) keysUI.SetKeys(usedKeys == 7 ? 0 : ownedKeys);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -67,6 +84,6 @@ public class PlayerPickupKey : MonoBehaviour
         GetComponent<PlayerRespawn>()?.SaveCheckpoint(index);
         key.enabled = false;
         Destroy(key.gameObject);
-        if (keysUI != null) keysUI.ShowKey(index);
+        RefreshKeysUI();
     }
 }

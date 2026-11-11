@@ -15,7 +15,7 @@ namespace UniDoom.UI
     /// <summary>Shared main, pause, death, options and confirmation screens. Progress lasts for the current run.</summary>
     public sealed partial class GameMenus : MonoBehaviour
     {
-        public enum Screen { Gameplay, Main, Pause, Death, Options, Credits, Confirm, MapSelect, GameOver, Document }
+        public enum Screen { Gameplay, Main, Pause, Death, Options, Credits, Confirm, MapSelect, GameOver, Document, Interaction }
         public static GameMenus Instance { get; private set; }
         public static bool BlocksGameplay => Instance != null && (Instance.CurrentScreen != Screen.Gameplay || Instance.busy);
         public Screen CurrentScreen { get; private set; }
@@ -28,15 +28,19 @@ namespace UniDoom.UI
         GameObject main, pause, death, options, credits, confirmation, mapSelection, gameOver;
         Button gameOverRestart, gameOverBack;
         Button chooseMap, mapFirst;
-        Button mainFirst, pauseFirst, deathRetry, deathBack, optionsBack, creditsBack, cancel;
+        Button mainFirst, pauseFirst, deathRetry, deathBack, optionsBack, cancel;
         Slider sensitivity, volume;
-        Toggle invertY, fullscreen;
-        TMP_Text sensitivityValue, volumeValue, confirmText, error, deathHint;
+        Toggle invertY, fullscreen, showFps;
+        TMP_Text sensitivityValue, volumeValue, confirmText, error, deathHint, fpsCounter;
+        Image fpsBackground;
         Screen optionsOrigin, confirmOrigin;
         Action confirmAction;
         PlayerRespawn deadPlayer;
         DeathScreen deathOwner;
-        bool busy, ownsPause;
+        bool busy, ownsPause, fpsEnabled;
+        bool creditsFinishSession;
+        float fpsSampleTime;
+        int fpsSampleFrames;
         float previousTimeScale;
         bool previousAudioPause, previousMovement;
         PlayerMovement frozenPlayer;
@@ -50,6 +54,7 @@ namespace UniDoom.UI
         bool fitted;
         const string VolumeKey = "UniDoom_MasterVolume";
         const string FullscreenKey = "UniDoom_Fullscreen";
+        const string ShowFpsKey = "UniDoom_ShowFPS";
         Vector2Int windowedResolution = new(1600, 900);
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -68,6 +73,7 @@ namespace UniDoom.UI
             DontDestroyOnLoad(gameObject);
             AudioListener.volume = Mathf.Clamp01(PlayerPrefs.GetFloat(VolumeKey, 1));
             if (PlayerPrefs.HasKey(FullscreenKey)) ApplyFullscreen(PlayerPrefs.GetInt(FullscreenKey) == 1);
+            fpsEnabled = PlayerPrefs.GetInt(ShowFpsKey, 0) == 1;
             Build();
             SceneManager.sceneLoaded += OnSceneLoaded;
             SetScreen(Screen.Main);
@@ -84,10 +90,12 @@ namespace UniDoom.UI
 
         void Update()
         {
+            UpdateFpsCounter();
             if (busy) return;
+            UpdateCreditsScroll();
             bool back = (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) ||
                 (Gamepad.current != null && (Gamepad.current.startButton.wasPressedThisFrame || Gamepad.current.buttonEast.wasPressedThisFrame));
-            if (back && CurrentScreen != Screen.Document && !DoorReloadScreen.IsReloading)
+            if (back && CurrentScreen != Screen.Document && CurrentScreen != Screen.Interaction && !DoorReloadScreen.IsReloading)
             {
                 if (CurrentScreen == Screen.Gameplay) OpenPause();
                 else Back();
@@ -119,6 +127,7 @@ namespace UniDoom.UI
             Fit();
             if (CurrentScreen == Screen.Document && documentOwner == null) CloseDocument();
             if (CurrentScreen == Screen.Document) FitDocument();
+            if (CurrentScreen == Screen.Interaction && (interactionOwner == null || interactionPanel == null)) CloseInteraction();
             if (ownsPause) { Time.timeScale = 0; AudioListener.pause = true; FreezePlayer(); }
             ApplyCursorState();
         }
@@ -140,7 +149,7 @@ namespace UniDoom.UI
 
         public void OpenOptions()
         {
-            if (busy || CurrentScreen == Screen.Death || CurrentScreen == Screen.GameOver || CurrentScreen == Screen.Confirm || CurrentScreen == Screen.Document) return;
+            if (busy || CurrentScreen == Screen.Death || CurrentScreen == Screen.GameOver || CurrentScreen == Screen.Confirm || CurrentScreen == Screen.Document || CurrentScreen == Screen.Interaction) return;
             if (CurrentScreen == Screen.Gameplay) OpenPause();
             optionsOrigin = CurrentScreen;
             if (MouseSensitivityMenu.Instance != null)
@@ -150,6 +159,7 @@ namespace UniDoom.UI
             }
             volume.SetValueWithoutNotify(AudioListener.volume);
             fullscreen.SetIsOnWithoutNotify(UnityEngine.Screen.fullScreen);
+            showFps.SetIsOnWithoutNotify(fpsEnabled);
             UpdateOptionsLabels();
             SetScreen(Screen.Options);
         }
@@ -161,7 +171,10 @@ namespace UniDoom.UI
             {
                 case Screen.Pause: Resume(); break;
                 case Screen.Options: PlayerPrefs.Save(); SetScreen(optionsOrigin); break;
-                case Screen.Credits: SetScreen(Screen.Main); break;
+                case Screen.Credits:
+                    if (creditsFinishSession) { creditsFinishSession = false; ReturnToMain(); }
+                    else SetScreen(Screen.Main);
+                    break;
                 case Screen.MapSelect: SetScreen(Screen.Main); Select(chooseMap); break;
                 case Screen.Confirm: SetScreen(confirmOrigin); break;
             }
@@ -177,6 +190,7 @@ namespace UniDoom.UI
         public void CloseForDeath()
         {
             if (CurrentScreen == Screen.Document) CloseDocument();
+            if (CurrentScreen == Screen.Interaction) CloseInteraction();
             if (ownsPause) ReleasePause();
             SetScreen(Screen.Gameplay);
         }
@@ -184,6 +198,7 @@ namespace UniDoom.UI
         public void ShowDeath(PlayerRespawn player, DeathScreen owner)
         {
             if (CurrentScreen == Screen.Document) CloseDocument();
+            if (CurrentScreen == Screen.Interaction) CloseInteraction();
             deadPlayer = player;
             deathOwner = owner;
             int lives = player != null ? player.RemainingLives : 0;
@@ -252,15 +267,19 @@ namespace UniDoom.UI
 
         void StartAtPrison() => StartNewGameAtScene("Assets/_Project/Scenes/Basement/Basement.unity", startAtPrison: true);
 
-        void StartNewGameAtScene(string scene, bool startAtBoss = false, bool startAtPrison = false)
+        void StartFinaleTest() => StartNewGameAtScene(
+            "Assets/_Project/Scenes/Basement/Basement.unity", startAtPrison: true, startAtFinale: true);
+
+        void StartNewGameAtScene(string scene, bool startAtBoss = false, bool startAtPrison = false,
+            bool startAtFinale = false)
         {
             if (busy) return;
             if (string.IsNullOrEmpty(scene) || !Application.CanStreamedLevelBeLoaded(scene))
             { error.text = "O mapa não está disponível no Build Settings."; return; }
-            StartCoroutine(NewGame(scene, startAtBoss, startAtPrison));
+            StartCoroutine(NewGame(scene, startAtBoss, startAtPrison, startAtFinale));
         }
 
-        IEnumerator NewGame(string scene, bool startAtBoss, bool startAtPrison)
+        IEnumerator NewGame(string scene, bool startAtBoss, bool startAtPrison, bool startAtFinale)
         {
             busy = true;
             for (float t = 0; t < .2f; t += Time.unscaledDeltaTime) { SetFade(t / .2f); yield return null; }
@@ -269,6 +288,7 @@ namespace UniDoom.UI
             if (oldPlayer != null) oldPlayer.GetComponent<PlayerRespawn>()?.PrepareForMainMenu();
             ReleasePause();
             GameManager.EndSession();
+            if (startAtFinale) PrisonProgress.BeginFinaleTest();
             yield return null;
             AsyncOperation load = null;
             bool startConfigured = !startAtBoss && !startAtPrison;
@@ -411,19 +431,20 @@ namespace UniDoom.UI
             document.SetActive(screen == Screen.Document);
             options.SetActive(screen == Screen.Options);
             credits.SetActive(screen == Screen.Credits);
+            SetCreditsVisible(screen == Screen.Credits);
             confirmation.SetActive(screen == Screen.Confirm);
             mapSelection.SetActive(screen == Screen.MapSelect);
-            bool mainBackground = screen == Screen.Main || screen == Screen.Credits || screen == Screen.MapSelect ||
+            bool mainBackground = screen == Screen.Main || screen == Screen.MapSelect ||
                 (screen == Screen.Options && optionsOrigin == Screen.Main);
             bool gameOverBackground = screen == Screen.GameOver || (screen == Screen.Confirm && confirmOrigin == Screen.GameOver);
             backdrop.gameObject.SetActive(mainBackground || gameOverBackground);
             shade.gameObject.SetActive(screen != Screen.Gameplay);
-            shade.color = new Color(0, 0, 0, mainBackground || screen == Screen.GameOver ? 0 : screen == Screen.Document ? .72f : screen == Screen.Pause ? .1f : screen == Screen.Death ? .2f : .78f);
+            shade.color = new Color(0, 0, 0, screen == Screen.Credits ? 1 : mainBackground || screen == Screen.GameOver ? 0 : screen == Screen.Document ? .72f : screen == Screen.Pause ? .1f : screen == Screen.Death ? .2f : .78f);
             error.text = "";
             if (screen == Screen.Gameplay) RestoreHUD(); else HideHUD();
             EnsureEvents();
             Select(screen switch { Screen.Main => mainFirst, Screen.Pause => pauseFirst,
-                Screen.Death => deathRetry, Screen.Options => optionsBack, Screen.Credits => creditsBack,
+                Screen.Death => deathRetry, Screen.Options => optionsBack,
                 Screen.Confirm => cancel, Screen.MapSelect => mapFirst, Screen.GameOver => gameOverRestart,
                 Screen.Document => documentClose, _ => null });
             Fit();
@@ -485,10 +506,11 @@ namespace UniDoom.UI
             mainFirst = ColumnButton(main, "NewGame", "NOVO JOGO", StartNewGame);
             chooseMap = ColumnButton(main, "TemporaryMapSelect", "ESCOLHER MAPA (TEMP.)", OpenMapSelection);
             var prisonShortcut = ColumnButton(main, "PrisonShortcut", "PRISÃO — APÓS O BOSS", StartAtPrison);
+            var finaleShortcut = ColumnButton(main, "FinaleShortcut", "TESTAR FINAL", StartFinaleTest);
             var mainOptions = ColumnButton(main, "Options", "OPÇÕES", OpenOptions);
             var creditButton = ColumnButton(main, "Credits", "CRÉDITOS", () => SetScreen(Screen.Credits));
             var quit = ColumnButton(main, "Quit", "SAIR", Quit);
-            MenuStyle.Link(mainFirst, chooseMap, prisonShortcut, mainOptions, creditButton, quit);
+            MenuStyle.Link(mainFirst, chooseMap, prisonShortcut, finaleShortcut, mainOptions, creditButton, quit);
             ColumnFooter(main);
             BuildMapSelection();
             StandardHeader(pause, 1);
@@ -507,13 +529,7 @@ namespace UniDoom.UI
             MenuStyle.Link(deathRetry, deathBack);
             ColumnFooter(death);
             BuildOptions();
-            MenuStyle.Text("Heading", credits.transform, "CRÉDITOS", 200, 230, 1400, 100, 52, MenuStyle.Paper);
-            MenuStyle.Text("Game", credits.transform, "UNIDOOM", 205, 365, 1300, 70, 36, MenuStyle.Paper);
-            MenuStyle.Text("Project", credits.transform, "Projeto de jogo desenvolvido na Unity.", 205, 460, 1400, 60, 26, MenuStyle.Muted);
-            // Credits reflect dependencies actually used; no invented contributor names.
-            MenuStyle.Text("Packages", credits.transform, "Unity · Universal Render Pipeline · Cinemachine · TextMesh Pro", 205, 535, 1500, 60, 25, MenuStyle.Muted);
-            creditsBack = MenuStyle.Button(credits.transform, "Back", "VOLTAR", 165, 800, 500, Back);
-            MenuStyle.Link(creditsBack);
+            BuildCredits();
             confirmText = MenuStyle.Text("Warning", confirmation.transform, "", 320, 300, 1350, 220, 42, MenuStyle.Paper);
             confirmText.textWrappingMode = TextWrappingModes.Normal;
             var confirm = MenuStyle.Button(confirmation.transform, "ConfirmReturn", "VOLTAR AO MENU", 320, 650, 600, () => confirmAction?.Invoke());
@@ -523,6 +539,12 @@ namespace UniDoom.UI
             error.textWrappingMode = TextWrappingModes.Normal;
             fade = MenuStyle.Image("Transition", transform, 0, 0, 0, 0, Color.clear);
             MenuStyle.Stretch(fade.rectTransform);
+            fpsBackground = MenuStyle.Image("FPS background", layout, 1660, 24, 220, 52, new Color(.025f, .02f, .018f, .72f));
+            fpsBackground.raycastTarget = false;
+            fpsCounter = MenuStyle.Text("FPS counter", layout, "FPS: --", 1672, 24, 196, 52, 24, MenuStyle.Paper);
+            fpsCounter.alignment = TextAlignmentOptions.MidlineRight;
+            fpsCounter.raycastTarget = false;
+            SetFpsDisplayVisible(false);
             foreach (var label in layout.GetComponentsInChildren<TMP_Text>(true))
                 if (label.fontSize <= 30) smallLabels.Add((label, label.fontSize));
             Fit();
@@ -641,6 +663,8 @@ namespace UniDoom.UI
         // Temporary shortcut: use the same fresh-session loading flow as New Game.
         void BuildMapSelection()
         {
+            // Six rows of 64px buttons must stay above Back at y=885.
+            const float rowSpacing = 90;
             MenuStyle.Text("Title", mapSelection.transform, "ESCOLHER MAPA", 165, 135, 1400, 100, 52, MenuStyle.Paper);
             MenuStyle.Text("Hint", mapSelection.transform, "Selecione onde começar uma nova partida.", 165, 245, 1400, 45, 26, MenuStyle.Muted);
             var controls = new List<Selectable>();
@@ -655,18 +679,22 @@ namespace UniDoom.UI
                     "SampleScene" => "CAMPUS COMPLETO",
                     "Cylinder" => "CILINDRO",
                     "Library" => "BIBLIOTECA",
+                    "CampusLibrary" => "BIBLIOTECA DO CAMPUS",
+                    "CampusBlock4" => "BLOCO 4",
                     "ClassRoom" => "SALA DE AULA",
                     "DirectorRoom" => "SALA DO DIRETOR",
+                    "LawSchool" => "BLOCO DE DIREITO",
+                    "CampusExterior" => "CAMPUS EXTERIOR — UNIMAR",
                     "Basement" => "PORÃO — PRÉ-ARENA",
                     _ => sceneName
                 };
                 var button = MenuStyle.Button(mapSelection.transform, "Map_" + sceneName, label,
-                    165 + controls.Count % 2 * 830, 320 + controls.Count / 2 * 110, 760, () => StartNewGameAtScene(scene), 32);
+                    165 + controls.Count % 2 * 830, 320 + controls.Count / 2 * rowSpacing, 760, () => StartNewGameAtScene(scene), 32);
                 if (mapFirst == null) mapFirst = button;
                 controls.Add(button);
                 if (sceneName == "Basement")
                     controls.Add(MenuStyle.Button(mapSelection.transform, "Map_BasementBoss", "PORÃO — ARENA DO BOSS",
-                        165 + controls.Count % 2 * 830, 320 + controls.Count / 2 * 110, 760,
+                        165 + controls.Count % 2 * 830, 320 + controls.Count / 2 * rowSpacing, 760,
                         () => StartNewGameAtScene(scene, true), 32));
             }
             var back = MenuStyle.Button(mapSelection.transform, "Back", "VOLTAR   [ESC]", 165, 885, 1000, Back, 34);
@@ -698,8 +726,9 @@ namespace UniDoom.UI
             invertY = Toggle("Inverter eixo Y", 600, value => MouseSensitivityMenu.Instance?.SetInvertY(value));
             fullscreen = Toggle("Tela cheia", 690, value =>
             { ApplyFullscreen(value); PlayerPrefs.SetInt(FullscreenKey, value ? 1 : 0); });
-            optionsBack = MenuStyle.Button(options.transform, "Back", "VOLTAR", 165, 850, 500, Back);
-            MenuStyle.Link(sensitivity, volume, invertY, fullscreen, optionsBack);
+            showFps = Toggle("Mostrar FPS", 780, SetFpsEnabled);
+            optionsBack = MenuStyle.Button(options.transform, "Back", "VOLTAR", 165, 880, 500, Back);
+            MenuStyle.Link(sensitivity, volume, invertY, fullscreen, showFps, optionsBack);
         }
 
         Slider Slider(string label, float y, float min, float max, UnityEngine.Events.UnityAction<float> change)
@@ -767,6 +796,40 @@ namespace UniDoom.UI
         {
             if (sensitivityValue != null) sensitivityValue.text = $"{sensitivity.value:0.00}x";
             if (volumeValue != null) volumeValue.text = $"{volume.value * 100:0}%";
+        }
+
+        void SetFpsEnabled(bool enabled)
+        {
+            fpsEnabled = enabled;
+            fpsSampleTime = 0;
+            fpsSampleFrames = 0;
+            if (fpsCounter != null) fpsCounter.text = "FPS: --";
+            PlayerPrefs.SetInt(ShowFpsKey, enabled ? 1 : 0);
+        }
+
+        void UpdateFpsCounter()
+        {
+            bool visible = fpsEnabled && CurrentScreen == Screen.Gameplay && !busy && !DoorReloadScreen.IsReloading;
+            SetFpsDisplayVisible(visible);
+            if (!visible)
+            {
+                fpsSampleTime = 0;
+                fpsSampleFrames = 0;
+                return;
+            }
+
+            fpsSampleTime += Time.unscaledDeltaTime;
+            fpsSampleFrames++;
+            if (fpsSampleTime < .5f) return;
+            fpsCounter.text = $"FPS: {fpsSampleFrames / fpsSampleTime:0}";
+            fpsSampleTime = 0;
+            fpsSampleFrames = 0;
+        }
+
+        void SetFpsDisplayVisible(bool visible)
+        {
+            if (fpsBackground != null) fpsBackground.gameObject.SetActive(visible);
+            if (fpsCounter != null) fpsCounter.gameObject.SetActive(visible);
         }
 
         void Quit()

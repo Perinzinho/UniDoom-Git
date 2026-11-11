@@ -5,7 +5,7 @@ namespace TotalChaosMaps
 {
     /// <summary>
     /// Porta que sobe para dentro do lintel, como as portas do Doom.
-    /// - keyId vazio  => porta comum (abre sozinha quando o jogador chega perto, se autoOpen).
+    /// - keyId vazio  => porta comum (abre quando o jogador encosta, se autoOpen).
     /// - keyId = "1"  => trancada; só abre depois de Interact(hasKey) com a chave certa.
     /// Chaves são ids como "1".."9" (a mesma numeração das letras a..i do layout).
     /// </summary>
@@ -63,18 +63,17 @@ namespace TotalChaosMaps
             _closeAt = Time.time + autoCloseDelay;
         }
 
+        public bool TryOpenByContact()
+        {
+            if (!autoOpen || !string.IsNullOrEmpty(keyId)) return false;
+            Open();
+            return true;
+        }
+
         public void Close() => _open = false;
 
         void Update()
         {
-            var cam = Camera.main;
-            if (autoOpen && !IsLocked && cam != null)
-            {
-                Vector3 p = cam.transform.position;
-                var flat = new Vector3(_closedPos.x, p.y, _closedPos.z);
-                if (Vector3.Distance(p, flat) < autoOpenRadius) Open();
-            }
-
             if (_open && autoCloseDelay > 0f && Time.time > _closeAt) _open = false;
 
             transform.position = Vector3.MoveTowards(

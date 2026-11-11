@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 public sealed class PrisonCellGate : MonoBehaviour
 {
-    [SerializeField, Range(1, 8)] int cellId = 1;
+    [SerializeField, Range(1, PrisonProgress.CellCount)] int cellId = 1;
     [SerializeField] Transform teacher;
     [SerializeField] float openingAngle = -100;
     [SerializeField, Min(.1f)] float openingDuration = 1.4f;
@@ -15,6 +15,11 @@ public sealed class PrisonCellGate : MonoBehaviour
     public int CellId => cellId;
     public bool IsOpen { get; private set; }
     public AudioSource Voice => teacher != null ? teacher.GetComponent<AudioSource>() : null;
+
+    public void SetTeacherVisible(bool visible)
+    {
+        if (teacher != null) teacher.gameObject.SetActive(visible);
+    }
 
     void Awake()
     {
@@ -29,12 +34,13 @@ public sealed class PrisonCellGate : MonoBehaviour
 
     public bool TryOpen(PlayerPickupKey player)
     {
-        if (!isActiveAndEnabled || IsOpen || !PrisonProgress.HasKey || player == null ||
+        if (!isActiveAndEnabled || IsOpen || player == null ||
+            !PrisonProgress.CanOpenCell(cellId, player.GetComponent<PlayerCellKeys>()) ||
             UniDoom.UI.GameMenus.BlocksGameplay || Time.timeScale <= 0) return false;
         var life = player.GetComponent<PlayerLife>();
         if (life != null && life.IsDead) return false;
+        if (!PrisonProgress.OpenCell(cellId)) return false;
         IsOpen = true;
-        PrisonProgress.OpenCell(cellId);
         GameplayAudio.Instance?.PlayDoorOpening();
         return true;
     }

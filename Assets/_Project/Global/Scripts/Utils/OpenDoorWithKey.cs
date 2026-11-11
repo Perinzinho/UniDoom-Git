@@ -7,6 +7,8 @@ public class OpenDoorWithKey : MonoBehaviour
     [SerializeField] private bool requiresKey01;
     [SerializeField] private bool requiresKey02;
     [SerializeField] private bool requiresKey03;
+    [Tooltip("Optional key in the existing persistent PlayerCellKeys inventory.")]
+    [SerializeField] private string requiredInventoryKey;
     [Tooltip("Requires an explicit interaction instead of unlocking by proximity.")]
     [SerializeField] private bool requiresManualActivation;
     [SerializeField] private bool stayOpenAfterUnlock;
@@ -24,6 +26,8 @@ public class OpenDoorWithKey : MonoBehaviour
     [Tooltip("0 chooses the player's side; -1 or 1 keeps a one-way hinge consistent after returning to the room.")]
     [Range(-1f, 1f)]
     [SerializeField] private float fixedOpeningDirection;
+    [Tooltip("Local approach axis: X for existing doors, passage normal for swing gates.")]
+    [SerializeField] private Vector3 openingSideAxis = Vector3.right;
 
     [Header("Tela de Reload / Aquecimento de Shaders")]
     [Tooltip("Exibe a tela de reload e warmup de shaders quando o jogador passar pela porta.")]
@@ -37,15 +41,19 @@ public class OpenDoorWithKey : MonoBehaviour
 
     private readonly HashSet<Collider> nearbyPlayers = new HashSet<Collider>();
     private readonly Dictionary<Collider, float> playerEntrySides = new Dictionary<Collider, float>();
+    private System.Predicate<Collider> outsideTrigger;
     private float lastReloadTime = -999f;
     private Vector3 closedCenter;
     private Transform hinge;
     private BoxCollider proximityTrigger;
     private float openProgress;
     private float closeTimer;
+    private float contactOpenUntil;
     private bool unlocked;
     private float openingDirection = 1f;
 
+    private bool RequiresAnyKey => requiresKey01 || requiresKey02 || requiresKey03 ||
+        !string.IsNullOrEmpty(requiredInventoryKey);
     public bool IsUnlocked => unlocked;
     public bool IsOpen => unlocked && openProgress >= .8f;
     public bool IsFullyOpen => unlocked && openProgress >= .999f;
@@ -67,10 +75,36 @@ public class OpenDoorWithKey : MonoBehaviour
         if (life != null && life.IsDead) return false;
         if (!unlocked)
         {
-            float side = transform.InverseTransformPoint(player.transform.position).x - closedCenter.x;
+            float side = PlayerSide(player.transform.position);
             openingDirection = fixedOpeningDirection != 0 ? Mathf.Sign(fixedOpeningDirection) : (side >= 0f ? -1f : 1f);
         }
         unlocked = true;
+        player.MarkKeysUsed(requiresKey01, requiresKey02, requiresKey03);
+        return true;
+    }
+
+    /// <summary>
+    /// Portas comuns só recebem a solicitação de abertura quando o jogador empurra
+    /// fisicamente o collider da folha. Portas com chave e portas manuais continuam
+    /// usando seus fluxos próprios.
+    /// </summary>
+    public bool TryOpenByContact(PlayerPickupKey player, Collider surface)
+    {
+        if (!isActiveAndEnabled || RequiresAnyKey || requiresManualActivation || player == null ||
+            surface == null || door == null || !surface.transform.IsChildOf(door)) return false;
+
+        PlayerLife life = player.GetComponent<PlayerLife>();
+        if (life != null && life.IsDead) return false;
+
+        if (!unlocked)
+        {
+            float side = PlayerSide(player.transform.position);
+            openingDirection = fixedOpeningDirection != 0 ? Mathf.Sign(fixedOpeningDirection) :
+                (side >= 0f ? -1f : 1f);
+        }
+
+        unlocked = true;
+        contactOpenUntil = Time.time + Mathf.Max(0.2f, animationDuration * 0.5f);
         return true;
     }
 
@@ -83,6 +117,7 @@ public enum DoorReloadTriggerMode
 
     private void Awake()
     {
+        outsideTrigger = IsOutsideTrigger;
         if (door == null) door = transform.Find("Door");
 
         if (door == null || door == transform)
@@ -148,7 +183,7 @@ public enum DoorReloadTriggerMode
             nearbyPlayers.Add(other);
             if (!playerEntrySides.ContainsKey(other))
             {
-                float side = transform.InverseTransformPoint(other.transform.position).x - closedCenter.x;
+                float side = PlayerSide(other.transform.position);
                 playerEntrySides[other] = side;
             }
         }
@@ -157,7 +192,7 @@ public enum DoorReloadTriggerMode
     private void Update()
     {
         // Teleportes e colliders desabilitados/destruídos podem não enviar OnTriggerExit.
-        nearbyPlayers.RemoveWhere(IsOutsideTrigger);
+        if (nearbyPlayers.Count > 0) nearbyPlayers.RemoveWhere(outsideTrigger);
         // Remove remembered crossing sides too, so returning after a teleport starts a fresh crossing.
         if (playerEntrySides.Count > nearbyPlayers.Count)
         {
@@ -167,7 +202,9 @@ public enum DoorReloadTriggerMode
             foreach (Collider other in stalePlayers) playerEntrySides.Remove(other);
         }
 
-        if (!unlocked && !requiresManualActivation)
+        // Portas com chave preservam o desbloqueio automático ao entrar no trigger.
+        // Portas sem chave aguardam o contato com a folha em TryOpenByContact.
+        if (!unlocked && !requiresManualActivation && RequiresAnyKey)
         {
             foreach (Collider other in nearbyPlayers)
             {
@@ -175,12 +212,14 @@ public enum DoorReloadTriggerMode
                 if (player != null && HasRequiredKey(player))
                 {
                     unlocked = true;
+                    player.MarkKeysUsed(requiresKey01, requiresKey02, requiresKey03);
                     break;
                 }
             }
         }
 
-        bool shouldOpen = unlocked && (stayOpenAfterUnlock || nearbyPlayers.Count > 0);
+        bool shouldOpen = unlocked && (stayOpenAfterUnlock || nearbyPlayers.Count > 0 ||
+            Time.time <= contactOpenUntil);
         if (shouldOpen && openProgress <= 0f)
         {
             if (!UniDoom.UI.DoorReloadScreen.IsReloading && Time.timeScale > 0f)
@@ -190,7 +229,7 @@ public enum DoorReloadTriggerMode
             {
                 PlayerPickupKey player = other.GetComponentInParent<PlayerPickupKey>();
                 if (player == null) continue;
-                float side = transform.InverseTransformPoint(player.transform.position).x - closedCenter.x;
+                float side = PlayerSide(player.transform.position);
                 openingDirection = fixedOpeningDirection != 0 ? Mathf.Sign(fixedOpeningDirection) : (side >= 0f ? -1f : 1f);
                 break;
             }
@@ -210,7 +249,7 @@ public enum DoorReloadTriggerMode
                 foreach (Collider other in nearbyPlayers)
                 {
                     if (other == null) continue;
-                    float currentSide = transform.InverseTransformPoint(other.transform.position).x - closedCenter.x;
+                    float currentSide = PlayerSide(other.transform.position);
                     if (playerEntrySides.TryGetValue(other, out float initialSide))
                     {
                         // Se iniciou em um dos lados e agora cruzou com folga mínima
@@ -241,6 +280,11 @@ public enum DoorReloadTriggerMode
             float easedProgress = Mathf.SmoothStep(0f, 1f, openProgress);
             hinge.localRotation = Quaternion.Euler(0f, openingDirection * openAngle * easedProgress, 0f);
         }
+
+        // Depois de fechar, uma porta comum volta a exigir um novo contato físico.
+        if (!RequiresAnyKey && !requiresManualActivation && !stayOpenAfterUnlock && unlocked &&
+            openProgress <= 0f && nearbyPlayers.Count == 0 && Time.time > contactOpenUntil)
+            unlocked = false;
     }
 
     private bool TryTriggerReload()
@@ -255,7 +299,15 @@ public enum DoorReloadTriggerMode
     {
         return (!requiresKey01 || player.key01) &&
             (!requiresKey02 || player.key02) &&
-            (!requiresKey03 || player.key03);
+            (!requiresKey03 || player.key03) &&
+            (string.IsNullOrEmpty(requiredInventoryKey) ||
+                (player.TryGetComponent<PlayerCellKeys>(out var inventory) && inventory.HasKey(requiredInventoryKey)));
+    }
+
+    private float PlayerSide(Vector3 position)
+    {
+        Vector3 axis = openingSideAxis.sqrMagnitude > .0001f ? openingSideAxis.normalized : Vector3.right;
+        return Vector3.Dot(transform.InverseTransformPoint(position) - closedCenter, axis);
     }
 
     private bool IsOutsideTrigger(Collider other)
@@ -272,6 +324,7 @@ public enum DoorReloadTriggerMode
         playerEntrySides.Clear();
         openProgress = 0f;
         closeTimer = 0f;
+        contactOpenUntil = 0f;
         if (hinge != null) hinge.localRotation = Quaternion.identity;
     }
 }

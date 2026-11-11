@@ -4,6 +4,12 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Weapons/Weapon Definition")]
 public class WeaponDefinition : ScriptableObject
 {
+    [System.Serializable]
+    public struct HudFrameBounds
+    {
+        public Sprite sprite;
+        public Rect opaqueRect;
+    }
     [SerializeField] private Gun gunPrefab;
     [SerializeField] private Axe axePrefab;
     [SerializeField] private WeaponPickup pickupPrefab;
@@ -23,6 +29,11 @@ public class WeaponDefinition : ScriptableObject
     [SerializeField] private Vector2 hudSize;
     [Tooltip("Maximum fraction of the viewport occupied by the complete animation canvas.")]
     [SerializeField] private Vector2 hudViewportLimit = new Vector2(.36f, .42f);
+    [Tooltip("Attach cropped first-person artwork to the bottom/right screen edges.")]
+    [SerializeField] private bool hudAttachToScreenEdges;
+    [SerializeField, Range(0f, .4f)] private float hudBottomCropFraction;
+    [Tooltip("Optional opaque bounds in source texture pixels. Source sprites and importers stay unchanged.")]
+    [SerializeField] private HudFrameBounds[] hudFrameBounds;
 
     public Gun GunPrefab => gunPrefab;
     public Axe AxePrefab => axePrefab;
@@ -36,6 +47,17 @@ public class WeaponDefinition : ScriptableObject
     public float RechargeFrameRate => rechargeFrameRate;
     public Vector2 HudOffset => hudOffset;
     public Vector2 HudSize => hudSize;
+    public bool HudAttachToScreenEdges => hudAttachToScreenEdges;
+    public float HudBottomCropFraction => hudBottomCropFraction;
+    public Rect HudFrameRect(Sprite sprite)
+    {
+        if (!sprite) return default;
+        if (hudFrameBounds != null)
+            foreach (var frame in hudFrameBounds)
+                if (frame.sprite == sprite && frame.opaqueRect.width > 0 && frame.opaqueRect.height > 0)
+                    return frame.opaqueRect;
+        return sprite.rect;
+    }
     public Vector2 HudViewportLimit => hudViewportLimit.x > 0 && hudViewportLimit.y > 0
         ? hudViewportLimit : new Vector2(.36f, .42f);
 }
