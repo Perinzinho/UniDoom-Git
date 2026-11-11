@@ -12,6 +12,7 @@ namespace UniDoom.CampusLibrary
         [SerializeField] Transform discoveryPoint;
         [SerializeField] LibraryMissionTarget generator;
         [SerializeField] LibraryMissionTarget[] fuses = new LibraryMissionTarget[3];
+        [SerializeField] BoxCollider[] fuseSpawnSurfaces = new BoxCollider[0];
         [SerializeField] LibraryMissionTarget[] buttons = new LibraryMissionTarget[7];
         [SerializeField] Renderer[] fuseSockets = new Renderer[3];
         [SerializeField] Renderer[] circuitSegments = new Renderer[7];
@@ -54,6 +55,7 @@ namespace UniDoom.CampusLibrary
             foreach (var r in fuseSockets) valid &= r;
             foreach (var r in circuitSegments) valid &= r;
             if (!valid) { Debug.LogError("CampusLibrary: missão sem três fusíveis únicos, sete botões/segmentos, encaixes ou gerador configurados.", this); enabled = false; return; }
+            if (!PlaceFuses()) { enabled = false; return; }
             var reachable = new List<LibraryMissionTarget>();
             foreach (var target in transform.root.GetComponentsInChildren<LibraryMissionTarget>(true))
                 if (target.Mission == this && (target.Kind == LibraryTargetKind.Fuse || target.Kind == LibraryTargetKind.Clue)) reachable.Add(target);
@@ -75,6 +77,34 @@ namespace UniDoom.CampusLibrary
             generatorAudio.ignoreListenerPause = true;
             Refresh();
         }
+
+        bool PlaceFuses()
+        {
+            var positions = new Vector3[fuseSpawnSurfaces.Length];
+            for (int i = 0; i < fuseSpawnSurfaces.Length; i++)
+            {
+                var surface = fuseSpawnSurfaces[i];
+                if (!surface || !surface.enabled || !surface.gameObject.activeInHierarchy)
+                {
+                    Debug.LogError("CampusLibrary: superfície de spawn dos fusíveis ausente ou inativa.", this);
+                    return false;
+                }
+                // Follow the real tabletop, including scene overrides. Keep the item
+                // near its front edge so it can be reached without pitching the camera.
+                Vector3 localPoint = surface.center + new Vector3(0, surface.size.y * .5f, -surface.size.z * .25f);
+                positions[i] = surface.transform.TransformPoint(localPoint) + Vector3.up * .065f;
+            }
+
+            int[] selected = LibraryMissionProgress.GetFuseSpawnIndices(positions, 18f);
+            if (selected == null)
+            {
+                Debug.LogError("CampusLibrary: configure pontos de fusíveis com pelo menos 18 m entre si e alternativas aos três pontos da partida anterior.", this);
+                return false;
+            }
+            foreach (var fuse in fuses) fuse.transform.position = positions[selected[fuse.Id]];
+            return true;
+        }
+
         void Update()
         {
             if (!keysUI && fuseHudSprite)

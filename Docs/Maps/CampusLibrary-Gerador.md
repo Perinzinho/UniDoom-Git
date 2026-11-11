@@ -33,7 +33,7 @@ Cena: `Assets/_Project/Scenes/CampusLibrary/CampusLibrary.unity`, instância de 
 
 ## Progressão e controles
 
-O HUD persistente `KeysUI` usa três posições com o mesmo tamanho e espaçamento das chaves dos primeiros mapas, numa fileira abaixo delas. `LibraryMissionController` fornece o sprite existente `Library maintenance fuse.png` e atualiza a quantidade visível a cada mudança de `LibraryMissionProgress`: 0–3 fusíveis carregados. A instalação no gerador remove os ícones, e a volta à biblioteca reconstrói a fileira a partir do estado da sessão; ao sair da cena, ela é ocultada. Não há inventário paralelo nem alteração nos ícones das chaves. A ligação de GUID, fluxo de coleta/instalação e limpeza de cena foram verificados estaticamente; Play Mode e inspeção visual pendentes.
+O HUD persistente `KeysUI` usa três ícones de fusível com 72 × 72 unidades de UI, ampliados de 42 × 42, numa fileira abaixo das chaves dos primeiros mapas. Os centros têm 84 unidades de espaçamento, deixando 12 unidades livres entre ícones e até a fileira de chaves. `LibraryMissionController` fornece o sprite existente `Library maintenance fuse.png` e atualiza a quantidade visível a cada mudança de `LibraryMissionProgress`: 0–3 fusíveis carregados. A instalação no gerador remove os ícones, e a volta à biblioteca reconstrói a fileira a partir do estado da sessão; ao sair da cena, ela é ocultada. Não há inventário paralelo nem alteração nos ícones das chaves. A ligação de GUID, fluxo de coleta/instalação, limpeza de cena e dimensões do HUD foram verificados estaticamente; Play Mode e inspeção visual pendentes.
 
 Ao completar a sequência do puzzle, a transição para `GeneratorOn` reproduz uma vez o efeito de partida de três segundos `Audio/GeneratorStartup.mp3` na posição do alvo do gerador, com atenuação 3D de 2 a 14 m. O `AudioSource` ignora a pausa do listener enquanto o painel modal está aberto. O som de porta pesada antes associado a `generatorSound` foi substituído; os cliques e erros do painel continuam no áudio de feedback original. Fonte CC0, autor e hash em `Licenses/AssetSources/CampusLibrary/generator-startup-sound.json`. Referência do clip, GUID, formato MP3 e pontos de chamada foram verificados estaticamente; audição e Play Mode ainda não foram executados.
 
@@ -56,13 +56,31 @@ Campo `sequence` de `LibraryMissionController`: sete números distintos de 1 a 7
 | 1 — Ocorrência da oficina | Bancada técnica do gerador, `(-20,55; 1,005; 41,6)` | Aquecimento antes da pressão; rotação antes da excitação; excitação antes da sincronia |
 | 2 — Aviso ao próximo turno | Mesa pública, `(-10,7; 1,025; 37,6)` | Carga encerra; sincronia imediatamente antes |
 
-| ID | Local | Pivô do fusível |
-|---|---|---|
-| 0 | Mesa da nova área de estudo, esquerda (posição temporária de teste) | `(-11,35; 1,025; 37,3)` |
-| 1 | Mesa da nova área de estudo, centro (posição temporária de teste) | `(-11; 1,025; 37,3)` |
-| 2 | Mesa da nova área de estudo, direita (posição temporária de teste) | `(-10,65; 1,025; 37,3)` |
+### Sorteio dos locais dos fusíveis — 10/11/2026
 
-Os três fusíveis estão temporariamente reunidos sobre a mesma mesa, com 35 cm entre os pivôs, para agilizar o teste da coleta e instalação. IDs, ativação após descobrir o gerador, indicadores e coleta individual foram preservados.
+O prefab referencia 15 `BoxCollider` de tampos existentes em `LibraryMissionController.fuseSpawnSurfaces`. Na inicialização, o controlador posiciona os três pickups nas superfícies sorteadas, junto à borda frontal e 6,5 cm acima do tampo. O cálculo acompanha posição, escala e overrides da superfície. As áreas de estudo do hall, mesas do salão, leitura silenciosa, cabines e mesas do fundo exigem percorrer diferentes trechos da biblioteca durante a busca.
+
+| Ponto | Superfície | Pivô nominal do fusível (x; y; z), em metros |
+|---|---|---|
+| 0 | Estudo individual no hall, oeste | `(6; 1,665; -9,698)` |
+| 1 | Estudo individual no hall, centro | `(13,5; 1,665; -9,698)` |
+| 2 | Estudo individual no hall, leste | `(18,5; 1,665; -9,698)` |
+| 3 | Mesa de estudo sudoeste | `(-21,8; 1,019; -1,845)` |
+| 4 | Mesa de estudo central | `(-15; 1,019; 2,155)` |
+| 5 | Mesa de estudo a leste do grupo | `(-7,8; 1,019; 2,155)` |
+| 6 | Leitura silenciosa sudoeste | `(-23; 1,025; 16,195)` |
+| 7 | Leitura silenciosa a leste | `(-7,2; 1,025; 20,695)` |
+| 8 | Leitura silenciosa ao norte | `(-15,25; 1,025; 26,595)` |
+| 9 | Cabine individual oeste | `(-9,8; 1,025; 29,326)` |
+| 10 | Cabine individual central | `(2,8; 1,025; 29,326)` |
+| 11 | Cabine individual leste | `(10; 1,025; 29,326)` |
+| 12 | Mesa noroeste do acervo do fundo | `(-11; 1,025; 41,595)` |
+| 13 | Mesa central do acervo do fundo | `(-4; 1,025; 36,895)` |
+| 14 | Mesa nordeste do acervo do fundo | `(3; 1,025; 41,595)` |
+
+`LibraryMissionProgress.GetFuseSpawnIndices` enumera as trincas com distância horizontal mínima de **18 m entre cada par** e sorteia uma delas. Na planta atual são **166 combinações**, com pelo menos **66 alternativas** mesmo excluindo todos os três pontos anteriores. `PlayerPrefs`, chave `UniDoom.CampusLibrary.PreviousFuseSpawns`, guarda somente a máscara dos locais anteriores para evitar repetição consecutiva também após fechar o aplicativo. O sorteio atual fica no estado da sessão, associado aos IDs 0–2; sair e voltar ao mapa ou recarregar checkpoint mantém posições e itens coletados. Uma nova partida limpa o sorteio atual e realiza outro na próxima entrada da biblioteca. Descoberta e coleta continuam usando a progressão existente.
+
+Validação desta alteração: 15 superfícies ativas e referências por fileID conferidas na cena/prefab, sem alterar registros anteriores. Verificação isolada com os métodos reais de progressão, substitutos de Unity e preferências em memória passou em **5.000 partidas**, **20.000 consultas de recarregamento**, todas as 166 configurações anteriores e no fluxo de coleta/instalação/puzzle/energia. Conferência das posições calculadas e alternativas feita sobre os dados atuais de cena/prefab. Compilação C# isolada do runtime passou com as referências locais da Unity e avisos preexistentes. Play Mode, percurso, build e inspeção visual pendentes de teste pelo usuário.
 
 Destaque luminoso moderado acompanha o coletável, inativo antes da descoberta. Sons existentes de coleta, acionamento mecânico, botão e erro. Sem inventário global novo.
 

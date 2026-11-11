@@ -1,5 +1,7 @@
 # Campus Exterior e Biblioteca do Campus — contexto de implementação
 
+**Sorteio dos fusíveis da biblioteca — 10/11/2026:** três pontos entre 15 mesas/cabines existentes, com distância horizontal mínima de 18 m entre cada par. Cada partida evita os três locais anteriores, com memória em `PlayerPrefs`; o sorteio atual acompanha a sessão em transições/checkpoints. Referências, posições e validação isolada em [CampusLibrary-Gerador.md](Docs/Maps/CampusLibrary-Gerador.md#sorteio-dos-locais-dos-fusíveis--10112026).
+
 **Placa de funcionários da CampusLibrary — 10/11/2026:** a placa da entrada principal da manutenção usa a imagem fornecida pelo usuário, recortada com transparência e montada sobre o suporte metálico existente. A inscrição anterior em TextMeshPro está inativa. Posição, escala, asset e validação na [ficha do gerador](Docs/Maps/CampusLibrary-Gerador.md).
 
 **Padronização da biblioteca — 10/11/2026:** avisos da missão, chaves numeradas e aviso da entrada trancada passam à apresentação de `DirectorSecretPassage`, centralizada em `Global/Scripts/UI/GameplayNotice.cs`. Porta dupla de funcionários na passagem interna do gerador, com abertura por contato e sem chave adicional. Placas de instruções obsoletas e “barreira de segurança” retiradas de exibição, mantendo setores, manutenção e bilhetes. Contrato e validação em [CampusLibrary-Gerador.md](Docs/Maps/CampusLibrary-Gerador.md).
