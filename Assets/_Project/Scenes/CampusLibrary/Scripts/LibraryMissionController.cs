@@ -29,6 +29,7 @@ namespace UniDoom.CampusLibrary
         MaterialPropertyBlock block;
         LibraryMissionTarget[] lowTargets;
         LibraryGeneratorPanel panel;
+        AudioSource generatorAudio;
         public LibraryMissionTarget[] Fuses => (LibraryMissionTarget[])fuses.Clone();
         public LibraryMissionTarget[] Buttons => (LibraryMissionTarget[])buttons.Clone();
         public LibraryMissionTarget Generator => generator;
@@ -60,6 +61,14 @@ namespace UniDoom.CampusLibrary
             if (!modelVariants) modelVariants = gameObject.AddComponent<LibraryGeneratorModelVariants>();
             modelVariants.Configure();
             if (feedback) feedback.ignoreListenerPause = true;
+            generatorAudio = generator.GetComponent<AudioSource>();
+            if (!generatorAudio) generatorAudio = generator.gameObject.AddComponent<AudioSource>();
+            generatorAudio.playOnAwake = false;
+            generatorAudio.spatialBlend = 1f;
+            generatorAudio.rolloffMode = AudioRolloffMode.Logarithmic;
+            generatorAudio.minDistance = 2f;
+            generatorAudio.maxDistance = 14f;
+            generatorAudio.ignoreListenerPause = true;
             Refresh();
         }
         void Update()
@@ -185,7 +194,7 @@ namespace UniDoom.CampusLibrary
                     }
                     if (LibraryMissionProgress.Stage == LibraryMissionStage.FusesInstalled)
                         return panel != null && panel.Open();
-                    if (LibraryMissionProgress.PowerOn()) { Sound(generatorSound); Notify("Gerador ligado! Energia da biblioteca restaurada."); return true; }
+                    if (LibraryMissionProgress.PowerOn()) { PlayGeneratorStartup(); Notify("Gerador ligado! Energia da biblioteca restaurada."); return true; }
                     Notify(LibraryMissionProgress.Stage < LibraryMissionStage.FusesCollected ? $"Faltam {3 - LibraryMissionProgress.FuseCount} fusíveis para restaurar o gerador." :
                         LibraryMissionProgress.Stage == LibraryMissionStage.FusesCollected ? "Insira os três fusíveis diretamente no gerador." :
                         LibraryMissionProgress.IsLibraryGeneratorPowered ? "Energia da biblioteca restaurada." : "Use E no gerador para abrir o puzzle de energia.");
@@ -205,7 +214,7 @@ namespace UniDoom.CampusLibrary
             }
             else if (LibraryMissionProgress.Stage == LibraryMissionStage.PuzzleSolved && LibraryMissionProgress.PowerOn())
             {
-                Sound(generatorSound);
+                PlayGeneratorStartup();
                 Notify("Gerador ligado! Energia da biblioteca restaurada.");
             }
             return true;
@@ -218,6 +227,7 @@ namespace UniDoom.CampusLibrary
             return false;
         }
         void Sound(AudioClip clip) { if (feedback && clip) feedback.PlayOneShot(clip, .6f); }
+        void PlayGeneratorStartup() { if (generatorAudio && generatorSound) generatorAudio.PlayOneShot(generatorSound, .8f); }
         static void Notify(string message, float duration = 4.5f) => GameplayNotice.Show(message, duration);
         void OnGUI()
         {
