@@ -7,8 +7,10 @@ public class KeysUI : MonoBehaviour
     [SerializeField] private GameObject[] keyIcons; // Key01, Key02, Key03
     [SerializeField] private Sprite lifeSprite;
     private const int LifeSlots = 3;
+    private const int MissionSlots = 3;
     private PlayerRespawn player;
     private Material livesMaterial;
+    private Image[] missionIcons;
     private static readonly int RemainingLivesId = Shader.PropertyToID("_RemainingLives");
 
     private void Awake()
@@ -63,5 +65,38 @@ public class KeysUI : MonoBehaviour
     public void ShowKey(int index)
     {
         keyIcons[index].SetActive(true);
+    }
+
+    public void SetMissionItems(Sprite sprite, int count)
+    {
+        if (!sprite) { ClearMissionItems(); return; }
+        count = Mathf.Clamp(count, 0, MissionSlots);
+        if (missionIcons == null)
+        {
+            if (count == 0 || keyIcons == null || keyIcons.Length == 0 || !keyIcons[0]) return;
+            missionIcons = new Image[MissionSlots];
+            Transform parent = keyIcons[0].transform.parent;
+            for (int i = 0; i < missionIcons.Length; i++)
+            {
+                var icon = MenuStyle.Image("Mission item " + (i + 1), parent, 0, 0, 42, 42, Color.white);
+                var rect = icon.rectTransform;
+                rect.anchorMin = rect.anchorMax = new Vector2(0, 1);
+                rect.pivot = new Vector2(.5f, .5f);
+                rect.anchoredPosition = new Vector2(53 + i * 54, -146);
+                icon.preserveAspect = true;
+                missionIcons[i] = icon;
+            }
+        }
+        for (int i = 0; i < missionIcons.Length; i++)
+        {
+            missionIcons[i].sprite = sprite;
+            missionIcons[i].gameObject.SetActive(i < count);
+        }
+    }
+
+    public void ClearMissionItems()
+    {
+        if (missionIcons == null) return;
+        foreach (var icon in missionIcons) if (icon) icon.gameObject.SetActive(false);
     }
 }
