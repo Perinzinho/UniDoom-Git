@@ -35,8 +35,7 @@ namespace UniDoom.CampusBlock4
             if (Block4PuzzleProgress.NextClueShiftAt <= 0)
                 Block4PuzzleProgress.NextClueShiftAt = Time.time + UnityEngine.Random.Range(shiftCooldown.x, shiftCooldown.y);
             GameplayNotice.ShowWhenGameplayReady(this,
-                "Bloco 4: entre oito computadores com fotos, encontre cinco pares de s\u00edmbolo e n\u00famero. Siga a ordem do quadro para abrir a sala 423 e pegar a chave da Biblioteca do Campus.", 7.5f);
-        }
+            "Nem tudo o que voc\u00ea precisa est\u00e1 \u00e0 primeira vista. Examine os computadores e procure conex\u00f5es entre as informa\u00e7\u00f5es encontradas. A resposta pode estar escondida nos pequenos detalhes.", 7.5f);        }
 
         bool ValidDestinations(int[] destinations)
         {
