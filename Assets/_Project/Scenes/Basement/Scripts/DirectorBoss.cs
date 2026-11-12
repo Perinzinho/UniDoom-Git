@@ -32,6 +32,8 @@ public sealed class DirectorBoss : MonoBehaviour, IDamageable
     public bool DeathAnimationFinished { get; private set; }
     public bool IsAttacking { get; private set; }
     public bool IsCastingPaper { get; private set; }
+    public bool IsSummoning { get; private set; }
+    public float SummonProgress => !IsSummoning ? 0 : Mathf.Clamp01((Time.time - summonStarted) / summonDuration);
     public float PaperCastProgress => !IsCastingPaper ? 0 : Time.time - paperStarted < paperWindup
         ? .5f * Mathf.Clamp01((Time.time - paperStarted) / paperWindup)
         : .5f + .5f * Mathf.Clamp01((Time.time - paperStarted - paperWindup) / paperRecovery);
@@ -41,6 +43,7 @@ public sealed class DirectorBoss : MonoBehaviour, IDamageable
     public float AwakeningProgress => Mathf.Clamp01((Time.time - bornAt) / Mathf.Max(.01f, awakeningDuration));
     public event Action<float, float> HealthChanged;
     public event Action Defeated;
+    public event Action<float> Damaged;
 
     CharacterController controller;
     Transform target;
@@ -48,6 +51,7 @@ public sealed class DirectorBoss : MonoBehaviour, IDamageable
     Camera viewCamera;
     float bornAt, attackStarted, nextAttack, verticalSpeed;
     float nextPaper, paperStarted;
+    float summonStarted, summonDuration;
     bool paperReleased;
     bool strikeDelivered;
     readonly RaycastHit[] hits = new RaycastHit[24];
@@ -90,7 +94,11 @@ public sealed class DirectorBoss : MonoBehaviour, IDamageable
         {
             Vector3 delta = target.position - transform.position;
             delta.y = 0;
-            if (IsCastingPaper)
+            if (IsSummoning)
+            {
+                if (Time.time - summonStarted >= summonDuration) IsSummoning = false;
+            }
+            else if (IsCastingPaper)
             {
                 if (!aliveTarget)
                 {
@@ -154,6 +162,17 @@ public sealed class DirectorBoss : MonoBehaviour, IDamageable
         nextPaper = Time.time + delay + UnityEngine.Random.Range(minimum, Mathf.Max(minimum, paperCooldownMax));
     }
 
+    public void BeginSummon(float duration)
+    {
+        if (IsDead) return;
+        IsSummoning = true;
+        summonStarted = Time.time;
+        summonDuration = Mathf.Max(.1f, duration);
+        IsAttacking = false;
+        IsCastingPaper = false;
+        SchedulePaper(summonDuration);
+    }
+
     void ThrowPaper()
     {
         if (paperProjectilePrefab == null || target == null || targetLife == null || targetLife.IsDead ||
@@ -215,12 +234,19 @@ public sealed class DirectorBoss : MonoBehaviour, IDamageable
     public void TakeDamage(float amount, GameObject source = null)
     {
         if (IsDead || amount <= 0 || float.IsNaN(amount) || float.IsInfinity(amount)) return;
-        CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
+        float applied = Mathf.Min(CurrentHealth, amount);
+        CurrentHealth -= applied;
         HealthChanged?.Invoke(CurrentHealth, maxHealth);
-        if (CurrentHealth > 0) { if (presentation != null) presentation.FlashHit(); return; }
+        if (CurrentHealth > 0)
+        {
+            Damaged?.Invoke(applied);
+            if (presentation != null) presentation.FlashHit();
+            return;
+        }
         IsDead = true;
         IsAttacking = false;
         IsCastingPaper = false;
+        IsSummoning = false;
         foreach (var collider in GetComponentsInChildren<Collider>()) collider.enabled = false;
         if (presentation != null) presentation.PlayDeath();
         else FinishDeathAnimation();
