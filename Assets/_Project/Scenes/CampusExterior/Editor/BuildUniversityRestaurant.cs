@@ -13,6 +13,8 @@ public static class BuildUniversityRestaurant
     const string PrefabPath = SceneFolder + "/Prefabs/UniversityRestaurant.prefab";
     const string ScenePath = SceneFolder + "/CampusExterior.unity";
     const string RootName = "University restaurant - left field";
+    const float WidthScale = 1.03f;
+    const float DepthScale = 1.15f;
 
     static Material Material(string name)
     {
@@ -63,6 +65,123 @@ public static class BuildUniversityRestaurant
         light.intensity = 1.5f;
         light.shadows = LightShadows.None;
         light.color = new Color(1f, 0.91f, 0.76f);
+    }
+
+    static Transform Required(Transform parent, string path)
+    {
+        var child = parent.Find(path);
+        if (child == null) throw new InvalidOperationException("Missing restaurant object: " + path);
+        return child;
+    }
+
+    static void SpreadChildren(Transform parent, float widthRatio, float depthRatio)
+    {
+        foreach (Transform child in parent)
+        {
+            var p = child.localPosition;
+            child.localPosition = new Vector3(p.x * widthRatio, p.y, p.z * depthRatio);
+        }
+    }
+
+    static bool ApplyEnlargement(Transform root)
+    {
+        var structure = Required(root, "Structure");
+        var floor = Required(structure, "Ceramic floor");
+        var roof = Required(structure, "Metal roof");
+        float currentWidth = floor.localScale.x;
+        float currentDepth = floor.localScale.z;
+        if (Mathf.Abs(currentWidth - WidthScale) < 0.001f &&
+            Mathf.Abs(currentDepth - DepthScale) < 0.001f) return false;
+        if (currentWidth < 0.9f || currentDepth < 0.9f)
+            throw new InvalidOperationException("Unexpected restaurant floor scale; resize manually before rebuilding.");
+        float widthRatio = WidthScale / currentWidth;
+        float depthRatio = DepthScale / currentDepth;
+
+        floor.localScale = new Vector3(WidthScale, 1f, DepthScale);
+        roof.localScale = new Vector3(WidthScale, 1f, DepthScale);
+        foreach (Transform part in structure)
+        {
+            if (part.name == "Blue support")
+            {
+                var p = part.localPosition;
+                part.localPosition = new Vector3(p.x * widthRatio, p.y, p.z * depthRatio);
+            }
+            else if (part.name == "Roof truss")
+            {
+                var p = part.localPosition;
+                part.localPosition = new Vector3(p.x, p.y, p.z * depthRatio);
+                part.localScale = new Vector3(WidthScale, 1f, 1f);
+            }
+        }
+
+        var dining = Required(root, "Dining area");
+        foreach (Transform set in dining)
+        {
+            var table = Required(set, "Table");
+            var p = table.localPosition;
+            set.localPosition = new Vector3(p.x * 0.1f, 0, p.z * 0.15f);
+        }
+        Required(root, "Service counter").localPosition = new Vector3(0, 0, 0.5f);
+        SpreadChildren(Required(root, "Plants and amenities"), widthRatio, depthRatio);
+        SpreadChildren(Required(root, "Lighting"), widthRatio, depthRatio);
+        return true;
+    }
+
+    [MenuItem("Tools/UniDoom/Campus/Enlarge University Restaurant")]
+    public static void EnlargeExisting()
+    {
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
+        if (prefab == null) throw new InvalidOperationException("Restaurant prefab is missing: " + PrefabPath);
+        var contents = PrefabUtility.LoadPrefabContents(PrefabPath);
+        try
+        {
+            if (ApplyEnlargement(contents.transform))
+            {
+                PrefabUtility.SaveAsPrefabAsset(contents, PrefabPath);
+                AssetDatabase.SaveAssets();
+            }
+        }
+        finally { PrefabUtility.UnloadPrefabContents(contents); }
+
+        var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+        bool found = false;
+        foreach (var sceneRoot in scene.GetRootGameObjects())
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(sceneRoot) == PrefabPath)
+            {
+                found = true;
+                Debug.Log("Restaurant remains at " + sceneRoot.transform.position + " in CampusExterior.");
+            }
+        if (!found) throw new InvalidOperationException("Restaurant instance is missing from CampusExterior.");
+        Debug.Log("Restaurant footprint is 16.48 x 11.5 m; the scene transform was preserved.");
+        CheckClearance();
+    }
+
+    [MenuItem("Tools/UniDoom/Campus/Check Restaurant Clearance")]
+    public static void CheckClearance()
+    {
+        var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+        GameObject restaurant = null;
+        foreach (var root in scene.GetRootGameObjects())
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(root) == PrefabPath)
+                restaurant = root;
+        if (restaurant == null) throw new InvalidOperationException("Restaurant instance is missing from CampusExterior.");
+        var floor = Required(restaurant.transform, "Structure/Ceramic floor");
+        var renderer = floor.GetComponentInChildren<MeshRenderer>();
+        if (renderer == null) throw new InvalidOperationException("Restaurant floor renderer is missing.");
+        var footprint = renderer.bounds;
+        footprint.Expand(new Vector3(0, 5, 0));
+        int overlaps = 0;
+        foreach (var root in scene.GetRootGameObjects())
+            foreach (var collider in root.GetComponentsInChildren<Collider>(false))
+            {
+                if (collider.transform.IsChildOf(restaurant.transform)) continue;
+                if (collider.bounds.size.x > 100 || collider.bounds.size.z > 100) continue;
+                if (!footprint.Intersects(collider.bounds)) continue;
+                overlaps++;
+                if (overlaps <= 30)
+                    Debug.Log("RESTAURANT_CLEARANCE|" + collider.name + "|" + collider.bounds.center + "|" + collider.bounds.size);
+            }
+        Debug.Log("RESTAURANT_CLEARANCE_TOTAL|otherColliders=" + overlaps + "|center=" + restaurant.transform.position);
     }
 
     [MenuItem("Tools/UniDoom/Campus/Rebuild University Restaurant")]
@@ -123,18 +242,29 @@ public static class BuildUniversityRestaurant
                 Light(lighting, new Vector3(x, 4.3f, 0));
             }
 
+            ApplyEnlargement(root.transform);
             PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
             UnityEngine.Object.DestroyImmediate(root);
             var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            var placement = new Vector3(58, 0, -40);
+            var rotation = Quaternion.identity;
+            var scale = Vector3.one;
             foreach (var sceneRoot in scene.GetRootGameObjects())
-                if (sceneRoot.name == RootName) UnityEngine.Object.DestroyImmediate(sceneRoot);
+                if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(sceneRoot) == PrefabPath)
+                {
+                    placement = sceneRoot.transform.position;
+                    rotation = sceneRoot.transform.rotation;
+                    scale = sceneRoot.transform.localScale;
+                    UnityEngine.Object.DestroyImmediate(sceneRoot);
+                }
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
             var placed = (GameObject)PrefabUtility.InstantiatePrefab(prefab, scene);
-            placed.transform.position = new Vector3(58, 0, -40);
+            placed.transform.SetPositionAndRotation(placement, rotation);
+            placed.transform.localScale = scale;
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
             AssetDatabase.SaveAssets();
-            Debug.Log("University restaurant built and placed in CampusExterior at (58, 0, -40).");
+            Debug.Log("University restaurant rebuilt at " + placement + " in CampusExterior.");
         }
         catch
         {
