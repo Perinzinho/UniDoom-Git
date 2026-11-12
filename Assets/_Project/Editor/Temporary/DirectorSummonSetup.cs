@@ -70,6 +70,8 @@ public static class DirectorSummonSetup
         factories.Init();
         var provider = factories.GetSpriteEditorDataProviderFromObject(importer);
         provider.InitSpriteEditorDataProvider();
+        // Reapplying the setup must retain the subasset IDs referenced by the boss prefab.
+        var existingIds = provider.GetSpriteRects().ToDictionary(rect => rect.name, rect => rect.spriteID);
         var sprites = new SpriteRect[8];
         var names = new SpriteNameFileIdPair[8];
         for (int row = 0; row < 2; row++)
@@ -81,7 +83,7 @@ public static class DirectorSummonSetup
                 int top = Mathf.RoundToInt(row * height / 2f);
                 int bottom = Mathf.RoundToInt((row + 1) * height / 2f);
                 var name = $"{prefix}_{index:00}";
-                var id = GUID.Generate();
+                var id = existingIds.TryGetValue(name, out var savedId) ? savedId : GUID.Generate();
                 sprites[index] = new SpriteRect {
                     name = name,
                     spriteID = id,

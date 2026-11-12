@@ -31,8 +31,7 @@ public sealed class DirectorBossSummon : MonoBehaviour
     {
         boss.Damaged -= OnDamaged;
         boss.Defeated -= OnDefeated;
-        StopAllCoroutines();
-        waves = null;
+        ClearSummons();
     }
 
     void OnDamaged(float amount)
@@ -54,21 +53,29 @@ public sealed class DirectorBossSummon : MonoBehaviour
             waves = null;
             yield break;
         }
+        bool waitingForSpace = false;
         while (queuedWaves > 0 && !boss.IsDead)
         {
-            queuedWaves--;
             var positions = new List<Vector3>(zombiesPerWave);
             for (int i = 0; i < zombiesPerWave; i++)
             {
                 if (!TryFindFloor(positions, out Vector3 floor))
                 {
-                    Debug.LogError("Director could not find five clear floor positions for a summon wave.", this);
                     positions.Clear();
                     break;
                 }
                 positions.Add(floor);
             }
-            if (positions.Count != zombiesPerWave) continue;
+            if (positions.Count != zombiesPerWave)
+            {
+                if (!waitingForSpace)
+                    Debug.LogWarning("Director summon is waiting for clear floor positions.", this);
+                waitingForSpace = true;
+                yield return new WaitForSeconds(1f);
+                continue;
+            }
+            waitingForSpace = false;
+            queuedWaves--;
 
             boss.BeginSummon(summonDuration);
             yield return new WaitForSeconds(.55f);
@@ -142,22 +149,21 @@ public sealed class DirectorBossSummon : MonoBehaviour
         bool kinematic = body && body.isKinematic;
         bool gravity = body && body.useGravity;
         if (body) { body.isKinematic = true; body.useGravity = false; }
-        var visual = enemy.GetComponentInChildren<SpriteRenderer>();
-        Vector3 visualPosition = visual ? visual.transform.localPosition : Vector3.zero;
+        var visual = enemy.GetComponentInChildren<EnemySpriteAnimator>();
+        if (visual) visual.VerticalOffset = -1.7f;
         float start = Time.time;
         while (Time.time - start < emergeDuration && enemy && !boss.IsDead)
         {
             float progress = Mathf.Clamp01((Time.time - start) / emergeDuration);
             portalRenderer.sprite = portalFrames[Mathf.Min(portalFrames.Length - 1,
                 Mathf.FloorToInt(progress * portalFrames.Length))];
-            if (visual) visual.transform.localPosition = visualPosition + Vector3.down *
-                (1.7f * (1 - Mathf.SmoothStep(0, 1, progress)));
+            if (visual) visual.VerticalOffset = -1.7f * (1 - Mathf.SmoothStep(0, 1, progress));
             yield return null;
         }
         portals.Remove(portal);
         Destroy(portal);
         if (!enemy || boss.IsDead) yield break;
-        if (visual) visual.transform.localPosition = visualPosition;
+        if (visual) visual.VerticalOffset = 0;
         if (body) { body.isKinematic = kinematic; body.useGravity = gravity; }
         if (capsule) capsule.enabled = true;
         if (useAgent) agent.enabled = true;
@@ -165,6 +171,11 @@ public sealed class DirectorBossSummon : MonoBehaviour
     }
 
     void OnDefeated()
+    {
+        ClearSummons();
+    }
+
+    void ClearSummons()
     {
         StopAllCoroutines();
         queuedWaves = 0;
