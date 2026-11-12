@@ -21,7 +21,7 @@ public class PlayerRespawn : MonoBehaviour
     public Vector3 RespawnPosition { get; private set; }
     public Quaternion RespawnRotation { get; private set; }
     public string RespawnScenePath { get; private set; }
-    public bool HasCheckpoint => CheckpointKeyIndex >= 0;
+    public bool HasCheckpoint => campusGateCheckpoint || CheckpointKeyIndex >= 0;
 
     private PlayerLife life;
     private PlayerMovement movement;
@@ -36,6 +36,7 @@ public class PlayerRespawn : MonoBehaviour
     private bool respawning;
     private bool previousCursorVisible;
     private CursorLockMode previousCursorLock;
+    private bool campusGateCheckpoint;
 
     private void Awake()
     {
@@ -59,6 +60,31 @@ public class PlayerRespawn : MonoBehaviour
         life.OnDeath += HandleDeath;
     }
 
+    private void Start()
+    {
+        // Starting directly from the map-selection menu also establishes the gate checkpoint.
+        ActivateCampusGateCheckpoint(SceneManager.GetActiveScene());
+    }
+
+    public void ActivateCampusGateCheckpoint(Scene scene)
+    {
+        if (campusGateCheckpoint || scene.name != "CampusExterior" || life.IsDead) return;
+        foreach (var root in scene.GetRootGameObjects())
+        {
+            if (root.name != "SpawnPoint") continue;
+            RespawnPosition = root.transform.position;
+            RespawnRotation = root.transform.rotation;
+            RespawnScenePath = scene.path;
+            for (int i = 0; i < savedLook.Length; i++)
+                savedLook[i] = new Vector2(root.transform.eulerAngles.y, 0f);
+            CheckpointKeyIndex = -1;
+            campusGateCheckpoint = true;
+            screen.ShowCheckpoint(-1);
+            return;
+        }
+        Debug.LogError("CampusExterior has no SpawnPoint for the gate checkpoint.", this);
+    }
+
     private void CapturePose()
     {
         RespawnPosition = transform.position;
@@ -70,7 +96,7 @@ public class PlayerRespawn : MonoBehaviour
 
     public void SaveCheckpoint(int keyIndex)
     {
-        if (life.IsDead || respawning || keyIndex < 0 || keyIndex > 2) return;
+        if (campusGateCheckpoint || life.IsDead || respawning || keyIndex < 0 || keyIndex > 2) return;
         CapturePose();
         // Keys float. Ground the player's pose without ever using the key's visual height.
         // Keep the current position if no floor is within reach (e.g. a custom moving platform).

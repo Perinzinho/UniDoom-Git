@@ -2,7 +2,28 @@
   "date": "2026-11-11",
   "purpose": "Visual proportion and silhouette references for generic parked vehicles in CampusExterior",
   "external_files_downloaded": false,
-  "implementation": "Original low-cost Unity primitive assemblies, using existing local vehicle surface materials and seven new paint variants. No brand marks, external meshes or source textures were copied.",
+  "implementation": "Seven parked variants now show reused detailed Hatchback or Motorcycle meshes already in CampusExterior, with 3 LODs, scaled silhouettes and existing paint variants. Original primitive children remain inactive except selected spoiler, roof rails and touring luggage, preserving local fileIDs. Front lens materials are dark and nonemissive. No brand marks, external meshes or source textures were copied.",
+  "new_files_downloaded_for_revision": false,
+  "physical_scale_references": [
+    {
+      "title": "2025 Civic Sedan Specifications",
+      "author": "Honda Canada",
+      "url": "https://hondanews.ca/en-CA/hci-automobiles/releases/release-2cfa72bd4b4cd3f113d33f001f06c284-2025-civic-sedan-specifications",
+      "used_for": "Reference width 1.800 m, height 1.415 m and wheelbase 2.735 m for the sedan silhouette; no branded model used"
+    },
+    {
+      "title": "Corolla Sedan Spec Table, October 2025",
+      "author": "Toyota Australia",
+      "url": "https://www.toyota.com.au/-/media/toyota/main-site/vehicle-hubs/corolla/files/20251009_corolla-sedan-spec_table_gtp009346.pdf?rev=faa4c0afcccf440e9c807a5bc2e80932",
+      "used_for": "Reference sedan length 4.630 m, width 1.780 m, height 1.435 m and wheelbase 2.700 m"
+    },
+    {
+      "title": "2025 MT-07 Specifications",
+      "author": "Yamaha Motor Australia",
+      "url": "https://www.yamaha-motor.com.au/-/media/files/spec-sheets/motorcycle/2025/2025_mt07ho_v2.ashx",
+      "used_for": "Reference sport motorcycle dimensions about 2.065 x 0.780 x 1.110 m"
+    }
+  ],
   "references": [
     {
       "title": "Sports Car",
