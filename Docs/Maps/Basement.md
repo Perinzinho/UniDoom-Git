@@ -2,6 +2,8 @@
 
 ## Leitura rápida
 
+- **Caixa de munição da arena — 11/11/2026:** uma instância de `Global/Prefabs/Weapons/UACAmmoCrate50.prefab` foi colocada perto da entrada da sala do chefe, em `(79; 1,73; -20)`, antes do ponto de surgimento do Diretor. A caixa usa a arte baseada na referência enviada pelo usuário e soma **50 munições à reserva da arma equipada** quando coletada. Cena e prefab salvos no Unity 6000.5.7f1; coleta e aparência em Play Mode ainda não verificadas.
+
 - Chave avulsa da prisão retirada do gameplay a pedido do usuário: raiz de `Prison/Prefabs/PrisonKey.prefab` inativa. A instância no prefab principal herda esse estado pela cadeia `Basement.unity` → `BasementScenario.prefab` → `Basement.prefab`. Referências e herança conferidas estaticamente; inspeção em jogo pendente.
 
 - Arte e entrada do porão (10/11/2026): importadores afetados por GUIDs regenerados foram recuperados, incluindo professores e recursos compartilhados. A transição deixou de aquecer globalmente shaders internos da Unity, caminho com falhas no log anterior ao crash. Layout, celas e progressão não foram revertidos; a entrada precisa do teste do usuário. [Diagnóstico compartilhado](README.md#recuperação-de-texturas-e-sprites--10112026).

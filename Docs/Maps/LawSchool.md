@@ -6,6 +6,8 @@ Atualizado: **2026-11-08**. Estado: chave sorteada por partida, placas gastas e 
 
 ## Leitura rápida
 
+- **Caixa de munição do corredor 2 — 11/11/2026:** uma instância de `Global/Prefabs/Weapons/UACAmmoCrate50.prefab` foi colocada no corredor 2, em `(-34; 0,05; 21,5)`. A caixa da referência enviada pelo usuário concede **50 munições à reserva da arma equipada**; os suprimentos sorteados das salas e os outros prefabs de munição não foram modificados. Cena e prefab salvos no Unity 6000.5.7f1; coleta e aparência em Play Mode ainda não verificadas.
+
 - **Portas, chaves e alarme (11/11/2026):** o acabamento de madeira das portas foi clareado para destacar as folhas diante dos batentes escuros. Os visuais das chaves da manutenção e do acesso à Biblioteca do Campus cresceram 75%, sem alterar os gatilhos de coleta, na cena jogável e no prefab. A primeira chave dispara no máximo 10 chegadas; novas levas de 5 são liberadas a cada 40 s, até 30 no total, mantendo a verificação de spawn seguro e o quadro de desligamento. Cada coleta informa o destino da chave por 7,5 s. Verificação estática; Play Mode e leitura visual pendentes. A Unity em lote parou na conexão com o cliente de licença antes da compilação.
 - **Placas — 11/11/2026:** identificação das salas, corredores, serviços e saída usa agora a tinta clara compartilhada e separador de destino consistente. Cena jogável e prefab independente atualizados; placas funcionais e avisos do alarme preservados. [Padrão do jogo](Signage.md).
 
