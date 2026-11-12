@@ -148,6 +148,7 @@ GameObject:
   - component: {fileID: 4149242845759358361}
   - component: {fileID: 436480781874386942}
   - component: {fileID: 8358504726919946664}
+  - component: {fileID: 2742183357572595620}
   m_Layer: 0
   m_Name: DirectorBoss
   m_TagString: Untagged
@@ -230,6 +231,32 @@ MonoBehaviour:
   onDeathAnimationFinished:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2742183357572595620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1196926365609172399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba12cb2b556568f4a9bd8dd72eede354, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::DirectorBossSummon
+  zombiePrefab: {fileID: -3970026450246699927, guid: 14d7b121502803d4faf13468c4cce1b2, type: 3}
+  portalFrames:
+  - {fileID: -608411255, guid: 91f18a1666eb10c4b835e9a0b2380ac4, type: 3}
+  - {fileID: 1317111929, guid: 91f18a1666eb10c4b835e9a0b2380ac4, type: 3}
+  - {fileID: 1062080087, guid: 91f18a1666eb10c4b835e9a0b2380ac4, type: 3}
+  - {fileID: -751682585, guid: 91f18a1666eb10c4b835e9a0b2380ac4, type: 3}
+  - {fileID: 589963822, guid: 91f18a1666eb10c4b835e9a0b2380ac4, type: 3}
+  - {fileID: -1039342587, guid: 91f18a1666eb10c4b835e9a0b2380ac4, type: 3}
+  - {fileID: -867673260, guid: 91f18a1666eb10c4b835e9a0b2380ac4, type: 3}
+  - {fileID: -856469669, guid: 91f18a1666eb10c4b835e9a0b2380ac4, type: 3}
+  damagePerWave: 200
+  zombiesPerWave: 5
+  summonDuration: 2.1
+  emergeDuration: 1.2
 --- !u!1 &1845020567671863233
 GameObject:
   m_ObjectHideFlags: 0
@@ -1583,6 +1610,15 @@ MonoBehaviour:
   - {fileID: 21300005, guid: 1ddea5cc489847f59e939970ffce4d1e, type: 3}
   - {fileID: 21300006, guid: 1ddea5cc489847f59e939970ffce4d1e, type: 3}
   - {fileID: 21300007, guid: 1ddea5cc489847f59e939970ffce4d1e, type: 3}
+  summonFrames:
+  - {fileID: -923999539, guid: 1630dda674c3e0949b2466b0e3821ceb, type: 3}
+  - {fileID: -1435714317, guid: 1630dda674c3e0949b2466b0e3821ceb, type: 3}
+  - {fileID: 1105844031, guid: 1630dda674c3e0949b2466b0e3821ceb, type: 3}
+  - {fileID: 2095580122, guid: 1630dda674c3e0949b2466b0e3821ceb, type: 3}
+  - {fileID: -170649738, guid: 1630dda674c3e0949b2466b0e3821ceb, type: 3}
+  - {fileID: -1762244226, guid: 1630dda674c3e0949b2466b0e3821ceb, type: 3}
+  - {fileID: 8421113, guid: 1630dda674c3e0949b2466b0e3821ceb, type: 3}
+  - {fileID: -225195141, guid: 1630dda674c3e0949b2466b0e3821ceb, type: 3}
   deathFrames:
   - {fileID: -607942832, guid: 1d2e063cad3b3184fa483d9d733f293c, type: 3}
   - {fileID: 1243926510, guid: 1d2e063cad3b3184fa483d9d733f293c, type: 3}
