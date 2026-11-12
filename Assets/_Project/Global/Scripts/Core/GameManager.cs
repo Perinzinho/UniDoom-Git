@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -75,6 +76,18 @@ public class GameManager : MonoBehaviour
         ConnectWeapon(player);
         ConnectHealth(player);
         SpawnKeyUI(player);
+        StartCoroutine(ShowFlashlightHint());
+    }
+
+    private IEnumerator ShowFlashlightHint()
+    {
+        while (session == this && (UniDoom.UI.GameMenus.Instance == null ||
+            UniDoom.UI.GameMenus.BlocksGameplay || UniDoom.UI.DoorReloadScreen.IsReloading ||
+            UniDoom.UI.DeathScreen.IsVisible || Time.timeScale <= 0))
+            yield return null;
+
+        if (session == this)
+            UniDoom.UI.GameplayNotice.Show("Para ligar a lanterna, aperte F.", 10f);
     }
 
     private void SpawnCrosshair()
