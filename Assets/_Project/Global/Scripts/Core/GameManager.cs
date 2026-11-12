@@ -66,6 +66,8 @@ public class GameManager : MonoBehaviour
         GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
         player.transform.SetParent(transform, true);
         SessionPlayer = player.GetComponent<PlayerMovement>();
+        if (player.GetComponent<PlayerFlashlight>() == null)
+            player.AddComponent<PlayerFlashlight>();
 
         if (weaponPrefab != null) Instantiate(weaponPrefab, transform);
         SpawnCrosshair();
