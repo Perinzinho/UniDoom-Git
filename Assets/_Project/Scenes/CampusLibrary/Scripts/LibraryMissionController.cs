@@ -9,6 +9,7 @@ namespace UniDoom.CampusLibrary
     [DisallowMultipleComponent]
     public sealed class LibraryMissionController : MonoBehaviour
     {
+        const string GeneratorPoweredNotice = "Gerador ligado. Volte para a prisão e liberte os professores.";
         [SerializeField] Transform discoveryPoint;
         [SerializeField] LibraryMissionTarget generator;
         [SerializeField] LibraryMissionTarget[] fuses = new LibraryMissionTarget[3];
@@ -233,7 +234,7 @@ namespace UniDoom.CampusLibrary
                     }
                     if (LibraryMissionProgress.Stage == LibraryMissionStage.FusesInstalled)
                         return panel != null && panel.Open();
-                    if (LibraryMissionProgress.PowerOn()) { PlayGeneratorStartup(); Notify("Gerador ligado! Energia da biblioteca restaurada."); return true; }
+                    if (LibraryMissionProgress.PowerOn()) { PlayGeneratorStartup(); Notify(GeneratorPoweredNotice, 7.5f); return true; }
                     Notify(LibraryMissionProgress.Stage < LibraryMissionStage.FusesCollected ? $"Faltam {3 - LibraryMissionProgress.FuseCount} fusíveis para restaurar o gerador." :
                         LibraryMissionProgress.Stage == LibraryMissionStage.FusesCollected ? "Insira os três fusíveis diretamente no gerador." :
                         LibraryMissionProgress.IsLibraryGeneratorPowered ? "Energia da biblioteca restaurada." : "Use E no gerador para abrir o puzzle de energia.");
@@ -254,7 +255,7 @@ namespace UniDoom.CampusLibrary
             else if (LibraryMissionProgress.Stage == LibraryMissionStage.PuzzleSolved && LibraryMissionProgress.PowerOn())
             {
                 PlayGeneratorStartup();
-                Notify("Gerador ligado! Energia da biblioteca restaurada.");
+                Notify(GeneratorPoweredNotice, 7.5f);
             }
             return true;
         }
