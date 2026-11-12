@@ -6,6 +6,8 @@ Atualizado: **2026-11-08**. Estado: chave sorteada por partida, placas gastas e 
 
 ## Leitura rápida
 
+- **Alarme mais leve (11/11/2026):** o tratamento de fase pula os materiais opacos sem tinta unlit nem emissão ativa, armazena cores/propriedades uma vez e altera luzes apenas quando a fase troca. A visibilidade das sprites no apagão atualiza a cada 0,12 s, com raycast apenas dentro do cone/alcance; a luz curta passou a alcance de 6 m e intensidade 8,5 e não gera mais mapa de sombras. Horda, 10 chegadas iniciais, levas graduais, sirene, chave, quadro e restauração preservados. Compilação C# isolada passou com avisos anteriores; Unity em lote saiu com código 1 antes de compilar. FPS, Play Mode e inspeção visual pendentes.
+
 - **Objetivo na entrada (11/11/2026):** ao entrar no Bloco de Direito, um aviso de 7,5 s orienta a encontrar as duas chaves distintas, a da Biblioteca do Campus e a da manutenção 104, e a usar esta última para desligar o alarme. O tempo de leitura começa quando os menus e a transição terminam. Validação estática; Play Mode pendente.
 - **Caixa de munição do corredor 2 — 11/11/2026:** uma instância de `Global/Prefabs/Weapons/UACAmmoCrate50.prefab` foi colocada no corredor 2, em `(-34; 0,05; 21,5)`. A caixa da referência enviada pelo usuário concede **50 munições à reserva da arma equipada**; os suprimentos sorteados das salas e os outros prefabs de munição não foram modificados. Cena e prefab salvos no Unity 6000.5.7f1; coleta e aparência em Play Mode ainda não verificadas.
 

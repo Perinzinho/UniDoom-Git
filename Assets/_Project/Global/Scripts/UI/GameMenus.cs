@@ -346,8 +346,18 @@ namespace UniDoom.UI
             AudioListener.pause = false;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-            for (float t = 0; t < .3f; t += Time.unscaledDeltaTime) { SetFade(1 - t / .3f); yield return null; }
-            SetFade(0);
+            if (DoorReloadScreen.TryCoverLoadedScene(scene))
+            {
+                // The menu's black fade stays up until the destination artwork covers it.
+                while (DoorReloadScreen.IsReloading && !DoorReloadScreen.IsCoverOpaque) yield return null;
+                SetFade(0);
+                while (DoorReloadScreen.IsReloading) yield return null;
+            }
+            else
+            {
+                for (float t = 0; t < .3f; t += Time.unscaledDeltaTime) { SetFade(1 - t / .3f); yield return null; }
+                SetFade(0);
+            }
             busy = false;
         }
 

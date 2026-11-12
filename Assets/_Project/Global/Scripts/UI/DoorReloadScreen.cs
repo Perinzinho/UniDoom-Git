@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UniDoom.Utils;
@@ -15,6 +16,7 @@ namespace UniDoom.UI
     {
         public static DoorReloadScreen Instance { get; private set; }
         public static bool IsReloading => Instance != null && Instance.isReloading;
+        public static bool IsCoverOpaque => IsReloading && Instance.canvasGroup != null && Instance.canvasGroup.alpha >= .999f;
 
         [Header("Transição")]
         [SerializeField, Min(0f)] private float fadeInDuration = 0.45f;
@@ -79,6 +81,8 @@ namespace UniDoom.UI
         private PlayerMovement frozenPlayer;
         private bool savedMovement;
         private readonly Dictionary<CinemachineInputAxisController, bool> inputStates = new();
+        private Camera readinessCamera;
+        private int renderedDestinationFrames;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics() => Instance = null;
@@ -172,6 +176,23 @@ namespace UniDoom.UI
             return true;
         }
 
+        public static bool TryCoverLoadedScene(string scenePath)
+        {
+            if (IsReloading || MouseSensitivityMenu.IsOpen || DeathScreen.IsVisible) return false;
+            if (Instance == null) AutoInitialize();
+            string destination = System.IO.Path.GetFileNameWithoutExtension(scenePath);
+            string label = destination switch
+            {
+                "LawSchool" => "BLOCO DE DIREITO",
+                "CampusBlock4" => "BLOCO 4",
+                "CampusLibrary" => "BIBLIOTECA DO CAMPUS",
+                "CampusExterior" => "CAMPUS EXTERIOR",
+                _ => destination
+            };
+            Instance.StartCoroutine(Instance.ReloadRoutine(label, null, null, null, artworkScene: destination));
+            return true;
+        }
+
         public static IEnumerator PlayCheckpointTransition(string scenePath, IEnumerator restoreCheckpoint)
         {
             if (Instance == null) AutoInitialize();
@@ -194,7 +215,7 @@ namespace UniDoom.UI
         }
 
         private IEnumerator ReloadRoutine(string sectorName, string sceneName, string spawnId, Action onComplete,
-            string checkpointScene = null, IEnumerator restoreCheckpoint = null)
+            string checkpointScene = null, IEnumerator restoreCheckpoint = null, string artworkScene = null)
         {
             isReloading = true;
             FreezePlayer();
@@ -203,7 +224,7 @@ namespace UniDoom.UI
             bool success = false;
             try
             {
-                SelectDestinationArtwork(checkpointScene ?? sceneName, sectorName);
+                SelectDestinationArtwork(artworkScene ?? checkpointScene ?? sceneName, sectorName);
                 titleText.text = string.IsNullOrWhiteSpace(sectorName) ? "SETOR DESCONHECIDO" : sectorName.ToUpperInvariant();
                 subtitleText.text = "ALÉM DA PORTA";
                 SetProgress(0, "A porta se fecha...");
@@ -250,15 +271,21 @@ namespace UniDoom.UI
                     SetProgress(.92f, "Preparando luz e materiais...");
                     Canvas.ForceUpdateCanvases();
                     yield return null;
+                    bool warmupSucceeded = true;
                     try
                     {
                         // Warm only an explicit collection. Global warmup also touches internal URP/debug
                         // passes without their required buffers and fails on the reported D3D12 path.
                         if (shaderVariants != null) shaderVariants.WarmUp();
                     }
-                    catch (Exception e) { Debug.LogWarning($"[DoorReloadScreen] Shader warmup: {e.Message}"); }
-                    // Render the destination normally behind the opaque cover before releasing input.
-                    yield return null;
+                    catch (Exception e)
+                    {
+                        warmupSucceeded = false;
+                        Debug.LogWarning($"[DoorReloadScreen] Shader warmup: {e.Message}");
+                    }
+                    // A scene load only makes assets available on the CPU. Keep the destination art
+                    // over actual game-camera renders while the GPU and editor finish their work.
+                    yield return WaitForDestinationReady(warmupSucceeded);
                 }
                 while (Time.realtimeSinceStartup - started < minDisplayDuration) yield return null;
                 if (error != null)
@@ -289,6 +316,46 @@ namespace UniDoom.UI
                 isReloading = false;
             }
             if (success) onComplete?.Invoke();
+        }
+
+        private void CountDestinationCamera(ScriptableRenderContext context, Camera camera)
+        {
+            if (camera && camera == readinessCamera && camera.cameraType == CameraType.Game)
+                renderedDestinationFrames++;
+        }
+
+        private IEnumerator WaitForDestinationReady(bool warmupSucceeded)
+        {
+            renderedDestinationFrames = 0;
+            readinessCamera = FindGameCamera();
+            RenderPipelineManager.endCameraRendering += CountDestinationCamera;
+            try
+            {
+                while (true)
+                {
+                    if (!readinessCamera) readinessCamera = FindGameCamera();
+                    bool compiling = false;
+#if UNITY_EDITOR
+                    compiling = UnityEditor.ShaderUtil.anythingCompiling;
+#endif
+                    if (renderedDestinationFrames >= 3 && !compiling &&
+                        (!warmupSucceeded || shaderVariants == null || shaderVariants.isWarmedUp)) break;
+                    SetProgress(.96f, compiling ? "Compilando materiais..." : "Preparando o cen\u00e1rio...");
+                    yield return null;
+                }
+            }
+            finally
+            {
+                RenderPipelineManager.endCameraRendering -= CountDestinationCamera;
+                readinessCamera = null;
+            }
+        }
+
+        private static Camera FindGameCamera()
+        {
+            if (Camera.main) return Camera.main;
+            var player = GameManager.SessionPlayer;
+            return player ? player.GetComponentInChildren<Camera>() : null;
         }
 
         private void SetProgress(float progress, string status)

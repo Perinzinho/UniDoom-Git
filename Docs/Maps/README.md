@@ -21,6 +21,8 @@ Não carregue todas as cenas, este catálogo inteiro e os logs antigos por padr�
 
 ## Transições de ambiente — reload e arte de chegada
 
+- **Cobertura até a cena pronta (11/11/2026):** a arte de destino permanece sobre portais, reloads locais, retorno ao checkpoint e entrada pelo menu de mapas enquanto a cena termina de carregar, a coleção opcional de variantes aquece, a câmera do jogo renderiza três quadros do destino e, no Editor, a fila de compilação assíncrona de shaders esvazia. O menu mantém o fade preto até a arte ficar opaca. O aquecimento global de shaders continua desativado devido ao histórico de falha D3D12. Compilação C# isolada passou com avisos anteriores; a Unity em lote saiu com código 1 antes de compilar. Sem Play Mode, build ou confirmação de variantes de materiais ainda não vistos pela câmera.
+
 - Toda troca de cena passa por `DoorReloadScreen`: a tela cobre a transição e bloqueia movimento/câmera, posiciona o jogador no `SceneArrivalPoint`, aquece a coleção opcional quando atribuída e deixa o cenário renderizar sob a cobertura antes de liberar o jogador. O aquecimento global de todos os shaders foi removido em 10/11/2026 devido às falhas observadas nos passes internos de URP/Direct3D 12.
 - Cada destino conhecido usa `Resources/Textures/UI/Transitions/<Cena>.png`. As artes são 16:9, baseadas na visão real de chegada e mantêm o padrão cinematográfico iniciado em `Cylinder`. Destinos sem arte cadastrada usam `Global/Resources/Textures/UI/Transitions/AbandonedDoor.png`.
 Contrato compartilhado: [chaves numeradas das celas](PrisonCellKeys.md) — Direito, Biblioteca, Bloco 4 e porão.
