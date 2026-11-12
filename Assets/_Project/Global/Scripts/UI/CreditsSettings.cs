@@ -7,19 +7,19 @@ namespace UniDoom.UI
     public sealed class CreditsSettings : ScriptableObject
     {
         public const float RequiredScrollSpeed = 42;
-        public const string RequiredMusicResource = "Audio/Credits/HiddenKing";
+        public const string RequiredMusicResource = "Audio/Credits/HiddenKingTheme";
         [SerializeField] TextAsset content;
         [SerializeField] AudioClip music;
         [SerializeField, Range(0, 1)] float musicVolume = .6f;
         [SerializeField, Min(1)] float scrollSpeed = RequiredScrollSpeed;
-        [SerializeField, Min(0)] float startDelay = 2;
+        [SerializeField, Min(0)] float startDelay = 0;
         [SerializeField, Min(0)] float endHold = 3;
         public TextAsset Content => content;
         public AudioClip Music
         {
             get
             {
-                if (!music || music.name != "HiddenKing")
+                if (!music || music.name != "HiddenKingTheme")
                     music = Resources.Load<AudioClip>(RequiredMusicResource);
                 return music;
             }
