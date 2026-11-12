@@ -142,8 +142,7 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         StateChanged?.Invoke();
         if (keys.HasCompletedEvent(TriggeredEventId) && !IsResolved) BeginAlarm();
         GameplayNotice.ShowWhenGameplayReady(this,
-            "Bloco de Direito: encontre duas chaves, uma para a Biblioteca do Campus e outra para a sala de manuten\u00e7\u00e3o 104. Use a chave da manuten\u00e7\u00e3o para desligar o alarme.", 7.5f);
-    }
+        "O Bloco de Direito ainda guarda alguns segredos. Procure pelas salas e fique atento a poss\u00edveis acessos bloqueados. Talvez a solu\u00e7\u00e3o para avan\u00e7ar esteja mais perto do que voc\u00ea imagina...", 7.5f);    }
 
     void ChooseKeyRoom(PlayerCellKeys inventory)
     {
