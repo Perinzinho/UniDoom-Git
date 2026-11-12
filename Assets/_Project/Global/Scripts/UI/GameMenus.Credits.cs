@@ -59,7 +59,7 @@ namespace UniDoom.UI
             if (!creditsRollText || !creditsViewport) return;
             float offset = CreditsSettings.RollOffset(elapsed, creditsRollText.rectTransform.rect.height,
                 creditsViewport.rect.height, creditsSettings ? creditsSettings.ScrollSpeed : CreditsSettings.RequiredScrollSpeed,
-                creditsSettings ? creditsSettings.StartDelay : 2);
+                creditsSettings ? creditsSettings.StartDelay : 0);
             creditsRollText.rectTransform.anchoredPosition = new Vector2(0, offset);
         }
 
@@ -93,12 +93,18 @@ namespace UniDoom.UI
             creditsMusic.Play();
         }
 
-        public void PlayEndingCredits()
+        public bool PlayEndingCredits()
         {
-            if (busy || CurrentScreen != Screen.Gameplay) return;
+            if (busy) return false;
+            if (CurrentScreen == Screen.Credits)
+            {
+                creditsFinishSession = true;
+                return credits.activeInHierarchy;
+            }
             creditsFinishSession = true;
             AcquirePause();
             SetScreen(Screen.Credits);
+            return CurrentScreen == Screen.Credits && credits.activeInHierarchy;
         }
 
         void UpdateCreditsScroll()

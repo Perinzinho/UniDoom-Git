@@ -17,6 +17,10 @@ Agradecemos a todas as pessoas que jogaram as primeiras versões, apontaram prob
 
 ## Recursos de terceiros
 
+### Música dos créditos
+
+Hidden King Theme — Deadlock Soundtrack — NOCSPOT.
+
 ### Poly Haven
 
 Licença CC0 1.0.

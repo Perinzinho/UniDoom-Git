@@ -90,7 +90,10 @@ namespace UniDoom.Finale
                 fade.color = new Color(0, 0, 0, Mathf.SmoothStep(0, 1, elapsed / FadeDuration));
                 yield return null;
             }
-            GameMenus.Instance?.PlayEndingCredits();
+            // Keep the black finale cover until the persistent menu has actually opened
+            // the credits. A transition or menu operation can still own that UI frame.
+            while (GameMenus.Instance == null || !GameMenus.Instance.PlayEndingCredits())
+                yield return null;
             Destroy(gameObject);
         }
 
