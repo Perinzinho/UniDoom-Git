@@ -1,5 +1,7 @@
 # Campus Exterior e Biblioteca do Campus — contexto de implementação
 
+**Orientação do gerador — 12/11/2026:** as quatro variantes visuais do gerador da CampusLibrary foram giradas 180° em Y na raiz compartilhada do prefab e no caminho de criação em runtime. Alvo de interação e colliders antigos permanecem nas posições existentes; inspeção visual e Play Mode pendentes.
+
 **Objetivo após ligar o gerador — 12/11/2026:** ao concluir o puzzle da CampusLibrary, o aviso compartilhado orienta: “Gerador ligado. Volte para a prisão e liberte os professores.” Aparece após fechar o quadro modal, por 7,5 s de gameplay.
 
 **Aviso inicial da lanterna — 12/11/2026:** ao começar uma nova partida, `GameManager` aguarda o menu e a transição liberarem o jogo e mostra por 10 s, com `GameplayNotice`, “Para ligar a lanterna, aperte F.”. A lanterna começa desligada e `F` ou direcional para cima alterna o foco durante todo o jogo; o início de um apagão ainda o acende automaticamente. A luz auxiliar de `TCRegionAtmosphere` fica desativada enquanto o jogador possui a lanterna global, evitando dois focos controlados pela mesma tecla. Verificação estática e `git diff --check`; sem Unity, Play Mode ou comparação visual.

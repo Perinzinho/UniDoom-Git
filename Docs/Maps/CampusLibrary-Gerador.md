@@ -18,7 +18,7 @@ Integração: **8.708 registros/fileIDs anteriores preservados**, 123 registros 
 
 Revisão de **10/11/2026**, solicitada em [correcoesBiblioteca.md](../correcoesBiblioteca.md): estantes alinhadas/preenchidas, inscrições em placas, fusíveis em sprite, área dos funcionários ampliada, instalação manual, quatro zumbis e três bilhetes. Os comandos respeitam a câmera horizontal do jogador. Validações desta revisão são registradas na fila; os testes de 09/11 abaixo são históricos.
 
-**Modelo final do gerador — 10/11/2026:** o bloco provisório foi substituído pelos quatro `.glb` fornecidos pelo usuário, representando 0, 1, 2 e 3 fusíveis. O importador local combina as peças de cada arquivo em um mesh, preserva as cores de vértice e usa shader URP exclusivo. A variante muda após cada inserção; visual antigo fica oculto, mas seus colliders e o alvo de interação são preservados.
+**Modelo final do gerador — 10/11/2026, orientação revista em 12/11/2026:** o bloco provisório foi substituído pelos quatro `.glb` fornecidos pelo usuário, representando 0, 1, 2 e 3 fusíveis. O importador local combina as peças de cada arquivo em um mesh, preserva as cores de vértice e usa shader URP exclusivo. A raiz visual das quatro variantes foi girada 180° em Y no prefab e na criação alternativa em runtime, para apresentar a frente do equipamento ao jogador. A variante muda após cada inserção; visual antigo fica oculto, mas seus colliders e o alvo de interação são preservados.
 
 ## Cenário persistente
 
