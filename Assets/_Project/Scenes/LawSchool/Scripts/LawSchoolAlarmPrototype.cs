@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
+using UniDoom.UI;
 
 /// <summary>The first local key triggers one persistent alarm and one finite group of zombies.</summary>
 [DisallowMultipleComponent, DefaultExecutionOrder(11000)]
@@ -137,6 +138,8 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         // Publish the initial placement too, so maintenance is available in this same initialization.
         StateChanged?.Invoke();
         if (keys.HasCompletedEvent(TriggeredEventId) && !IsResolved) BeginAlarm();
+        GameplayNotice.ShowWhenGameplayReady(this,
+            "Bloco de Direito: encontre duas chaves, uma para a Biblioteca do Campus e outra para a sala de manuten\u00e7\u00e3o 104. Use a chave da manuten\u00e7\u00e3o para desligar o alarme.", 7.5f);
     }
 
     void ChooseKeyRoom(PlayerCellKeys inventory)
