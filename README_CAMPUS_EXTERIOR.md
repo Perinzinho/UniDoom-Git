@@ -1,5 +1,7 @@
 # Campus Exterior e Biblioteca do Campus — contexto de implementação
 
+**Lanterna no apagão do Bloco 4 — 12/11/2026:** a chave da sala 423 dispara 15 s de apagão. Luminárias normais são desativadas durante a falta de energia para a lanterna do jogador iluminar as superfícies sob o limite de luzes adicionais do URP; `F` ou direcional para cima alterna o foco enquanto está escuro. Contrato e limites de validação em [Docs/Maps/CampusBlock4.md](Docs/Maps/CampusBlock4.md).
+
 **Clarões na entrada — 12/11/2026:** desligados na cena `CampusExterior.unity` os dois componentes `Light` chamados `Warm pool of light` em `(69,7; 3; -56)` e `(86,3; 3; -56)`, alinhados aos clarões brancos da captura enviada. Os objetos, fileIDs, materiais e demais luzes foram preservados. Os veículos estacionados já estavam sem componentes `Light` ativos e com emissão desligada. Conferência estática do par e do diff concluída; sem Unity, Play Mode, build ou comparação visual após a alteração.
 
 **Créditos após o final — 12/11/2026:** a comemoração na chegada `FromPrison` mantém o fade até `GameMenus` confirmar a abertura dos créditos. A tela inicia a rolagem sem atraso a 42 unidades de canvas/s e toca o MP3 `HiddenKingTheme` fornecido pelo usuário. Referências e validação em [Docs/Credits.md](Docs/Credits.md).

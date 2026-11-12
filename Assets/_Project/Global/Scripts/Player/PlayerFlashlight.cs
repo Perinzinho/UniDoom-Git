@@ -71,10 +71,8 @@ public sealed class PlayerFlashlight : MonoBehaviour
         beam.spotAngle = 58f;
         beam.innerSpotAngle = 32f;
         beam.intensity = 80f;
-        beam.shadows = LightShadows.Soft;
-        beam.shadowNearPlane = .05f;
-        beam.shadowBias = .06f;
-        beam.shadowNormalBias = .15f;
+        beam.shadows = LightShadows.None;
+        beam.renderMode = LightRenderMode.ForcePixel;
         beam.cullingMask = view.cullingMask;
         var urp = beam.GetUniversalAdditionalLightData();
         urp.usePipelineSettings = false;
