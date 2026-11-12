@@ -2,6 +2,8 @@
 
 ## Leitura rápida
 
+- **Aviso após o puzzle — 12/11/2026:** ao ligar o gerador, `GameplayNotice` mostra “Gerador ligado. Volte para a prisão e liberte os professores.” por 7,5 s de gameplay. O tempo de leitura fica pausado enquanto o quadro modal estiver aberto.
+
 - **Lanterna durante falta de energia — 11/11/2026:** o jogador persistente recebe `PlayerFlashlight` pelo `GameManager`. Enquanto `LibraryLightingController.IsUnpowered` for verdadeiro, a luz de foco se acende automaticamente e acompanha a mira da câmera; `F` ou direcional para cima alterna seu estado. A luz desliga quando o gerador restaura a energia. A mesma lanterna cobre o apagão da biblioteca antiga e do Bloco 4; o Bloco de Direito mantém sua própria luz de apagão, agora alinhada à mira. Compilação no Unity 6000.5.7f1 concluída; conferência visual e Play Mode pendentes.
 
 - **Placas — 11/11/2026:** o quadro genérico que mandava consultar as estantes ficou inativo; as faixas numéricas do acervo continuam visíveis. Setores, sanitários, serviços, extintores, saídas, restrição de funcionários e pistas da missão foram preservados. Textos e cores funcionais seguem o [padrão do jogo](Signage.md).

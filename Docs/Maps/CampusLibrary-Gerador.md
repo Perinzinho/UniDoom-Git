@@ -18,7 +18,7 @@ Integração: **8.708 registros/fileIDs anteriores preservados**, 123 registros 
 
 Revisão de **10/11/2026**, solicitada em [correcoesBiblioteca.md](../correcoesBiblioteca.md): estantes alinhadas/preenchidas, inscrições em placas, fusíveis em sprite, área dos funcionários ampliada, instalação manual, quatro zumbis e três bilhetes. Os comandos respeitam a câmera horizontal do jogador. Validações desta revisão são registradas na fila; os testes de 09/11 abaixo são históricos.
 
-**Modelo final do gerador — 10/11/2026:** o bloco provisório foi substituído pelos quatro `.glb` fornecidos pelo usuário, representando 0, 1, 2 e 3 fusíveis. O importador local combina as peças de cada arquivo em um mesh, preserva as cores de vértice e usa shader URP exclusivo. A variante muda após cada inserção; visual antigo fica oculto, mas seus colliders e o alvo de interação são preservados.
+**Modelo final do gerador — 10/11/2026, orientação revista em 12/11/2026:** o bloco provisório foi substituído pelos quatro `.glb` fornecidos pelo usuário, representando 0, 1, 2 e 3 fusíveis. O importador local combina as peças de cada arquivo em um mesh, preserva as cores de vértice e usa shader URP exclusivo. A raiz visual das quatro variantes foi girada 180° em Y no prefab e na criação alternativa em runtime, para apresentar a frente do equipamento ao jogador. A variante muda após cada inserção; visual antigo fica oculto, mas seus colliders e o alvo de interação são preservados.
 
 ## Cenário persistente
 
@@ -93,7 +93,7 @@ Destaque luminoso moderado acompanha o coletável, inativo antes da descoberta. 
 - `GameManager.EndSession()` e a inicialização do runtime limpam o estado.
 - Assinantes devem se desinscrever ao serem destruídos/desativados.
 
-**Integração com as celas — 11/11/2026:** `PrisonProgress.CanOpenCell` e `OpenCell` exigem `IsLibraryGeneratorPowered` para todos os IDs 1–14. Somente a conclusão do puzzle e a transição final para `GeneratorOn` liberam a abertura individual com E. O aviso de cela trancada orienta reparar o gerador da biblioteca. O estado da energia e das celas acompanha a sessão em transições/checkpoints. `TESTAR FINAL` prepara o estado real do gerador como concluído na sessão de teste, com as celas inicialmente fechadas.
+**Integração com as celas — 11/11/2026:** `PrisonProgress.CanOpenCell` e `OpenCell` exigem `IsLibraryGeneratorPowered` para todos os IDs 1–14. Somente a conclusão do puzzle e a transição final para `GeneratorOn` liberam a abertura individual com E. O aviso de cela trancada orienta reparar o gerador da biblioteca. O estado da energia e das celas acompanha a sessão em transições/checkpoints. O atalho `TESTAR FINAL` foi retirado do menu em 12/11/2026.
 
 ## Zumbis e sala segura
 
@@ -163,6 +163,8 @@ Não houve build, benchmark/Profiler, sessão manual completa ou teste com contr
 Começar partida nova e entrar pelo campus. Conferir ausência dos fusíveis. Ir ao fundo leste do acervo norte, cruzar **Acervo complementar** e seguir à esquerda para **Manutenção**. Avançar contra a porta da sala do gerador para abri-la. Descobrir o gerador, coletar os três itens da tabela e voltar. Usar E uma vez no gerador para inserir os três fusíveis e abrir o puzzle. Confirmar cursor livre e câmera/personagem imóveis, clicar um terminal errado, fechar/reabrir e então executar a ordem correta. Conferir também clique fora/terminal travado, Escape, restauração dos controles, alinhamento em outra resolução e persistência ao sair/voltar. Durante a busca, eliminar o reforço e observar a reposição segura; atraí-lo até a manutenção para verificar o bloqueio.
 
 ## Painel modal por mouse — 10/11/2026
+
+**Revisão visual e fechamento — 12/11/2026:** o modal usa uma carcaça escura com moldura, parafusos, cabos, trilho de sete indicadores e módulos verticais vermelhos/verdes, seguindo a referência visual enviada pelo usuário. Os indicadores acompanham os passos reais da sequência. No sétimo acerto, o gerador liga imediatamente; o painel mostra o estado verde por 0,9 s e fecha automaticamente com a animação existente, devolvendo cursor, câmera e movimento pelo `GameMenus`. Escape e SAIR continuam disponíveis antes da conclusão. Conferência estática e `git diff --check`; Unity, Play Mode, build e comparação visual não executados nesta revisão.
 
 O painel foi adaptado conforme `Docs/SKILL_painel_interativo_jogo.md`, reutilizando `GameMenus` como gerenciador do modo de input e `LibraryMissionProgress` como regra independente. A ordem, os três fusíveis, os bilhetes, a persistência de sessão e os indicadores físicos foram preservados. O modal é criado uma vez por instância da missão e reusado nas reaberturas, sem acumular listeners. Depois dos três fusíveis instalados, somente o gerador abre o modal; completar a sequência liga o gerador imediatamente. Fechamento por Escape, botão, morte/transição ou destruição do controlador passa pelo mesmo proprietário de interação.
 

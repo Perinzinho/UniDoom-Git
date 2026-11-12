@@ -115,11 +115,13 @@ namespace UniDoom.UI
 
         private void Update()
         {
+#if UNITY_EDITOR
             if (enableDebugKey && Input.GetKeyDown(debugKey) && !isReloading)
             {
                 TriggerReload(DebugSectors[debugDestinationIndex]);
                 debugDestinationIndex = (debugDestinationIndex + 1) % DebugSectors.Length;
             }
+#endif
             if (!isReloading) return;
             float elapsed = Time.unscaledTime - transitionBegan;
             float breath = .5f + .5f * Mathf.Sin(elapsed * .8f);
