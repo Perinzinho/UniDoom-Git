@@ -4,6 +4,8 @@ Atualizado: **2026-11-08**, revisão de [correcoesbloco4.md](correcoesbloco4.md)
 
 ## Leitura rápida
 
+- **Placas — 11/11/2026:** as quatro direções de ala mantêm as setas e mostram só `ALA 1–4`; a contagem `6 SALAS` foi retirada. Números 401–424, sinalização de saída, copa, coordenação, puzzles e avisos decorativos foram preservados. Tinta e separadores seguem o [padrão do jogo](Signage.md).
+
 - **Acesso à biblioteca (09/11/2026):** uma chave em aço com etiqueta azul, ID `campus-library-block-4`, na bancada da sala 423 atrás da porta com senha. Puzzle resolvido e porta totalmente aberta continuam obrigatórios; trigger de coleta preservado.
 - Antigas chaves de cela **7/8/12/13 retiradas**: a recompensa original da 423 foi convertida para acesso à biblioteca; os três pickups adicionais ficaram inativos. Nada foi transferido para a biblioteca. [Contrato de acesso](CampusLibrary.md#acesso-com-duas-chaves--09112026).
 - Cena `Assets/_Project/Scenes/CampusBlock4/CampusBlock4.unity`; prefab `Prefabs/CampusBlock4.prefab` na mesma pasta. Sem nova cena/menu.

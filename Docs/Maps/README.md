@@ -10,6 +10,8 @@ Leia este índice e **comece pela seção Leitura rápida da ficha do mapa solic
 | Porão e prisão | `Assets/_Project/Scenes/Basement/Basement.unity` | [Basement.md](Basement.md) |
 | Biblioteca do Campus — Unimar | `Assets/_Project/Scenes/CampusLibrary/CampusLibrary.unity` | [CampusLibrary.md](CampusLibrary.md); contexto e portais em [README_CAMPUS_EXTERIOR.md](../../README_CAMPUS_EXTERIOR.md) |
 
+Padrão de placas em todas as cenas: [Signage.md](Signage.md).
+
 - Instruções operacionais: [prompt mestre](../../.codex/PROMPT_MESTRE.md).
 - Direção artística normativa: [Total Chaos visual direction](../../.codex/SKILL.md).
 - Pesquisa de novos assets: [referências, fontes e autores](Referencias-e-Assets.md); leia apenas se precisar de modelos, materiais ou comparação visual.
