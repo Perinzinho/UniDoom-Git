@@ -8,6 +8,7 @@ public sealed class DirectorBossAnimator : MonoBehaviour
     [SerializeField] Sprite[] walkFrames;
     [SerializeField] Sprite[] attackFrames;
     [SerializeField] Sprite[] paperCastFrames;
+    [SerializeField] Sprite[] summonFrames;
     [SerializeField] Sprite[] deathFrames;
     [SerializeField, Min(1)] float walkFramesPerSecond = 5;
     [SerializeField, Min(.1f)] float deathDuration = 2.8f;
@@ -47,7 +48,9 @@ public sealed class DirectorBossAnimator : MonoBehaviour
         }
         else
         {
-            if (boss.IsCastingPaper && paperCastFrames != null && paperCastFrames.Length > 0)
+            if (boss.IsSummoning && summonFrames != null && summonFrames.Length > 0)
+                SetFrame(summonFrames, Mathf.FloorToInt(boss.SummonProgress * summonFrames.Length));
+            else if (boss.IsCastingPaper && paperCastFrames != null && paperCastFrames.Length > 0)
                 SetFrame(paperCastFrames, Mathf.FloorToInt(boss.PaperCastProgress * paperCastFrames.Length));
             else if (boss.IsAttacking && attackFrames != null)
                 SetFrame(attackFrames, Mathf.FloorToInt(boss.AttackProgress * attackFrames.Length));
