@@ -11,7 +11,9 @@ namespace UniDoom.CampusBlock4
         [SerializeField] Vector2 interval = new Vector2(60, 90);
         [SerializeField] Vector2 firstEventDelay = new Vector2(30, 45);
         [SerializeField] Vector2 blackoutDuration = new Vector2(2, 4);
+        [SerializeField, Min(1)] float keyBlackoutDuration = 15f;
         float[] intensities;
+        bool[] fixtureEnabled;
         MaterialPropertyBlock[] originalBlocks;
         MaterialPropertyBlock darkBlock;
         float remaining;
@@ -23,7 +25,12 @@ namespace UniDoom.CampusBlock4
         void Awake()
         {
             intensities = new float[fixtures.Length];
-            for (int i=0;i<fixtures.Length;i++) if(fixtures[i]) intensities[i]=fixtures[i].intensity;
+            fixtureEnabled = new bool[fixtures.Length];
+            for (int i=0;i<fixtures.Length;i++) if(fixtures[i])
+            {
+                intensities[i]=fixtures[i].intensity;
+                fixtureEnabled[i]=fixtures[i].enabled;
+            }
             originalBlocks = new MaterialPropertyBlock[diffusers.Length];
             for(int i=0;i<diffusers.Length;i++){originalBlocks[i]=new MaterialPropertyBlock();if(diffusers[i])diffusers[i].GetPropertyBlock(originalBlocks[i]);}
             darkBlock = new MaterialPropertyBlock();
@@ -51,9 +58,23 @@ namespace UniDoom.CampusBlock4
             if(!isActiveAndEnabled||intensities==null)return;
             phase=0;pulses=0;SetPower(false);remaining=.1f;
         }
+        public void BeginKeyBlackout()
+        {
+            if (!isActiveAndEnabled || intensities == null) return;
+            phase = 1;
+            pulses = 0;
+            SetPower(false);
+            remaining = keyBlackoutDuration;
+            BlackoutStarted?.Invoke();
+        }
         void SetPower(bool on)
         {
-            for(int i=0;i<fixtures.Length;i++)if(fixtures[i])fixtures[i].intensity=on?intensities[i]:(i%12==0?intensities[i]*.035f:0);
+            for(int i=0;i<fixtures.Length;i++)if(fixtures[i])
+            {
+                bool emergency = !on && i%12==0;
+                fixtures[i].intensity = on ? intensities[i] : emergency ? intensities[i]*.035f : 0;
+                fixtures[i].enabled = fixtureEnabled[i] && (on || emergency);
+            }
             for(int i=0;i<diffusers.Length;i++)if(diffusers[i])diffusers[i].SetPropertyBlock(on?originalBlocks[i]:darkBlock);
         }
         void RestorePower(){if(intensities!=null)SetPower(true);}

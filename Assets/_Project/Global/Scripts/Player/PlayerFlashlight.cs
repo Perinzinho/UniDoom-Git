@@ -11,16 +11,17 @@ using UniDoom.UI;
 public sealed class PlayerFlashlight : MonoBehaviour
 {
     static PlayerFlashlight current;
-    public static bool HandlesCurrentDarkness => current && current.wasDark;
+    public static bool HandlesCurrentDarkness => current && current.isActiveAndEnabled;
     Camera view;
     Light beam;
     Scene boundScene;
     bool sceneBound;
     bool wasDark;
-    bool requested = true;
+    bool requested;
     LibraryLightingController campusLibrary;
     LibraryEncounterDirector oldLibrary;
     Block4PowerFluctuation block4;
+    LawSchoolAlarmPrototype lawSchool;
 
     void OnEnable() { current = this; }
 
@@ -34,23 +35,25 @@ public sealed class PlayerFlashlight : MonoBehaviour
             campusLibrary = FindAnyObjectByType<LibraryLightingController>();
             oldLibrary = FindAnyObjectByType<LibraryEncounterDirector>();
             block4 = FindAnyObjectByType<Block4PowerFluctuation>();
+            lawSchool = FindAnyObjectByType<LawSchoolAlarmPrototype>();
             wasDark = false;
         }
 
         bool dark = (campusLibrary && campusLibrary.IsUnpowered) ||
                     (oldLibrary && oldLibrary.BlackoutActive) ||
-                    (block4 && block4.IsBlackout);
+                    (block4 && block4.IsBlackout) ||
+                    (lawSchool && lawSchool.IsActive);
         if (dark && !wasDark) requested = true;
         wasDark = dark;
 
-        if (dark && Time.timeScale > 0 && !GameMenus.BlocksGameplay &&
+        if (Time.timeScale > 0 && !GameMenus.BlocksGameplay &&
             !DeathScreen.IsVisible && !DoorReloadScreen.IsReloading &&
             ((Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame) ||
              (Gamepad.current != null && Gamepad.current.dpad.up.wasPressedThisFrame)))
             requested = !requested;
 
-        if (dark && !beam) CreateBeam();
-        if (beam) beam.enabled = dark && requested;
+        if (requested && !beam) CreateBeam();
+        if (beam) beam.enabled = requested;
     }
 
     void CreateBeam()
@@ -67,14 +70,12 @@ public sealed class PlayerFlashlight : MonoBehaviour
         beam = go.AddComponent<Light>();
         beam.type = LightType.Spot;
         beam.color = new Color(1f, .94f, .82f);
-        beam.range = 20f;
+        beam.range = 30f;
         beam.spotAngle = 58f;
         beam.innerSpotAngle = 32f;
         beam.intensity = 80f;
-        beam.shadows = LightShadows.Soft;
-        beam.shadowNearPlane = .05f;
-        beam.shadowBias = .06f;
-        beam.shadowNormalBias = .15f;
+        beam.shadows = LightShadows.None;
+        beam.renderMode = LightRenderMode.ForcePixel;
         beam.cullingMask = view.cullingMask;
         var urp = beam.GetUniversalAdditionalLightData();
         urp.usePipelineSettings = false;
