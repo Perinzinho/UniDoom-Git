@@ -22,6 +22,10 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
     [SerializeField, Min(.1f)] float redSeconds = 3;
     [SerializeField, Min(.1f)] float blackoutSeconds = 1.6f;
     [SerializeField, Min(.2f)] float arrivalInterval = .55f;
+    [SerializeField, Min(1)] int initialWaveSize = 10;
+    [SerializeField, Min(1)] int additionalWaveSize = 5;
+    [SerializeField, Min(1f)] float additionalWaveInterval = 40f;
+    [SerializeField, Min(1)] int maximumArrivals = 30;
     [SerializeField, Min(3)] float minimumArrivalDistance = 10;
     [SerializeField, Min(1)] float nearbyVisibilityRange = 4.5f;
     [SerializeField, Min(0)] float nearbyVisibilityIntensity = 8.5f;
@@ -232,7 +236,9 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         bool dark = Elapsed >= initialRedSeconds &&
             Mathf.Repeat(Elapsed - initialRedSeconds, blackoutSeconds + redSeconds) < blackoutSeconds;
         if (dark != IsBlackout) ApplyPhase(dark);
-        if (Elapsed >= nextArrival && SpawnedCount < arrived.Length)
+        int waveBudget = Mathf.Min(arrived.Length, maximumArrivals,
+            initialWaveSize + Mathf.FloorToInt(Elapsed / additionalWaveInterval) * additionalWaveSize);
+        if (Elapsed >= nextArrival && SpawnedCount < waveBudget)
         {
             TryNextArrival();
             nextArrival = Elapsed + arrivalInterval;

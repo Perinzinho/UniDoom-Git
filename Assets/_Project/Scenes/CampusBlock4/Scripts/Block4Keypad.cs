@@ -194,7 +194,7 @@ namespace UniDoom.CampusBlock4
             if (panel != null) Destroy(panel);
             if (hud != null) Destroy(hud);
         }
-        public void ShowKeyCollected() => GameplayNotice.Show("Chave da biblioteca coletada. Guardada no inventário.", 6);
+        public void ShowKeyCollected() => GameplayNotice.Show("Chave de acesso \u00e0 Biblioteca do Campus coletada no Bloco 4. Use na entrada da biblioteca no campus.", 7.5f);
         void RefreshWorld()
         {
             if (worldStatus != null) worldStatus.text = Block4PuzzleProgress.DoorUnlocked ? "LIBERADO" : "TRANCADO";
