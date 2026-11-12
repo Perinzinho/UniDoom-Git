@@ -15,7 +15,7 @@ namespace UniDoom.UI
     /// <summary>Shared main, pause, death, options and confirmation screens. Progress lasts for the current run.</summary>
     public sealed partial class GameMenus : MonoBehaviour
     {
-        public enum Screen { Gameplay, Main, Pause, Death, Options, Credits, Confirm, MapSelect, GameOver, Document, Interaction }
+        public enum Screen { Gameplay, Main, Pause, Death, Options, Credits, Confirm, GameOver, Document, Interaction }
         public static GameMenus Instance { get; private set; }
         public static bool BlocksGameplay => Instance != null && (Instance.CurrentScreen != Screen.Gameplay || Instance.busy);
         public Screen CurrentScreen { get; private set; }
@@ -25,9 +25,8 @@ namespace UniDoom.UI
         Canvas canvas;
         RawImage backdrop;
         Image shade, fade;
-        GameObject main, pause, death, options, credits, confirmation, mapSelection, gameOver;
+        GameObject main, pause, death, options, credits, confirmation, gameOver;
         Button gameOverRestart, gameOverBack;
-        Button chooseMap, mapFirst;
         Button mainFirst, pauseFirst, deathRetry, deathBack, optionsBack, cancel;
         Slider sensitivity, volume;
         Toggle invertY, fullscreen, showFps;
@@ -175,7 +174,6 @@ namespace UniDoom.UI
                     if (creditsFinishSession) { creditsFinishSession = false; ReturnToMain(); }
                     else SetScreen(Screen.Main);
                     break;
-                case Screen.MapSelect: SetScreen(Screen.Main); Select(chooseMap); break;
                 case Screen.Confirm: SetScreen(confirmOrigin); break;
             }
         }
@@ -258,17 +256,6 @@ namespace UniDoom.UI
             if (CurrentScreen != Screen.GameOver || deathOwner == null || !deathOwner.IsReady || DoorReloadScreen.IsReloading) return;
             StartNewGame();
         }
-
-        void OpenMapSelection()
-        {
-            if (busy || CurrentScreen != Screen.Main) return;
-            SetScreen(Screen.MapSelect);
-        }
-
-        void StartAtPrison() => StartNewGameAtScene("Assets/_Project/Scenes/Basement/Basement.unity", startAtPrison: true);
-
-        void StartFinaleTest() => StartNewGameAtScene(
-            "Assets/_Project/Scenes/Basement/Basement.unity", startAtPrison: true, startAtFinale: true);
 
         void StartNewGameAtScene(string scene, bool startAtBoss = false, bool startAtPrison = false,
             bool startAtFinale = false)
@@ -443,8 +430,7 @@ namespace UniDoom.UI
             credits.SetActive(screen == Screen.Credits);
             SetCreditsVisible(screen == Screen.Credits);
             confirmation.SetActive(screen == Screen.Confirm);
-            mapSelection.SetActive(screen == Screen.MapSelect);
-            bool mainBackground = screen == Screen.Main || screen == Screen.MapSelect ||
+            bool mainBackground = screen == Screen.Main ||
                 (screen == Screen.Options && optionsOrigin == Screen.Main);
             bool gameOverBackground = screen == Screen.GameOver || (screen == Screen.Confirm && confirmOrigin == Screen.GameOver);
             backdrop.gameObject.SetActive(mainBackground || gameOverBackground);
@@ -455,7 +441,7 @@ namespace UniDoom.UI
             EnsureEvents();
             Select(screen switch { Screen.Main => mainFirst, Screen.Pause => pauseFirst,
                 Screen.Death => deathRetry, Screen.Options => optionsBack,
-                Screen.Confirm => cancel, Screen.MapSelect => mapFirst, Screen.GameOver => gameOverRestart,
+                Screen.Confirm => cancel, Screen.GameOver => gameOverRestart,
                 Screen.Document => documentClose, _ => null });
             Fit();
         }
@@ -508,21 +494,16 @@ namespace UniDoom.UI
             layout.anchoredPosition = Vector2.zero;
             main = Page("Main"); pause = Page("Pause"); death = Page("Death");
             options = Page("Options"); credits = Page("Credits"); confirmation = Page("Confirm");
-            mapSelection = Page("Temporary map selection");
             gameOver = Page("Game Over");
             BuildDocument();
             BuildGameOver();
             StandardHeader(main, 0);
             mainFirst = ColumnButton(main, "NewGame", "NOVO JOGO", StartNewGame);
-            chooseMap = ColumnButton(main, "TemporaryMapSelect", "ESCOLHER MAPA (TEMP.)", OpenMapSelection);
-            var prisonShortcut = ColumnButton(main, "PrisonShortcut", "PRISÃO — APÓS O BOSS", StartAtPrison);
-            var finaleShortcut = ColumnButton(main, "FinaleShortcut", "TESTAR FINAL", StartFinaleTest);
             var mainOptions = ColumnButton(main, "Options", "OPÇÕES", OpenOptions);
             var creditButton = ColumnButton(main, "Credits", "CRÉDITOS", () => SetScreen(Screen.Credits));
             var quit = ColumnButton(main, "Quit", "SAIR", Quit);
-            MenuStyle.Link(mainFirst, chooseMap, prisonShortcut, finaleShortcut, mainOptions, creditButton, quit);
+            MenuStyle.Link(mainFirst, mainOptions, creditButton, quit);
             ColumnFooter(main);
-            BuildMapSelection();
             StandardHeader(pause, 1);
             pauseFirst = ColumnButton(pause, "Resume", "CONTINUAR   [ESC]", Resume);
             var pauseOptions = ColumnButton(pause, "Options", "OPÇÕES", OpenOptions);
@@ -667,63 +648,6 @@ namespace UniDoom.UI
             image.sprite = sprite;
             image.preserveAspect = true;
         }
-        static void Footer(GameObject page) => MenuStyle.Text("Navigation", page.transform,
-            "↑ ↓  NAVEGAR     ENTER  CONFIRMAR", 165, 985, 1000, 45, 21, MenuStyle.Muted);
-
-        // Temporary shortcut: use the same fresh-session loading flow as New Game.
-        void BuildMapSelection()
-        {
-            // Six rows of 64px buttons must stay above Back at y=885.
-            const float rowSpacing = 90;
-            MenuStyle.Text("Title", mapSelection.transform, "ESCOLHER MAPA", 165, 135, 1400, 100, 52, MenuStyle.Paper);
-            MenuStyle.Text("Hint", mapSelection.transform, "Selecione onde começar uma nova partida.", 165, 245, 1400, 45, 26, MenuStyle.Muted);
-            var controls = new List<Selectable>();
-            for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
-            {
-                string scene = SceneUtility.GetScenePathByBuildIndex(i);
-                if (string.IsNullOrEmpty(scene)) continue;
-                string sceneName = System.IO.Path.GetFileNameWithoutExtension(scene);
-                string label = sceneName switch
-                {
-                    "EntranceGarden" => "JARDIM DE ENTRADA",
-                    "SampleScene" => "CAMPUS COMPLETO",
-                    "Cylinder" => "CILINDRO",
-                    "Library" => "BIBLIOTECA",
-                    "CampusLibrary" => "BIBLIOTECA DO CAMPUS",
-                    "CampusBlock4" => "BLOCO 4",
-                    "ClassRoom" => "SALA DE AULA",
-                    "DirectorRoom" => "SALA DO DIRETOR",
-                    "LawSchool" => "BLOCO DE DIREITO",
-                    "CampusExterior" => "CAMPUS EXTERIOR — UNIMAR",
-                    "Basement" => "PORÃO — PRÉ-ARENA",
-                    _ => sceneName
-                };
-                var button = MenuStyle.Button(mapSelection.transform, "Map_" + sceneName, label,
-                    165 + controls.Count % 2 * 830, 320 + controls.Count / 2 * rowSpacing, 760, () => StartNewGameAtScene(scene), 32);
-                if (mapFirst == null) mapFirst = button;
-                controls.Add(button);
-                if (sceneName == "Basement")
-                    controls.Add(MenuStyle.Button(mapSelection.transform, "Map_BasementBoss", "PORÃO — ARENA DO BOSS",
-                        165 + controls.Count % 2 * 830, 320 + controls.Count / 2 * rowSpacing, 760,
-                        () => StartNewGameAtScene(scene, true), 32));
-            }
-            var back = MenuStyle.Button(mapSelection.transform, "Back", "VOLTAR   [ESC]", 165, 885, 1000, Back, 34);
-            if (mapFirst == null) mapFirst = back;
-            controls.Add(back);
-            MenuStyle.Link(controls.ToArray());
-            for (int i = 0; i < controls.Count - 1; i++)
-            {
-                int rowStart = i / 2 * 2;
-                var navigation = new Navigation { mode = Navigation.Mode.Explicit,
-                    selectOnUp = i >= 2 ? controls[i - 2] : back,
-                    selectOnDown = i + 2 < controls.Count - 1 ? controls[i + 2] : back,
-                    selectOnLeft = i % 2 == 1 ? controls[i - 1] : null,
-                    selectOnRight = i % 2 == 0 && rowStart + 1 < controls.Count - 1 ? controls[i + 1] : null };
-                controls[i].navigation = navigation;
-            }
-            Footer(mapSelection);
-        }
-
         void BuildOptions()
         {
             MenuStyle.Text("Title", options.transform, "OPÇÕES", 205, 150, 1200, 105, 52, MenuStyle.Paper);
