@@ -4,6 +4,8 @@ Atualizado: **2026-11-08**, revisão de [correcoesbloco4.md](correcoesbloco4.md)
 
 ## Leitura rápida
 
+- **Chave da biblioteca (11/11/2026):** o visual da recompensa da sala 423 cresceu 75% no prefab instanciado pela cena, sem ampliar o gatilho. O aviso de coleta informa que a chave abre a entrada da Biblioteca do Campus e permanece por 7,5 s. Verificação estática; Play Mode pendente. A Unity em lote parou na conexão com o cliente de licença antes da compilação.
+
 - **Acesso à biblioteca (09/11/2026):** uma chave em aço com etiqueta azul, ID `campus-library-block-4`, na bancada da sala 423 atrás da porta com senha. Puzzle resolvido e porta totalmente aberta continuam obrigatórios; trigger de coleta preservado.
 - Antigas chaves de cela **7/8/12/13 retiradas**: a recompensa original da 423 foi convertida para acesso à biblioteca; os três pickups adicionais ficaram inativos. Nada foi transferido para a biblioteca. [Contrato de acesso](CampusLibrary.md#acesso-com-duas-chaves--09112026).
 - Cena `Assets/_Project/Scenes/CampusBlock4/CampusBlock4.unity`; prefab `Prefabs/CampusBlock4.prefab` na mesma pasta. Sem nova cena/menu.
