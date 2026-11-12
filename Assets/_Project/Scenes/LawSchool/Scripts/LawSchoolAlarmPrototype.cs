@@ -255,8 +255,8 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
             flashlightOn = !flashlightOn;
             nextActorTintAt = 0;
         }
-        if (nearbyLight && nearbyLight.enabled != (flashlightOn && IsBlackout))
-            nearbyLight.enabled = flashlightOn && IsBlackout;
+        if (nearbyLight && nearbyLight.enabled != (flashlightOn && IsActive))
+            nearbyLight.enabled = flashlightOn && IsActive;
         Elapsed += Time.deltaTime;
         bool dark = Elapsed >= initialRedSeconds &&
             Mathf.Repeat(Elapsed - initialRedSeconds, blackoutSeconds + redSeconds) < blackoutSeconds;
@@ -281,7 +281,7 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         }
         foreach (var surface in surfaces) surface.Apply(dark);
         lighting.SetAlarmPhase(true, dark);
-        if (nearbyLight) nearbyLight.enabled = flashlightOn && dark;
+        if (nearbyLight) nearbyLight.enabled = flashlightOn && IsActive;
         if (weaponHud) weaponHud.color = weaponHudColor * (dark ? new Color(.17f,.20f,.25f,1) : SpriteRed);
         TintActors();
         nextActorTintAt = Time.unscaledTime + .12f;
@@ -304,7 +304,8 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         if (!view) view = Camera.main;
         if (!nearbyLight && view)
         {
-            var source = new GameObject("LawSchool — visão próxima no apagão");
+            // Lanterna do apagão: alcance suficiente para o jogador enxergar o caminho à frente.
+            var source = new GameObject("LawSchool — lanterna no apagão");
             source.transform.SetParent(view.transform,false);
             source.transform.localPosition = new Vector3(0,-.08f,.12f);
             source.transform.localRotation = Quaternion.LookRotation(new Vector3(0,.08f,18f), Vector3.up);
@@ -312,11 +313,11 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
             nearbyLight.type = LightType.Spot;
             nearbyLight.spotAngle = 58;
             nearbyLight.innerSpotAngle = 30;
-            nearbyLight.range = Mathf.Min(nearbyVisibilityRange + 1.5f, 8f);
+            nearbyLight.range = 30f;
             nearbyLight.intensity = nearbyVisibilityIntensity;
             nearbyLight.color = new Color(1f,.92f,.78f);
             nearbyLight.shadows = LightShadows.None;
-            nearbyLight.enabled = flashlightOn && IsBlackout;
+            nearbyLight.enabled = flashlightOn && IsActive;
             nearbyLight.cullingMask = view.cullingMask;
         }
         if (!weaponHud)
@@ -347,11 +348,13 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
                 float proximity = view ? Mathf.Clamp01(1-distance/nearbyVisibilityRange) : 0;
                 if (flashlightOn && view && nearbyLight)
                 {
+                    // Usa nearbyVisibilityRange para o tint de sprites (independente do range real da luz).
                     float cone = Mathf.InverseLerp(Mathf.Cos(29 * Mathf.Deg2Rad), Mathf.Cos(15 * Mathf.Deg2Rad),
                         Vector3.Dot(view.transform.forward, delta.normalized));
-                    if (cone > 0 && distance < nearbyLight.range)
+                    float visRange = nearbyVisibilityRange;
+                    if (cone > 0 && distance < visRange)
                     {
-                        float beam = cone * (1 - distance / nearbyLight.range);
+                        float beam = cone * (1 - distance / visRange);
                         bool blocked = Physics.Linecast(view.transform.position, actor.renderer.bounds.center,
                             out var obstruction, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
                         if (!blocked || (actor.enemy && obstruction.collider &&
