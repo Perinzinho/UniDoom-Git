@@ -234,7 +234,7 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         if ((Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame) ||
             (Gamepad.current != null && Gamepad.current.dpad.up.wasPressedThisFrame))
             flashlightOn = !flashlightOn;
-        if (nearbyLight) nearbyLight.enabled = flashlightOn;
+        if (nearbyLight) nearbyLight.enabled = flashlightOn && IsBlackout;
         Elapsed += Time.deltaTime;
         bool dark = Elapsed >= initialRedSeconds &&
             Mathf.Repeat(Elapsed - initialRedSeconds, blackoutSeconds + redSeconds) < blackoutSeconds;
@@ -250,6 +250,7 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
 
     void ApplyPhase(bool dark)
     {
+        if (dark && !IsBlackout) flashlightOn = true;
         IsBlackout = dark;
         foreach (var state in lights)
         {
@@ -261,7 +262,7 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         }
         foreach (var surface in surfaces) surface.Apply(dark);
         lighting.SetAlarmPhase(true, dark);
-        if (nearbyLight) nearbyLight.enabled = flashlightOn;
+        if (nearbyLight) nearbyLight.enabled = flashlightOn && dark;
         TintActors();
     }
 
@@ -281,17 +282,21 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
             var source = new GameObject("LawSchool — visão próxima no apagão");
             source.transform.SetParent(view.transform,false);
             source.transform.localPosition = new Vector3(0,-.08f,.12f);
+            source.transform.localRotation = Quaternion.LookRotation(new Vector3(0,.08f,18f), Vector3.up);
             nearbyLight = source.AddComponent<Light>();
             nearbyLight.type = LightType.Spot;
             nearbyLight.spotAngle = 58;
             nearbyLight.innerSpotAngle = 30;
             nearbyLight.range = 18;
-            nearbyLight.intensity = 55;
+            nearbyLight.intensity = 80;
             nearbyLight.color = new Color(1f,.92f,.78f);
             nearbyLight.shadows = LightShadows.Soft;
             nearbyLight.shadowNearPlane = .05f;
-            nearbyLight.enabled = flashlightOn;
-            nearbyLight.GetUniversalAdditionalLightData().additionalLightsShadowResolutionTier = 0;
+            nearbyLight.enabled = flashlightOn && IsBlackout;
+            nearbyLight.cullingMask = view.cullingMask;
+            var urp = nearbyLight.GetUniversalAdditionalLightData();
+            urp.usePipelineSettings = false;
+            urp.additionalLightsShadowResolutionTier = 1;
         }
         if (!weaponHud)
         {
