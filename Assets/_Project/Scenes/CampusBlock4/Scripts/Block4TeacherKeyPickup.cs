@@ -37,6 +37,7 @@ namespace UniDoom.CampusBlock4
             cellKeys.TryAddKey(Block4PuzzleProgress.LibraryAccessKeyId);
             SFXManager.Instance?.PlayKeyPickupSound();
             keypad.ShowKeyCollected();
+            FindAnyObjectByType<Block4PowerFluctuation>()?.BeginKeyBlackout();
             gameObject.SetActive(false);
             return true;
         }
