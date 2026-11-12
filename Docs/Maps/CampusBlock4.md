@@ -4,6 +4,8 @@ Atualizado: **2026-11-08**, revisão de [correcoesbloco4.md](correcoesbloco4.md)
 
 ## Leitura rápida
 
+- **Puzzle dos oito computadores (11/11/2026):** as cinco pistas com símbolo e número aparecem entre oito telas com fotos, uma por sala no corredor de z negativo: 402, 403, 405, 406, 407, 408, 409 e 411. As outras três fotos não têm símbolo. Os cinco destinos são sorteados no início da partida e redistribuídos sem repetição a cada apagão; a associação símbolo/número e a ordem do quadro preservam a senha 24153. O quinto dígito envia a tentativa automaticamente; no acerto, o modal fecha e devolve os controles. A entrada no bloco mostra o objetivo por 7,5 s quando o jogo está pronto. Referências e diff verificados estaticamente; Unity/Play Mode e inspeção visual pendentes.
+
 - **Chave da biblioteca (11/11/2026):** o visual da recompensa da sala 423 cresceu 75% no prefab instanciado pela cena, sem ampliar o gatilho. O aviso de coleta informa que a chave abre a entrada da Biblioteca do Campus e permanece por 7,5 s. Verificação estática; Play Mode pendente. A Unity em lote parou na conexão com o cliente de licença antes da compilação.
 - **Placas — 11/11/2026:** as quatro direções de ala mantêm as setas e mostram só `ALA 1–4`; a contagem `6 SALAS` foi retirada. Números 401–424, sinalização de saída, copa, coordenação, puzzles e avisos decorativos foram preservados. Tinta e separadores seguem o [padrão do jogo](Signage.md).
 
@@ -41,6 +43,8 @@ Quatro banheiros usam os módulos de LawSchool: um par masculino/feminino em cad
 Na terceira lista, os quatro conjuntos de cabines receberam cinco divisórias laterais e fechamentos frontais contínuos por banheiro. Dezesseis vãos livres de **1,15 m**, folhas de **1,14 × 2,59 m**, folga de **5 mm** por borda, batentes e puxadores. Componentes de abertura automática preservados com eixo de dobradiça corrigido para dentro. Geometria antiga das cabines retirada dos lotes exclusivos do Bloco 4; pias, divisórias dos mictórios e os 16 vasos já orientados para o interior preservados. Malhas derivadas editadas mantendo GUIDs e importadores; **assets de origem de LawSchool inalterados**. Comportamento e travessia não testados em jogo.
 
 ## Puzzle, painel e energia
+
+A revisão de 11/11/2026 concentra as pistas nos oito computadores citados na leitura rápida. As distribuições por 21 salas e as posições fixas descritas nos parágrafos históricos abaixo não representam o gameplay atual.
 
 Cinco pares preservados: quadrado=1, triângulo=2, círculo=3, losango=4 e cruz=5. Distribuição inicial atual: 402, 407, 414, 420 e **406**, respectivamente; os destinos podem mudar nos apagões, conforme o contrato abaixo. Ordem no quadro: triângulo, losango, quadrado, cruz, círculo. Senha **24153**; chave de acesso à biblioteca na bancada de alunos e espingarda na mesa docente da **423**, sem pedestal/suporte ou texto da arma. Sprite da chave reduzido; pickup, persistência e arma originais mantidos. Fotografias e definição do puzzle mantêm seus bytes/GUIDs. Os quatro monitores especiais acompanham a primeira estação das bancadas. Quadro personalizado, luminária, legenda e sequência de símbolos agora fixados na parede real do hall em `x = 7,5`, sem suporte isolado na circulação.
 

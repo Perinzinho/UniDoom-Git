@@ -120,6 +120,7 @@ namespace UniDoom.CampusBlock4
             feedback.text = "";
             feedback.color = MenuStyle.Muted;
             RenderEntry();
+            if (entry.Length == definition.Length) Submit();
         }
 
         public void Backspace()
