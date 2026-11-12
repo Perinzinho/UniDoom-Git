@@ -21,6 +21,7 @@ public sealed class PlayerFlashlight : MonoBehaviour
     LibraryLightingController campusLibrary;
     LibraryEncounterDirector oldLibrary;
     Block4PowerFluctuation block4;
+    LawSchoolAlarmPrototype lawSchool;
 
     void OnEnable() { current = this; }
 
@@ -34,12 +35,14 @@ public sealed class PlayerFlashlight : MonoBehaviour
             campusLibrary = FindAnyObjectByType<LibraryLightingController>();
             oldLibrary = FindAnyObjectByType<LibraryEncounterDirector>();
             block4 = FindAnyObjectByType<Block4PowerFluctuation>();
+            lawSchool = FindAnyObjectByType<LawSchoolAlarmPrototype>();
             wasDark = false;
         }
 
         bool dark = (campusLibrary && campusLibrary.IsUnpowered) ||
                     (oldLibrary && oldLibrary.BlackoutActive) ||
-                    (block4 && block4.IsBlackout);
+                    (block4 && block4.IsBlackout) ||
+                    (lawSchool && lawSchool.IsActive);
         if (dark && !wasDark) requested = true;
         wasDark = dark;
 
@@ -67,7 +70,7 @@ public sealed class PlayerFlashlight : MonoBehaviour
         beam = go.AddComponent<Light>();
         beam.type = LightType.Spot;
         beam.color = new Color(1f, .94f, .82f);
-        beam.range = 20f;
+        beam.range = 30f;
         beam.spotAngle = 58f;
         beam.innerSpotAngle = 32f;
         beam.intensity = 80f;
