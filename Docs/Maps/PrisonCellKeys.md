@@ -21,7 +21,7 @@ Atualizado em 11/11/2026. **As 14 celas exigem o gerador da CampusLibrary repara
 | 13 | William | Retirada do gameplay em 09/11; abertura pelo gerador da biblioteca |
 | 14 | Bianca | Pickup e sprite próprios ainda não criados; abertura pelo gerador da biblioteca |
 
-O inventário `PlayerCellKeys` conserva os IDs legados `professor-cell-01` a `professor-cell-14`. `PrisonProgress.CellCount = 14` define os limites das celas. A autorização atual depende do gerador reparado para todos os professores, incluindo Bianca. O estado acompanha a sessão em portas e checkpoints. `TESTAR FINAL` prepara o gerador como concluído pelo fluxo real de progresso em uma sessão de teste.
+O inventário `PlayerCellKeys` conserva os IDs legados `professor-cell-01` a `professor-cell-14`. `PrisonProgress.CellCount = 14` define os limites das celas. A autorização atual depende do gerador reparado para todos os professores, incluindo Bianca. O estado acompanha a sessão em portas e checkpoints. O atalho `TESTAR FINAL` foi retirado do menu em 12/11/2026.
 
 Sprites: todas as treze chaves usam o modelo aprovado de metal envelhecido com numeração gravada. Atlas compartilhados `Assets/_Project/Global/Resources/Textures/Pickups/CellKeys.png`, oito subassets `CellKey01`…`CellKey08`, e `CellKeys09-13.png`, cinco subassets `CellKey09`…`CellKey13`. Renderizadores usam o material de sprite URP e Billboard existentes. Fonte, geração, hashes e recortes em `Licenses/AssetSources/CellKeys/generated-sprites.json` e `generated-sprites-09-13.json`. Atlas original e seus oito IDs preservados.
 

@@ -93,7 +93,7 @@ Destaque luminoso moderado acompanha o coletável, inativo antes da descoberta. 
 - `GameManager.EndSession()` e a inicialização do runtime limpam o estado.
 - Assinantes devem se desinscrever ao serem destruídos/desativados.
 
-**Integração com as celas — 11/11/2026:** `PrisonProgress.CanOpenCell` e `OpenCell` exigem `IsLibraryGeneratorPowered` para todos os IDs 1–14. Somente a conclusão do puzzle e a transição final para `GeneratorOn` liberam a abertura individual com E. O aviso de cela trancada orienta reparar o gerador da biblioteca. O estado da energia e das celas acompanha a sessão em transições/checkpoints. `TESTAR FINAL` prepara o estado real do gerador como concluído na sessão de teste, com as celas inicialmente fechadas.
+**Integração com as celas — 11/11/2026:** `PrisonProgress.CanOpenCell` e `OpenCell` exigem `IsLibraryGeneratorPowered` para todos os IDs 1–14. Somente a conclusão do puzzle e a transição final para `GeneratorOn` liberam a abertura individual com E. O aviso de cela trancada orienta reparar o gerador da biblioteca. O estado da energia e das celas acompanha a sessão em transições/checkpoints. O atalho `TESTAR FINAL` foi retirado do menu em 12/11/2026.
 
 ## Zumbis e sala segura
 

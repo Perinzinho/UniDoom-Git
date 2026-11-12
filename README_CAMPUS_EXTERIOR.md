@@ -57,6 +57,8 @@
 
 ## 1. Leitura rápida para a próxima IA
 
+- **Menu do jogador — 12/11/2026:** o menu principal oferece **NOVO JOGO**, **OPÇÕES**, **CRÉDITOS** e **SAIR**. A seleção temporária de mapas, o início direto na prisão e o teste do final foram retirados da interface. A tecla `F8` de prévia de transição funciona somente no Editor. O carregamento direto de cena permanece para ferramentas de validação do Editor, sem botão no jogo. Os registros de atalhos abaixo descrevem o estado anterior a esta mudança.
+
 - **Seleção temporária de mapas — 10/11/2026:** `ESCOLHER MAPA (TEMP.)` lista **BLOCO DE DIREITO**, **BLOCO 4** e **BIBLIOTECA DO CAMPUS**, além de **CAMPUS EXTERIOR — UNIMAR**. Os quatro mapas estão habilitados em `EditorBuildSettings.asset`; a lista é construída por `GameMenus.BuildMapSelection` a partir das cenas habilitadas. Usa o fluxo existente de nova partida no mapa escolhido, com o `SpawnPoint` local, sem conceder chaves. As seis linhas de botões usam passo de 90 unidades para não sobrepor `VOLTAR`.
   Validação: 11 cenas habilitadas com caminhos e GUIDs conferidos; 12 atalhos, incluindo a arena do boss. Última linha termina em y=834, antes de `VOLTAR` em y=885. Compilação concluída na Unity 6000.5.7f1. Não foram executados Play Mode, cliques/transições reais, comparação visual ou build nesta alteração.
 
@@ -133,7 +135,7 @@ Validação: dez OGG decodificados, com duração/amplitude verificadas e downlo
 | Identificação e posicionamento da chegada | `Assets/_Project/Global/Scripts/Utils/SceneArrivalPoint.cs` |
 | Tela de transição e carregamento | `Assets/_Project/Global/Scripts/UI/DoorReloadScreen.cs` |
 | Sessão persistente do jogador | `Assets/_Project/Global/Scripts/Core/GameManager.cs` |
-| Seleção de mapas e nomes exibidos | `Assets/_Project/Global/Scripts/UI/GameMenus.cs` |
+| Menu principal e opções | `Assets/_Project/Global/Scripts/UI/GameMenus.cs` |
 | Nome do ambiente no pause | `Assets/_Project/Global/Scripts/UI/MouseSensitivityMenu.cs` |
 | Atmosfera regional usada pela biblioteca | `Assets/_Project/Global/Scripts/TotalChaos/TCRegionAtmosphere.cs` |
 

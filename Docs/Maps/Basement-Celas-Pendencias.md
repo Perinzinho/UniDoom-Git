@@ -13,7 +13,7 @@ Atualizado em **11/11/2026**. A regra vigente é a liberação das 14 celas pela
 - Depois dos três fusíveis instalados e do puzzle concluído, cada cela aceita `[E] ABRIR CELA XX`. `PrisonProgress.OpenCell` repete a condição de energia antes de registrar o resgate.
 - A estrutura principal das 14 celas usa as mesmas medidas, escalas e colisores. Seis grupos antigos de objetos importados, presentes somente nas celas 1–6, foram desativados e preservados para remover a diferença estrutural aparente.
 - Abrir a 14ª cela agora conclui o resgate: todos os sprites dos professores somem no mesmo frame e o prompt padronizado das celas passa a mostrar, no centro da tela, `Uma surpresa te espera! Retorne para Unimar`. A próxima travessia do portal do porão para `CampusExterior` inicia a sequência final.
-- O final posiciona os 14 professores na chegada da portaria UNIMAR, faz o grupo saltar diante de fogos procedurais, escurece a tela e inicia os créditos compartilhados. O menu principal contém `TESTAR FINAL`, que prepara o gerador pelo fluxo real de progresso em uma sessão limpa e inicia na prisão após o boss, com as 14 celas fechadas.
+- O final posiciona os 14 professores na chegada da portaria UNIMAR, faz o grupo saltar diante de fogos procedurais, escurece a tela e inicia os créditos compartilhados. O atalho `TESTAR FINAL` foi retirado do menu em 12/11/2026.
 
 ## Propostas históricas sobre quantidade de chaves
 
