@@ -16,6 +16,7 @@ namespace UniDoom.CampusLibrary
         MaterialPropertyBlock block;
         Color ambientSky, ambientEquator, ambientGround;
         bool powered, applied;
+        public bool IsUnpowered => applied && !powered;
         void Awake()
         {
             block = new MaterialPropertyBlock();
