@@ -11,13 +11,13 @@ using UniDoom.UI;
 public sealed class PlayerFlashlight : MonoBehaviour
 {
     static PlayerFlashlight current;
-    public static bool HandlesCurrentDarkness => current && current.wasDark;
+    public static bool HandlesCurrentDarkness => current && current.isActiveAndEnabled;
     Camera view;
     Light beam;
     Scene boundScene;
     bool sceneBound;
     bool wasDark;
-    bool requested = true;
+    bool requested;
     LibraryLightingController campusLibrary;
     LibraryEncounterDirector oldLibrary;
     Block4PowerFluctuation block4;
@@ -43,14 +43,14 @@ public sealed class PlayerFlashlight : MonoBehaviour
         if (dark && !wasDark) requested = true;
         wasDark = dark;
 
-        if (dark && Time.timeScale > 0 && !GameMenus.BlocksGameplay &&
+        if (Time.timeScale > 0 && !GameMenus.BlocksGameplay &&
             !DeathScreen.IsVisible && !DoorReloadScreen.IsReloading &&
             ((Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame) ||
              (Gamepad.current != null && Gamepad.current.dpad.up.wasPressedThisFrame)))
             requested = !requested;
 
-        if (dark && !beam) CreateBeam();
-        if (beam) beam.enabled = dark && requested;
+        if (requested && !beam) CreateBeam();
+        if (beam) beam.enabled = requested;
     }
 
     void CreateBeam()
