@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -22,6 +23,19 @@ namespace UniDoom.UI
             // Current feedback replaces stale counts instead of queuing obsolete instructions.
             instance.message = text;
             instance.remaining = Mathf.Max(2, duration);
+        }
+
+        public static void ShowWhenGameplayReady(MonoBehaviour owner, string text, float duration = 7.5f)
+        {
+            if (owner && !string.IsNullOrWhiteSpace(text)) owner.StartCoroutine(WaitForGameplay(owner, text, duration));
+        }
+
+        static IEnumerator WaitForGameplay(MonoBehaviour owner, string text, float duration)
+        {
+            while (owner && (owner.gameObject.scene != SceneManager.GetActiveScene() ||
+                GameManager.SessionPlayer == null || !GameMenus.Instance || Blocked))
+                yield return null;
+            if (owner) Show(text, duration);
         }
 
         void OnEnable() { instance = this; SceneManager.activeSceneChanged += SceneChanged; }

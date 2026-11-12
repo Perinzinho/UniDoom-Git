@@ -13,6 +13,7 @@ public sealed class DirectorBossEncounter : MonoBehaviour
     public bool Started { get; private set; }
     public bool Completed { get; private set; }
     public DirectorBoss SpawnedBoss { get; private set; }
+    public Bounds ArenaBounds => activationVolume != null ? activationVolume.bounds : default;
     Transform player;
 
     void Awake()

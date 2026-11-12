@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering.Universal;
+using UniDoom.UI;
 
 /// <summary>The first local key triggers one persistent alarm and one finite group of zombies.</summary>
 [DisallowMultipleComponent, DefaultExecutionOrder(11000)]
@@ -22,6 +22,10 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
     [SerializeField, Min(.1f)] float redSeconds = 3;
     [SerializeField, Min(.1f)] float blackoutSeconds = 1.6f;
     [SerializeField, Min(.2f)] float arrivalInterval = .55f;
+    [SerializeField, Min(1)] int initialWaveSize = 10;
+    [SerializeField, Min(1)] int additionalWaveSize = 5;
+    [SerializeField, Min(1f)] float additionalWaveInterval = 40f;
+    [SerializeField, Min(1)] int maximumArrivals = 30;
     [SerializeField, Min(3)] float minimumArrivalDistance = 10;
     [SerializeField, Min(1)] float nearbyVisibilityRange = 4.5f;
     [SerializeField, Min(0)] float nearbyVisibilityIntensity = 8.5f;
@@ -56,6 +60,7 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
     readonly List<SpriteState> actors = new List<SpriteState>();
     bool[] arrived;
     float nextArrival;
+    float nextActorTintAt;
     int variantOffset;
     bool audioPaused;
     Camera view;
@@ -82,6 +87,7 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
     {
         public SpriteRenderer renderer;
         public Color color;
+        public Enemy enemy;
     }
 
     sealed class Surface
@@ -89,6 +95,8 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         public Renderer renderer;
         public Material material;
         public int index;
+        public bool unlit, hasBase, hasTint, hasEmission;
+        public Color baseColor, tintColor, emissionColor;
         public readonly MaterialPropertyBlock original = new MaterialPropertyBlock();
         public readonly MaterialPropertyBlock working = new MaterialPropertyBlock();
 
@@ -97,18 +105,18 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
             if (!renderer || !material) return;
             renderer.SetPropertyBlock(original.isEmpty ? null : original, index);
             renderer.GetPropertyBlock(working, index);
-            if (dark && (material.shader.name.Contains("Unlit") || renderer is SpriteRenderer))
+            if (dark && unlit)
             {
-                if (material.HasProperty(BaseColor)) working.SetColor(BaseColor, OpaqueBlack(material.GetColor(BaseColor)));
-                if (material.HasProperty(TintColor)) working.SetColor(TintColor, OpaqueBlack(material.GetColor(TintColor)));
+                if (hasBase) working.SetColor(BaseColor, OpaqueBlack(baseColor));
+                if (hasTint) working.SetColor(TintColor, OpaqueBlack(tintColor));
             }
-            else if (material.shader.name.Contains("Unlit") || renderer is SpriteRenderer)
+            else if (unlit)
             {
-                if (material.HasProperty(BaseColor)) working.SetColor(BaseColor, material.GetColor(BaseColor) * SpriteRed);
-                if (material.HasProperty(TintColor)) working.SetColor(TintColor, material.GetColor(TintColor) * SpriteRed);
+                if (hasBase) working.SetColor(BaseColor, baseColor * SpriteRed);
+                if (hasTint) working.SetColor(TintColor, tintColor * SpriteRed);
             }
-            if (material.HasProperty(Emission))
-                working.SetColor(Emission, dark ? Color.black : material.GetColor(Emission) * AlarmRed);
+            if (hasEmission)
+                working.SetColor(Emission, dark ? Color.black : emissionColor * AlarmRed);
             renderer.SetPropertyBlock(working, index);
         }
 
@@ -133,6 +141,8 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         // Publish the initial placement too, so maintenance is available in this same initialization.
         StateChanged?.Invoke();
         if (keys.HasCompletedEvent(TriggeredEventId) && !IsResolved) BeginAlarm();
+        GameplayNotice.ShowWhenGameplayReady(this,
+            "Bloco de Direito: encontre duas chaves, uma para a Biblioteca do Campus e outra para a sala de manuten\u00e7\u00e3o 104. Use a chave da manuten\u00e7\u00e3o para desligar o alarme.", 7.5f);
     }
 
     void ChooseKeyRoom(PlayerCellKeys inventory)
@@ -189,22 +199,38 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         variantOffset = zombieVariants != null && zombieVariants.Length > 0 ? Random.Range(0,zombieVariants.Length) : 0;
         arrived = new bool[arrivalPoints != null ? arrivalPoints.Length : 0];
         nextArrival = initialRedSeconds;
+        nextActorTintAt = 0;
         foreach (var light in building.GetComponentsInChildren<Light>())
+        {
             lights.Add(new LightState { light = light, color = light.color, intensity = light.intensity,
                 enabled = light.enabled, temperature = light.useColorTemperature });
+            light.color = AlarmRed;
+            light.useColorTemperature = false;
+        }
         foreach (var renderer in building.GetComponentsInChildren<Renderer>())
         {
             if (!renderer.enabled) continue;
             if (renderer is SpriteRenderer sprite)
             {
-                actors.Add(new SpriteState { renderer = sprite, color = sprite.color });
+                actors.Add(new SpriteState { renderer = sprite, color = sprite.color, enemy = sprite.GetComponentInParent<Enemy>() });
                 continue;
             }
             var materials = renderer.sharedMaterials;
+            bool propertyOverrides = renderer.HasPropertyBlock();
             for (int i = 0; i < materials.Length; i++)
             {
-                if (!materials[i]) continue;
-                var surface = new Surface { renderer = renderer, material = materials[i], index = i };
+                var material = materials[i];
+                if (!material) continue;
+                bool unlit = material.shader && material.shader.name.Contains("Unlit");
+                bool emission = material.HasProperty(Emission);
+                Color emissionColor = emission ? material.GetColor(Emission) : Color.black;
+                if (!unlit && (!emission || (emissionColor.maxColorComponent <= .001f && !propertyOverrides))) continue;
+                var surface = new Surface { renderer = renderer, material = material, index = i,
+                    unlit = unlit, hasBase = unlit && material.HasProperty(BaseColor),
+                    hasTint = unlit && material.HasProperty(TintColor), hasEmission = emission,
+                    emissionColor = emissionColor };
+                if (surface.hasBase) surface.baseColor = material.GetColor(BaseColor);
+                if (surface.hasTint) surface.tintColor = material.GetColor(TintColor);
                 renderer.GetPropertyBlock(surface.original, i);
                 surfaces.Add(surface);
             }
@@ -226,13 +252,19 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         if (paused || UniDoom.UI.DeathScreen.IsVisible || UniDoom.UI.DoorReloadScreen.IsReloading) return;
         if ((Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame) ||
             (Gamepad.current != null && Gamepad.current.dpad.up.wasPressedThisFrame))
+        {
             flashlightOn = !flashlightOn;
-        if (nearbyLight) nearbyLight.enabled = flashlightOn;
+            nextActorTintAt = 0;
+        }
+        if (nearbyLight && nearbyLight.enabled != (flashlightOn && IsBlackout))
+            nearbyLight.enabled = flashlightOn && IsBlackout;
         Elapsed += Time.deltaTime;
         bool dark = Elapsed >= initialRedSeconds &&
             Mathf.Repeat(Elapsed - initialRedSeconds, blackoutSeconds + redSeconds) < blackoutSeconds;
         if (dark != IsBlackout) ApplyPhase(dark);
-        if (Elapsed >= nextArrival && SpawnedCount < arrived.Length)
+        int waveBudget = Mathf.Min(arrived.Length, maximumArrivals,
+            initialWaveSize + Mathf.FloorToInt(Elapsed / additionalWaveInterval) * additionalWaveSize);
+        if (Elapsed >= nextArrival && SpawnedCount < waveBudget)
         {
             TryNextArrival();
             nextArrival = Elapsed + arrivalInterval;
@@ -241,27 +273,31 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
 
     void ApplyPhase(bool dark)
     {
+        if (dark && !IsBlackout) flashlightOn = true;
         IsBlackout = dark;
         foreach (var state in lights)
         {
             if (!state.light) continue;
-            state.light.enabled = state.enabled && !dark;
-            state.light.color = AlarmRed;
-            state.light.useColorTemperature = false;
-            state.light.intensity = state.intensity;
+            if (state.enabled) state.light.enabled = !dark;
         }
         foreach (var surface in surfaces) surface.Apply(dark);
         lighting.SetAlarmPhase(true, dark);
-        if (nearbyLight) nearbyLight.enabled = flashlightOn;
+        if (nearbyLight) nearbyLight.enabled = flashlightOn && dark;
+        if (weaponHud) weaponHud.color = weaponHudColor * (dark ? new Color(.17f,.20f,.25f,1) : SpriteRed);
         TintActors();
+        nextActorTintAt = Time.unscaledTime + .12f;
     }
 
     void LateUpdate()
     {
-        if (!IsActive) return;
+        if (!IsActive || Time.timeScale <= 0 || UniDoom.UI.GameMenus.BlocksGameplay ||
+            UniDoom.UI.DeathScreen.IsVisible || UniDoom.UI.DoorReloadScreen.IsReloading) return;
         if (!nearbyLight || !weaponHud) BindPlayerPresentation();
-        if (weaponHud) weaponHud.color = weaponHudColor * (IsBlackout ? new Color(.17f,.20f,.25f,1) : SpriteRed);
-        TintActors();
+        if (IsBlackout && Time.unscaledTime >= nextActorTintAt)
+        {
+            TintActors();
+            nextActorTintAt = Time.unscaledTime + .12f;
+        }
     }
 
     void BindPlayerPresentation()
@@ -272,17 +308,17 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
             var source = new GameObject("LawSchool — visão próxima no apagão");
             source.transform.SetParent(view.transform,false);
             source.transform.localPosition = new Vector3(0,-.08f,.12f);
+            source.transform.localRotation = Quaternion.LookRotation(new Vector3(0,.08f,18f), Vector3.up);
             nearbyLight = source.AddComponent<Light>();
             nearbyLight.type = LightType.Spot;
             nearbyLight.spotAngle = 58;
             nearbyLight.innerSpotAngle = 30;
-            nearbyLight.range = 18;
-            nearbyLight.intensity = 55;
+            nearbyLight.range = Mathf.Min(nearbyVisibilityRange + 1.5f, 8f);
+            nearbyLight.intensity = nearbyVisibilityIntensity;
             nearbyLight.color = new Color(1f,.92f,.78f);
-            nearbyLight.shadows = LightShadows.Soft;
-            nearbyLight.shadowNearPlane = .05f;
-            nearbyLight.enabled = flashlightOn;
-            nearbyLight.GetUniversalAdditionalLightData().additionalLightsShadowResolutionTier = 0;
+            nearbyLight.shadows = LightShadows.None;
+            nearbyLight.enabled = flashlightOn && IsBlackout;
+            nearbyLight.cullingMask = view.cullingMask;
         }
         if (!weaponHud)
         {
@@ -291,6 +327,7 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
             {
                 weaponHud = animator.WeaponImage;
                 weaponHudColor = weaponHud.color;
+                weaponHud.color = weaponHudColor * (IsBlackout ? new Color(.17f,.20f,.25f,1) : SpriteRed);
             }
         }
     }
@@ -306,18 +343,22 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
                     actor.renderer.color = actor.color * SpriteRed;
                     continue;
                 }
-                float proximity = view ? Mathf.Clamp01(1-Vector3.Distance(actor.renderer.bounds.center,view.transform.position)/nearbyVisibilityRange) : 0;
+                Vector3 delta = view ? actor.renderer.bounds.center - view.transform.position : Vector3.zero;
+                float distance = delta.magnitude;
+                float proximity = view ? Mathf.Clamp01(1-distance/nearbyVisibilityRange) : 0;
                 if (flashlightOn && view && nearbyLight)
                 {
-                    Vector3 delta = actor.renderer.bounds.center - view.transform.position;
                     float cone = Mathf.InverseLerp(Mathf.Cos(29 * Mathf.Deg2Rad), Mathf.Cos(15 * Mathf.Deg2Rad),
                         Vector3.Dot(view.transform.forward, delta.normalized));
-                    float beam = cone * Mathf.Clamp01(1 - delta.magnitude / nearbyLight.range);
-                    bool blocked = Physics.Linecast(view.transform.position, actor.renderer.bounds.center,
-                        out var obstruction, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
-                    if (!blocked || (obstruction.collider &&
-                        obstruction.collider.GetComponentInParent<Enemy>() == actor.renderer.GetComponentInParent<Enemy>()))
-                        proximity = Mathf.Max(proximity, beam);
+                    if (cone > 0 && distance < nearbyLight.range)
+                    {
+                        float beam = cone * (1 - distance / nearbyLight.range);
+                        bool blocked = Physics.Linecast(view.transform.position, actor.renderer.bounds.center,
+                            out var obstruction, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+                        if (!blocked || (actor.enemy && obstruction.collider &&
+                            obstruction.collider.GetComponentInParent<Enemy>() == actor.enemy))
+                            proximity = Mathf.Max(proximity, beam);
+                    }
                 }
                 actor.renderer.color = actor.color * (IsBlackout ? new Color(.50f,.55f,.65f,1)*new Color(proximity,proximity,proximity,1) : SpriteRed);
             }
@@ -339,7 +380,7 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
             enemy.transform.SetParent(transform, true); // Keep the enemy's original world scale, not the building's 1.25x.
             enemy.name = "Alarme — zumbi " + (i + 1);
             foreach (var sprite in enemy.GetComponentsInChildren<SpriteRenderer>())
-                actors.Add(new SpriteState { renderer = sprite, color = sprite.color });
+                actors.Add(new SpriteState { renderer = sprite, color = sprite.color, enemy = sprite.GetComponentInParent<Enemy>() });
             arrived[i] = true;
             SpawnedCount++;
             TintActors();

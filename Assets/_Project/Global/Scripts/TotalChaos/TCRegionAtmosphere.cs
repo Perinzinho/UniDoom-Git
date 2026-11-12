@@ -85,7 +85,8 @@ namespace TotalChaosMaps
         }
         void Update()
         {
-            if(Application.isPlaying&&active==this&&Input.GetKeyDown(KeyCode.F))lampRequested=!lampRequested;
+            if(Application.isPlaying&&active==this&&!PlayerFlashlight.HandlesCurrentDarkness&&
+                Input.GetKeyDown(KeyCode.F))lampRequested=!lampRequested;
         }
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void Reset()
@@ -185,7 +186,7 @@ namespace TotalChaosMaps
             foreach(var pair in directionals)if(pair.Key)pair.Key.intensity=pair.Value*Mathf.Lerp(1,selected.directionalLightMultiplier,weight);
             camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=Color.Lerp(originalBackground,selected.fogColor,weight);
             camera.GetUniversalAdditionalCameraData().renderPostProcessing=true;
-            if(withGuideLamp)
+            if(withGuideLamp && !PlayerFlashlight.HandlesCurrentDarkness)
             {
                 if(!guideLamp||guideLamp.transform.parent!=camera.transform)
                 {
@@ -196,15 +197,17 @@ namespace TotalChaosMaps
                     }
                     var go=new GameObject("TC camera flashlight - F");go.transform.SetParent(camera.transform,false);
                     go.transform.localPosition=new Vector3(.12f,-.10f,.05f);
+                    go.transform.localRotation=Quaternion.LookRotation(new Vector3(-.12f,.10f,16f),Vector3.up);
                     guideLamp=go.AddComponent<Light>();guideLamp.type=LightType.Spot;
                     guideLamp.color=new Color(1,.95f,.82f);
                     guideLamp.shadowBias=.06f;guideLamp.shadowNormalBias=.15f;
                 }
-                guideLamp.intensity=selected.flashlightIntensity*weight;
+                guideLamp.intensity=Mathf.Max(35f,selected.flashlightIntensity*10f)*weight;
                 guideLamp.range=selected.flashlightRange;
                 guideLamp.spotAngle=selected.flashlightAngle;
                 guideLamp.innerSpotAngle=Mathf.Min(selected.flashlightInnerAngle,selected.flashlightAngle);
                 guideLamp.shadows=selected.flashlightShadows;
+                guideLamp.cullingMask=camera.cullingMask;
                 guideLamp.GetUniversalAdditionalLightData().usePipelineSettings=false;
                 if(Application.isPlaying)guideLamp.GetUniversalAdditionalLightData().additionalLightsShadowResolutionTier=2;
                 guideLamp.enabled=lampRequested;
