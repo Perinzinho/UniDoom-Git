@@ -1,5 +1,7 @@
 # Campus Exterior e Biblioteca do Campus — contexto de implementação
 
+**Objetivo após ligar o gerador — 12/11/2026:** ao concluir o puzzle da CampusLibrary, o aviso compartilhado orienta: “Gerador ligado. Volte para a prisão e liberte os professores.” Aparece após fechar o quadro modal, por 7,5 s de gameplay.
+
 **Aviso inicial da lanterna — 12/11/2026:** ao começar uma nova partida, `GameManager` aguarda o menu e a transição liberarem o jogo e mostra por 10 s, com `GameplayNotice`, “Para ligar a lanterna, aperte F.”. A lanterna começa desligada e `F` ou direcional para cima alterna o foco durante todo o jogo; o início de um apagão ainda o acende automaticamente. A luz auxiliar de `TCRegionAtmosphere` fica desativada enquanto o jogador possui a lanterna global, evitando dois focos controlados pela mesma tecla. Verificação estática e `git diff --check`; sem Unity, Play Mode ou comparação visual.
 
 **Lanterna no apagão do Bloco 4 — 12/11/2026:** a chave da sala 423 dispara 15 s de apagão. Luminárias normais são desativadas durante a falta de energia para a lanterna do jogador iluminar as superfícies sob o limite de luzes adicionais do URP; `F` ou direcional para cima alterna o foco enquanto está escuro. Contrato e limites de validação em [Docs/Maps/CampusBlock4.md](Docs/Maps/CampusBlock4.md).
