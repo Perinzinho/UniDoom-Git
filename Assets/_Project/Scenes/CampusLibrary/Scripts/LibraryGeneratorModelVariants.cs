@@ -27,6 +27,7 @@ namespace UniDoom.CampusLibrary
                 variantsRoot = new GameObject("Generator GLB model variants").transform;
                 variantsRoot.SetParent(transform, false);
                 variantsRoot.position = new Vector3(-24.7f, 0f, 42.3f);
+                variantsRoot.localRotation = Quaternion.Euler(0f, 180f, 0f);
 
                 for (int i = 0; i < variants.Length; i++)
                 {
