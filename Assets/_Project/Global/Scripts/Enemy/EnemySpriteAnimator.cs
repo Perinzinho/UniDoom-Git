@@ -19,6 +19,7 @@ public sealed class EnemySpriteAnimator : MonoBehaviour
     public bool ShowingBack { get; private set; }
     public bool DeathFinished { get; private set; }
     public int FrameIndex { get; private set; }
+    public float VerticalOffset { get; set; }
     SpriteRenderer spriteRenderer;
     Camera viewCamera;
     Vector3 lastPosition;
@@ -141,7 +142,7 @@ public sealed class EnemySpriteAnimator : MonoBehaviour
                 transform.rotation = Quaternion.LookRotation(-toCamera);
             }
         }
-        transform.position = enemy.transform.TransformPoint(footOffset);
+        transform.position = enemy.transform.TransformPoint(footOffset) + Vector3.up * VerticalOffset;
         Vector3 displacement = enemy.transform.position - lastPosition;
         displacement.y = 0;
         lastPosition = enemy.transform.position;
