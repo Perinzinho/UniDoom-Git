@@ -76,8 +76,8 @@ namespace UniDoom.Utils
 
         void BuildExitBacking()
         {
-            // This interior is a separate scene. Keep a closed entrance behind the
-            // transition volume so approaching the exit never reveals the scene void.
+            // This interior is a separate scene. Give the exit a readable double door
+            // behind the transition volume, while concealing the void outside the scene.
             Material surface = null;
             float nearest = float.PositiveInfinity;
             foreach (var root in gameObject.scene.GetRootGameObjects())
@@ -91,16 +91,58 @@ namespace UniDoom.Utils
                 }
             var box = GetComponent<BoxCollider>();
             var backing = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            backing.name = "Closed exterior entrance backing";
+            backing.name = "Block 4 exterior exit doors";
             backing.transform.SetParent(transform, false);
             backing.transform.localPosition = box.center - Vector3.forward * (box.size.z * .5f + .18f);
             backing.transform.localScale = new Vector3(box.size.x + .8f, box.size.y + 2.4f, .16f);
-            // The trigger performs the transition; no invisible extra obstacle.
-            var collision = backing.GetComponent<Collider>();
-            collision.enabled = false;
-            Destroy(collision);
+            RemoveExitCollider(backing);
             if (surface) backing.GetComponent<MeshRenderer>().sharedMaterial = surface;
             backing.GetComponent<MeshRenderer>().allowOcclusionWhenDynamic = false;
+
+            // Panels and hardware sit just ahead of the backing and remain behind
+            // the trigger. They make the intended exit visible from the turnstiles.
+            float front = .11f;
+            ExitPart(backing.transform, "Left exit leaf", new Vector3(-.79f, -.1f, front),
+                new Vector3(1.5f, 3.05f, .08f), surface, new Color(.18f, .23f, .25f));
+            ExitPart(backing.transform, "Right exit leaf", new Vector3(.79f, -.1f, front),
+                new Vector3(1.5f, 3.05f, .08f), surface, new Color(.18f, .23f, .25f));
+            ExitPart(backing.transform, "Left steel jamb", new Vector3(-1.61f, -.1f, front + .06f),
+                new Vector3(.12f, 3.2f, .12f), surface, new Color(.08f, .1f, .11f));
+            ExitPart(backing.transform, "Right steel jamb", new Vector3(1.61f, -.1f, front + .06f),
+                new Vector3(.12f, 3.2f, .12f), surface, new Color(.08f, .1f, .11f));
+            ExitPart(backing.transform, "Steel lintel", new Vector3(0, 1.56f, front + .06f),
+                new Vector3(3.34f, .12f, .12f), surface, new Color(.08f, .1f, .11f));
+            ExitPart(backing.transform, "Left pull plate", new Vector3(-.19f, -.25f, front + .1f),
+                new Vector3(.07f, .52f, .05f), surface, new Color(.67f, .65f, .54f));
+            ExitPart(backing.transform, "Right pull plate", new Vector3(.19f, -.25f, front + .1f),
+                new Vector3(.07f, .52f, .05f), surface, new Color(.67f, .65f, .54f));
+        }
+
+        static void RemoveExitCollider(GameObject part)
+        {
+            var collision = part.GetComponent<Collider>();
+            collision.enabled = false;
+            Destroy(collision);
+        }
+
+        static void ExitPart(Transform parent, string name, Vector3 position, Vector3 size,
+            Material surface, Color tint)
+        {
+            var part = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            part.name = name;
+            part.transform.SetParent(parent, false);
+            part.transform.localPosition = new Vector3(position.x / parent.localScale.x,
+                position.y / parent.localScale.y, position.z / parent.localScale.z);
+            part.transform.localScale = new Vector3(size.x / parent.localScale.x,
+                size.y / parent.localScale.y, size.z / parent.localScale.z);
+            RemoveExitCollider(part);
+            var renderer = part.GetComponent<MeshRenderer>();
+            if (surface) renderer.sharedMaterial = surface;
+            var colors = new MaterialPropertyBlock();
+            colors.SetColor("_BaseColor", tint);
+            colors.SetColor("_Color", tint);
+            renderer.SetPropertyBlock(colors);
+            renderer.allowOcclusionWhenDynamic = false;
         }
 
         private void OnTriggerEnter(Collider other)
