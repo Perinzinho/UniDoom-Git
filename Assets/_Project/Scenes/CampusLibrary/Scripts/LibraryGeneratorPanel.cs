@@ -17,6 +17,7 @@ namespace UniDoom.CampusLibrary
         LibraryMissionController mission;
         LibraryGeneratorPanelView view;
         Coroutine transition;
+        Coroutine completion;
         public LibraryPanelState State { get; private set; } = LibraryPanelState.Closed;
         public event Action PanelOpened;
         public event Action PanelClosed;
@@ -48,6 +49,7 @@ namespace UniDoom.CampusLibrary
         public void Close()
         {
             if (State == LibraryPanelState.Closed || State == LibraryPanelState.Closing) return;
+            if (completion != null) { StopCoroutine(completion); completion = null; }
             if (transition != null) StopCoroutine(transition);
             State = LibraryPanelState.Closing;
             view.SetInteractive(false);
@@ -100,7 +102,18 @@ namespace UniDoom.CampusLibrary
             view.Refresh(mission);
             if (before < LibraryMissionStage.PuzzleSolved &&
                 LibraryMissionProgress.Stage >= LibraryMissionStage.PuzzleSolved)
+            {
                 PuzzleCompleted?.Invoke();
+                view.SetInteractive(false);
+                completion = StartCoroutine(CloseAfterCompletion());
+            }
+        }
+
+        IEnumerator CloseAfterCompletion()
+        {
+            yield return new WaitForSecondsRealtime(.9f);
+            completion = null;
+            Close();
         }
 
         void Refresh()
@@ -120,6 +133,8 @@ namespace UniDoom.CampusLibrary
 
         void ClosedExternally()
         {
+            if (completion != null) StopCoroutine(completion);
+            completion = null;
             if (transition != null) StopCoroutine(transition);
             transition = null;
             State = LibraryPanelState.Closed;
@@ -140,16 +155,17 @@ namespace UniDoom.CampusLibrary
 
     public sealed class LibraryGeneratorPanelView : MonoBehaviour
     {
-        static readonly Color Metal = new(.075f, .08f, .075f, 1f);
-        static readonly Color Recess = new(.028f, .032f, .03f, 1f);
-        static readonly Color Edge = new(.26f, .27f, .24f, 1f);
-        static readonly Color Paper = new(.86f, .84f, .74f, 1f);
+        static readonly Color Metal = new(.095f, .075f, .068f, 1f);
+        static readonly Color Recess = new(.018f, .017f, .016f, 1f);
+        static readonly Color Edge = new(.38f, .29f, .23f, 1f);
+        static readonly Color Paper = new(.92f, .86f, .72f, 1f);
         static readonly Color Muted = new(.53f, .54f, .48f, 1f);
         static readonly Color Amber = new(.82f, .48f, .12f, 1f);
         CanvasGroup group;
         RectTransform frame;
         TMP_Text status, instruction;
-        Image progressFill;
+        Image progressFill, plate, powerLamp;
+        Image[] circuitMarkers;
         LibraryGeneratorSwitchView[] switches;
 
         internal void Build(Action<int> toggled, Action close)
@@ -159,44 +175,66 @@ namespace UniDoom.CampusLibrary
             root.anchorMax = Vector2.one;
             root.offsetMin = root.offsetMax = Vector2.zero;
             var blocker = GetComponent<Image>();
-            blocker.color = new Color(0, 0, 0, .28f);
+            blocker.color = new Color(0, 0, 0, .72f);
             blocker.raycastTarget = true;
             group = GetComponent<CanvasGroup>();
 
             frame = Rect("Industrial panel", root, Vector2.zero, new Vector2(1160, 780));
-            var plate = frame.gameObject.AddComponent<Image>();
+            plate = frame.gameObject.AddComponent<Image>();
             plate.color = Metal;
             var outline = frame.gameObject.AddComponent<Outline>();
             outline.effectColor = Edge;
             outline.effectDistance = new Vector2(4, -4);
-            MakeImage("Top rail", frame, new Vector2(0, 354), new Vector2(1100, 10), Edge);
-            MakeImage("Warning rail", frame, new Vector2(0, -350), new Vector2(1100, 8), Amber * .7f);
+            MakeImage("Inner cavity", frame, new Vector2(0, -18), new Vector2(1092, 702), Recess);
+            MakeImage("Left frame", frame, new Vector2(-544, -18), new Vector2(10, 710), Edge);
+            MakeImage("Right frame", frame, new Vector2(544, -18), new Vector2(10, 710), Edge);
+            MakeImage("Top rail", frame, new Vector2(0, 354), new Vector2(1100, 12), Edge);
+            MakeImage("Bottom rail", frame, new Vector2(0, -354), new Vector2(1100, 12), Edge);
             foreach (var corner in new[] { new Vector2(-535, 345), new Vector2(535, 345),
                          new Vector2(-535, -345), new Vector2(535, -345) })
-                MakeImage("Recessed bolt", frame, corner, new Vector2(22, 22), new Color(.12f, .13f, .12f));
+            {
+                MakeImage("Bolt socket", frame, corner, new Vector2(25, 25), Recess);
+                MakeImage("Steel bolt", frame, corner, new Vector2(15, 15), new Color(.48f, .42f, .35f));
+                MakeImage("Bolt slot", frame, corner, new Vector2(10, 2), Recess);
+            }
 
-            Text("Title", frame, "QUADRO DE SINCRONIA DO GERADOR", new Vector2(0, 308),
-                new Vector2(1040, 52), 34, Paper, FontStyles.Bold);
-            status = Text("Circuit status", frame, "", new Vector2(0, 260),
-                new Vector2(920, 38), 23, Amber, FontStyles.Bold);
-            instruction = Text("Instruction", frame, "", new Vector2(0, 220),
-                new Vector2(980, 34), 18, Muted, FontStyles.Normal);
+            MakeImage("Header band", frame, new Vector2(0, 294), new Vector2(1040, 94), new Color(.055f, .05f, .045f));
+            Text("Title", frame, "GERADOR  /  QUADRO DE SINCRONIA", new Vector2(0, 320),
+                new Vector2(980, 42), 31, Paper, FontStyles.Bold);
+            powerLamp = MakeImage("Power lamp", frame, new Vector2(-466, 270), new Vector2(20, 20), Amber);
+            status = Text("Circuit status", frame, "", new Vector2(10, 270),
+                new Vector2(900, 34), 22, Amber, FontStyles.Bold);
+            instruction = Text("Instruction", frame, "", new Vector2(0, 230),
+                new Vector2(990, 30), 17, Paper, FontStyles.Normal);
 
-            var progressTrack = MakeImage("Circuit progress track", frame, new Vector2(0, 184),
-                new Vector2(900, 12), Recess);
+            var progressTrack = MakeImage("Circuit progress track", frame, new Vector2(0, 198),
+                new Vector2(920, 16), new Color(.20f, .17f, .14f));
             progressFill = MakeImage("Circuit progress", progressTrack.rectTransform, Vector2.zero,
-                new Vector2(900, 12), new Color(.28f, .78f, .38f));
+                new Vector2(916, 12), new Color(.30f, .92f, .23f));
             progressFill.type = Image.Type.Filled;
             progressFill.fillMethod = Image.FillMethod.Horizontal;
             progressFill.fillOrigin = 0;
 
             switches = new LibraryGeneratorSwitchView[7];
+            // Conduits and the central indicator strip sit behind the clickable modules.
+            for (int i = 0; i < 4; i++)
+                MakeImage("Upper cable " + i, frame, new Vector2(-390 + i * 260, 155),
+                    new Vector2(5, 62), i % 2 == 0 ? new Color(.25f, .065f, .045f) : new Color(.075f, .15f, .22f));
+            MakeImage("Indicator bridge", frame, new Vector2(0, -80), new Vector2(1030, 32), Edge);
+            MakeImage("Indicator bridge inset", frame, new Vector2(0, -80), new Vector2(1012, 23), Recess);
+            circuitMarkers = new Image[7];
+            for (int i = 0; i < circuitMarkers.Length; i++)
+                circuitMarkers[i] = MakeImage("Circuit marker " + (i + 1), frame, new Vector2(-420 + i * 140, -80),
+                    new Vector2(15, 15), new Color(.18f, .18f, .16f));
+            for (int i = 0; i < 3; i++)
+                MakeImage("Lower cable " + i, frame, new Vector2(-260 + i * 260, -115),
+                    new Vector2(5, 42), i == 1 ? new Color(.075f, .15f, .22f) : new Color(.25f, .065f, .045f));
             float[] top = { -390, -130, 130, 390 };
             for (int i = 0; i < 4; i++) switches[i] = CreateSwitch(i + 1, new Vector2(top[i], 45), toggled);
             float[] bottom = { -260, 0, 260 };
             for (int i = 0; i < 3; i++) switches[i + 4] = CreateSwitch(i + 5, new Vector2(bottom[i], -205), toggled);
 
-            var closeButton = MakeImage("Exit", frame, new Vector2(465, -315), new Vector2(150, 46), Recess);
+            var closeButton = MakeImage("Exit", frame, new Vector2(448, -315), new Vector2(165, 46), Recess);
             closeButton.raycastTarget = true;
             var button = closeButton.gameObject.AddComponent<Button>();
             button.targetGraphic = closeButton;
@@ -207,7 +245,7 @@ namespace UniDoom.CampusLibrary
             button.colors = colors;
             button.onClick.AddListener(() => close());
             Text("Exit label", closeButton.rectTransform, "SAIR  [ESC]", Vector2.zero,
-                new Vector2(150, 46), 18, Paper, FontStyles.Bold);
+                new Vector2(165, 46), 18, Paper, FontStyles.Bold);
         }
 
         LibraryGeneratorSwitchView CreateSwitch(int id, Vector2 position, Action<int> toggled)
@@ -225,12 +263,18 @@ namespace UniDoom.CampusLibrary
             bool enabled = LibraryMissionProgress.Stage == LibraryMissionStage.FusesInstalled;
             for (int i = 0; i < switches.Length; i++)
                 switches[i].SetState(mission.PanelTerminalOn(i + 1), enabled);
+            for (int i = 0; i < circuitMarkers.Length; i++)
+                circuitMarkers[i].color = solved || i < LibraryMissionProgress.SequenceStep ?
+                    new Color(.35f, 1f, .25f) : new Color(.18f, .18f, .16f);
             float progress = solved ? 1f : LibraryMissionProgress.SequenceStep / 7f;
             progressFill.fillAmount = progress;
+            powerLamp.color = solved ? new Color(.32f, 1f, .24f) : Amber;
+            plate.color = solved ? new Color(.075f, .12f, .068f) : Metal;
+            status.color = solved ? new Color(.43f, 1f, .33f) : Amber;
             status.text = LibraryMissionProgress.IsLibraryGeneratorPowered ? "ENERGIA RESTAURADA" :
                 solved ? "CIRCUITO ESTÁVEL — GERADOR LIGADO" :
                 $"SINCRONIA DO CIRCUITO  {LibraryMissionProgress.SequenceStep}/7";
-            instruction.text = solved ? "A sequência foi aceita e o gerador foi ligado. Feche o quadro para continuar." :
+            instruction.text = solved ? "GERADOR RESTAURADO  •  RETORNANDO AO JOGO" :
                 "Clique nos terminais na ordem indicada pelos três registros de manutenção.";
         }
 
@@ -295,8 +339,8 @@ namespace UniDoom.CampusLibrary
     public sealed class LibraryGeneratorSwitchView : MonoBehaviour, IPointerEnterHandler,
         IPointerExitHandler, ISelectHandler, IDeselectHandler
     {
-        static readonly Color Off = new(.62f, .055f, .025f, 1f);
-        static readonly Color On = new(.18f, .76f, .28f, 1f);
+        static readonly Color Off = new(.92f, .085f, .045f, 1f);
+        static readonly Color On = new(.28f, .96f, .20f, 1f);
         static readonly Color Disabled = new(.17f, .18f, .16f, 1f);
         int id;
         Button button;
@@ -309,32 +353,41 @@ namespace UniDoom.CampusLibrary
         {
             id = terminalId;
             background = gameObject.AddComponent<Image>();
-            background.color = new Color(.035f, .04f, .037f, 1f);
+            background.color = new Color(.20f, .17f, .15f, 1f);
             background.raycastTarget = true;
             outline = gameObject.AddComponent<Outline>();
-            outline.effectColor = new Color(.20f, .21f, .19f, 1f);
-            outline.effectDistance = new Vector2(2, -2);
+            outline.effectColor = new Color(.45f, .37f, .30f, 1f);
+            outline.effectDistance = new Vector2(3, -3);
             button = gameObject.AddComponent<Button>();
             button.targetGraphic = background;
             button.transition = Selectable.Transition.None;
             button.onClick.AddListener(() => toggled(id));
 
-            led = MakeImage("Indicator", new Vector2(0, 76), new Vector2(54, 14), Off);
-            MakeText("Terminal", "T" + id, new Vector2(0, 100), new Vector2(150, 28), 20,
+            MakeImage("Inset", Vector2.zero, new Vector2(158, 200), new Color(.04f, .038f, .034f));
+            MakeText("Terminal", "T" + id, new Vector2(0, 94), new Vector2(145, 25), 18,
                 new Color(.82f, .81f, .73f), FontStyles.Bold);
-            MakeImage("Lever recess", new Vector2(0, 6), new Vector2(74, 104), new Color(.015f, .018f, .016f));
-            lever = MakeImage("Lever", new Vector2(0, -13), new Vector2(46, 68), Off);
-            state = MakeText("State", "OFF", new Vector2(0, -74), new Vector2(150, 30), 17,
+            MakeImage("Glass bezel", new Vector2(0, 8), new Vector2(104, 135), new Color(.36f, .32f, .27f));
+            MakeImage("Glass well", new Vector2(0, 8), new Vector2(88, 119), new Color(.012f, .013f, .012f));
+            lever = MakeImage("Illuminated rocker", new Vector2(0, 8), new Vector2(68, 99), Off);
+            MakeImage("Rocker shine", new Vector2(-24, 8), new Vector2(5, 90), new Color(1f, 1f, 1f, .16f));
+            led = MakeImage("Indicator", new Vector2(0, -77), new Vector2(18, 18), Off);
+            state = MakeText("State", "OFF", new Vector2(0, -99), new Vector2(150, 19), 14,
                 new Color(.68f, .66f, .59f), FontStyles.Bold);
+            foreach (float x in new[] { -69f, 69f })
+                foreach (float y in new[] { -91f, 91f })
+                {
+                    MakeImage("Fastener", new Vector2(x, y), new Vector2(9, 9), new Color(.50f, .46f, .39f));
+                    MakeImage("Fastener slot", new Vector2(x, y), new Vector2(6, 1), new Color(.08f, .07f, .06f));
+                }
         }
 
         internal void SetState(bool isOn, bool enabled)
         {
             button.interactable = enabled;
-            Color color = enabled ? (isOn ? On : Off) : (isOn ? On * .6f : Disabled);
+            Color color = isOn ? On : enabled ? Off : Disabled;
             led.color = color;
             lever.color = color;
-            lever.rectTransform.anchoredPosition = new Vector2(0, isOn ? 14 : -13);
+            lever.rectTransform.anchoredPosition = new Vector2(0, isOn ? 12 : 4);
             state.text = enabled ? (isOn ? "ON" : "OFF") : (isOn ? "OK" : "TRAVADO");
             state.color = enabled ? new Color(.82f, .81f, .73f) : new Color(.42f, .43f, .39f);
             if (!enabled) SetHighlight(false);
