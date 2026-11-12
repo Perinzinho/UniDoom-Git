@@ -176,14 +176,16 @@ public static class CampusParkingVehicleSetup
             var material = new Material(shader) { name = name };
             material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>(source.texture));
             bool frontLens = source.name == "clearlens" || source.name == "Original clear optical lens";
+            bool whiteCarTrim = spec.name == "Hatchback" && source.name == "white";
             var color = frontLens ? new Color(.19f, .22f, .25f) :
+                whiteCarTrim ? new Color(.38f, .39f, .36f) :
                 source.paint ? paint : source.glass ? new Color(.12f, .15f, .17f) : Color.white;
             material.SetColor("_BaseColor", color);
             material.SetColor("_Color", color);
             material.SetColor("_EmissionColor", Color.black);
             material.DisableKeyword("_EMISSION");
-            material.SetFloat("_Metallic", source.glass ? .4f : source.metallic);
-            material.SetFloat("_Smoothness", frontLens ? .38f : source.smoothness);
+            material.SetFloat("_Metallic", whiteCarTrim ? .05f : source.glass ? .4f : source.metallic);
+            material.SetFloat("_Smoothness", whiteCarTrim ? .2f : frontLens ? .38f : source.smoothness);
             materials[i] = SaveAsset(material, Base + "Materials/ParkedVehicles/" + name + ".mat");
         }
         var root = new GameObject("Parked " + spec.name + " " + variant);
@@ -206,7 +208,10 @@ public static class CampusParkingVehicleSetup
                         spec.materials[i].name == "Original clear optical lens" ||
                         spec.materials[i].name == "Original red optical lens" ||
                         spec.materials[i].name == "Original amber optical lens")
+                    {
+                        renderer.enabled = false;
                         part.SetActive(false);
+                    }
                     GameObjectUtility.SetStaticEditorFlags(part, StaticEditorFlags.BatchingStatic);
                     renderers[i] = renderer;
                 }

@@ -41,6 +41,7 @@ namespace UniDoom.Utils
                         foreach (var camera in player.GetComponentsInChildren<CinemachineCamera>(true))
                             camera.PreviousStateIsValid = false;
                         Physics.SyncTransforms();
+                        player.GetComponent<PlayerRespawn>()?.ActivateCampusGateCheckpoint(scene);
                         return true;
                     }
             // A misconfigured ID must not strand a persistent player at the previous scene's coordinates.
