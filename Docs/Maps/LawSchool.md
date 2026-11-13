@@ -6,9 +6,11 @@ Atualizado: **2026-11-08**. Estado: chave sorteada por partida, placas gastas e 
 
 ## Leitura rápida
 
+- **Dica ao entrar — 13/11/2026:** o aviso inferior do `GameplayNotice` agora orienta a encontrar duas chaves: uma abre um dos cadeados da Biblioteca do Campus e a outra abre a sala de manutenção. Substitui a dica genérica anterior e espera a transição/menu liberar o gameplay; duração de 10 s úteis. Verificação estática; Play Mode e leitura visual pendentes.
+
 - **Alarme mais leve (11/11/2026):** o tratamento de fase pula os materiais opacos sem tinta unlit nem emissão ativa, armazena cores/propriedades uma vez e altera luzes apenas quando a fase troca. A visibilidade das sprites no apagão atualiza a cada 0,12 s, com raycast apenas dentro do cone/alcance; a luz curta passou a alcance de 6 m e intensidade 8,5 e não gera mais mapa de sombras. Horda, 10 chegadas iniciais, levas graduais, sirene, chave, quadro e restauração preservados. Compilação C# isolada passou com avisos anteriores; Unity em lote saiu com código 1 antes de compilar. FPS, Play Mode e inspeção visual pendentes.
 
-- **Objetivo na entrada (11/11/2026):** ao entrar no Bloco de Direito, um aviso de 7,5 s orienta a encontrar as duas chaves distintas, a da Biblioteca do Campus e a da manutenção 104, e a usar esta última para desligar o alarme. O tempo de leitura começa quando os menus e a transição terminam. Validação estática; Play Mode pendente.
+- **Objetivo na entrada (11/11/2026):** a primeira versão do aviso de entrada orientava a encontrar as duas chaves distintas, a da Biblioteca do Campus e a da manutenção 104, e a usar esta última para desligar o alarme. O texto exibido atualmente está descrito na revisão de 13/11/2026 acima.
 - **Caixa de munição do corredor 2 — 11/11/2026:** uma instância de `Global/Prefabs/Weapons/UACAmmoCrate50.prefab` foi colocada no corredor 2, em `(-34; 0,05; 21,5)`. A caixa da referência enviada pelo usuário concede **50 munições à reserva da arma equipada**; os suprimentos sorteados das salas e os outros prefabs de munição não foram modificados. Cena e prefab salvos no Unity 6000.5.7f1; coleta e aparência em Play Mode ainda não verificadas.
 
 - **Portas, chaves e alarme (11/11/2026):** o acabamento de madeira das portas foi clareado para destacar as folhas diante dos batentes escuros. Os visuais das chaves da manutenção e do acesso à Biblioteca do Campus cresceram 75%, sem alterar os gatilhos de coleta, na cena jogável e no prefab. A primeira chave dispara no máximo 10 chegadas; novas levas de 5 são liberadas a cada 40 s, até 30 no total, mantendo a verificação de spawn seguro e o quadro de desligamento. Cada coleta informa o destino da chave por 7,5 s. Verificação estática; Play Mode e leitura visual pendentes. A Unity em lote parou na conexão com o cliente de licença antes da compilação.
@@ -104,7 +106,7 @@ Portais: `Assets/_Project/Global/Scripts/Utils/SceneTransitionDoor.cs`; chegadas
 
 No exterior, o pátio entre o Bloco de Direito e a biblioteca possui a instância `Ornate fountain - Law School and Library` em `(-58; 0; 16)`, além de bancos de concreto. Preserve a circulação entre esse mobiliário, a entrada do bloco e a entrada da biblioteca ao revisar conexões.
 
-O acesso pelo jogador ocorre pelo portal do campus. A seleção temporária de mapas foi retirada do menu em 12/11/2026; a cena continua habilitada no Build Settings para a transição.
+O acesso pelo jogador ocorre pelo portal do campus. A seleção temporária de mapas foi retirada do menu em 13/11/2026; a cena continua habilitada no Build Settings para a transição.
 
 O `spawnPoint` serializado do `GameManager` aponta para a raiz `SpawnPoint` deste interior. Preserve serviços, câmera e HUD compartilhados; não copie outro manager mantendo o spawn de outro mapa.
 
