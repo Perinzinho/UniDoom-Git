@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerLife : MonoBehaviour, IDamageable
 {
@@ -11,6 +12,7 @@ public class PlayerLife : MonoBehaviour, IDamageable
     public int CurrentHealth => currentHealth;
     public bool IsDead => currentHealth <= 0;
     private float invulnerableUntil;
+    private const float SpawnProtectionSeconds = 1f;
 
     public event Action<int, int> OnHealthChanged;
     public event Action<int> OnDamaged;
@@ -20,7 +22,18 @@ public class PlayerLife : MonoBehaviour, IDamageable
     {
         maxHealth = Mathf.Max(1, maxHealth);
         currentHealth = maxHealth;
+        invulnerableUntil = Time.time + SpawnProtectionSeconds;
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
+
+    private void OnEnable() => SceneManager.sceneLoaded += ProtectAfterSceneLoad;
+
+    private void OnDisable() => SceneManager.sceneLoaded -= ProtectAfterSceneLoad;
+
+    private void ProtectAfterSceneLoad(Scene scene, LoadSceneMode mode)
+    {
+        if (mode == LoadSceneMode.Single)
+            invulnerableUntil = Mathf.Max(invulnerableUntil, Time.time + SpawnProtectionSeconds);
     }
 
     public void Heal(int amount)
@@ -37,8 +50,9 @@ public class PlayerLife : MonoBehaviour, IDamageable
 
     public void TakeDamage(int amount)
     {
-        if (IsDead || amount <= 0 || Time.time < invulnerableUntil ||
-            UniDoom.UI.DoorReloadScreen.IsReloading) return;
+        if (IsDead || amount <= 0 || Time.time < invulnerableUntil || Time.timeScale <= 0f ||
+            UniDoom.UI.GameMenus.BlocksGameplay || UniDoom.UI.MouseSensitivityMenu.IsOpen ||
+            UniDoom.UI.DeathScreen.IsVisible || UniDoom.UI.DoorReloadScreen.IsReloading) return;
         int before = currentHealth;
         currentHealth = Mathf.Max(currentHealth - amount, 0);
 

@@ -128,6 +128,13 @@ namespace UniDoom.UI
             if (CurrentScreen == Screen.Document) FitDocument();
             if (CurrentScreen == Screen.Interaction && (interactionOwner == null || interactionPanel == null)) CloseInteraction();
             if (ownsPause) { Time.timeScale = 0; AudioListener.pause = true; FreezePlayer(); }
+            else if (CurrentScreen == Screen.Gameplay && !busy && !DoorReloadScreen.IsReloading &&
+                     !DeathScreen.IsVisible && Time.timeScale > 0f && AudioListener.pause)
+            {
+                // A pause owner can disappear during a scene change or lose focus.
+                // A playable session must never inherit its stale listener state.
+                AudioListener.pause = false;
+            }
             ApplyCursorState();
         }
 
