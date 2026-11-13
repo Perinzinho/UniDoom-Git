@@ -15,7 +15,7 @@ namespace UniDoom.UI
     /// <summary>Shared main, pause, death, options and confirmation screens. Progress lasts for the current run.</summary>
     public sealed partial class GameMenus : MonoBehaviour
     {
-        public enum Screen { Gameplay, Main, Pause, Death, Options, Credits, Confirm, GameOver, Document, Interaction }
+        public enum Screen { Gameplay, Main, Pause, Death, Options, Credits, Confirm, GameOver, Document, Interaction, Controls }
         public static GameMenus Instance { get; private set; }
         public static bool BlocksGameplay => Instance != null && (Instance.CurrentScreen != Screen.Gameplay || Instance.busy);
         public Screen CurrentScreen { get; private set; }
@@ -25,14 +25,14 @@ namespace UniDoom.UI
         Canvas canvas;
         RawImage backdrop;
         Image shade, fade;
-        GameObject main, pause, death, options, credits, confirmation, gameOver;
+        GameObject main, pause, death, options, credits, confirmation, gameOver, controls;
         Button gameOverRestart, gameOverBack;
-        Button mainFirst, pauseFirst, deathRetry, deathBack, optionsBack, cancel;
+        Button mainFirst, pauseFirst, deathRetry, deathBack, optionsBack, cancel, controlsStart;
         Slider sensitivity, volume;
         Toggle invertY, fullscreen, showFps;
         TMP_Text sensitivityValue, volumeValue, confirmText, error, deathHint, fpsCounter;
         Image fpsBackground;
-        Screen optionsOrigin, confirmOrigin;
+        Screen optionsOrigin, confirmOrigin, controlsOrigin;
         Action confirmAction;
         PlayerRespawn deadPlayer;
         DeathScreen deathOwner;
@@ -90,6 +90,7 @@ namespace UniDoom.UI
         void Update()
         {
             UpdateFpsCounter();
+            UpdateSignLights();
             if (busy) return;
             UpdateCreditsScroll();
             bool back = (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) ||
@@ -182,6 +183,7 @@ namespace UniDoom.UI
                     else SetScreen(Screen.Main);
                     break;
                 case Screen.Confirm: SetScreen(confirmOrigin); break;
+                case Screen.Controls: SetScreen(controlsOrigin); break;
             }
         }
 
@@ -255,7 +257,9 @@ namespace UniDoom.UI
 
         public void StartNewGame()
         {
-            StartNewGameAtScene(SceneUtility.GetScenePathByBuildIndex(0));
+            if (busy || (CurrentScreen != Screen.Main && CurrentScreen != Screen.GameOver)) return;
+            controlsOrigin = CurrentScreen;
+            SetScreen(Screen.Controls);
         }
 
         void RestartFromBeginning()
@@ -428,7 +432,9 @@ namespace UniDoom.UI
         void SetScreen(Screen screen)
         {
             CurrentScreen = screen;
+            SetSignLightsVisible(screen == Screen.Main);
             main.SetActive(screen == Screen.Main);
+            controls.SetActive(screen == Screen.Controls);
             pause.SetActive(screen == Screen.Pause);
             death.SetActive(screen == Screen.Death);
             gameOver.SetActive(screen == Screen.GameOver);
@@ -442,11 +448,11 @@ namespace UniDoom.UI
             bool gameOverBackground = screen == Screen.GameOver || (screen == Screen.Confirm && confirmOrigin == Screen.GameOver);
             backdrop.gameObject.SetActive(mainBackground || gameOverBackground);
             shade.gameObject.SetActive(screen != Screen.Gameplay);
-            shade.color = new Color(0, 0, 0, screen == Screen.Credits ? 1 : mainBackground || screen == Screen.GameOver ? 0 : screen == Screen.Document ? .72f : screen == Screen.Pause ? .1f : screen == Screen.Death ? .2f : .78f);
+            shade.color = new Color(0, 0, 0, screen == Screen.Credits || screen == Screen.Controls ? 1 : mainBackground || screen == Screen.GameOver ? 0 : screen == Screen.Document ? .72f : screen == Screen.Pause ? .1f : screen == Screen.Death ? .2f : .78f);
             error.text = "";
             if (screen == Screen.Gameplay) RestoreHUD(); else HideHUD();
             EnsureEvents();
-            Select(screen switch { Screen.Main => mainFirst, Screen.Pause => pauseFirst,
+            Select(screen switch { Screen.Main => mainFirst, Screen.Controls => controlsStart, Screen.Pause => pauseFirst,
                 Screen.Death => deathRetry, Screen.Options => optionsBack,
                 Screen.Confirm => cancel, Screen.GameOver => gameOverRestart,
                 Screen.Document => documentClose, _ => null });
@@ -493,17 +499,19 @@ namespace UniDoom.UI
             MenuStyle.Stretch(backdrop.rectTransform);
             backdrop.texture = Resources.Load<Texture2D>("Menus/CampusBackground");
             backdrop.raycastTarget = false;
+            BuildSignLights();
             shade = MenuStyle.Image("Modal shade", transform, 0, 0, 0, 0, Color.clear);
             MenuStyle.Stretch(shade.rectTransform);
             shade.raycastTarget = true;
             layout = MenuStyle.Rect("1920 x 1080 composition", transform, 0, 0, 1920, 1080);
             layout.anchorMin = layout.anchorMax = layout.pivot = new Vector2(.5f, .5f);
             layout.anchoredPosition = Vector2.zero;
-            main = Page("Main"); pause = Page("Pause"); death = Page("Death");
+            main = Page("Main"); controls = Page("Controls"); pause = Page("Pause"); death = Page("Death");
             options = Page("Options"); credits = Page("Credits"); confirmation = Page("Confirm");
             gameOver = Page("Game Over");
             BuildDocument();
             BuildGameOver();
+            BuildControls();
             StandardHeader(main, 0);
             mainFirst = ColumnButton(main, "NewGame", "NOVO JOGO", StartNewGame);
             var mainOptions = ColumnButton(main, "Options", "OPÇÕES", OpenOptions);
@@ -829,6 +837,7 @@ namespace UniDoom.UI
             SceneManager.sceneLoaded -= OnSceneLoaded;
             ReleaseDocumentBackdrop();
             ReleasePause(); RestoreHUD();
+            if (signLightsMaterial != null) Destroy(signLightsMaterial);
             foreach (var sprite in artwork) if (sprite != null) Destroy(sprite);
             Instance = null;
         }
