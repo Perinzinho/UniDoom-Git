@@ -324,7 +324,8 @@ namespace UniDoom.CampusLibrary
             Vector2 size, float fontSize, Color color, FontStyles style)
         {
             var text = Rect(name, parent, position, size).gameObject.AddComponent<TextMeshProUGUI>();
-            text.font = TMP_Settings.defaultFontAsset;
+            var defaultFont = TMP_Settings.defaultFontAsset;
+            if (defaultFont != null) text.font = defaultFont;
             text.text = value;
             text.fontSize = fontSize;
             text.color = color;
@@ -444,7 +445,8 @@ namespace UniDoom.CampusLibrary
             rect.anchoredPosition = position;
             rect.sizeDelta = size;
             var text = rect.gameObject.AddComponent<TextMeshProUGUI>();
-            text.font = TMP_Settings.defaultFontAsset;
+            var defaultFont = TMP_Settings.defaultFontAsset;
+            if (defaultFont != null) text.font = defaultFont;
             text.text = value;
             text.fontSize = fontSize;
             text.color = color;
