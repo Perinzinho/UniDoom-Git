@@ -1,5 +1,7 @@
 # Campus Exterior e Biblioteca do Campus — contexto de implementação
 
+**Falhas da lanterna na CampusLibrary — 13/11/2026:** antes de restaurar a energia pelo gerador, o foco do jogador apaga por 3 s após intervalos sorteados de 1 a 60 s de tempo de jogo. Um novo intervalo começa quando o foco volta; concluir o gerador ou sair da cena cancela a falha. A intensidade global da lanterna foi reduzida de 80 para 65. Contrato em [Docs/Maps/CampusLibrary.md](Docs/Maps/CampusLibrary.md). Verificação estática; Play Mode e comparação visual pendentes.
+
 **Objetivo após ligar o gerador — 12/11/2026:** ao concluir o puzzle da CampusLibrary, o aviso compartilhado orienta: “Gerador ligado. Volte para a prisão e liberte os professores.” Aparece após fechar o quadro modal, por 7,5 s de gameplay.
 
 **Aviso inicial da lanterna — 12/11/2026:** ao começar uma nova partida, `GameManager` aguarda o menu e a transição liberarem o jogo e mostra por 10 s, com `GameplayNotice`, “Para ligar a lanterna, aperte F.”. A lanterna começa desligada e `F` ou direcional para cima alterna o foco durante todo o jogo; o início de um apagão ainda o acende automaticamente. A luz auxiliar de `TCRegionAtmosphere` fica desativada enquanto o jogador possui a lanterna global, evitando dois focos controlados pela mesma tecla. Verificação estática e `git diff --check`; sem Unity, Play Mode ou comparação visual.
