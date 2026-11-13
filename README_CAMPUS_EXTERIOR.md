@@ -1,5 +1,9 @@
 # Campus Exterior e Biblioteca do Campus — contexto de implementação
 
+**Menu atual — 13/11/2026:** a opção de escolher mapa foi retirada novamente. `NOVO JOGO` passa pela tela de controles e inicia no começo da história; Bloco 2, Bloco 4 e a arena do boss permanecem acessíveis pelo percurso normal do jogo.
+
+**Dicas de objetivo — 13/11/2026:** após derrotar o Diretor e abrir a passagem da prisão, o aviso inferior orienta a atravessar o portal para a UNIMAR, ligar o gerador da Biblioteca do Campus e voltar para libertar os professores. Ao entrar no Bloco de Direito, cenário que contém as duas chaves citadas no pedido como Bloco 2, outro aviso orienta a encontrar as chaves da biblioteca e da manutenção. Ambos reutilizam `GameplayNotice`; detalhes nas fichas de [Basement](Docs/Maps/Basement.md) e [LawSchool](Docs/Maps/LawSchool.md).
+
 **Objetivo após ligar o gerador — 12/11/2026:** ao concluir o puzzle da CampusLibrary, o aviso compartilhado orienta: “Gerador ligado. Volte para a prisão e liberte os professores.” Aparece após fechar o quadro modal, por 7,5 s de gameplay.
 
 **Aviso inicial da lanterna — 12/11/2026:** ao começar uma nova partida, `GameManager` aguarda o menu e a transição liberarem o jogo e mostra por 10 s, com `GameplayNotice`, “Para ligar a lanterna, aperte F.”. A lanterna começa desligada e `F` ou direcional para cima alterna o foco durante todo o jogo; o início de um apagão ainda o acende automaticamente. A luz auxiliar de `TCRegionAtmosphere` fica desativada enquanto o jogador possui a lanterna global, evitando dois focos controlados pela mesma tecla. Verificação estática e `git diff --check`; sem Unity, Play Mode ou comparação visual.

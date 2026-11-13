@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UniDoom.UI;
 
 /// <summary>Reveals the holding cells after the Director's death animation finishes.</summary>
 public sealed class BasementPrisonPassage : MonoBehaviour
@@ -51,6 +52,11 @@ public sealed class BasementPrisonPassage : MonoBehaviour
         if (mechanism != null) mechanism.Play();
         if (passageLight != null) passageLight.enabled = true;
         opening = StartCoroutine(Open());
+        // Restored encounters also reveal this passage; announce it only after a real boss defeat.
+        if (encounter.SpawnedBoss != null && encounter.SpawnedBoss.DeathAnimationFinished)
+            GameplayNotice.ShowWhenGameplayReady(this,
+                "Uma porta se abriu na parede. Atravesse o portal para a UNIMAR e ative o gerador da biblioteca. Depois, volte e liberte os professores.",
+                11f);
     }
 
     public void RevealImmediately()
