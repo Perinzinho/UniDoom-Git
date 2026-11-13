@@ -18,6 +18,10 @@ public sealed class PlayerFlashlight : MonoBehaviour
     bool sceneBound;
     bool wasDark;
     bool requested;
+    bool wasLibraryUnpowered;
+    float nextLibraryFailureAt = -1f;
+    float libraryFailureEndsAt = -1f;
+    const float LibraryFailureDuration = 3f;
     LibraryLightingController campusLibrary;
     LibraryEncounterDirector oldLibrary;
     Block4PowerFluctuation block4;
@@ -37,14 +41,40 @@ public sealed class PlayerFlashlight : MonoBehaviour
             block4 = FindAnyObjectByType<Block4PowerFluctuation>();
             lawSchool = FindAnyObjectByType<LawSchoolAlarmPrototype>();
             wasDark = false;
+            wasLibraryUnpowered = false;
+            nextLibraryFailureAt = libraryFailureEndsAt = -1f;
         }
 
-        bool dark = (campusLibrary && campusLibrary.IsUnpowered) ||
+        bool libraryUnpowered = campusLibrary && campusLibrary.IsUnpowered;
+        bool dark = libraryUnpowered ||
                     (oldLibrary && oldLibrary.BlackoutActive) ||
                     (block4 && block4.IsBlackout) ||
                     (lawSchool && lawSchool.IsActive);
         if (dark && !wasDark) requested = true;
         wasDark = dark;
+
+        if (libraryUnpowered)
+        {
+            if (!wasLibraryUnpowered)
+                nextLibraryFailureAt = Time.time + Random.Range(1f, 60f);
+            if (Time.timeScale > 0f && !GameMenus.BlocksGameplay &&
+                !DeathScreen.IsVisible && !DoorReloadScreen.IsReloading)
+            {
+                if (libraryFailureEndsAt >= 0f && Time.time >= libraryFailureEndsAt)
+                {
+                    libraryFailureEndsAt = -1f;
+                    nextLibraryFailureAt = Time.time + Random.Range(1f, 60f);
+                }
+                if (libraryFailureEndsAt < 0f && Time.time >= nextLibraryFailureAt)
+                {
+                    libraryFailureEndsAt = Time.time + LibraryFailureDuration;
+                    nextLibraryFailureAt = -1f;
+                }
+            }
+        }
+        else
+            nextLibraryFailureAt = libraryFailureEndsAt = -1f;
+        wasLibraryUnpowered = libraryUnpowered;
 
         if (Time.timeScale > 0 && !GameMenus.BlocksGameplay &&
             !DeathScreen.IsVisible && !DoorReloadScreen.IsReloading &&
@@ -53,7 +83,7 @@ public sealed class PlayerFlashlight : MonoBehaviour
             requested = !requested;
 
         if (requested && !beam) CreateBeam();
-        if (beam) beam.enabled = requested;
+        if (beam) beam.enabled = requested && libraryFailureEndsAt < 0f;
     }
 
     void CreateBeam()
@@ -73,7 +103,7 @@ public sealed class PlayerFlashlight : MonoBehaviour
         beam.range = 30f;
         beam.spotAngle = 58f;
         beam.innerSpotAngle = 32f;
-        beam.intensity = 80f;
+        beam.intensity = 65f;
         beam.shadows = LightShadows.None;
         beam.renderMode = LightRenderMode.ForcePixel;
         beam.cullingMask = view.cullingMask;
