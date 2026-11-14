@@ -13,13 +13,12 @@ public sealed class LawSchoolMaintenanceAccess : MonoBehaviour
     [SerializeField] BoxCollider entranceBarrier;
     [SerializeField, Min(1f)] float minimumKeySeparation = 45f;
     [SerializeField, Min(.5f)] float warningDistance = 2.5f;
-    const string WarningText = "A porta está trancada";
-    GUIStyle warningStyle;
     public bool WarningVisible { get; private set; }
 
     void Awake() { if (entranceBarrier) entranceBarrier.enabled = true; }
     void Update()
     {
+        bool wasWarningVisible = WarningVisible;
         WarningVisible = false;
         var player = GameManager.SessionPlayer;
         var inventory = player ? player.GetComponent<PlayerCellKeys>() : null;
@@ -34,19 +33,14 @@ public sealed class LawSchoolMaintenanceAccess : MonoBehaviour
         var controller = player.GetComponent<CharacterController>();
         Vector3 position = controller ? controller.bounds.center : player.transform.position;
         WarningVisible = entranceBarrier.bounds.SqrDistance(position) <= warningDistance * warningDistance;
+        if (WarningVisible && !wasWarningVisible)
+            GameplayAudio.Instance?.NotifyLockedDoorContact(this);
     }
 
     void OnGUI()
     {
-        if (!WarningVisible || !entranceBarrier || !entranceBarrier.enabled) return;
-        warningStyle ??= new GUIStyle(GUI.skin.box)
-        {
-            alignment = TextAnchor.MiddleCenter,
-            wordWrap = true,
-            fontSize = Mathf.RoundToInt(19 * Mathf.Clamp(Screen.height / 900f, .8f, 1.6f))
-        };
-        float width = Mathf.Min(520, Screen.width - 40);
-        GUI.Box(new Rect((Screen.width - width) * .5f, Screen.height * .76f, width, 52), WarningText, warningStyle);
+        if (WarningVisible && entranceBarrier && entranceBarrier.enabled && !UniDoom.UI.GameplayNotice.IsShowing)
+            UniDoom.UI.GameplayNotice.Draw(UniDoom.UI.GameplayNotice.LockedDoorKeyMessage);
     }
 
     bool IsDistant(Transform point)

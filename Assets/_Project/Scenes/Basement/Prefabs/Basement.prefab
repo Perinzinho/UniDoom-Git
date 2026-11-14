@@ -27789,6 +27789,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DirectorBossEncounter
   activationVolume: {fileID: 1580531724331711991}
   spawnPoint: {fileID: 8868652829359843022}
+  playerSpawnPoint: {fileID: 7314260985173048002}
   bossPrefab: {fileID: 8358504726919946664, guid: ae2013f7272db994abc757acae2fb087, type: 3}
   playerHeightMultiplier: 1.9
   onEncounterStarted:
@@ -114796,6 +114797,7 @@ Transform:
   - {fileID: 6407975742560641470}
   - {fileID: 7699426335328544030}
   - {fileID: 3629054277138442223}
+  - {fileID: 7314260985173048002}
   - {fileID: 4879598170690784317}
   m_Father: {fileID: 5893676580959095657}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -125127,3 +125129,48 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2820889012912510963, guid: abf6a797e3f845f1912a8d8a69dc2a5b, type: 3}
   m_PrefabInstance: {fileID: 9219130456656153523}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7314260985173048001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7314260985173048002}
+  - component: {fileID: 7314260985173048003}
+  m_Layer: 0
+  m_Name: Boss room player spawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7314260985173048002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7314260985173048001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -10, y: 1.35, z: -4.73}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1969459624773545304}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7314260985173048003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7314260985173048001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce7f422863e19b14ba28983ea170382f, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::UniDoom.Utils.SceneArrivalPoint
+  spawnId: BossRoom
