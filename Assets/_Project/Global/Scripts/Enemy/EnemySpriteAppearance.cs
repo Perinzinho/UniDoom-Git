@@ -25,6 +25,7 @@ public sealed class EnemySpriteAppearance : ScriptableObject
 
     [Header("Optional ranged attack")]
     public Sprite projectileSprite;
+    public AudioClip projectileLaunchSound;
     [Min(.5f)] public float projectileAttackRange = 9f;
     [Min(.1f)] public float projectileCooldown = 2.4f;
     [Min(0)] public float projectileReleaseDelay = .36f;

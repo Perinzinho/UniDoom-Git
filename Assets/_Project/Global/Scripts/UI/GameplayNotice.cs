@@ -7,6 +7,8 @@ namespace UniDoom.UI
     /// <summary>Transient feedback using the director's room hint presentation.</summary>
     public sealed class GameplayNotice : MonoBehaviour
     {
+        public const string LockedDoorKeyMessage = "Porta trancada. Você precisa de uma chave para abrir.";
+        public const string LockedDoorMessage = "Porta trancada.";
         static GameplayNotice instance;
         static GUIStyle style;
         string message;

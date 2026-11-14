@@ -12,7 +12,6 @@ public sealed class LawSchoolExitLock : MonoBehaviour, ISceneTransitionGuard
         "SAÍDA BLOQUEADA PELO ALARME\nDesligue o alarme no quadro de energia da manutenção.";
 
     BoxCollider doorway;
-    GUIStyle warningStyle;
 
     public bool IsTransitionBlocked => alarm && alarm.IsActive;
     public bool WarningVisible { get; private set; }
@@ -38,6 +37,7 @@ public sealed class LawSchoolExitLock : MonoBehaviour, ISceneTransitionGuard
 
     void Update()
     {
+        bool wasWarningVisible = WarningVisible;
         WarningVisible = false;
         if (!IsTransitionBlocked || Time.timeScale <= 0 || UniDoom.UI.GameMenus.BlocksGameplay) return;
         var player = GameManager.SessionPlayer;
@@ -47,19 +47,14 @@ public sealed class LawSchoolExitLock : MonoBehaviour, ISceneTransitionGuard
         var controller = player.GetComponent<CharacterController>();
         Vector3 position = controller ? controller.bounds.center : player.transform.position;
         WarningVisible = doorway && doorway.bounds.SqrDistance(position) <= warningDistance*warningDistance;
+        if (WarningVisible && !wasWarningVisible)
+            GameplayAudio.Instance?.NotifyLockedDoorContact(this);
     }
 
     void OnGUI()
     {
-        if (!WarningVisible || !IsTransitionBlocked) return;
-        if (warningStyle == null) warningStyle = new GUIStyle(GUI.skin.box)
-        {
-            alignment = TextAnchor.MiddleCenter,
-            wordWrap = true,
-            fontSize = 19
-        };
-        float width = Mathf.Min(680,Screen.width-40);
-        GUI.Box(new Rect((Screen.width-width)*.5f,Screen.height*.76f,width,76),warningText,warningStyle);
+        if (WarningVisible && IsTransitionBlocked && !UniDoom.UI.GameplayNotice.IsShowing)
+            UniDoom.UI.GameplayNotice.Draw(UniDoom.UI.GameplayNotice.LockedDoorMessage + "\n" + warningText);
     }
 
     void OnDisable()

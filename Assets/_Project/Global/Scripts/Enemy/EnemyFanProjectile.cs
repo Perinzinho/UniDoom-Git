@@ -27,6 +27,18 @@ public sealed class EnemyFanProjectile : MonoBehaviour
         shot.visual.sprite = appearance.projectileSprite;
         shot.visual.sharedMaterial = appearance.material;
         shot.transform.localScale = Vector3.one * appearance.projectileScale;
+        if (appearance.projectileLaunchSound)
+        {
+            var sound = new GameObject("Enemy fan throw audio");
+            sound.transform.position = origin;
+            SceneManager.MoveGameObjectToScene(sound, owner.gameObject.scene);
+            var source = sound.AddComponent<AudioSource>();
+            source.spatialBlend = 1f;
+            source.minDistance = 2f;
+            source.maxDistance = 20f;
+            source.PlayOneShot(appearance.projectileLaunchSound);
+            Destroy(sound, appearance.projectileLaunchSound.length + .1f);
+        }
         return shot;
     }
 

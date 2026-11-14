@@ -8,7 +8,6 @@ public sealed class CampusLibraryEntranceLock : MonoBehaviour, ISceneTransitionG
     [SerializeField] BoxCollider solidBarrier;
     [SerializeField] GameObject lawSchoolPadlock, block4Padlock;
     [SerializeField, Min(.5f)] float warningDistance = 2.5f;
-    const string WarningText = "Porta trancada! Procure pela chave.";
     public bool WarningVisible { get; private set; }
 
     public bool IsTransitionBlocked => !CampusLibraryAccess.CanEnter(Inventory);
@@ -19,6 +18,7 @@ public sealed class CampusLibraryEntranceLock : MonoBehaviour, ISceneTransitionG
     void Update()
     {
         Refresh();
+        bool wasWarningVisible = WarningVisible;
         WarningVisible = false;
         if (!IsTransitionBlocked || Time.timeScale <= 0 || UniDoom.UI.GameMenus.BlocksGameplay ||
             UniDoom.UI.DoorReloadScreen.IsReloading) return;
@@ -29,6 +29,8 @@ public sealed class CampusLibraryEntranceLock : MonoBehaviour, ISceneTransitionG
         var controller = player.GetComponent<CharacterController>();
         Vector3 position = controller ? controller.bounds.center : player.transform.position;
         WarningVisible = solidBarrier && solidBarrier.bounds.SqrDistance(position) <= warningDistance * warningDistance;
+        if (WarningVisible && !wasWarningVisible)
+            GameplayAudio.Instance?.NotifyLockedDoorContact(this);
     }
 
     void Refresh()
@@ -45,7 +47,7 @@ public sealed class CampusLibraryEntranceLock : MonoBehaviour, ISceneTransitionG
     void OnGUI()
     {
         if (WarningVisible && IsTransitionBlocked && !UniDoom.UI.GameplayNotice.IsShowing)
-            UniDoom.UI.GameplayNotice.Draw(WarningText);
+            UniDoom.UI.GameplayNotice.Draw(UniDoom.UI.GameplayNotice.LockedDoorKeyMessage);
     }
 
     void OnDisable() { WarningVisible = false; Refresh(); }
