@@ -20,7 +20,11 @@ public sealed class PrisonKeyPickup : MonoBehaviour
         if (life != null && life.IsDead) return;
         var inventory = player.GetComponent<PlayerCellKeys>();
         if (!inventory) inventory = player.gameObject.AddComponent<PlayerCellKeys>();
-        if (inventory.TryAddKey(PrisonProgress.CellKeyId(cellId))) SFXManager.Instance?.PlayKeyPickupSound();
+        if (inventory.TryAddKey(PrisonProgress.CellKeyId(cellId)))
+        {
+            SFXManager.Instance?.PlayKeyPickupSound();
+            UniDoom.UI.GameplayNotice.Show($"Você pegou a chave da cela {cellId} da prisão.", 7.5f);
+        }
         gameObject.SetActive(false);
     }
 }
