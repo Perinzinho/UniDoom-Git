@@ -41,6 +41,20 @@ Compilação C# isolada passou sem erros, com avisos preexistentes. Sem iniciar/
 
 Menu compartilhado: [créditos, música e HUD da espingarda](../Credits.md).
 
+## Munição ilimitada do jogador — 13/11/2026
+
+- Pistola e espingarda mantêm o carregador, o consumo por disparo e suas animações/tempos de recarga, mas a reserva do jogador é ilimitada e não diminui ao recarregar.
+- O HUD mostra `∞` no lugar da quantidade da reserva. Valores antigos de reserva permanecem serializados nos prefabs somente para preservar compatibilidade; não limitam mais o jogador.
+- Como a razão de munição disponível permanece cheia, `EnemyLootDrop` não gera novas caixas por escassez. Caixas já posicionadas e seus assets foram preservados.
+- Compilação e conferência estática executadas; disparo, recarga de pistola/espingarda, HUD em jogo e Play Mode ainda precisam de validação.
+
+## Escala das caixas pequenas de munição — 13/11/2026
+
+- Os pickups de 10 munições que reutilizam `Global/Prefabs/Weapons/FullAmmoBox.prefab` foram padronizados para aproximadamente **0,36 × 0,33 m**, equivalentes à escala visual `4 × 3 × 1` do sprite. O tamanho coincide com o padrão já usado no porão e fica deliberadamente menor que os medkits e a caixa UAC de 50 munições.
+- Overrides antigos de `8 × 6` e `12 × 8` foram corrigidos em EntranceGarden, EntranceHallway, Cylinder, ClassRoom, DirectorRoom e Library. Corredor de entrada e diretoria mantêm compensações locais para as escalas herdadas de seus pais; o tamanho final é o mesmo.
+- `Ammo.prefab`, a variante de 20 munições de LawSchool e `UACAmmoCrate50.prefab` já possuíam dimensões próprias coerentes e foram preservados. GUIDs, fileIDs, posições, valores de coleta e importadores não mudaram.
+- Conferência estática de todas as 16 instâncias concluída, incluindo a escala efetiva herdada dos pais. CampusLibrary foi aberta na Unity; Play Mode e comparação visual cena a cena ainda precisam de validação. Ao reimportar `Cylinder.prefab`, a Unity também voltou a sinalizar referências `MonoBehaviour` ausentes preexistentes em objetos de iluminação (`Cold fluorescent spill` e `Light`); o diff dessa cena permanece limitado aos quatro valores de escala das duas caixas.
+
 ## Encontros com zumbis — comportamento compartilhado
 
 - `Enemy.cs`: percepção próxima em todas as direções até 3,5 m, ainda limitada por alcance e obstáculos; patrulhas olham ao redor nas pausas. Movimento desacelera enquanto o corpo vira. Ataques corpo a corpo acompanham o alvo na preparação e ataques à distância também exigem orientação para o alvo.
@@ -49,6 +63,8 @@ Menu compartilhado: [créditos, música e HUD da espingarda](../Credits.md).
 - Spawns iniciais de `EnemySpawner` e guardas iniciais de `ClassRoom` mantêm o fluxo de carregamento. Cenas, posições, prefabs e GUIDs existentes não foram alterados nesta revisão.
 
 ## Portas comuns — abertura por contato
+
+- Portas que começam bloqueadas por uma chave exibem, ao contato, o aviso padronizado `Porta trancada! Procure pela chave.` por meio de `GameplayNotice`. O aviso também é usado na entrada bloqueada da Biblioteca do Campus; marcadores vermelhos não representam mais esse estado. Portas decorativas permanentemente seladas mantêm apenas o retorno sonoro para não sugerir uma chave inexistente.
 
 - `OpenDoorWithKey` sem `requiresKey01`, `requiresKey02` ou `requiresKey03` não abre mais ao entrar no trigger de proximidade. O jogador precisa avançar contra o collider físico da folha; `PlayerMovement.OnControllerColliderHit` então solicita a abertura.
 - Após fechar completamente e o jogador deixar o trigger, a porta comum volta a exigir novo contato. Portas com chave, portas de ativação manual, direção da dobradiça, fechamento automático e transições de setor preservam seus fluxos.
