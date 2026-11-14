@@ -2,6 +2,8 @@
 
 ## Leitura rápida
 
+- **Falhas da lanterna durante a falta de energia — 13/11/2026:** enquanto `LibraryLightingController.IsUnpowered` estiver ativo, `PlayerFlashlight` sorteia um intervalo de 1 a 60 segundos de tempo de jogo, apaga o foco por 3 segundos e sorteia novamente ao restaurá-lo. A falha não muda a escolha do jogador de ligar/desligar a lanterna; ao ligar o gerador ou sair da cena, o ciclo é cancelado. A intensidade do foco global caiu de 80 para 65. Verificação estática e `git diff --check`; avaliação visual e Play Mode pendentes.
+
 - **Aviso após o puzzle — 12/11/2026:** ao ligar o gerador, `GameplayNotice` mostra “Gerador ligado. Volte para a prisão e liberte os professores.” por 7,5 s de gameplay. O tempo de leitura fica pausado enquanto o quadro modal estiver aberto.
 
 - **Lanterna durante falta de energia — 11/11/2026:** o jogador persistente recebe `PlayerFlashlight` pelo `GameManager`. Enquanto `LibraryLightingController.IsUnpowered` for verdadeiro, a luz de foco se acende automaticamente e acompanha a mira da câmera; `F` ou direcional para cima alterna seu estado. A luz desliga quando o gerador restaura a energia. A mesma lanterna cobre o apagão da biblioteca antiga e do Bloco 4; o Bloco de Direito mantém sua própria luz de apagão, agora alinhada à mira. Compilação no Unity 6000.5.7f1 concluída; conferência visual e Play Mode pendentes.

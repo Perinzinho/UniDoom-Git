@@ -624,6 +624,11 @@ namespace UniDoom.UI
             bodyFont = TMP_Settings.defaultFontAsset;
             if (customFont != null) return;
 
+            // Resources.Load works reliably in builds (asset is in a Resources folder).
+            customFont = Resources.Load<TMP_FontAsset>("Pixelta SDF");
+            if (customFont != null) return;
+
+            // Fallback: search already-loaded assets (editor / prefab pre-loaded).
             var loadedFonts = Resources.FindObjectsOfTypeAll<TMP_FontAsset>();
             foreach (var f in loadedFonts)
             {

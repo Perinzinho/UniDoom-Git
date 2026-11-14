@@ -53,7 +53,8 @@ namespace UniDoom.UI
             float w, float h, float size, Color color)
         {
             var text = Rect(name, parent, x, y, w, h).gameObject.AddComponent<TextMeshProUGUI>();
-            text.font = TMP_Settings.defaultFontAsset;
+            var defaultFont = TMP_Settings.defaultFontAsset;
+            if (defaultFont != null) text.font = defaultFont;
             text.text = value;
             text.fontSize = size;
             text.enableAutoSizing = false;
