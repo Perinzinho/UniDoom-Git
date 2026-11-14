@@ -80,6 +80,10 @@ public class PlayerPickupKey : MonoBehaviour
     private void Collect(int index, Collider key)
     {
         if (SFXManager.Instance != null) SFXManager.Instance.PlayKeyPickupSound();
+        string message = index == 0 ? "Você pegou a chave da biblioteca." :
+            index == 1 ? "Você pegou a chave da diretoria." :
+            "Você pegou a chave da passagem entre a diretoria e o porão.";
+        UniDoom.UI.GameplayNotice.Show(message, 7.5f);
         // Register only a newly collected key. Its floating visual is not a spawn point.
         GetComponent<PlayerRespawn>()?.SaveCheckpoint(index);
         key.enabled = false;
