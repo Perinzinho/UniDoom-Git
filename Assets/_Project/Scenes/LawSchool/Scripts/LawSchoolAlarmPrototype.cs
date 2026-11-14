@@ -40,6 +40,14 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
     public Transform SelectedKeyLocation { get; private set; }
     public const string EventId = "law-school-cell-key-alarm";
     public const string TriggeredEventId = "law-school-local-key-collected";
+    static readonly string[] OccupiedRooms = { "SALA 111", "SALA 116", "SALA 123", "SALA 128", "SALA 134" };
+    static readonly Vector2[] RoomZombiePositions =
+    {
+        new Vector2(.8f, 3f), new Vector2(4.3f, 3f),
+        new Vector2(.8f, 5.5f), new Vector2(4.3f, 5.5f),
+        new Vector2(.8f, 8f), new Vector2(4.3f, 8f),
+        new Vector2(2.5f, 4.2f), new Vector2(2.5f, 9.5f)
+    };
 
     public static void NotifyKeyCollected(Component pickup, PlayerCellKeys inventory)
     {
@@ -137,6 +145,7 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         var keys = player.GetComponent<PlayerCellKeys>();
         if (!keys) keys = player.gameObject.AddComponent<PlayerCellKeys>();
         ChooseKeyRoom(keys);
+        SpawnOccupiedRooms(keys);
         IsResolved = keys.HasCompletedEvent(EventId);
         // Publish the initial placement too, so maintenance is available in this same initialization.
         StateChanged?.Invoke();
@@ -175,6 +184,62 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         key.transform.SetParent(building,true);
         key.transform.position = available[index].position;
         key.RefreshAvailability(inventory);
+    }
+
+    void SpawnOccupiedRooms(PlayerCellKeys inventory)
+    {
+        if (keyLocations == null) return;
+        for (int i = 0; i < OccupiedRooms.Length; i++)
+        {
+            string roomName = OccupiedRooms[i];
+            string clearedId = "law-school-room-zombie-" + roomName;
+            if (inventory.HasCompletedEvent(clearedId)) continue;
+            Transform room = null;
+            foreach (var point in keyLocations)
+                if (point && point.parent && point.parent.name == roomName)
+                {
+                    room = point.parent;
+                    break;
+                }
+            if (!room) continue;
+            GameObject prefab = zombieVariants != null && zombieVariants.Length > 0
+                ? zombieVariants[i % zombieVariants.Length] : null;
+            if (!prefab) prefab = zombiePrefab;
+            if (!prefab || !TryRoomZombiePosition(room, prefab, out var position)) continue;
+
+            var zombie = Instantiate(prefab, position, room.rotation);
+            SceneManager.MoveGameObjectToScene(zombie, gameObject.scene);
+            zombie.transform.SetParent(transform, true);
+            zombie.name = roomName + " - zumbi";
+            var enemy = zombie.GetComponent<Enemy>();
+            if (enemy) enemy.OnDeath.AddListener(_ => inventory.CompleteEvent(clearedId));
+        }
+    }
+
+    static bool TryRoomZombiePosition(Transform room, GameObject prefab, out Vector3 position)
+    {
+        position = default;
+        var capsule = prefab.GetComponent<CapsuleCollider>();
+        float radius = capsule ? capsule.radius + .03f : .53f;
+        float halfHeight = capsule ? Mathf.Max(capsule.height * .5f, radius) : 1f;
+        float centerY = capsule ? capsule.center.y : 0f;
+        foreach (var local in RoomZombiePositions)
+        {
+            Vector3 floor = room.TransformPoint(new Vector3(local.x, 0f, local.y));
+            if (!Physics.Raycast(floor + Vector3.up * 2.5f, Vector3.down, out var hit, 3f,
+                    Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore) ||
+                hit.normal.y < .7f || Mathf.Abs(hit.point.y - floor.y) > .25f) continue;
+            Vector3 root = hit.point + Vector3.up * (halfHeight - centerY + .04f);
+            Vector3 center = root + (capsule ? capsule.center : Vector3.zero);
+            float segment = Mathf.Max(0f, halfHeight - radius - .04f);
+            if (Physics.CheckCapsule(center - Vector3.up * segment, center + Vector3.up * segment,
+                    radius, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore)) continue;
+            var player = GameManager.SessionPlayer;
+            if (player && (player.transform.position - center).sqrMagnitude < 36f) continue;
+            position = root;
+            return true;
+        }
+        return false;
     }
 
     public bool TryResolve(PlayerPickupKey player)

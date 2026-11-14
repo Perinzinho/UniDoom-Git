@@ -6,6 +6,12 @@ Atualizado: **2026-11-08**. Estado: chave sorteada por partida, placas gastas e 
 
 ## Leitura rápida
 
+- **Áudio do leque da Wanessa — 14/11/2026:** `Global/Audio/Enemy/WanessaFanThrow.mp3` conserva os bytes de `egata03.mp3` fornecido pelo usuário. `FanZombieAppearance` referencia o clipe, e `EnemyFanProjectile.Launch` reproduz um som espacial por leque efetivamente lançado, na posição de origem, independente da vida útil do projétil. Cópia e GUID conferidos estaticamente; importação Unity, Play Mode e escuta em jogo pendentes.
+
+- **Salas aparecendo azuis — 14/11/2026:** a câmera jogável da cena tinha oclusão ativada com dados calculados em 06/11, antes das revisões posteriores do mapa. A oclusão foi desligada somente nessa câmera para evitar que paredes e mobiliário sejam descartados e revelem o fundo azul da câmera. O diagnóstico é uma inferência a partir da configuração e das datas dos assets; a captura do defeito e o teste em Play Mode ainda são necessários. Medir desempenho antes de decidir por um novo bake de oclusão.
+
+- **Zumbis nas salas — 14/11/2026:** as salas 111, 116, 123, 128 e 134 recebem um zumbi cada ao entrar no mapa, antes do alarme. O ponto de aparição é escolhido no piso livre da própria sala; se não houver espaço seguro, aquela aparição é dispensada. Uma morte registrada no inventário da sessão impede que o zumbi da sala reapareça ao voltar. A horda e o limite de chegadas do alarme continuam independentes. Verificação estática; Unity, Play Mode, combate e circulação pelas salas não executados.
+
 - **Mais frases nas lousas — 14/11/2026:** seis novas inscrições de giz foram adicionadas em `Textures/VideoFix/ChalkboardMessages-Atlas-Extra.png`, com seis materiais `Chalkboard handwriting extra 0` a `5`. Doze lousas da cena jogável e do prefab independente usam as novas variantes; as seis inscrições anteriores continuam presentes em outras salas. Os componentes TextMeshPro de referência associados foram atualizados onde existem e continuam desativados. GUIDs e fileIDs existentes preservados. Verificação estática e `git diff --check`; Unity, Play Mode e leitura visual em jogo não executados.
 
 - **Dica ao entrar — 13/11/2026:** o aviso inferior do `GameplayNotice` agora orienta a encontrar duas chaves: uma abre um dos cadeados da Biblioteca do Campus e a outra abre a sala de manutenção. Substitui a dica genérica anterior e espera a transição/menu liberar o gameplay; duração de 10 s úteis. Verificação estática; Play Mode e leitura visual pendentes.

@@ -4,6 +4,8 @@ Atualizado: **2026-11-08**, revisão de [correcoesbloco4.md](correcoesbloco4.md)
 
 ## Leitura rápida
 
+- **Luz do quadro do corredor — 14/11/2026:** a luminária sobre a foto do hall foi reduzida ao formato de arandela, com base e braço na parede e foco spot quente voltado para o quadro. O foco e o difusor participam do apagão pelo `Block4PowerFluctuation`. Prefab e referências conferidos estaticamente; Unity, Play Mode, build e comparação visual não executados.
+
 - **Carta da secretaria — 13/11/2026:** uma folha manuscrita está sobre o tampo do guichê, ao lado da prancheta, em `(-7,45; 1,254; -5,75)`. `E` ou `X` abre a imagem no visualizador de documentos existente. O texto alerta sobre eventos paranormais, apagões e registros de computador que se misturam, desaparecem e reaparecem, sem revelar a senha do puzzle. Objeto e colisão estão na cena; textura, material e script exclusivos em `Scenes/CampusBlock4`. Referências e posicionamento conferidos estaticamente; Unity/Play Mode e inspeção visual pendentes porque o projeto estava aberto em outra instância do Editor.
 
 - **Saída para o campus — 12/11/2026:** o volume `Exit to Campus Exterior`, em `(0; 1,65; -47,70)`, mantém a transição para `CampusExterior / FromCampusBlock4`. O fechamento visual criado por `SceneTransitionDoor` agora mostra duas folhas, batentes, verga e puxadores diante do painel que oculta o vazio da cena, em vez de uma parede lisa atrás das catracas. Todas as peças visuais ficam atrás do gatilho e sem colisores; prefab, IDs e passagem existentes foram preservados. Conferência de código, medidas e `git diff --check`; sem Unity, Play Mode, build ou comparação visual.
@@ -26,7 +28,7 @@ Atualizado: **2026-11-08**, revisão de [correcoesbloco4.md](correcoesbloco4.md)
 - Paleta laranja/azul conservada. Piso terrazzo e reboco padronizado reutilizam a base visual de Direito, em materiais exclusivos do Bloco 4. Paredes contínuas junto às lousas; janelas transparentes de observação restauradas nas frentes, ao lado das portas.
 - Quatro longarinas e quatro vasos do hall encostados às paredes, com folga geométrica de **15 mm**. Bancos mantêm orientação e escala; vasos girados para acomodar as folhagens. O vaso antes diante da secretaria foi levado para `z = −25,5`, junto à parede oeste perto da entrada; balcão, foto/símbolos e cruzamentos dos corredores livres.
 
-- Pisos: 129 colisores ativos com tag `Eco` e superfície `Interior`. Energia: primeiro evento em **30–45 s**, seguintes em **60–90 s** após restaurar a energia; apagão de 2–4 s. As cinco pistas continuam mudando no apagão. 199 luzes e 182 difusores. Chave de acesso à biblioteca somente na recompensa do puzzle da 423; antigas chaves de cela retiradas. Contrato compartilhado: [PrisonCellKeys.md](PrisonCellKeys.md).
+- Pisos: 129 colisores ativos com tag `Eco` e superfície `Interior`. Energia: primeiro evento em **30–45 s**, seguintes em **60–90 s** após restaurar a energia; apagão de 2–4 s. As cinco pistas continuam mudando no apagão. 200 luzes e 183 difusores. Chave de acesso à biblioteca somente na recompensa do puzzle da 423; antigas chaves de cela retiradas. Contrato compartilhado: [PrisonCellKeys.md](PrisonCellKeys.md).
 
 ## Portas, catracas e identificação
 

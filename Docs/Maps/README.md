@@ -65,6 +65,7 @@ Menu compartilhado: [créditos, música e HUD da espingarda](../Credits.md).
 ## Portas comuns — abertura por contato
 
 - Portas que começam bloqueadas por uma chave exibem, ao contato, o aviso padronizado `Porta trancada! Procure pela chave.` por meio de `GameplayNotice`. O aviso também é usado na entrada bloqueada da Biblioteca do Campus; marcadores vermelhos não representam mais esse estado. Portas decorativas permanentemente seladas mantêm apenas o retorno sonoro para não sugerir uma chave inexistente.
+- Portais entre cenas que exigem uma das chaves antigas 01/02/03, ou a chave da porta física associada, agora mostram o mesmo aviso ao tentar a passagem sem a chave, com intervalo de 2 s entre avisos. O portal ainda aguarda o desbloqueio da folha antes de carregar o destino.
 
 - `OpenDoorWithKey` sem `requiresKey01`, `requiresKey02` ou `requiresKey03` não abre mais ao entrar no trigger de proximidade. O jogador precisa avançar contra o collider físico da folha; `PlayerMovement.OnControllerColliderHit` então solicita a abertura.
 - Após fechar completamente e o jogador deixar o trigger, a porta comum volta a exigir novo contato. Portas com chave, portas de ativação manual, direção da dobradiça, fechamento automático e transições de setor preservam seus fluxos.

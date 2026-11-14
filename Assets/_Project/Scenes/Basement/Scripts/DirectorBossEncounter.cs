@@ -6,6 +6,7 @@ public sealed class DirectorBossEncounter : MonoBehaviour
 {
     [SerializeField] BoxCollider activationVolume;
     [SerializeField] Transform spawnPoint;
+    [SerializeField] Transform playerSpawnPoint;
     [SerializeField] DirectorBoss bossPrefab;
     [SerializeField, Min(1)] float playerHeightMultiplier = 1.9f;
     public UnityEvent onEncounterStarted = new UnityEvent();
@@ -47,8 +48,10 @@ public sealed class DirectorBossEncounter : MonoBehaviour
         float clearance = Mathf.Max(.1f, playerController.skinWidth * Mathf.Abs(scale.y));
         Vector3 centerOffset = Vector3.Scale(playerController.center, scale);
         Physics.SyncTransforms();
-        Vector3 entry = activationVolume.center;
-        entry.z -= activationVolume.size.z * .5f - 3f;
+        Vector3 entry = playerSpawnPoint != null
+            ? activationVolume.transform.InverseTransformPoint(playerSpawnPoint.position)
+            : activationVolume.center;
+        if (playerSpawnPoint == null) entry.z -= activationVolume.size.z * .5f - 3f;
         entry.y = activationVolume.center.y;
         for (int row = 0; row < 4; row++)
             for (int column = 0; column < 5; column++)
