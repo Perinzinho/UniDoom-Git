@@ -58,6 +58,9 @@ public class OpenDoorWithKey : MonoBehaviour
     public bool IsOpen => unlocked && openProgress >= .8f;
     public bool IsFullyOpen => unlocked && openProgress >= .999f;
 
+    public bool NeedsKey(PlayerPickupKey player) => !unlocked && RequiresAnyKey &&
+        (player == null || !HasRequiredKey(player));
+
     public bool BlocksPlayer(Collider surface, PlayerPickupKey player) => door != null &&
         surface.transform.IsChildOf(door) && !unlocked &&
         (!isActiveAndEnabled || requiresManualActivation || player == null || !HasRequiredKey(player));

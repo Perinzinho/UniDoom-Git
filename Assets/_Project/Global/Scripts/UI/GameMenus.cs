@@ -15,6 +15,10 @@ namespace UniDoom.UI
     /// <summary>Shared main, pause, death, options and confirmation screens. Progress lasts for the current run.</summary>
     public sealed partial class GameMenus : MonoBehaviour
     {
+        // Optional test-only extension. When GameMenus.TestTeleport.cs is absent, the
+        // compiler removes this call and the public menu has no teleport entry.
+        partial void BuildTestTeleportMenu(ref Button entryButton);
+
         public enum Screen { Gameplay, Main, Pause, Death, Options, Credits, Confirm, GameOver, Document, Interaction, Controls }
         public static GameMenus Instance { get; private set; }
         public static bool BlocksGameplay => Instance != null && (Instance.CurrentScreen != Screen.Gameplay || Instance.busy);
@@ -507,10 +511,13 @@ namespace UniDoom.UI
             BuildControls();
             StandardHeader(main, 0);
             mainFirst = ColumnButton(main, "NewGame", "NOVO JOGO", StartNewGame);
+            Button testTeleport = null;
+            BuildTestTeleportMenu(ref testTeleport);
             var mainOptions = ColumnButton(main, "Options", "OPÇÕES", OpenOptions);
             var creditButton = ColumnButton(main, "Credits", "CRÉDITOS", () => SetScreen(Screen.Credits));
             var quit = ColumnButton(main, "Quit", "SAIR", Quit);
-            MenuStyle.Link(mainFirst, mainOptions, creditButton, quit);
+            if (testTeleport != null) MenuStyle.Link(mainFirst, testTeleport, mainOptions, creditButton, quit);
+            else MenuStyle.Link(mainFirst, mainOptions, creditButton, quit);
             ColumnFooter(main);
             StandardHeader(pause, 1);
             pauseFirst = ColumnButton(pause, "Resume", "CONTINUAR   [ESC]", Resume);

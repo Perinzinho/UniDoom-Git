@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    private const string LockedDoorMessage = "Porta trancada! Procure pela chave.";
+
     public float speed = 6f;
     public float gravity = -9.81f;
     public float groundedGravity = -2f;
@@ -20,6 +22,8 @@ public class PlayerMovement : MonoBehaviour
     private float walkBobPhase;
     private float walkBobWeight;
     private bool viewBobReady;
+    private Object lastLockedDoorNotice;
+    private float nextLockedDoorNoticeTime;
 
     public float WalkBobPhase => walkBobPhase;
     public float WalkBobWeight => walkBobWeight;
@@ -161,14 +165,31 @@ public class PlayerMovement : MonoBehaviour
         if (simpleDoor != null && simpleDoor.TryOpenByContact()) return;
 
         var audio = GameplayAudio.Instance;
-        if (audio == null) return;
+        if (simpleDoor != null && simpleDoor.IsLocked)
+        {
+            audio?.NotifyLockedDoorContact(simpleDoor);
+            ShowLockedDoorNotice(simpleDoor);
+            return;
+        }
+
         var sealedDoor = hit.collider.GetComponent<LockedDoorSurface>();
         if (sealedDoor != null && sealedDoor.Matches(hit.collider, hit.point))
         {
-            audio.NotifyLockedDoorContact(sealedDoor);
+            audio?.NotifyLockedDoorContact(sealedDoor);
             return;
         }
-        if (door != null && door.BlocksPlayer(hit.collider, GetComponent<PlayerPickupKey>()))
-            audio.NotifyLockedDoorContact(door);
+        if (door != null && door.BlocksPlayer(hit.collider, keys))
+        {
+            audio?.NotifyLockedDoorContact(door);
+            if (door.NeedsKey(keys)) ShowLockedDoorNotice(door);
+        }
+    }
+
+    private void ShowLockedDoorNotice(Object door)
+    {
+        if (door == null || (door == lastLockedDoorNotice && Time.unscaledTime < nextLockedDoorNoticeTime)) return;
+        lastLockedDoorNotice = door;
+        nextLockedDoorNoticeTime = Time.unscaledTime + 2f;
+        UniDoom.UI.GameplayNotice.Show(LockedDoorMessage, 3.5f);
     }
 }
