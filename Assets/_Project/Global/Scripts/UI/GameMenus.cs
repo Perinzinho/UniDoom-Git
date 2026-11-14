@@ -81,6 +81,21 @@ namespace UniDoom.UI
             SceneManager.sceneLoaded += OnSceneLoaded;
             SetScreen(Screen.Main);
             AcquirePause();
+            PlayOpeningVideo();
+        }
+
+        void PlayOpeningVideo()
+        {
+            busy = true;
+            Select(null);
+            var overlay = new GameObject("[UniDoom Opening Video]", typeof(RectTransform));
+            overlay.transform.SetParent(transform, false);
+            overlay.AddComponent<OpeningVideo>().Begin(() =>
+            {
+                if (!this) return;
+                busy = false;
+                if (CurrentScreen == Screen.Main) Select(mainFirst);
+            });
         }
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)

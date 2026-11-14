@@ -21,6 +21,7 @@ namespace UniDoom.Utils
         [SerializeField] private MonoBehaviour transitionGuard;
         private readonly HashSet<Collider> waitingPlayers = new HashSet<Collider>();
         private OpenDoorWithKey soundDoor;
+        private float nextLockedNoticeTime;
         readonly List<Material> entranceMaterials = new List<Material>();
         Camera entranceCamera;
         float previousNearClip;
@@ -188,7 +189,18 @@ namespace UniDoom.Utils
             var keys = player.GetComponent<PlayerPickupKey>();
             if ((requiresKey01 && (keys == null || !keys.key01)) ||
                 (requiresKey02 && (keys == null || !keys.key02)) ||
-                (requiresKey03 && (keys == null || !keys.key03))) return;
+                (requiresKey03 && (keys == null || !keys.key03)) ||
+                (physicalDoor != null && physicalDoor.NeedsKey(keys)))
+            {
+                if (Time.unscaledTime >= nextLockedNoticeTime)
+                {
+                    nextLockedNoticeTime = Time.unscaledTime + 2f;
+                    GameplayAudio.Instance?.NotifyLockedDoorContact(physicalDoor != null ?
+                        (Object)physicalDoor : this);
+                    UI.GameplayNotice.Show(UI.GameplayNotice.LockedDoorKeyMessage, 3.5f);
+                }
+                return;
+            }
             // The player can cross a rotating door before its animation reaches 80%.
             // Waiting for IsOpen lets them leave this volume and fall outside the room.
             if (physicalDoor != null && !physicalDoor.IsUnlocked) return;
