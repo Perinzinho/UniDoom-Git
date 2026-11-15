@@ -30,14 +30,14 @@ public static class DirectorSummonSetup
             var summonData = new SerializedObject(summon);
             summonData.FindProperty("zombiePrefab").objectReferenceValue = enemy;
             SetSprites(summonData.FindProperty("portalFrames"), portalFrames);
-            summonData.FindProperty("damagePerWave").intValue = 200;
+            summonData.FindProperty("damagePerWave").intValue = 500;
             summonData.FindProperty("zombiesPerWave").intValue = 5;
             summonData.ApplyModifiedPropertiesWithoutUndo();
             PrefabUtility.SaveAsPrefabAsset(root, BossPrefab);
         }
         finally { PrefabUtility.UnloadPrefabContents(root); }
         AssetDatabase.SaveAssets();
-        Debug.Log("DIRECTOR_SUMMON_READY|cast=8|portal=8|damage=200|zombies=5");
+        Debug.Log("DIRECTOR_SUMMON_READY|cast=8|portal=8|damage=500|zombies=5");
     }
 
     static void SetSprites(SerializedProperty property, Sprite[] sprites)

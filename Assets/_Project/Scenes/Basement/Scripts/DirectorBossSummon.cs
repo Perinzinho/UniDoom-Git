@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-/// <summary>Five floor-emerging zombies for each 200 health lost by the living Director.</summary>
+/// <summary>Five floor-emerging zombies for each 500 health lost by the living Director.</summary>
 [RequireComponent(typeof(DirectorBoss))]
 public sealed class DirectorBossSummon : MonoBehaviour
 {
     [SerializeField] Enemy zombiePrefab;
     [SerializeField] Sprite[] portalFrames;
-    [SerializeField, Min(1)] int damagePerWave = 200;
+    [SerializeField, Min(1)] int damagePerWave = 500;
     [SerializeField, Min(1)] int zombiesPerWave = 5;
     [SerializeField, Min(.1f)] float summonDuration = 2.1f;
     [SerializeField, Min(.1f)] float emergeDuration = 1.2f;
