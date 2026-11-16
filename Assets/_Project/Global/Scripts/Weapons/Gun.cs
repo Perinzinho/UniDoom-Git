@@ -98,6 +98,9 @@ public abstract class Gun : MonoBehaviour
             Gunshot?.Invoke(shooter.transform.position, this is Shotgun ? 26f : 18f);
 
         OnShoot?.Invoke();
+
+        if (currentAmmo == 0)
+            TryReload();
     }
 
     public void TryReload()
