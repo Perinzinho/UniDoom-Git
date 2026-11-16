@@ -35,14 +35,24 @@ public sealed class DirectorRitualBook : MonoBehaviour
 
     void Update()
     {
-        if (pages != null)
+        if (pages != null || attentionLight != null)
         {
             pageProperties ??= new MaterialPropertyBlock();
-            float pulse = .5f + .5f * Mathf.Sin(Time.time * 2.1f);
-            pages.GetPropertyBlock(pageProperties);
-            pageProperties.SetColor(EmissionColor, Color.white * Mathf.Lerp(.14f, .42f, pulse));
-            pages.SetPropertyBlock(pageProperties);
-            if (attentionLight != null) attentionLight.intensity = Mathf.Lerp(.15f, .35f, pulse);
+            float wave = Mathf.PingPong(Time.unscaledTime * 0.9f, 1f);
+            float pulse = Mathf.SmoothStep(0f, 1f, wave) * Mathf.SmoothStep(0f, 1f, 1f - wave);
+            Color glow = new Color(1f, 0.78f, 0.22f);
+            if (pages != null)
+            {
+                pages.GetPropertyBlock(pageProperties);
+                pageProperties.SetColor(EmissionColor, glow * Mathf.Lerp(0f, 1.4f, pulse));
+                pages.SetPropertyBlock(pageProperties);
+            }
+            if (attentionLight != null)
+            {
+                attentionLight.enabled = true;
+                attentionLight.color = glow;
+                attentionLight.intensity = Mathf.Lerp(0f, 0.8f, pulse);
+            }
         }
         IsNearby = CanInteract(GameManager.SessionPlayer);
         if (IsNearby) focusedBook = this;
