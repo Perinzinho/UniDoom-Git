@@ -33,7 +33,7 @@ public class AmmoUI : MonoBehaviour
     {
         if (ammoText != null)
             ammoText.text = gun != null
-                ? $"{gun.CurrentAmmo}/{(gun.HasUnlimitedReserve ? "∞" : gun.ReserveAmmo.ToString())}"
+                ? $"{gun.CurrentAmmo}/{gun.ReserveAmmo}"
                 : "0/0";
     }
 }
