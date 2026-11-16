@@ -4,6 +4,7 @@ Leia este índice e **comece pela seção Leitura rápida da ficha do mapa solic
 
 | Mapa | Cena | Ficha |
 |---|---|---|
+| Redondo | `Assets/_Project/Scenes/Cylinder/Cylinder.unity` | [Cylinder.md](Cylinder.md) |
 | Bloco de Direito | `Assets/_Project/Scenes/LawSchool/LawSchool.unity` | [LawSchool.md](LawSchool.md) |
 | Bloco 4 — Tecnologia da Informação | `Assets/_Project/Scenes/CampusBlock4/CampusBlock4.unity` | [CampusBlock4.md](CampusBlock4.md) |
 | Campus Exterior — Unimar | `Assets/_Project/Scenes/CampusExterior/CampusExterior.unity` | Dependência: seção Conexões de [LawSchool.md](LawSchool.md#conexões) |
@@ -11,6 +12,10 @@ Leia este índice e **comece pela seção Leitura rápida da ficha do mapa solic
 | Biblioteca do Campus — Unimar | `Assets/_Project/Scenes/CampusLibrary/CampusLibrary.unity` | [CampusLibrary.md](CampusLibrary.md); contexto e portais em [README_CAMPUS_EXTERIOR.md](../../README_CAMPUS_EXTERIOR.md) |
 
 Padrão de placas em todas as cenas: [Signage.md](Signage.md).
+
+## Textos durante o jogo — 15/11/2026
+
+Avisos temporários e comandos de interação usam `Global/Scripts/UI/GameplayNotice.cs` em todos os mapas. A apresentação comum agora usa texto branco em negrito, tamanho responsivo de 18–30 px, sombra e painel escuro semitransparente com detalhe ocre; o painel ajusta largura e altura ao conteúdo e respeita a borda inferior da tela. Os números de vida e munição em `Global/Prefabs/UI/HUD.prefab` passaram de 32 para 34 px. Textos de documentos, painéis de puzzle e menus mantêm seu contexto visual próprio. Referências e `git diff --check` conferidos; Unity, Play Mode e leitura visual em resoluções diferentes pendentes por falta de licença válida na execução em lote.
 
 - Instruções operacionais: [prompt mestre](../../.codex/PROMPT_MESTRE.md).
 - Direção artística normativa: [Total Chaos visual direction](../../.codex/SKILL.md).
@@ -43,7 +48,8 @@ Menu compartilhado: [créditos, música e HUD da espingarda](../Credits.md).
 
 ## Munição ilimitada do jogador — 13/11/2026
 
-- Pistola e espingarda mantêm o carregador, o consumo por disparo e suas animações/tempos de recarga, mas a reserva do jogador é ilimitada e não diminui ao recarregar.
+- Pistola e espingarda mantêm o carregador, o consumo por disparo e suas animações/tempos de recarga. A reserva do jogador não tem teto: cada pickup soma sua quantidade, independentemente do total acumulado, e a reserva não diminui ao recarregar.
+- Ao consumir o último disparo do carregador, a arma inicia automaticamente a mesma recarga usada pela tecla `R`, desde que exista munição de reserva.
 - O HUD mostra `∞` no lugar da quantidade da reserva. Valores antigos de reserva permanecem serializados nos prefabs somente para preservar compatibilidade; não limitam mais o jogador.
 - Como a razão de munição disponível permanece cheia, `EnemyLootDrop` não gera novas caixas por escassez. Caixas já posicionadas e seus assets foram preservados.
 - Compilação e conferência estática executadas; disparo, recarga de pistola/espingarda, HUD em jogo e Play Mode ainda precisam de validação.

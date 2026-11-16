@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
 
     public static void EndSession()
     {
+        OpenDoorWithKey.ResetSession();
         PrisonProgress.Reset();
         UniDoom.CampusBlock4.Block4PuzzleProgress.ResetSession();
         UniDoom.CampusLibrary.LibraryMissionProgress.ResetSession();

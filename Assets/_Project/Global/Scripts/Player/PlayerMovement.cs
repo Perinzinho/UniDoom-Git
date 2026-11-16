@@ -174,7 +174,6 @@ public class PlayerMovement : MonoBehaviour
         if (sealedDoor != null && sealedDoor.Matches(hit.collider, hit.point))
         {
             audio?.NotifyLockedDoorContact(sealedDoor);
-            ShowLockedDoorNotice(sealedDoor, UniDoom.UI.GameplayNotice.LockedDoorMessage);
             return;
         }
         if (door != null && door.BlocksPlayer(hit.collider, keys))

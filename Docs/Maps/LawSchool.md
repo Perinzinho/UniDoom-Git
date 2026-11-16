@@ -6,6 +6,12 @@ Atualizado: **2026-11-08**. Estado: chave sorteada por partida, placas gastas e 
 
 ## Leitura rápida
 
+- **Alcance do machado — 16/11/2026:** o golpe agora alcança até **2 m**, ajustando a distância ao arco visual da animação sem deixar o ataque longo demais. O atraso do impacto, a colisão com paredes e o dano permanecem iguais. Verificação estática; Play Mode e comparação visual ainda pendentes.
+
+- **Tamanho dos kits de cura — 15/11/2026:** o `LawSchoolRoomMedkit` usa agora o mesmo tamanho visual dos kits compartilhados, cerca de 0,85 m de largura e 0,48 m de altura. O sprite da sala foi ampliado e reposicionado junto ao piso; o gatilho e a cura permanecem iguais. A padronização está no prefab global, com compensação para as três instâncias do porão. Referências conferidas estaticamente; Unity e Play Mode pendentes por falta de licença válida.
+
+- **Salas já atravessadas — 15/11/2026:** as portas de sala com `stayOpenAfterUnlock` registram a travessia do jogador na sessão e são restauradas abertas ao voltar ao Bloco de Direito ou recarregar um checkpoint. A direção da folha é preservada; a nova partida limpa esse registro. Portas ainda não atravessadas mantêm o contato físico e as exigências de chave existentes. Verificação estática; Unity e Play Mode pendentes por falta de licença válida na execução em lote.
+
 - **Áudio do leque da Wanessa — 14/11/2026:** `Global/Audio/Enemy/WanessaFanThrow.mp3` conserva os bytes de `egata03.mp3` fornecido pelo usuário. `FanZombieAppearance` referencia o clipe, e `EnemyFanProjectile.Launch` reproduz um som espacial por leque efetivamente lançado, na posição de origem, independente da vida útil do projétil. Cópia e GUID conferidos estaticamente; importação Unity, Play Mode e escuta em jogo pendentes.
 
 - **Salas aparecendo azuis — 14/11/2026:** a câmera jogável da cena tinha oclusão ativada com dados calculados em 06/11, antes das revisões posteriores do mapa. A oclusão foi desligada somente nessa câmera para evitar que paredes e mobiliário sejam descartados e revelem o fundo azul da câmera. O diagnóstico é uma inferência a partir da configuração e das datas dos assets; a captura do defeito e o teste em Play Mode ainda são necessários. Medir desempenho antes de decidir por um novo bake de oclusão.
