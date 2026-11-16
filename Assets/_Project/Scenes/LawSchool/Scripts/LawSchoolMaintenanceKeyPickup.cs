@@ -19,8 +19,8 @@ public sealed class LawSchoolMaintenanceKeyPickup : MonoBehaviour
         if (inventory.TryAddKey(LawSchoolMaintenanceAccess.KeyId))
         {
             SFXManager.Instance?.PlayKeyPickupSound();
-            GameplayNotice.Show("Você pegou a chave da sala de manutenção 104.", 7.5f);
-            LawSchoolAlarmPrototype.NotifyKeyCollected(this, inventory);
+            LawSchoolAlarmPrototype.NotifyMaintenanceKeyCollected(this, inventory);
+            GameplayNotice.Show("Chave da manutenção 104 obtida. O alarme disparou!", 7.5f);
         }
         gameObject.SetActive(false);
     }

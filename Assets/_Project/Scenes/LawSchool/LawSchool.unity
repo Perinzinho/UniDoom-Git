@@ -299523,8 +299523,7 @@ MonoBehaviour:
   alarm: {fileID: 1795379039}
   solidBarrier: {fileID: 1291473152}
   warningDistance: 3
-  warningText: "SA\xCDDA BLOQUEADA PELO ALARME\nDesligue o alarme no quadro de energia
-    da manuten\xE7\xE3o."
+  warningText: "Sa\u00edda bloqueada pelo alarme. Desligue-o no quadro da manuten\u00e7\u00e3o."
 --- !u!1 &1012703274
 GameObject:
   m_ObjectHideFlags: 0
@@ -300514,6 +300513,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: law-school-cell-key-alarm
+  lockedMessage: "Fechadura eletr\u00f4nica ativa. O circuito precisa ser desligado."
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1119082858}
@@ -530668,7 +530669,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1789161737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -532387,6 +532388,7 @@ MonoBehaviour:
   building: {fileID: 299184222}
   lighting: {fileID: 299184223}
   key: {fileID: 1789161737}
+  libraryKeyLocation: {fileID: 1453804150}
   siren: {fileID: 1795379038}
   zombiePrefab: {fileID: 8079392098664783884, guid: 7ca84339fac1a3741ac46a2f44900930, type: 3}
   zombieVariants:
@@ -532463,13 +532465,6 @@ MonoBehaviour:
   - {fileID: 1496417204}
   - {fileID: 797084107}
   - {fileID: 1341897469}
-  excludedKeyAreas:
-  - {fileID: 97638006}
-  - {fileID: 366057241}
-  - {fileID: 1298704585}
-  - {fileID: 1691236581}
-  - {fileID: 2015249468}
-  - {fileID: 1272670727}
   initialRedSeconds: 2
   redSeconds: 3
   blackoutSeconds: 1.6
