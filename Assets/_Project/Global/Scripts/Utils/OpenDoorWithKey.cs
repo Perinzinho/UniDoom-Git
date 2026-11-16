@@ -3,6 +3,11 @@ using UnityEngine;
 
 public class OpenDoorWithKey : MonoBehaviour
 {
+    private static readonly Dictionary<string, float> visitedCampusRoomDoors = new Dictionary<string, float>();
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    public static void ResetSession() => visitedCampusRoomDoors.Clear();
+
     [Header("Chaves necessárias para abrir esta porta")]
     [SerializeField] private bool requiresKey01;
     [SerializeField] private bool requiresKey02;
@@ -51,6 +56,7 @@ public class OpenDoorWithKey : MonoBehaviour
     private float contactOpenUntil;
     private bool unlocked;
     private float openingDirection = 1f;
+    private string sessionDoorId;
 
     private bool RequiresAnyKey => requiresKey01 || requiresKey02 || requiresKey03 ||
         !string.IsNullOrEmpty(requiredInventoryKey);
@@ -121,6 +127,9 @@ public enum DoorReloadTriggerMode
     private void Awake()
     {
         outsideTrigger = IsOutsideTrigger;
+        if (stayOpenAfterUnlock &&
+            (gameObject.scene.name == "LawSchool" || gameObject.scene.name == "CampusBlock4"))
+            sessionDoorId = BuildSessionDoorId();
         if (door == null) door = transform.Find("Door");
 
         if (door == null || door == transform)
@@ -158,6 +167,32 @@ public enum DoorReloadTriggerMode
         hinge.SetParent(motionRoot, false);
         hinge.position = hingePosition;
         door.SetParent(hinge, true);
+        RestoreVisitedDoor();
+    }
+
+    private void OnEnable() => RestoreVisitedDoor();
+
+    private string BuildSessionDoorId()
+    {
+        string path = "";
+        Transform current = transform;
+        while (current.parent != null)
+        {
+            path = current.GetSiblingIndex() + "/" + path;
+            current = current.parent;
+        }
+        return gameObject.scene.name + "/" + current.name + "/" + path;
+    }
+
+    private void RestoreVisitedDoor()
+    {
+        if (hinge == null || string.IsNullOrEmpty(sessionDoorId) ||
+            !visitedCampusRoomDoors.TryGetValue(sessionDoorId, out float direction)) return;
+
+        unlocked = true;
+        openingDirection = direction;
+        openProgress = 1f;
+        hinge.localRotation = Quaternion.Euler(0f, openingDirection * openAngle, 0f);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -244,27 +279,31 @@ public enum DoorReloadTriggerMode
             }
         }
 
-        // Disparo ao passar/cruzar o vão da porta
-        if (enableShaderReload && (reloadMode == DoorReloadTriggerMode.WhenPassingThrough || reloadMode == DoorReloadTriggerMode.Both))
+        // A travessia mantém aberta a sala visitada mesmo após recarregar o mapa.
+        // A tela de reload continua obedecendo às configurações da porta.
+        if (openProgress > 0.35f || shouldOpen)
         {
-            if (openProgress > 0.35f || shouldOpen)
+            foreach (Collider other in nearbyPlayers)
             {
-                foreach (Collider other in nearbyPlayers)
+                if (other == null) continue;
+                float currentSide = PlayerSide(other.transform.position);
+                if (playerEntrySides.TryGetValue(other, out float initialSide) &&
+                    Mathf.Abs(initialSide) > 0.15f && Mathf.Abs(currentSide) > 0.15f &&
+                    Mathf.Sign(initialSide) != Mathf.Sign(currentSide))
                 {
-                    if (other == null) continue;
-                    float currentSide = PlayerSide(other.transform.position);
-                    if (playerEntrySides.TryGetValue(other, out float initialSide))
+                    if (!string.IsNullOrEmpty(sessionDoorId))
+                        visitedCampusRoomDoors[sessionDoorId] = openingDirection;
+
+                    if (enableShaderReload && (reloadMode == DoorReloadTriggerMode.WhenPassingThrough ||
+                        reloadMode == DoorReloadTriggerMode.Both))
                     {
-                        // Se iniciou em um dos lados e agora cruzou com folga mínima
-                        if (Mathf.Abs(initialSide) > 0.15f && Mathf.Abs(currentSide) > 0.15f && Mathf.Sign(initialSide) != Mathf.Sign(currentSide))
+                        if (TryTriggerReload())
                         {
-                            if (TryTriggerReload())
-                            {
-                                playerEntrySides[other] = currentSide;
-                                break;
-                            }
+                            playerEntrySides[other] = currentSide;
+                            break;
                         }
                     }
+                    else playerEntrySides[other] = currentSide;
                 }
             }
         }

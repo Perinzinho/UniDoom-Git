@@ -6,22 +6,15 @@ public abstract class Gun : MonoBehaviour
     [Header("Ammo")]
     [SerializeField] protected int magazineSize = 10;
     [SerializeField] protected int currentAmmo = 10;
-    // Kept serialized so existing prefabs and dropped weapons preserve their data.
-    // Player firearms now expose an unlimited reserve and never consume this value.
     [SerializeField] protected int reserveAmmo = 30;
-    [Tooltip("Legacy finite-reserve value kept for prefab compatibility. Player reserve is unlimited.")]
-    [SerializeField, Min(0)] protected int maxReserveAmmo = 30;
 
     [Header("Reload")]
     protected Reloading recharging;
 
     public int CurrentAmmo => currentAmmo;
-    public bool HasUnlimitedReserve => true;
-    public int ReserveAmmo => HasUnlimitedReserve ? int.MaxValue : reserveAmmo;
+    public int ReserveAmmo => reserveAmmo;
     public int MagazineSize => magazineSize;
-    public int MaxReserveAmmo => HasUnlimitedReserve ? int.MaxValue : maxReserveAmmo;
-    public bool IsAmmoFull => currentAmmo >= magazineSize &&
-        (HasUnlimitedReserve || reserveAmmo >= maxReserveAmmo);
+    public bool IsAmmoFull => currentAmmo >= magazineSize;
     public int ReloadRoundCount => recharging != null ? recharging.ReloadRoundCount : 0;
     public float ReloadElapsedTime => recharging != null ? recharging.ReloadElapsedTime : 0f;
 
@@ -102,6 +95,9 @@ public abstract class Gun : MonoBehaviour
             Gunshot?.Invoke(shooter.transform.position, this is Shotgun ? 26f : 18f);
 
         OnShoot?.Invoke();
+
+        if (currentAmmo == 0)
+            TryReload();
     }
 
     public void TryReload()
@@ -120,7 +116,7 @@ public abstract class Gun : MonoBehaviour
             return;
         }
 
-        if (!HasUnlimitedReserve && reserveAmmo <= 0)
+        if (reserveAmmo <= 0)
         {
             return;
         }
@@ -143,7 +139,7 @@ public abstract class Gun : MonoBehaviour
 
     public void AddAmmo(int amount)
     {
-        if (amount <= 0 || HasUnlimitedReserve)
+        if (amount <= 0)
             return;
 
         reserveAmmo += amount;
@@ -165,11 +161,6 @@ public abstract class Gun : MonoBehaviour
             recharging.CancelReload();
 
         currentAmmo = magazineSize;
-        if (!HasUnlimitedReserve)
-        {
-            // Preserve surplus ammunition collected from ordinary enemy drops.
-            reserveAmmo = Mathf.Max(reserveAmmo, maxReserveAmmo);
-        }
         OnAmmoChanged?.Invoke();
         return true;
     }
@@ -183,14 +174,12 @@ public abstract class Gun : MonoBehaviour
     {
         int missingAmmo = magazineSize - currentAmmo;
         int ammoToReload = Mathf.Min(maxRounds, missingAmmo);
-        if (!HasUnlimitedReserve)
-            ammoToReload = Mathf.Min(ammoToReload, reserveAmmo);
+        ammoToReload = Mathf.Min(ammoToReload, reserveAmmo);
         if (ammoToReload <= 0)
             return;
 
         currentAmmo += ammoToReload;
-        if (!HasUnlimitedReserve)
-            reserveAmmo -= ammoToReload;
+        reserveAmmo -= ammoToReload;
 
         OnAmmoChanged?.Invoke();
     }

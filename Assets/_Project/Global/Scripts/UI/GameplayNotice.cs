@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 namespace UniDoom.UI
 {
-    /// <summary>Transient feedback using the director's room hint presentation.</summary>
+    /// <summary>Shared presentation for in-game notices and interaction prompts.</summary>
     public sealed class GameplayNotice : MonoBehaviour
     {
         public const string LockedDoorKeyMessage = "Porta trancada. Você precisa de uma chave para abrir.";
@@ -56,18 +56,33 @@ namespace UniDoom.UI
         }
         void OnGUI() { if (IsShowing) Draw(message); }
 
-        // Same font, position, color and shadow as DirectorSecretPassage.
+        // Keep messages readable over both dark rooms and bright scenery.
         public static void Draw(string text)
         {
             if (string.IsNullOrEmpty(text) || Blocked) return;
-            style ??= new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, wordWrap = true };
-            style.fontSize = Mathf.Clamp(Mathf.RoundToInt(Screen.height / 52f), 14, 24);
-            var rect = new Rect(Screen.width * .23f, Screen.height * .79f, Screen.width * .54f, 64);
-            rect.height = Mathf.Max(rect.height, style.CalcHeight(new GUIContent(text), rect.width));
+            style ??= new GUIStyle(GUI.skin.label)
+            {
+                alignment = TextAnchor.MiddleCenter,
+                wordWrap = true,
+                fontStyle = FontStyle.Bold
+            };
+            style.normal.textColor = Color.white;
+            style.fontSize = Mathf.Clamp(Mathf.RoundToInt(Screen.height / 44f), 18, 30);
+            var content = new GUIContent(text);
+            float width = Mathf.Min(Screen.width * .72f,
+                Mathf.Max(Screen.width * .34f, style.CalcSize(content).x + 48f));
+            var rect = new Rect((Screen.width - width) * .5f, Screen.height * .78f,
+                width, Mathf.Max(54f, style.CalcHeight(content, width) + 12f));
+            rect.y = Mathf.Max(16f, Mathf.Min(rect.y, Screen.height - rect.height - 24f));
+            var panel = new Rect(rect.x - 18f, rect.y - 8f, rect.width + 36f, rect.height + 16f);
             Color previous = GUI.color;
-            GUI.color = new Color(0, 0, 0, .85f);
-            GUI.Label(new Rect(rect.x + 1, rect.y + 2, rect.width, rect.height), text, style);
-            GUI.color = new Color(.80f, .77f, .65f);
+            GUI.color = new Color(.025f, .03f, .035f, .87f);
+            GUI.DrawTexture(panel, Texture2D.whiteTexture);
+            GUI.color = new Color(.88f, .78f, .56f, .9f);
+            GUI.DrawTexture(new Rect(panel.x, panel.y, panel.width, 2f), Texture2D.whiteTexture);
+            GUI.color = new Color(0f, 0f, 0f, .9f);
+            GUI.Label(new Rect(rect.x + 1f, rect.y + 2f, rect.width, rect.height), text, style);
+            GUI.color = Color.white;
             GUI.Label(rect, text, style);
             GUI.color = previous;
         }
