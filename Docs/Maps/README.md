@@ -49,6 +49,7 @@ Menu compartilhado: [créditos, música e HUD da espingarda](../Credits.md).
 ## Munição ilimitada do jogador — 13/11/2026
 
 - Pistola e espingarda mantêm o carregador, o consumo por disparo e suas animações/tempos de recarga, mas a reserva do jogador é ilimitada e não diminui ao recarregar.
+- Ao consumir o último disparo do carregador, a arma inicia automaticamente a mesma recarga usada pela tecla `R`, desde que exista munição de reserva.
 - O HUD mostra `∞` no lugar da quantidade da reserva. Valores antigos de reserva permanecem serializados nos prefabs somente para preservar compatibilidade; não limitam mais o jogador.
 - Como a razão de munição disponível permanece cheia, `EnemyLootDrop` não gera novas caixas por escassez. Caixas já posicionadas e seus assets foram preservados.
 - Compilação e conferência estática executadas; disparo, recarga de pistola/espingarda, HUD em jogo e Play Mode ainda precisam de validação.
