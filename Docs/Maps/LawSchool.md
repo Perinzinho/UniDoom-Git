@@ -6,6 +6,8 @@ Atualizado: **2026-11-08**. Estado: chave sorteada por partida, placas gastas e 
 
 ## Leitura rápida
 
+- **Alcance do machado — 16/11/2026:** o golpe agora alcança até **2 m**, ajustando a distância ao arco visual da animação sem deixar o ataque longo demais. O atraso do impacto, a colisão com paredes e o dano permanecem iguais. Verificação estática; Play Mode e comparação visual ainda pendentes.
+
 - **Tamanho dos kits de cura — 15/11/2026:** o `LawSchoolRoomMedkit` usa agora o mesmo tamanho visual dos kits compartilhados, cerca de 0,85 m de largura e 0,48 m de altura. O sprite da sala foi ampliado e reposicionado junto ao piso; o gatilho e a cura permanecem iguais. A padronização está no prefab global, com compensação para as três instâncias do porão. Referências conferidas estaticamente; Unity e Play Mode pendentes por falta de licença válida.
 
 - **Salas já atravessadas — 15/11/2026:** as portas de sala com `stayOpenAfterUnlock` registram a travessia do jogador na sessão e são restauradas abertas ao voltar ao Bloco de Direito ou recarregar um checkpoint. A direção da folha é preservada; a nova partida limpa esse registro. Portas ainda não atravessadas mantêm o contato físico e as exigências de chave existentes. Verificação estática; Unity e Play Mode pendentes por falta de licença válida na execução em lote.
