@@ -65,9 +65,9 @@ namespace UniDoom.UI
             var rect = new Rect(Screen.width * .23f, Screen.height * .79f, Screen.width * .54f, 64);
             rect.height = Mathf.Max(rect.height, style.CalcHeight(new GUIContent(text), rect.width));
             Color previous = GUI.color;
-            GUI.color = new Color(0, 0, 0, .85f);
+            GUI.color = new Color(0, 0, 0, .92f);
             GUI.Label(new Rect(rect.x + 1, rect.y + 2, rect.width, rect.height), text, style);
-            GUI.color = new Color(.80f, .77f, .65f);
+            GUI.color = new Color(.98f, .97f, .90f);
             GUI.Label(rect, text, style);
             GUI.color = previous;
         }
