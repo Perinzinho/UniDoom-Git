@@ -4,6 +4,10 @@ Atualizado: **2026-11-08**, revisão de [correcoesbloco4.md](correcoesbloco4.md)
 
 ## Leitura rápida
 
+- **Salas já atravessadas — 15/11/2026:** as portas de sala com `stayOpenAfterUnlock` registram a travessia do jogador na sessão e são restauradas abertas ao voltar ao Bloco 4 ou recarregar um checkpoint. A direção da folha é preservada; a nova partida limpa esse registro. A porta da sala 423 continua exigindo o puzzle antes da primeira passagem. Verificação estática; Unity e Play Mode pendentes por falta de licença válida na execução em lote.
+
+- **Parede do quadro do rodeio — 15/11/2026:** o objeto `Picture wall` atrás da foto do hall usava `Institutional ivory plaster`, formando um retângulo cinza sobre a parede laranja. O renderer desse objeto agora usa o material já existente `Institutional orange plaster`, que compartilha as texturas de base e normal com a versão cinza. Geometria, colisão, foto, moldura, símbolos e luminária foram preservados. Referência do material e diff conferidos estaticamente; Unity e comparação visual em jogo pendentes por falta de licença válida na execução em lote.
+
 - **Luz do quadro do corredor — 14/11/2026:** a luminária sobre a foto do hall foi reduzida ao formato de arandela, com base e braço na parede e foco spot quente voltado para o quadro. O foco e o difusor participam do apagão pelo `Block4PowerFluctuation`. Prefab e referências conferidos estaticamente; Unity, Play Mode, build e comparação visual não executados.
 
 - **Carta da secretaria — 13/11/2026:** uma folha manuscrita está sobre o tampo do guichê, ao lado da prancheta, em `(-7,45; 1,254; -5,75)`. `E` ou `X` abre a imagem no visualizador de documentos existente. O texto alerta sobre eventos paranormais, apagões e registros de computador que se misturam, desaparecem e reaparecem, sem revelar a senha do puzzle. Objeto e colisão estão na cena; textura, material e script exclusivos em `Scenes/CampusBlock4`. Referências e posicionamento conferidos estaticamente; Unity/Play Mode e inspeção visual pendentes porque o projeto estava aberto em outra instância do Editor.
