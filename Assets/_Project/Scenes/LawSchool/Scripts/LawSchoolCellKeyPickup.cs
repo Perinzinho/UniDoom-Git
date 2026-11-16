@@ -1,6 +1,6 @@
 using UnityEngine;
 
-/// <summary>The randomized library access key; independent of prison and maintenance keys.</summary>
+/// <summary>The library access key inside the auditorium.</summary>
 [DisallowMultipleComponent, RequireComponent(typeof(BoxCollider))]
 public sealed class LawSchoolCellKeyPickup : MonoBehaviour
 {
@@ -29,7 +29,7 @@ public sealed class LawSchoolCellKeyPickup : MonoBehaviour
 
     bool TryCollect(Collider other)
     {
-        if (collected || !alarm || !alarm.isActiveAndEnabled || Time.timeScale <= 0 ||
+        if (collected || !alarm || !alarm.isActiveAndEnabled || !alarm.IsResolved || Time.timeScale <= 0 ||
             UniDoom.UI.GameMenus.BlocksGameplay) return false;
         var player = other.GetComponentInParent<PlayerPickupKey>();
         if (!player) return false;
@@ -42,8 +42,7 @@ public sealed class LawSchoolCellKeyPickup : MonoBehaviour
         if (newlyCollected) SFXManager.Instance?.PlayKeyPickupSound();
         if (newlyCollected)
         {
-            UniDoom.UI.GameplayNotice.Show("Você pegou uma chave da entrada da Biblioteca do Campus. A entrada precisa de duas chaves.", 7.5f);
-            LawSchoolAlarmPrototype.NotifyKeyCollected(this, keys);
+            UniDoom.UI.GameplayNotice.Show("Chave da Biblioteca do Campus obtida. A entrada precisa de duas chaves. Já posso sair do Bloco de Direito.", 7.5f);
         }
         return newlyCollected;
     }

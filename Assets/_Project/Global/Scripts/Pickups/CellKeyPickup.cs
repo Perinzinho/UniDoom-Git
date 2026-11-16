@@ -35,7 +35,6 @@ public sealed class CellKeyPickup : MonoBehaviour
         {
             SFXManager.Instance?.PlayKeyPickupSound();
             UniDoom.UI.GameplayNotice.Show($"Você pegou a chave da cela {cellId} da prisão.", 7.5f);
-            LawSchoolAlarmPrototype.NotifyKeyCollected(this, keys);
         }
         Hide();
     }

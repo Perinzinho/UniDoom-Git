@@ -37,13 +37,13 @@
 - Paleta e mobiliário de `Global/Materials/CampusInterior/` e `Global/Meshes/CampusInterior/`. Meshes exclusivos novos: `CampusLibrary/Meshes/NorthWing*.asset`.
 - Nenhum novo download de modelo 3D. Fontes e hashes da reutilização: `Licenses/AssetSources/CampusLibrary/expansion-sources.json` e `reused-props-sources.json` da mesma pasta; os três documentos de créditos registram o uso nesta ala.
 
-## Acesso com duas chaves — 09/11/2026
+## Acesso com duas chaves — 09/11/2026; localização de Direito atualizada em 16/11/2026
 
 A entrada pelo CampusExterior exige **as duas chaves de acesso à biblioteca**, guardadas no inventário persistente `PlayerCellKeys`. Uma chave sozinha, chaves de cela ou a chave da manutenção não liberam a entrada. As chaves de acesso permanecem no inventário, permitindo voltar à biblioteca na mesma sessão; a saída continua livre e os spawn IDs foram preservados.
 
 | Chave de acesso | Obtenção | Identidade |
 | --- | --- | --- |
-| Direito | Sorteada por partida pelos pontos já configurados em LawSchool; posição mantida ao retornar ao prédio. Alarme e manutenção preservados | `campus-library-law-school`; latão, etiqueta ocre “BIBLIOTECA / DIREITO” |
+| Direito | Dentro do auditório de LawSchool, após pegar a chave da manutenção, desligar o alarme e liberar a fechadura eletrônica no quadro da sala 104 | `campus-library-law-school`; latão, etiqueta ocre “BIBLIOTECA / DIREITO” |
 | Bloco 4 | Recompensa na sala 423, atrás da porta com senha; exige puzzle resolvido e porta totalmente aberta | `campus-library-block-4`; aço, etiqueta azul “BIBLIOTECA / BLOCO 4” |
 
 A apresentação atual da porta externa usa **somente dois cadeados físicos**, sem placa de requisitos, ícones de chave, contador, indicadores coloridos ou nomes dos blocos. Cada chave de acesso retira o cadeado correspondente; a barreira sólida permanece enquanto faltar alguma. A até 2,5 m da barreira, aparece o aviso **“Porta trancada, você precisa de uma chave.”** enquanto a entrada estiver bloqueada. O aviso desaparece ao se afastar, liberar a entrada, pausar, abrir menus, morrer ou iniciar uma transição. `CampusLibraryEntranceLock` implementa o guard já aceito por `SceneTransitionDoor`; nenhum sistema paralelo de inventário ou carregamento foi criado.
