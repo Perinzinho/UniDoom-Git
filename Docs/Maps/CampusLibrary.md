@@ -2,6 +2,8 @@
 
 ## Leitura rápida
 
+- **Colisão das estantes — 16/11/2026:** as 74 estantes do acervo, da ala norte e do anexo têm agora um `BoxCollider` sólido no próprio objeto. Os 37 colisores antigos, compartilhados por pares, foram desativados para evitar colisão duplicada; seus objetos e fileIDs permanecem no prefab. O volume externo de cada par mudou no máximo 5 mm. A cena usa o prefab sem overrides nesses colisores. Conferência estática de referências, dimensões e `git diff --check` concluída; Unity, Play Mode, build e comparação visual não executados.
+
 - **Falhas da lanterna durante a falta de energia — 13/11/2026:** enquanto `LibraryLightingController.IsUnpowered` estiver ativo, `PlayerFlashlight` sorteia um intervalo de 1 a 60 segundos de tempo de jogo, apaga o foco por 3 segundos e sorteia novamente ao restaurá-lo. A falha não muda a escolha do jogador de ligar/desligar a lanterna; ao ligar o gerador ou sair da cena, o ciclo é cancelado. A intensidade do foco global caiu de 80 para 65. Verificação estática e `git diff --check`; avaliação visual e Play Mode pendentes.
 
 - **Aviso após o puzzle — 12/11/2026:** ao ligar o gerador, `GameplayNotice` mostra “Gerador ligado. Volte para a prisão e liberte os professores.” por 7,5 s de gameplay. O tempo de leitura fica pausado enquanto o quadro modal estiver aberto.

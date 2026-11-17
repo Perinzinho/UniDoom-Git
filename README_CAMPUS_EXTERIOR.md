@@ -1,5 +1,7 @@
 # Campus Exterior e Biblioteca do Campus — contexto de implementação
 
+**Colisão das estantes da Biblioteca do Campus — 16/11/2026:** as 74 estantes do prefab `CampusLibrary` passaram a carregar colisores sólidos individuais; os 37 colisores de pares foram desativados, preservando objetos e IDs. O volume de bloqueio permaneceu equivalente. Detalhes e limites da verificação em [CampusLibrary](Docs/Maps/CampusLibrary.md#leitura-rápida).
+
 **Progressão do Bloco de Direito — 16/11/2026:** a chave da manutenção sorteada inicia o alarme. O quadro da manutenção 104 desliga o alarme e libera a fechadura eletrônica do auditório, onde fica a chave de acesso à Biblioteca do Campus. A saída `LawSchool → CampusExterior / FromLawSchool` permanece fisicamente bloqueada até o quadro estar desligado e essa chave ter sido coletada. Os avisos inferiores seguem `GameplayNotice`. Contrato atual em [LawSchool](Docs/Maps/LawSchool.md#leitura-rápida); os registros abaixo sobre saída liberada apenas pelo alarme são históricos.
 
 **Portas das salas visitadas — 15/11/2026:** `OpenDoorWithKey` conserva por sessão as portas com `stayOpenAfterUnlock` efetivamente atravessadas em LawSchool e CampusBlock4. Ao recarregar esses mapas ou voltar por um portal, as folhas reaparecem abertas na direção em que foram usadas; nova partida limpa o registro. Os bloqueios de chave e puzzle continuam para salas ainda não atravessadas. CampusLibrary mantém suas portas internas estáticas e entreabertas. Verificação estática; Unity e Play Mode pendentes por falta de licença válida na execução em lote.
