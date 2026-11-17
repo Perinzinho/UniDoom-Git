@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df224c73a824ee41da81a85eb0bf95f2, type: 3}
+  m_Name: AK47Definition
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponDefinition
+  gunPrefab: {fileID: 11400000, guid: b0a2c2f0d47a4f42a2e3e1a1b5b6c7d8, type: 3}
+  axePrefab: {fileID: 0}
+  pickupPrefab: {fileID: 4786408415445628171, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
+  idleFrames:
+  - {fileID: -1687253201, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  shootFrames:
+  - {fileID: -1866994167, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: 1649517384, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: -1787151191, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: -1597786155, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: -1469327297, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: -849897969, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: -1241440065, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: -661500122, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: 1181239307, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: -599943323, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: 771770497, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: 1133932820, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: -301178177, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: 1840534244, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: -634488626, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: 254881789, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: 1533964818, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: -289269720, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: 2004171486, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: -18566625, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: 673653534, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: -2014996618, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: 480723174, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: 388342356, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: -716972794, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  rechargeFrames:
+  - {fileID: -1866994167, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: 1649517384, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: -1787151191, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: -1597786155, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  - {fileID: -1469327297, guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1, type: 3}
+  idleFrameRate: 12
+  shootFrameRate: 20
+  shootFrameDurations: []
+  rechargeFrameRate: 20
+  hudOffset: {x: 0, y: 0}
+  hudSize: {x: 500, y: 400}
+  hudViewportLimit: {x: 0.36, y: 0.42}
+  hudAttachToScreenEdges: 0
+  hudBottomCropFraction: 0
+  hudFrameBounds: []

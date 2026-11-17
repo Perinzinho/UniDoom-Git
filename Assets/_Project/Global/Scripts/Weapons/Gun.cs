@@ -7,7 +7,6 @@ public abstract class Gun : MonoBehaviour
     [SerializeField] protected int magazineSize = 10;
     [SerializeField] protected int currentAmmo = 10;
     [SerializeField] protected int reserveAmmo = 30;
-    [SerializeField, Min(0)] protected int maxReserveAmmo = 30;
 
     [Header("Reload")]
     protected Reloading recharging;
@@ -15,9 +14,7 @@ public abstract class Gun : MonoBehaviour
     public int CurrentAmmo => currentAmmo;
     public int ReserveAmmo => reserveAmmo;
     public int MagazineSize => magazineSize;
-    public int MaxReserveAmmo => maxReserveAmmo;
-    public bool IsAmmoFull => currentAmmo >= magazineSize &&
-        reserveAmmo >= maxReserveAmmo;
+    public bool IsAmmoFull => currentAmmo >= magazineSize;
     public int ReloadRoundCount => recharging != null ? recharging.ReloadRoundCount : 0;
     public float ReloadElapsedTime => recharging != null ? recharging.ReloadElapsedTime : 0f;
 
@@ -98,6 +95,9 @@ public abstract class Gun : MonoBehaviour
             Gunshot?.Invoke(shooter.transform.position, this is Shotgun ? 26f : 18f);
 
         OnShoot?.Invoke();
+
+        if (currentAmmo == 0)
+            TryReload();
     }
 
     public void TryReload()
@@ -161,8 +161,6 @@ public abstract class Gun : MonoBehaviour
             recharging.CancelReload();
 
         currentAmmo = magazineSize;
-        // Preserve surplus ammunition collected from ordinary enemy drops.
-        reserveAmmo = Mathf.Max(reserveAmmo, maxReserveAmmo);
         OnAmmoChanged?.Invoke();
         return true;
     }
