@@ -179,9 +179,11 @@ public class PlayerMovement : MonoBehaviour
         if (door != null && door.BlocksPlayer(hit.collider, keys))
         {
             audio?.NotifyLockedDoorContact(door);
-            ShowLockedDoorNotice(door, door.NeedsKey(keys) ?
-                UniDoom.UI.GameplayNotice.LockedDoorKeyMessage :
-                UniDoom.UI.GameplayNotice.LockedDoorMessage);
+            string message = door.LockedMessage;
+            if (string.IsNullOrEmpty(message))
+                message = door.NeedsKey(keys) ? UniDoom.UI.GameplayNotice.LockedDoorKeyMessage :
+                    UniDoom.UI.GameplayNotice.LockedDoorMessage;
+            ShowLockedDoorNotice(door, message);
         }
     }
 

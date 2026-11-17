@@ -26,7 +26,7 @@ public sealed class PrisonKeyPickup : MonoBehaviour
         if (inventory.TryAddKey(PrisonProgress.CellKeyId(cellId)))
         {
             SFXManager.Instance?.PlayKeyPickupSound();
-            UniDoom.UI.GameplayNotice.Show($"Você pegou a chave da cela {cellId} da prisão.", 7.5f);
+            UniDoom.UI.GameplayNotice.ShowKeyAcquired($"cela {cellId} da prisão");
         }
         gameObject.SetActive(false);
     }
