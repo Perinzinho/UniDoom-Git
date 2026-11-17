@@ -174,10 +174,11 @@ namespace UniDoom.CampusLibrary
         }
         string Prompt(LibraryMissionTarget target)
         {
+            // Fuses are collected on contact; only the remaining devices keep an E prompt.
+            if (target.Kind == LibraryTargetKind.Fuse) return null;
             string key = Gamepad.current != null && Gamepad.current.wasUpdatedThisFrame ? "[X] " : "[E] ";
             switch (target.Kind)
             {
-                case LibraryTargetKind.Fuse: return key + "Coletar fusível";
                 case LibraryTargetKind.Clue: return key + "Ler bilhete de manutenção";
                 case LibraryTargetKind.Button: return key + "Usar o gerador para abrir o painel";
                 case LibraryTargetKind.FuseSocket:
@@ -199,11 +200,7 @@ namespace UniDoom.CampusLibrary
             switch (target.Kind)
             {
                 case LibraryTargetKind.Fuse:
-                    if (!LibraryMissionProgress.Collect(target.Id)) return false;
-                    SFXManager.Instance?.PlayKeyPickupSound();
-                    Notify($"Fusível coletado ({LibraryMissionProgress.FuseCount}/3)." +
-                        (LibraryMissionProgress.FuseCount == 3 ? " Volte ao gerador." : ""));
-                    return true;
+                    return CollectFuse(target);
                 case LibraryTargetKind.Clue:
                     if (target.Document && GameMenus.Instance) return GameMenus.Instance.TryOpenDocument(target.Document, target);
                     Notify(Clue); return false;
@@ -241,6 +238,22 @@ namespace UniDoom.CampusLibrary
                     return false;
             }
         }
+        internal bool TryCollectOnTouch(LibraryMissionTarget target)
+        {
+            if (!isActiveAndEnabled || !GameplayAvailable || !target || target.Mission != this ||
+                target.Kind != LibraryTargetKind.Fuse) return false;
+            return CollectFuse(target);
+        }
+
+        bool CollectFuse(LibraryMissionTarget target)
+        {
+            if (!LibraryMissionProgress.Collect(target.Id)) return false;
+            SFXManager.Instance?.PlayKeyPickupSound();
+            Notify($"Fusível coletado ({LibraryMissionProgress.FuseCount}/3)." +
+                (LibraryMissionProgress.FuseCount == 3 ? " Volte ao gerador." : ""));
+            return true;
+        }
+
         internal bool TryPressFromPanel(int id, out bool correct)
         {
             correct = false;

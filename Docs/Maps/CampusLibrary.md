@@ -2,6 +2,8 @@
 
 ## Leitura rápida
 
+- **Coleta por contato — 16/11/2026:** os três fusíveis da missão agora são recolhidos ao encostar (trigger `SphereCollider` no alvo), como chaves e suprimentos, sem prompt `[E]`. O E permanece apenas como fallback silencioso em foco. As chaves do porão e as tags `Key01–03` também aceitam `OnTriggerStay`, padronizando o contato. Verificação estática; Play Mode pendente.
+
 - **Falhas da lanterna durante a falta de energia — 13/11/2026:** enquanto `LibraryLightingController.IsUnpowered` estiver ativo, `PlayerFlashlight` sorteia um intervalo de 1 a 60 segundos de tempo de jogo, apaga o foco por 3 segundos e sorteia novamente ao restaurá-lo. A falha não muda a escolha do jogador de ligar/desligar a lanterna; ao ligar o gerador ou sair da cena, o ciclo é cancelado. A intensidade do foco global caiu de 80 para 65. Verificação estática e `git diff --check`; avaliação visual e Play Mode pendentes.
 
 - **Aviso após o puzzle — 12/11/2026:** ao ligar o gerador, `GameplayNotice` mostra “Gerador ligado. Volte para a prisão e liberte os professores.” por 7,5 s de gameplay. O tempo de leitura fica pausado enquanto o quadro modal estiver aberto.

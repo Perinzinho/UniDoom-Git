@@ -1,12 +1,12 @@
 fileFormatVersion: 2
-guid: d6e4a0f4b0ce4a189dcae9c447a4d3f1
+guid: 7d3108d8dd5b545459e8ff4ac958b526
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 0
+    enableMipMap: 1
     sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
@@ -34,16 +34,16 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
-    wrapU: 1
-    wrapV: 1
+    wrapU: 0
+    wrapV: 0
     wrapW: 0
-  nPOTScale: 0
+  nPOTScale: 1
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 0
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -52,9 +52,9 @@ TextureImporter:
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
-  alphaIsTransparency: 1
+  alphaIsTransparency: 0
   spriteTessellationDetail: -1
-  textureType: 8
+  textureType: 0
   textureShape: 1
   singleChannelComponent: 0
   flipbookRows: 1
@@ -93,581 +93,22 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: AK47_idle_00
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 512
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2f8f6e9b34fb8c5917ef84fad00005ee
-      internalID: 8832521568569687750
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_01
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 416
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 09eeb790d1c2f78bed4b9985a8be03e1
-      internalID: 8948687623620846423
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_02
-      rect:
-        serializedVersion: 2
-        x: 154
-        y: 416
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 48a351624c444f16c5ea4a353e8347e0
-      internalID: -6309033887802770385
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_03
-      rect:
-        serializedVersion: 2
-        x: 308
-        y: 416
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a93c7a95c622e80b8d4ed297f0cad4fc
-      internalID: 3890250465926015675
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_04
-      rect:
-        serializedVersion: 2
-        x: 462
-        y: 416
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d5b7c3a0cb986262ba272183f98c0e00
-      internalID: 863806510054230635
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_05
-      rect:
-        serializedVersion: 2
-        x: 616
-        y: 416
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3fd86ba823b19d926032c7d16f1ab46d
-      internalID: 877592455542071084
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_06
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 320
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0f9657cd28cd9b2ee4b2458b344d3e71
-      internalID: -964810783013030868
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_07
-      rect:
-        serializedVersion: 2
-        x: 154
-        y: 320
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bf2001b67f61f2566aad936a402b25da
-      internalID: -2423194206192680326
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_08
-      rect:
-        serializedVersion: 2
-        x: 308
-        y: 320
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 264f92d85f122fabdec17cf43c722734
-      internalID: 8920657971011179531
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_09
-      rect:
-        serializedVersion: 2
-        x: 462
-        y: 320
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0b486846885c62f0c4dbfce56b83e9b5
-      internalID: -7922887411640923386
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_10
-      rect:
-        serializedVersion: 2
-        x: 616
-        y: 320
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 65973ddc187139bced880da28add709e
-      internalID: 5250347044415431048
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_11
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 224
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8148002ec2995dd52b6b9051b31e168e
-      internalID: 7079642917011750253
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_12
-      rect:
-        serializedVersion: 2
-        x: 154
-        y: 224
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 14719643586291fe149eb97ad20aa1c4
-      internalID: -4072900054613875206
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_13
-      rect:
-        serializedVersion: 2
-        x: 308
-        y: 224
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bf620cee6d0abb513e9f1efc938ebfc1
-      internalID: 5382969918849673076
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_14
-      rect:
-        serializedVersion: 2
-        x: 462
-        y: 224
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e452b46de80e0cf2c7f7f7397238533c
-      internalID: -683520129636355796
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_15
-      rect:
-        serializedVersion: 2
-        x: 616
-        y: 224
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ce782edad6437febbd608308874205f5
-      internalID: -8891346128314460559
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_16
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 128
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: fd2f310f7adf90d2d3ed3ac732d0236d
-      internalID: -8299722188411185036
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_17
-      rect:
-        serializedVersion: 2
-        x: 154
-        y: 128
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 12726e5ba0e346923633eb05e3c14df9
-      internalID: 52466902967993154
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_18
-      rect:
-        serializedVersion: 2
-        x: 308
-        y: 128
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2818c2ee629d327188c6d29376c859d6
-      internalID: 3554027816168594953
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_19
-      rect:
-        serializedVersion: 2
-        x: 462
-        y: 128
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: de3a757705caea427dbe4a73179f2588
-      internalID: 3674192108800978422
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_20
-      rect:
-        serializedVersion: 2
-        x: 616
-        y: 128
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 1fb2e4feb83e1b2937494722f119ecfc
-      internalID: 4567039037878305710
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_21
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 32
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 1e2327284e388c3fd6d3ffa441c41e09
-      internalID: -2372356965187392857
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_22
-      rect:
-        serializedVersion: 2
-        x: 154
-        y: 32
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7697e5870e63d339f5384d37a753d20f
-      internalID: 3356363057502145759
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_23
-      rect:
-        serializedVersion: 2
-        x: 308
-        y: 32
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e640a71c03911990966851d2137b8484
-      internalID: 5805335203063435670
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_24
-      rect:
-        serializedVersion: 2
-        x: 462
-        y: 32
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 54a225176afd79b3981544c666557f9a
-      internalID: -6457122630000294993
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: AK47_shoot_25
-      rect:
-        serializedVersion: 2
-        x: 616
-        y: 32
-        width: 154
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 06dd43d577d7d9057112b3f5a4012389
-      internalID: 3188658427956079939
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     customData: 
     physicsShape: []
@@ -681,33 +122,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      AK47_idle_00: 8832521568569687750
-      AK47_shoot_01: 8948687623620846423
-      AK47_shoot_02: -6309033887802770385
-      AK47_shoot_03: 3890250465926015675
-      AK47_shoot_04: 863806510054230635
-      AK47_shoot_05: 877592455542071084
-      AK47_shoot_06: -964810783013030868
-      AK47_shoot_07: -2423194206192680326
-      AK47_shoot_08: 8920657971011179531
-      AK47_shoot_09: -7922887411640923386
-      AK47_shoot_10: 5250347044415431048
-      AK47_shoot_11: 7079642917011750253
-      AK47_shoot_12: -4072900054613875206
-      AK47_shoot_13: 5382969918849673076
-      AK47_shoot_14: -683520129636355796
-      AK47_shoot_15: -8891346128314460559
-      AK47_shoot_16: -8299722188411185036
-      AK47_shoot_17: 52466902967993154
-      AK47_shoot_18: 3554027816168594953
-      AK47_shoot_19: 3674192108800978422
-      AK47_shoot_20: 4567039037878305710
-      AK47_shoot_21: -2372356965187392857
-      AK47_shoot_22: 3356363057502145759
-      AK47_shoot_23: 5805335203063435670
-      AK47_shoot_24: -6457122630000294993
-      AK47_shoot_25: 3188658427956079939
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
