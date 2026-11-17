@@ -6,6 +6,8 @@ Atualizado: **2026-11-08**. Estado: chave sorteada por partida, placas gastas e 
 
 ## Leitura rápida
 
+- **AK-47 sobre a mesa — 16/11/2026:** a sala 126 recebe um pickup de AK-47 sobre uma carteira ativa, usando `Global/Textures/Weapons/AK47PickupReference.png` como visual compartilhado do prefab e da cena. A coleta reutiliza `WeaponPickup` e `AK47Definition`, com trigger e arma funcional preservados; a posição e a referência do sprite foram conferidas estaticamente. Play Mode e inspeção visual na Unity ainda não foram executados.
+
 - **Alcance do machado — 16/11/2026:** o golpe agora alcança até **2 m**, ajustando a distância ao arco visual da animação sem deixar o ataque longo demais. O atraso do impacto, a colisão com paredes e o dano permanecem iguais. Verificação estática; Play Mode e comparação visual ainda pendentes.
 
 - **Tamanho dos kits de cura — 15/11/2026:** o `LawSchoolRoomMedkit` usa agora o mesmo tamanho visual dos kits compartilhados, cerca de 0,85 m de largura e 0,48 m de altura. O sprite da sala foi ampliado e reposicionado junto ao piso; o gatilho e a cura permanecem iguais. A padronização está no prefab global, com compensação para as três instâncias do porão. Referências conferidas estaticamente; Unity e Play Mode pendentes por falta de licença válida.
