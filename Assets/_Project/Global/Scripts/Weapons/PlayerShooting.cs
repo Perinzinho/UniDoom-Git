@@ -30,7 +30,8 @@ public class PlayerShooting : MonoBehaviour
         if (gun == null)
             return;
 
-        if (Input.GetButtonDown("Fire1"))
+        bool automaticFire = gun is AK47 && Input.GetButton("Fire1");
+        if (automaticFire || Input.GetButtonDown("Fire1"))
         {
             gun.TryShoot();
             
