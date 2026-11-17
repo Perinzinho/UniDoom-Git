@@ -8,7 +8,7 @@ public sealed class Axe : MonoBehaviour
 {
     [SerializeField, Min(1f)] private float damage = 55f;
     [Tooltip("Maximum melee reach. Zombies use player-to-target distance; the Director uses distance to its body collider.")]
-    [SerializeField, Min(.1f)] private float range = 1.5f;
+    [SerializeField, Min(.1f)] private float range = 2f;
     [SerializeField, Min(0f)] private float hitRadius = .28f;
     [Tooltip("Extend the swing below eye level to catch shorter, seated enemies.")]
     [SerializeField, Min(0f)] private float hitHeight = .75f;
