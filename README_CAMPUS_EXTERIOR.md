@@ -1,5 +1,9 @@
 # Campus Exterior e Biblioteca do Campus — contexto de implementação
 
+**Colisão das estantes da Biblioteca do Campus — 16/11/2026:** as 74 estantes do prefab `CampusLibrary` passaram a carregar colisores sólidos individuais; os 37 colisores de pares foram desativados, preservando objetos e IDs. O volume de bloqueio permaneceu equivalente. Detalhes e limites da verificação em [CampusLibrary](Docs/Maps/CampusLibrary.md#leitura-rápida).
+
+**Progressão do Bloco de Direito — 16/11/2026:** a chave da manutenção sorteada inicia o alarme. O quadro da manutenção 104 desliga o alarme e libera a fechadura eletrônica do auditório, onde fica a chave de acesso à Biblioteca do Campus. A saída `LawSchool → CampusExterior / FromLawSchool` permanece fisicamente bloqueada até o quadro estar desligado e essa chave ter sido coletada. Os avisos inferiores seguem `GameplayNotice`. Contrato atual em [LawSchool](Docs/Maps/LawSchool.md#leitura-rápida); os registros abaixo sobre saída liberada apenas pelo alarme são históricos.
+
 **Portas das salas visitadas — 15/11/2026:** `OpenDoorWithKey` conserva por sessão as portas com `stayOpenAfterUnlock` efetivamente atravessadas em LawSchool e CampusBlock4. Ao recarregar esses mapas ou voltar por um portal, as folhas reaparecem abertas na direção em que foram usadas; nova partida limpa o registro. Os bloqueios de chave e puzzle continuam para salas ainda não atravessadas. CampusLibrary mantém suas portas internas estáticas e entreabertas. Verificação estática; Unity e Play Mode pendentes por falta de licença válida na execução em lote.
 
 **Refletores altos da entrada — 15/11/2026:** os dois objetos `Warm pool of light` em `(69,7; 3; -56)` e `(86,3; 3; -56)` foram desativados na cena jogável e no prefab `CampusExterior`; os componentes `Light` correspondentes no prefab também foram desligados. Os componentes da cena já estavam desligados, mas o prefab ainda os mantinha ativos. Os objetos, GUIDs e fileIDs foram preservados. Verificação estática e `git diff --check` executados; Unity, Play Mode e comparação visual pendentes por indisponibilidade de licença na execução em lote.
@@ -108,7 +112,7 @@
 
 As **onze cenas** estão habilitadas em `ProjectSettings/EditorBuildSettings.asset`. Após integrar os dois blocos, `CampusExterior` é a oitava entrada, `LawSchool` a nona, `CampusLibrary` a décima e `CampusBlock4` a décima primeira. Prefira os nomes das cenas a índices fixos. O contexto do Bloco de Direito e sua ligação com o exterior está em [Docs/Maps/LawSchool.md](Docs/Maps/LawSchool.md#conexões).
 
-Na saída de **LawSchool → CampusExterior / FromLawSchool**, o alarme do bloco bloqueia temporariamente a transição. `SceneTransitionDoor` consulta um guard opcional, vinculado somente a essa saída; desligar o quadro da manutenção libera o portal. Os demais portais continuam sem esse guard. Aviso e validação registrados na ficha de LawSchool.
+Na saída de **LawSchool → CampusExterior / FromLawSchool**, `SceneTransitionDoor` consulta um guard opcional, vinculado somente a essa saída. O portal e sua barreira física liberam apenas quando o quadro da manutenção foi desligado e a chave da Biblioteca do Campus no auditório foi coletada. Os demais portais continuam sem esse guard. Avisos e validação registrados na ficha de LawSchool.
 
 Ao entrar em **LawSchool / FromCampus**, a transição compartilhada mostra a captura do hall em `LawSchool/Resources/Textures/UI/Transitions/LawSchool.png` e o título **BLOCO DE DIREITO**. O reconhecimento da cena, checkpoint e prévia é feito por `Global/Scripts/UI/DoorReloadScreen.cs`; o portal e o spawn ID continuam os mesmos. Validação da entrada real e da restauração do jogo registrada na ficha do bloco.
 
@@ -221,7 +225,7 @@ Basement / prisão  <-->  CampusExterior  <-->  CampusLibrary
 | `Library entrance - CampusLibrary`, no exterior | `CampusLibrary` | `FromCampusExterior` | `Arrival - FromCampusExterior` |
 | `Exit to Campus Exterior`, na biblioteca | `CampusExterior` | `FromCampusLibrary` | `Arrival - FromCampusLibrary` |
 | Entrada do Bloco de Direito, no exterior | `LawSchool` | `FromCampus` | Chegada do hall no Bloco de Direito |
-| Saída do Bloco de Direito, liberada pelo quadro de manutenção | `CampusExterior` | `FromLawSchool` | Chegada do Bloco de Direito no exterior |
+| Saída do Bloco de Direito, liberada pelo quadro e pela chave do auditório | `CampusExterior` | `FromLawSchool` | Chegada do Bloco de Direito no exterior |
 | `Block 4 entrance - CampusBlock4`, no exterior | `CampusBlock4` | `FromCampusExterior` | `Arrival - FromCampusExterior`, no Bloco 4 |
 | `Exit to Campus Exterior`, no Bloco 4 | `CampusExterior` | `FromCampusBlock4` | `Arrival - FromCampusBlock4` |
 

@@ -5,19 +5,19 @@ using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using UniDoom.UI;
 
-/// <summary>The first local key triggers one persistent alarm and one finite group of zombies.</summary>
+/// <summary>The maintenance key triggers one persistent alarm and one finite group of zombies.</summary>
 [DisallowMultipleComponent, DefaultExecutionOrder(11000)]
 public sealed class LawSchoolAlarmPrototype : MonoBehaviour
 {
     [SerializeField] Transform building;
     [SerializeField] LawSchoolLighting lighting;
     [SerializeField] LawSchoolCellKeyPickup key;
+    [SerializeField] Transform libraryKeyLocation;
     [SerializeField] AudioSource siren;
     [SerializeField] GameObject zombiePrefab;
     [SerializeField] GameObject[] zombieVariants;
     [SerializeField] Transform[] arrivalPoints;
     [SerializeField] Transform[] keyLocations;
-    [SerializeField] Transform[] excludedKeyAreas;
     [SerializeField, Min(.1f)] float initialRedSeconds = 2;
     [SerializeField, Min(.1f)] float redSeconds = 3;
     [SerializeField, Min(.1f)] float blackoutSeconds = 1.6f;
@@ -49,13 +49,13 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         new Vector2(2.5f, 4.2f), new Vector2(2.5f, 9.5f)
     };
 
-    public static void NotifyKeyCollected(Component pickup, PlayerCellKeys inventory)
+    public static void NotifyMaintenanceKeyCollected(LawSchoolMaintenanceKeyPickup pickup, PlayerCellKeys inventory)
     {
         if (!pickup || !inventory || inventory.HasCompletedEvent(TriggeredEventId) ||
             inventory.HasCompletedEvent(EventId)) return;
         foreach (var alarm in FindObjectsByType<LawSchoolAlarmPrototype>())
         {
-            // Shared pickups in the library and Block 4 must not trigger this building.
+            // Only the maintenance pickup in this scene can start this building's alarm.
             if (!alarm.isActiveAndEnabled || alarm.gameObject.scene != pickup.gameObject.scene) continue;
             inventory.CompleteEvent(TriggeredEventId);
             alarm.BeginAlarm();
@@ -137,52 +137,30 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         // Returning to this scene keeps the specific key owned by the persistent player.
         while (!GameManager.SessionPlayer) yield return null;
         var player = GameManager.SessionPlayer;
-        if (!key || !building)
+        if (!key || !building || !libraryKeyLocation || !libraryKeyLocation.parent)
         {
-            Debug.LogError("LawSchool: configure a chave da biblioteca e a raiz do prédio.", this);
+            Debug.LogError("LawSchool: configure a chave da biblioteca, seu ponto no auditório e a raiz do prédio.", this);
             yield break;
         }
         var keys = player.GetComponent<PlayerCellKeys>();
         if (!keys) keys = player.gameObject.AddComponent<PlayerCellKeys>();
-        ChooseKeyRoom(keys);
+        PlaceLibraryKey(keys);
         SpawnOccupiedRooms(keys);
         IsResolved = keys.HasCompletedEvent(EventId);
         // Publish the initial placement too, so maintenance is available in this same initialization.
         StateChanged?.Invoke();
         if (keys.HasCompletedEvent(TriggeredEventId) && !IsResolved) BeginAlarm();
         GameplayNotice.ShowWhenGameplayReady(this,
-            "Neste bloco, procure duas chaves: uma abre um dos cadeados da Biblioteca do Campus; a outra abre a sala de manutenção.",
+            "Neste bloco, encontre a chave da manutenção e uma das chaves da Biblioteca do Campus.",
             10f);
     }
 
-    void ChooseKeyRoom(PlayerCellKeys inventory)
+    void PlaceLibraryKey(PlayerCellKeys inventory)
     {
-        if (keyLocations == null) return;
-        var available = new List<Transform>();
-        var names = new List<string>();
-        foreach (var location in keyLocations)
-        {
-            if (!location || !location.parent) continue;
-            bool maintenance = false;
-            if (excludedKeyAreas != null)
-                foreach (var area in excludedKeyAreas)
-                    if (area && location.IsChildOf(area)) { maintenance = true; break; }
-            for (var parent = location; parent && parent != building; parent = parent.parent)
-                if (parent.name.StartsWith("MANUTEN",System.StringComparison.OrdinalIgnoreCase)) { maintenance = true; break; }
-            if (maintenance || names.Contains(location.name)) continue;
-            available.Add(location); names.Add(location.name);
-        }
-        string chosen = inventory.GetOrChooseKeyLocation(key.CellId,names);
-        int index = names.IndexOf(chosen);
-        if (index < 0)
-        {
-            Debug.LogError("LawSchool: nenhum local válido para a chave da biblioteca.", this);
-            return;
-        }
-        SelectedKeyLocation = available[index];
+        SelectedKeyLocation = libraryKeyLocation;
         SelectedKeyRoom = SelectedKeyLocation.parent.name;
         key.transform.SetParent(building,true);
-        key.transform.position = available[index].position;
+        key.transform.position = SelectedKeyLocation.position;
         key.RefreshAvailability(inventory);
     }
 
