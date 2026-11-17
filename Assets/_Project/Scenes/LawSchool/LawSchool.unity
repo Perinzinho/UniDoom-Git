@@ -11107,7 +11107,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4000561444493469603, guid: a8a539f5ab806764fa28de3b976ad968, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 12.25
+      value: 1.95
       objectReference: {fileID: 0}
     - target: {fileID: 4000561444493469603, guid: a8a539f5ab806764fa28de3b976ad968, type: 3}
       propertyPath: m_LocalRotation.w
@@ -94309,7 +94309,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1721318915217125573, guid: 23b76bb0715522f49b69e9209f4962d7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.9
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 1721318915217125573, guid: 23b76bb0715522f49b69e9209f4962d7, type: 3}
       propertyPath: m_LocalRotation.w
@@ -266936,7 +266936,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1607353075}
+    m_TransformParent: {fileID: 1265052195}
     m_Modifications:
     - target: {fileID: 1370109397871767685, guid: 2f9f62908021eda41b3812a84cea2326, type: 3}
       propertyPath: m_Name
@@ -376353,6 +376353,7 @@ Transform:
   - {fileID: 1595985182}
   - {fileID: 108124163}
   - {fileID: 2089003254}
+  - {fileID: 9101000000000000003}
   - {fileID: 1809896598}
   - {fileID: 1793490381}
   - {fileID: 473223179}
@@ -624791,6 +624792,55 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 2484632528274995642, guid: 2f9f62908021eda41b3812a84cea2326, type: 3}
   m_PrefabInstance: {fileID: 2089003253}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &9101000000000000000
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1265052195}
+    m_Modifications:
+    - target: {fileID: 2820889012912510963, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
+      propertyPath: m_Name
+      value: AK47 Pickup — Mesa da sala 126
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.003
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.003
+      objectReference: {fileID: 0}
+    - target: {fileID: 8189128935669246334, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
+      propertyPath: m_Sprite
+      value: {fileID: 21300000, guid: e78bb4c8432845168a3765b2966936e7, type: 3}
+    - target: {fileID: 8189128935669246334, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
+      propertyPath: m_Size
+      value: {x: 21.72, y: 7.24}
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
+--- !u!4 &9101000000000000003 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2820889012912510963, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
+  m_PrefabInstance: {fileID: 9101000000000000000}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &2089381067
 GameObject:
