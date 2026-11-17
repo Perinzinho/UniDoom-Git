@@ -366,6 +366,8 @@ public class WeaponSpriteAnimator : MonoBehaviour
     {
         if (isReloading || shootFrames == null || shootFrames.Length == 0)
             return;
+        if (isShooting && gun is AK47)
+            return;
 
         isShooting = true;
         currentAnimation = shootFrames;

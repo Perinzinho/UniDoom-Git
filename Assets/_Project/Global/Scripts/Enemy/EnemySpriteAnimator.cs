@@ -130,9 +130,10 @@ public sealed class EnemySpriteAnimator : MonoBehaviour
             if (toCamera.sqrMagnitude > .001f)
             {
                 facing = Vector3.Dot(heading.normalized, toCamera.normalized);
-                // Avoid front/back flicker when a wandering zombie is seen almost side-on.
-                if (facing > .12f) ShowingBack = false;
-                else if (facing < -.12f) ShowingBack = true;
+                // Only swap to the back sheet when the zombie clearly faces away.
+                // A side-on view keeps the current sheet instead of popping every frame.
+                if (facing > -.05f) ShowingBack = false;
+                else if (facing < -.35f) ShowingBack = true;
                 side = Vector3.Dot(Vector3.Cross(Vector3.up, heading.normalized), toCamera.normalized);
                 // Quantise with a margin so diagonal views do not alternate sprite strips.
                 float angle = Mathf.Atan2(side, facing) * Mathf.Rad2Deg;
@@ -206,20 +207,18 @@ public sealed class EnemySpriteAnimator : MonoBehaviour
         Sprite[] frames = walking ? frontFrames : Appearance.idleFrames;
         if (!HasFrames(frames)) frames = frontFrames;
         int direction = Mathf.Abs(viewDirection);
-        if (direction >= 3 && HasFrames(Appearance.backWalkFrames)) frames = Appearance.backWalkFrames;
-        else if (direction > 0 && direction < 3)
+        if (ShowingBack && direction >= 3 && HasFrames(Appearance.backWalkFrames))
+            frames = Appearance.backWalkFrames;
+        else if (direction == 2 && HasFrames(Appearance.sideWalkFrames))
         {
-            if (direction == 2 && HasFrames(Appearance.sideWalkFrames))
-            {
-                frames = Appearance.sideWalkFrames;
-                // The source side-walk strip faces left.
-                spriteRenderer.flipX = viewDirection < 0;
-            }
-            else
-            {
-                Sprite[] diagonalFrames = viewDirection > 0 ? Appearance.leftWalkFrames : Appearance.rightWalkFrames;
-                if (HasFrames(diagonalFrames)) frames = diagonalFrames;
-            }
+            frames = Appearance.sideWalkFrames;
+            // The source side-walk strip faces left.
+            spriteRenderer.flipX = viewDirection < 0;
+        }
+        else if (direction > 0)
+        {
+            Sprite[] diagonalFrames = viewDirection > 0 ? Appearance.leftWalkFrames : Appearance.rightWalkFrames;
+            if (HasFrames(diagonalFrames)) frames = diagonalFrames;
         }
         if (!HasFrames(frames)) frames = HasFrames(Appearance.idleFrames) ? Appearance.idleFrames : frontWalkFrames;
         if (!HasFrames(frames)) return;
