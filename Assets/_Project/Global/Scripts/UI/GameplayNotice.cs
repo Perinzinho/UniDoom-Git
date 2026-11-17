@@ -56,7 +56,7 @@ namespace UniDoom.UI
         }
         void OnGUI() { if (IsShowing) Draw(message); }
 
-        // Keep messages readable over both dark rooms and bright scenery.
+        // Plain text only: a layered dark shadow keeps it legible without covering the view.
         public static void Draw(string text)
         {
             if (string.IsNullOrEmpty(text) || Blocked) return;
@@ -66,25 +66,33 @@ namespace UniDoom.UI
                 wordWrap = true,
                 fontStyle = FontStyle.Bold
             };
-            style.normal.textColor = Color.white;
-            style.fontSize = Mathf.Clamp(Mathf.RoundToInt(Screen.height / 44f), 18, 30);
+            // Scale from an 18 px reference at 1080p; width also caps very narrow windows.
+            float reference = Mathf.Min(Screen.height, Screen.width * .5625f);
+            int size = Mathf.Clamp(Mathf.RoundToInt(18f * reference / 1080f), 13, 28);
+            style.fontSize = size;
+            float unit = size / 18f;
             var content = new GUIContent(text);
             float width = Mathf.Min(Screen.width * .72f,
-                Mathf.Max(Screen.width * .34f, style.CalcSize(content).x + 48f));
-            var rect = new Rect((Screen.width - width) * .5f, Screen.height * .78f,
-                width, Mathf.Max(54f, style.CalcHeight(content, width) + 12f));
-            rect.y = Mathf.Max(16f, Mathf.Min(rect.y, Screen.height - rect.height - 24f));
-            var panel = new Rect(rect.x - 18f, rect.y - 8f, rect.width + 36f, rect.height + 16f);
-            Color previous = GUI.color;
-            GUI.color = new Color(.025f, .03f, .035f, .87f);
-            GUI.DrawTexture(panel, Texture2D.whiteTexture);
-            GUI.color = new Color(.88f, .78f, .56f, .9f);
-            GUI.DrawTexture(new Rect(panel.x, panel.y, panel.width, 2f), Texture2D.whiteTexture);
-            GUI.color = new Color(0f, 0f, 0f, .9f);
-            GUI.Label(new Rect(rect.x + 1f, rect.y + 2f, rect.width, rect.height), text, style);
-            GUI.color = Color.white;
+                Mathf.Max(Screen.width * .34f, style.CalcSize(content).x + 32f * unit));
+            var rect = new Rect((Screen.width - width) * .5f, 0f,
+                width, style.CalcHeight(content, width));
+            // Anchored near the bottom edge: long messages grow upward, leaving the play area free.
+            rect.y = Mathf.Max(16f, Screen.height - Mathf.Max(24f * unit, Screen.height * .05f) - rect.height);
+            Color original = style.normal.textColor;
+            Shadow(text, rect, unit, 0f, .42f);
+            Shadow(text, rect, -unit, 0f, .42f);
+            Shadow(text, rect, 0f, unit, .42f);
+            Shadow(text, rect, 0f, -unit, .42f);
+            Shadow(text, rect, 0f, 2f * unit, .78f);
+            Shadow(text, rect, 0f, 3.5f * unit, .38f);
+            style.normal.textColor = Color.white;
             GUI.Label(rect, text, style);
-            GUI.color = previous;
+            style.normal.textColor = original;
+        }
+        static void Shadow(string text, Rect rect, float dx, float dy, float alpha)
+        {
+            style.normal.textColor = new Color(0f, 0f, 0f, alpha);
+            GUI.Label(new Rect(rect.x + dx, rect.y + dy, rect.width, rect.height), text, style);
         }
     }
 }
