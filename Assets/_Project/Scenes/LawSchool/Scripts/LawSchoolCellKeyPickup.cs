@@ -42,7 +42,8 @@ public sealed class LawSchoolCellKeyPickup : MonoBehaviour
         if (newlyCollected) SFXManager.Instance?.PlayKeyPickupSound();
         if (newlyCollected)
         {
-            UniDoom.UI.GameplayNotice.Show("Chave da Biblioteca do Campus obtida. A entrada precisa de duas chaves. Já posso sair do Bloco de Direito.", 7.5f);
+            UniDoom.UI.GameplayNotice.ShowKeyAcquired("Biblioteca do Campus (Direito)",
+                "Use com a chave do Bloco 4 para entrar na biblioteca.");
         }
         return newlyCollected;
     }
