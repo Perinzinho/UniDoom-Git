@@ -76,11 +76,6 @@ namespace UniDoom.UI
             rect.y = Mathf.Max(16f, Mathf.Min(rect.y, Screen.height - rect.height - 24f));
             var panel = new Rect(rect.x - 18f, rect.y - 8f, rect.width + 36f, rect.height + 16f);
             Color previous = GUI.color;
-<<<<<<< HEAD
-            GUI.color = new Color(0, 0, 0, .92f);
-            GUI.Label(new Rect(rect.x + 1, rect.y + 2, rect.width, rect.height), text, style);
-            GUI.color = new Color(.98f, .97f, .90f);
-=======
             GUI.color = new Color(.025f, .03f, .035f, .87f);
             GUI.DrawTexture(panel, Texture2D.whiteTexture);
             GUI.color = new Color(.88f, .78f, .56f, .9f);
@@ -88,7 +83,6 @@ namespace UniDoom.UI
             GUI.color = new Color(0f, 0f, 0f, .9f);
             GUI.Label(new Rect(rect.x + 1f, rect.y + 2f, rect.width, rect.height), text, style);
             GUI.color = Color.white;
->>>>>>> d6473ee12dcc529d2ba3c3251543af3664205c03
             GUI.Label(rect, text, style);
             GUI.color = previous;
         }

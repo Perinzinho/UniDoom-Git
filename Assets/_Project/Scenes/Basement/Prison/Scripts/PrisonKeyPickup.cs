@@ -11,7 +11,10 @@ public sealed class PrisonKeyPickup : MonoBehaviour
         if (player && PrisonProgress.HasCellKey(cellId, player.GetComponent<PlayerCellKeys>())) gameObject.SetActive(false);
     }
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other) => TryCollect(other);
+    void OnTriggerStay(Collider other) => TryCollect(other);
+
+    void TryCollect(Collider other)
     {
         if (UniDoom.UI.GameMenus.BlocksGameplay || Time.timeScale <= 0) return;
         var player = other.GetComponentInParent<PlayerPickupKey>();
