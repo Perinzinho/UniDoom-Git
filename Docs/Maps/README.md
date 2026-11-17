@@ -5,6 +5,7 @@ Leia este índice e **comece pela seção Leitura rápida da ficha do mapa solic
 | Mapa | Cena | Ficha |
 |---|---|---|
 | Redondo | `Assets/_Project/Scenes/Cylinder/Cylinder.unity` | [Cylinder.md](Cylinder.md) |
+| Diretoria | `Assets/_Project/Scenes/DirectorRoom/DirectorRoom.unity` | [DirectorRoom.md](DirectorRoom.md) |
 | Bloco de Direito | `Assets/_Project/Scenes/LawSchool/LawSchool.unity` | [LawSchool.md](LawSchool.md) |
 | Bloco 4 — Tecnologia da Informação | `Assets/_Project/Scenes/CampusBlock4/CampusBlock4.unity` | [CampusBlock4.md](CampusBlock4.md) |
 | Campus Exterior — Unimar | `Assets/_Project/Scenes/CampusExterior/CampusExterior.unity` | Dependência: seção Conexões de [LawSchool.md](LawSchool.md#conexões) |
