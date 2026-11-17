@@ -1,7 +1,7 @@
 using UnityEngine;
 using UniDoom.Utils;
 
-/// <summary>Keeps the static entrance solid and prevents scene transitions during the alarm.</summary>
+/// <summary>Keeps the entrance solid until the panel is off and the auditorium key is collected.</summary>
 [DisallowMultipleComponent, RequireComponent(typeof(SceneTransitionDoor),typeof(BoxCollider))]
 public sealed class LawSchoolExitLock : MonoBehaviour, ISceneTransitionGuard
 {
@@ -9,13 +9,24 @@ public sealed class LawSchoolExitLock : MonoBehaviour, ISceneTransitionGuard
     [SerializeField] BoxCollider solidBarrier;
     [SerializeField, Min(.5f)] float warningDistance = 3;
     [SerializeField, TextArea(2,3)] string warningText =
-        "SAÍDA BLOQUEADA PELO ALARME\nDesligue o alarme no quadro de energia da manutenção.";
+        "Saída bloqueada pelo alarme. Desligue-o no quadro da manutenção.";
 
     BoxCollider doorway;
 
-    public bool IsTransitionBlocked => alarm && alarm.IsActive;
+    public bool IsTransitionBlocked
+    {
+        get
+        {
+            if (!alarm || !alarm.IsResolved) return true;
+            var player = GameManager.SessionPlayer;
+            var inventory = player ? player.GetComponent<PlayerCellKeys>() : null;
+            return !inventory || !inventory.HasKey(CampusLibraryAccess.LawSchoolKeyId);
+        }
+    }
     public bool WarningVisible { get; private set; }
-    public string WarningText => warningText;
+    public string WarningText => alarm && alarm.IsActive ? warningText :
+        alarm && alarm.IsResolved ? "Ainda preciso pegar a chave da Biblioteca do Campus no auditório." :
+        "Ainda preciso encontrar a chave da manutenção.";
 
     void Awake() => doorway = GetComponent<BoxCollider>();
 
@@ -54,7 +65,7 @@ public sealed class LawSchoolExitLock : MonoBehaviour, ISceneTransitionGuard
     void OnGUI()
     {
         if (WarningVisible && IsTransitionBlocked && !UniDoom.UI.GameplayNotice.IsShowing)
-            UniDoom.UI.GameplayNotice.Draw(UniDoom.UI.GameplayNotice.LockedDoorMessage + "\n" + warningText);
+            UniDoom.UI.GameplayNotice.Draw(WarningText);
     }
 
     void OnDisable()

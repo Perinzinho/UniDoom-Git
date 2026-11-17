@@ -14,6 +14,9 @@ public class OpenDoorWithKey : MonoBehaviour
     [SerializeField] private bool requiresKey03;
     [Tooltip("Optional key in the existing persistent PlayerCellKeys inventory.")]
     [SerializeField] private string requiredInventoryKey;
+    [Tooltip("Optional completed event in the persistent PlayerCellKeys inventory.")]
+    [SerializeField] private string requiredCompletedEvent;
+    [SerializeField, TextArea(2, 3)] private string lockedMessage;
     [Tooltip("Requires an explicit interaction instead of unlocking by proximity.")]
     [SerializeField] private bool requiresManualActivation;
     [SerializeField] private bool stayOpenAfterUnlock;
@@ -59,7 +62,8 @@ public class OpenDoorWithKey : MonoBehaviour
     private string sessionDoorId;
 
     private bool RequiresAnyKey => requiresKey01 || requiresKey02 || requiresKey03 ||
-        !string.IsNullOrEmpty(requiredInventoryKey);
+        !string.IsNullOrEmpty(requiredInventoryKey) || !string.IsNullOrEmpty(requiredCompletedEvent);
+    public string LockedMessage => lockedMessage;
     public bool IsUnlocked => unlocked;
     public bool IsOpen => unlocked && openProgress >= .8f;
     public bool IsFullyOpen => unlocked && openProgress >= .999f;
@@ -343,7 +347,9 @@ public enum DoorReloadTriggerMode
             (!requiresKey02 || player.key02) &&
             (!requiresKey03 || player.key03) &&
             (string.IsNullOrEmpty(requiredInventoryKey) ||
-                (player.TryGetComponent<PlayerCellKeys>(out var inventory) && inventory.HasKey(requiredInventoryKey)));
+                (player.TryGetComponent<PlayerCellKeys>(out var inventory) && inventory.HasKey(requiredInventoryKey))) &&
+            (string.IsNullOrEmpty(requiredCompletedEvent) ||
+                (player.TryGetComponent<PlayerCellKeys>(out var events) && events.HasCompletedEvent(requiredCompletedEvent)));
     }
 
     private float PlayerSide(Vector3 position)
