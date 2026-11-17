@@ -6,7 +6,7 @@ Atualizado: **2026-11-08**. Estado: chave sorteada por partida, placas gastas e 
 
 ## Leitura rápida
 
-- **AK-47 sobre a mesa — 16/11/2026:** a sala 126 recebe um pickup de AK-47 sobre uma carteira ativa, usando `Global/Textures/Weapons/AK47PickupReference.png` como visual compartilhado do prefab e da cena. A coleta reutiliza `WeaponPickup` e `AK47Definition`, com trigger e arma funcional preservados; a posição e a referência do sprite foram conferidas estaticamente. Play Mode e inspeção visual na Unity ainda não foram executados.
+- **AK-47 sobre a mesa — 17/11/2026:** a sala 126 recebe um pickup de AK-47 sobre uma carteira ativa, usando `Global/Textures/Weapons/AK47PickupReference.png` como visual compartilhado do prefab e da cena. Na cena jogável, a escala visual local foi reduzida de `0,005` para `0,003` nos eixos X/Y, sem alterar posição, coleta, trigger ou arma funcional. A coleta reutiliza `WeaponPickup` e `AK47Definition`; a posição e a referência do sprite foram conferidas estaticamente. Play Mode e inspeção visual na Unity ainda não foram executados.
 
 - **Alcance do machado — 16/11/2026:** o golpe agora alcança até **2 m**, ajustando a distância ao arco visual da animação sem deixar o ataque longo demais. O atraso do impacto, a colisão com paredes e o dano permanecem iguais. Verificação estática; Play Mode e comparação visual ainda pendentes.
 
