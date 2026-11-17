@@ -27,6 +27,14 @@ namespace UniDoom.UI
             instance.remaining = Mathf.Max(2, duration);
         }
 
+        public static void ShowKeyAcquired(string keyName, string use = null)
+        {
+            if (string.IsNullOrWhiteSpace(keyName)) return;
+            string message = "Chave obtida: " + keyName + ".";
+            if (!string.IsNullOrWhiteSpace(use)) message += "\n" + use;
+            Show(message, 7.5f);
+        }
+
         public static void ShowWhenGameplayReady(MonoBehaviour owner, string text, float duration = 7.5f)
         {
             if (owner && !string.IsNullOrWhiteSpace(text)) owner.StartCoroutine(WaitForGameplay(owner, text, duration));

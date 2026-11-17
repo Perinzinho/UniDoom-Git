@@ -3,6 +3,7 @@
 ## Leitura rápida
 
 - **Coleta por contato — 16/11/2026:** os três fusíveis da missão agora são recolhidos ao encostar (trigger `SphereCollider` no alvo), como chaves e suprimentos, sem prompt `[E]`. O E permanece apenas como fallback silencioso em foco. As chaves do porão e as tags `Key01–03` também aceitam `OnTriggerStay`, padronizando o contato. Verificação estática; Play Mode pendente.
+- **Colisão das estantes — 16/11/2026:** as 74 estantes do acervo, da ala norte e do anexo têm agora um `BoxCollider` sólido no próprio objeto. Os 37 colisores antigos, compartilhados por pares, foram desativados para evitar colisão duplicada; seus objetos e fileIDs permanecem no prefab. O volume externo de cada par mudou no máximo 5 mm. A cena usa o prefab sem overrides nesses colisores. Conferência estática de referências, dimensões e `git diff --check` concluída; Unity, Play Mode, build e comparação visual não executados.
 
 - **Falhas da lanterna durante a falta de energia — 13/11/2026:** enquanto `LibraryLightingController.IsUnpowered` estiver ativo, `PlayerFlashlight` sorteia um intervalo de 1 a 60 segundos de tempo de jogo, apaga o foco por 3 segundos e sorteia novamente ao restaurá-lo. A falha não muda a escolha do jogador de ligar/desligar a lanterna; ao ligar o gerador ou sair da cena, o ciclo é cancelado. A intensidade do foco global caiu de 80 para 65. Verificação estática e `git diff --check`; avaliação visual e Play Mode pendentes.
 
@@ -39,13 +40,13 @@
 - Paleta e mobiliário de `Global/Materials/CampusInterior/` e `Global/Meshes/CampusInterior/`. Meshes exclusivos novos: `CampusLibrary/Meshes/NorthWing*.asset`.
 - Nenhum novo download de modelo 3D. Fontes e hashes da reutilização: `Licenses/AssetSources/CampusLibrary/expansion-sources.json` e `reused-props-sources.json` da mesma pasta; os três documentos de créditos registram o uso nesta ala.
 
-## Acesso com duas chaves — 09/11/2026
+## Acesso com duas chaves — 09/11/2026; localização de Direito atualizada em 16/11/2026
 
 A entrada pelo CampusExterior exige **as duas chaves de acesso à biblioteca**, guardadas no inventário persistente `PlayerCellKeys`. Uma chave sozinha, chaves de cela ou a chave da manutenção não liberam a entrada. As chaves de acesso permanecem no inventário, permitindo voltar à biblioteca na mesma sessão; a saída continua livre e os spawn IDs foram preservados.
 
 | Chave de acesso | Obtenção | Identidade |
 | --- | --- | --- |
-| Direito | Sorteada por partida pelos pontos já configurados em LawSchool; posição mantida ao retornar ao prédio. Alarme e manutenção preservados | `campus-library-law-school`; latão, etiqueta ocre “BIBLIOTECA / DIREITO” |
+| Direito | Dentro do auditório de LawSchool, após pegar a chave da manutenção, desligar o alarme e liberar a fechadura eletrônica no quadro da sala 104 | `campus-library-law-school`; latão, etiqueta ocre “BIBLIOTECA / DIREITO” |
 | Bloco 4 | Recompensa na sala 423, atrás da porta com senha; exige puzzle resolvido e porta totalmente aberta | `campus-library-block-4`; aço, etiqueta azul “BIBLIOTECA / BLOCO 4” |
 
 A apresentação atual da porta externa usa **somente dois cadeados físicos**, sem placa de requisitos, ícones de chave, contador, indicadores coloridos ou nomes dos blocos. Cada chave de acesso retira o cadeado correspondente; a barreira sólida permanece enquanto faltar alguma. A até 2,5 m da barreira, aparece o aviso **“Porta trancada, você precisa de uma chave.”** enquanto a entrada estiver bloqueada. O aviso desaparece ao se afastar, liberar a entrada, pausar, abrir menus, morrer ou iniciar uma transição. `CampusLibraryEntranceLock` implementa o guard já aceito por `SceneTransitionDoor`; nenhum sistema paralelo de inventário ou carregamento foi criado.
