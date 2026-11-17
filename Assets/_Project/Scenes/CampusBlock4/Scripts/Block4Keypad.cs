@@ -195,7 +195,8 @@ namespace UniDoom.CampusBlock4
             if (panel != null) Destroy(panel);
             if (hud != null) Destroy(hud);
         }
-        public void ShowKeyCollected() => GameplayNotice.Show("Você pegou uma chave da entrada da Biblioteca do Campus. A entrada precisa de duas chaves.", 7.5f);
+        public void ShowKeyCollected() => GameplayNotice.ShowKeyAcquired("Biblioteca do Campus (Bloco 4)",
+            "Use com a chave do Bloco de Direito para entrar na biblioteca.");
         void RefreshWorld()
         {
             if (worldStatus != null) worldStatus.text = Block4PuzzleProgress.DoorUnlocked ? "LIBERADO" : "TRANCADO";
