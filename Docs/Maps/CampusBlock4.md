@@ -1,8 +1,10 @@
 # Bloco 4 — Tecnologia da Informação
 
-Atualizado: **2026-11-08**, revisão de [correcoesbloco4.md](correcoesbloco4.md). Fontes normativas: `.codex/PROMPT_MESTRE.md` e `total-chaos-visual-direction` / `.codex/SKILL.md`. As medidas e os testes das revisões anteriores são históricos.
+Atualizado: **2026-11-17**. Revisão de referência: [correcoesbloco4.md](correcoesbloco4.md). Fontes normativas: `.codex/PROMPT_MESTRE.md` e `total-chaos-visual-direction` / `.codex/SKILL.md`. As medidas e os testes das revisões anteriores são históricos.
 
 ## Leitura rápida
+
+- **Vão atrás do bebedouro do hall — 17/11/2026:** a peça ativa `Lateral do guichê direto para o hall`, em `x = −7,5`, foi prolongada apenas na direção `+z` para fechar a fresta entre a secretaria 404 e a parede do módulo vizinho. Sua ponta inicial permanece em `z ≈ −3,47`; a ponta final passa a `z ≈ 0,50`, sobrepondo a parede seguinte em cerca de 0,12 m. O `BoxCollider` da própria peça acompanha a escala, sem novos objetos, materiais, meshes ou IDs. Alinhamento e referências conferidos estaticamente; Unity, Play Mode e comparação visual ainda não executados.
 
 - **Salas já atravessadas — 15/11/2026:** as portas de sala com `stayOpenAfterUnlock` registram a travessia do jogador na sessão e são restauradas abertas ao voltar ao Bloco 4 ou recarregar um checkpoint. A direção da folha é preservada; a nova partida limpa esse registro. A porta da sala 423 continua exigindo o puzzle antes da primeira passagem. Verificação estática; Unity e Play Mode pendentes por falta de licença válida na execução em lote.
 
