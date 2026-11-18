@@ -2,6 +2,8 @@
 
 ## Leitura rápida
 
+- **Medkit fixo — 18/11/2026:** uma instância de `Global/Prefabs/Medkit.prefab` foi adicionada diretamente à cena em `(2,2; 0,69; -7,6)`, junto à chegada `FromCampusExterior`, a **0,05 m** acima do piso de granito (`y = 0,64`). Cura até 50 de 100 de vida; GUIDs e fileIDs existentes preservados. A edição foi feita na cena, não no prefab do interior, porque a cena aplica overrides próprios; o prefab não foi alterado. Posição e altura conferidas na Unity em modo de edição; Play Mode, coleta real e comparação visual pendentes.
+
 - **Coleta por contato — 16/11/2026:** os três fusíveis da missão agora são recolhidos ao encostar (trigger `SphereCollider` no alvo), como chaves e suprimentos, sem prompt `[E]`. O E permanece apenas como fallback silencioso em foco. As chaves do porão e as tags `Key01–03` também aceitam `OnTriggerStay`, padronizando o contato. Verificação estática; Play Mode pendente.
 - **Colisão das estantes — 16/11/2026:** as 74 estantes do acervo, da ala norte e do anexo têm agora um `BoxCollider` sólido no próprio objeto. Os 37 colisores antigos, compartilhados por pares, foram desativados para evitar colisão duplicada; seus objetos e fileIDs permanecem no prefab. O volume externo de cada par mudou no máximo 5 mm. A cena usa o prefab sem overrides nesses colisores. Conferência estática de referências, dimensões e `git diff --check` concluída; Unity, Play Mode, build e comparação visual não executados.
 
