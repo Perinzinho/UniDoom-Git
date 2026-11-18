@@ -65,6 +65,7 @@ Menu compartilhado: [créditos, música e HUD da espingarda](../Credits.md).
 
 - Pistola e espingarda mantêm o carregador, o consumo por disparo e suas animações/tempos de recarga. A reserva do jogador não tem teto: cada pickup soma sua quantidade, independentemente do total acumulado, e a reserva não diminui ao recarregar.
 - Ao consumir o último disparo do carregador, a arma inicia automaticamente a mesma recarga usada pela tecla `R`, desde que exista munição de reserva.
+- A espingarda pode disparar durante a recarga: cada disparo consome somente as balas já inseridas, e o carregamento continua inserindo as demais. Pistola e AK-47 permanecem impedidas de disparar enquanto recarregam.
 - A Sala do Diretor contém um pickup de AK-47 sobre a mesa; ela usa a mesma reserva de munição, dispara automaticamente ao segurar o botão e possui carregador de 20 disparos.
 - O HUD mostra `∞` no lugar da quantidade da reserva. Valores antigos de reserva permanecem serializados nos prefabs somente para preservar compatibilidade; não limitam mais o jogador.
 - Como a razão de munição disponível permanece cheia, `EnemyLootDrop` não gera novas caixas por escassez. Caixas já posicionadas e seus assets foram preservados.
