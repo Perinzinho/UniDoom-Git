@@ -2,6 +2,8 @@
 
 ## Leitura rápida
 
+- **Medkit fixo — 18/11/2026:** uma instância de `Global/Prefabs/Medkit.prefab` foi adicionada diretamente à cena em `(2,2; 0,69; -7,6)`, junto à chegada `FromCampusExterior`, a **0,05 m** acima do piso de granito (`y = 0,64`). Cura até 50 de 100 de vida; GUIDs e fileIDs existentes preservados. A edição foi feita na cena, não no prefab do interior, porque a cena aplica overrides próprios; o prefab não foi alterado. Posição e altura conferidas na Unity em modo de edição; Play Mode, coleta real e comparação visual pendentes.
+
 - **Coleta por contato — 16/11/2026:** os três fusíveis da missão agora são recolhidos ao encostar (trigger `SphereCollider` no alvo), como chaves e suprimentos, sem prompt `[E]`. O E permanece apenas como fallback silencioso em foco. As chaves do porão e as tags `Key01–03` também aceitam `OnTriggerStay`, padronizando o contato. Verificação estática; Play Mode pendente.
 
 - **Vão ao lado da manutenção — 17/11/2026:** a parede frontal oeste terminava em `x = -27,05`, enquanto a parede lateral do anexo começa em `x = -28,0`, deixando uma passagem estreita ao lado da porta. A peça existente `Maintenance front west` foi estendida até `x = -28,05`, com 5 cm de sobreposição à parede lateral. Seu `MeshRenderer` e `BoxCollider` permanecem na mesma peça; porta, placas e interior da manutenção não mudaram. Geometria e referências conferidas estaticamente; Unity e Play Mode pendentes.

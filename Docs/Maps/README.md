@@ -14,6 +14,20 @@ Leia este índice e **comece pela seção Leitura rápida da ficha do mapa solic
 
 Padrão de placas em todas as cenas: [Signage.md](Signage.md).
 
+## Equilíbrio de volume — 18/11/2026
+
+Os níveis dos arquivos de áudio variavam cerca de **46 dB** (passos de concreto entre -52 e -42 dB RMS; alarme da sirene a -5,6 dB), e o asset `Global/Resources/Audio/GameplayAudioSettings.asset` estava ausente do HEAD — `GameplayAudio` desabilitava todo o áudio de gameplay em runtime. O asset foi restaurado com GUID e referências originais e os volumes de efeitos reajustados.
+
+- **62 arquivos** (todos exceto as três músicas de créditos e `SlayerRagingSea.mp3`) foram normalizados por categoria com ffmpeg, preservando codec, sample rate e canais: passos a **-30 dB RMS**, portas/coleta/alertas de zumbi/gerador a **-22 dB**, armas a **-20 dB**, falas dos professores em torno de **-19 dB** (uma permaneceu em -22 dB porque o pico já estava no limite) e sirene a **-16 dB**. Picos limitados a aproximadamente -1,5 dBFS para evitar clipping. A ordem relativa foi mantida: a sirene continua claramente acima de passos e diálogo, sem o pico desconfortável anterior.
+- `GameplayAudioSettings`: `doorVolume 0,9`, `pickupVolume 1`, `roomVolume 0,95`, `nearbyVolume 0,9`, `musicVolume 0,42`. A música de boss permanece abaixo da sirene na hierarquia.
+- `FootStepController`: aterrissagem passou de multiplicador `1,2` (acima do limite efetivo da `AudioSource`) para `1`.
+- Slider "Volume geral" continua linear em `PlayerPrefs` (`GameMenus.cs:58,77,679-680`); não foi alterado. Com os níveis equalizados, ajustes frequentes durante o jogo não deveriam ser necessários.
+- Validação: níveis medidos antes/depois com `volumedetect`; asset carregado na Unity 6000.5.7f1 em batch com as sete referências de clipe resolvidas e volumes conferidos. Compilação sem erros. **Não executados:** Play Mode, escuta em jogo, build e comparação auditiva; o ganho percebido e o conforto da sirene precisam de validação do usuário.
+
+### Música de investigação — 18/11/2026
+
+Duas faixas CC0 adicionadas em `Global/Resources/Audio/Music/` e normalizadas para **-26 dB RMS**, abaixo dos cues (-22) e da sirene (-16): `InvestigationCampus` (EmptyCity, yd, 1:40) para EntranceGarden, CampusExterior e CampusLibrary; `InvestigationInterior` (Abandoned passages, congusbongus, 31 s em loop) para DirectorRoom, CampusBlock4 e Basement. `GameplayAudio` toca a faixa após o carregamento, para quando a música do chefe começa e a retoma após a derrota; cenas de alarme/horda (LawSchool, Cylinder, Library, ClassRoom) ficam sem trilha. Fontes, hashes e conversões em `Licenses/AssetSources/Music/`. Carregamento das duas faixas e mapeamento de cenas verificados na Unity em batch; Play Mode e escuta em jogo pendentes.
+
 ## Textos durante o jogo — 15/11/2026
 
 Avisos temporários e comandos de interação usam `Global/Scripts/UI/GameplayNotice.cs` em todos os mapas. Desde 17/11/2026 a apresentação é **somente texto**: branco em negrito, com contorno e sombra preta em camadas para permanecer legível tanto em salas escuras quanto em cenário claro — sem painel, faixa ocre ou caixa de fundo. O tamanho é proporcional à resolução: referência de **18 px em 1080p**, limitada a 13–28 px, com a altura efetiva limitada pela largura para janelas estreitas; contorno, espaçamento e margem inferior escalam junto. A largura acompanha o conteúdo e o bloco fica ancorado junto à borda inferior (margem de 5% da altura), crescendo para cima quando a mensagem tem várias linhas; assim a área central de jogo permanece livre. Mensagens de vários chamadores (`Draw`/`Show`) compartilham o mesmo layout, sem mudar assinaturas. Os números de vida e munição em `Global/Prefabs/UI/HUD.prefab` passaram de 32 para 34 px. Textos de documentos, painéis de puzzle e menus mantêm seu contexto visual próprio. Referências e `git diff --check` conferidos; Unity, Play Mode e leitura visual em resoluções diferentes pendentes por falta de licença válida na execução em lote.
