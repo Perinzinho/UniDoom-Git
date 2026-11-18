@@ -20,6 +20,7 @@ public sealed class GameplayAudioSettings : ScriptableObject
     [Range(0, 1)] public float investigationVolume = 1f;
     public string[] investigationCampusScenes = { "EntranceGarden", "CampusExterior", "CampusLibrary" };
     public string[] investigationInteriorScenes = { "DirectorRoom", "CampusBlock4", "Basement" };
+    public string[] investigationSilentScenes = { "LawSchool" };
     [Min(.1f)] public float nearbyDistance = 2.5f;
     [Min(.1f)] public float nearbyResetDistance = 3.5f;
     [Min(0)] public float nearbyCooldown = 6f;
@@ -29,9 +30,11 @@ public sealed class GameplayAudioSettings : ScriptableObject
     public bool HasRoomCue(string sceneName) => zombieScenes != null &&
         System.Array.IndexOf(zombieScenes, sceneName) >= 0;
 
-    public AudioClip InvestigationClipFor(string sceneName) =>
-        Contains(investigationCampusScenes, sceneName) ? investigationCampus :
-        Contains(investigationInteriorScenes, sceneName) ? investigationInterior : null;
+    public AudioClip InvestigationClipFor(string sceneName)
+    {
+        if (Contains(investigationSilentScenes, sceneName)) return null;
+        return Contains(investigationCampusScenes, sceneName) ? investigationCampus : investigationInterior;
+    }
 
     static bool Contains(string[] list, string value) => list != null && value != null &&
         System.Array.IndexOf(list, value) >= 0;
