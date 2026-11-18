@@ -69,10 +69,7 @@ public abstract class Gun : MonoBehaviour
     public void TryShoot()
     {
         if (!isActiveAndEnabled || PlayerWeaponManager.InputBlocked) return;
-        if (recharging != null && recharging.IsReloading)
-        {
-            return;
-        }
+        if (recharging != null && recharging.IsReloading && !(this is Shotgun)) return;
 
         if (!HasAmmo())
         {
