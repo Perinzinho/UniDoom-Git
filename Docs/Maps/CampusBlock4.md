@@ -1,8 +1,10 @@
 # Bloco 4 — Tecnologia da Informação
 
-Atualizado: **2026-11-08**, revisão de [correcoesbloco4.md](correcoesbloco4.md). Fontes normativas: `.codex/PROMPT_MESTRE.md` e `total-chaos-visual-direction` / `.codex/SKILL.md`. As medidas e os testes das revisões anteriores são históricos.
+Atualizado: **2026-11-17**. Revisão de referência: [correcoesbloco4.md](correcoesbloco4.md). Fontes normativas: `.codex/PROMPT_MESTRE.md` e `total-chaos-visual-direction` / `.codex/SKILL.md`. As medidas e os testes das revisões anteriores são históricos.
 
 ## Leitura rápida
+
+- **Vão atrás do bebedouro do hall — 17/11/2026:** a peça ativa `Lateral do guichê direto para o hall`, em `x = −7,5`, foi prolongada apenas na direção `+z` para fechar a fresta entre a secretaria 404 e a parede do módulo vizinho. Sua ponta inicial permanece em `z ≈ −3,47`; a ponta final passa a `z ≈ 0,50`, sobrepondo a parede seguinte em cerca de 0,12 m. O `BoxCollider` da própria peça acompanha a escala, sem novos objetos, materiais, meshes ou IDs. Alinhamento e referências conferidos estaticamente; Unity, Play Mode e comparação visual ainda não executados.
 
 - **Apagão escuro e com som — 17/11/2026:** o apagão completo do `Block4PowerFluctuation` agora deixa o bloco literalmente escuro: o ambiente da região de atmosfera cai para **7%** do valor original (~0,02) e o reflexo para **12%**, com restauração ao fim do evento; luzes de emergência e lanterna continuam valendo. Um som de queda de energia (Freesound "Cutting Power", CC0) toca uma vez ao iniciar cada apagão, inclusive o de 15 s da chave, por um `AudioSource` 2D criado em runtime. O `TCRegionAtmosphere` do prédio foi estendido de x ±36 / z ±35 para x ±74 / z −48…+38, cobrindo a entrada e as salas 426/428, antes fora do controle de ambiente. Clip, hash e cadeia CC0 em `Licenses/AssetSources/CampusBlock4/power-failure-sound.json`. Compilação C# isolada passou sem erros; Unity, Play Mode, build e comparação visual não executados.
 
@@ -68,7 +70,7 @@ Símbolos e números aparecem **dentro das telas**, sem placas acima dos monitor
 
 `Block4Keypad` conserva interação, pausa, teclado/controle, solução e restauração do controle. A interface agora representa uma caixa metálica com visor LCD, parafusos, indicadores e teclas. Erro: somente **“Senha incorreta”**, sem indicar onde procurar pistas. O estado variável do painel físico continua dinâmico; o HUD não foi aberto em execução.
 
-`Block4PowerFluctuation` pertence somente a este mapa. Primeiro evento em **30–45 s**, próximos em **60–90 s** após restaurar a energia; pisca e apaga por **2–4 s**, mantendo iluminação residual pontual. No apagão completo, o ambiente da região de atmosfera cai para 7% e o reflexo para 12% (frações expostas no script, aplicadas e revertidas via `TCRegionAtmosphere`), e um som de queda de energia toca uma vez; o clip está serializado no prefab e o `AudioSource` 2D nasce em runtime. Restaura intensidades e propriedades dos difusores, suspende a contagem nos menus e restaura ao desabilitar. Referências preservadas; comportamento não executado em jogo.
+`Block4PowerFluctuation` pertence somente a este mapa. Primeiro evento em **30–45 s**, próximos em **60–90 s** após restaurar a energia; pisca e apaga por **2–4 s**, mantendo iluminação residual pontual. No apagão completo, o ambiente da região de atmosfera cai para 7% e o reflexo para 12% (frações expostas no script, aplicadas e revertidas via `TCRegionAtmosphere`), e um som de queda de energia toca uma vez; o clip está serializado no prefab e o `AudioSource` 2D nasce em runtime. Restaura intensidades e propriedades dos difusores, suspende a contagem nos menus e restaura ao desabilitar. Defaults do script e valores salvos no prefab foram atualizados em conjunto. Referências preservadas; comportamento não executado em jogo.
 
 `Block4PuzzleProgress` preserva porta e chave na sessão. A chave não reaparece depois da coleta. A espingarda segue o pickup global: o objeto do cenário pode reaparecer na recarga, enquanto a arma carregada pertence ao player persistente. Sem inventário paralelo ou gravação do puzzle em disco.
 
