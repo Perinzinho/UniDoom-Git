@@ -10,11 +10,16 @@ public sealed class GameplayAudioSettings : ScriptableObject
     public AudioClip bossMusic;
     public AudioClip doorLocked;
     public AudioClip doorOpening;
+    public AudioClip investigationCampus;
+    public AudioClip investigationInterior;
     [Range(0, 1)] public float doorVolume = .8f;
     [Range(0, 1)] public float pickupVolume = .85f;
     [Range(0, 1)] public float roomVolume = .7f;
     [Range(0, 1)] public float nearbyVolume = .8f;
     [Range(0, 1)] public float musicVolume = .45f;
+    [Range(0, 1)] public float investigationVolume = 1f;
+    public string[] investigationCampusScenes = { "EntranceGarden", "CampusExterior", "CampusLibrary" };
+    public string[] investigationInteriorScenes = { "DirectorRoom", "CampusBlock4", "Basement" };
     [Min(.1f)] public float nearbyDistance = 2.5f;
     [Min(.1f)] public float nearbyResetDistance = 3.5f;
     [Min(0)] public float nearbyCooldown = 6f;
@@ -23,4 +28,11 @@ public sealed class GameplayAudioSettings : ScriptableObject
 
     public bool HasRoomCue(string sceneName) => zombieScenes != null &&
         System.Array.IndexOf(zombieScenes, sceneName) >= 0;
+
+    public AudioClip InvestigationClipFor(string sceneName) =>
+        Contains(investigationCampusScenes, sceneName) ? investigationCampus :
+        Contains(investigationInteriorScenes, sceneName) ? investigationInterior : null;
+
+    static bool Contains(string[] list, string value) => list != null && value != null &&
+        System.Array.IndexOf(list, value) >= 0;
 }
