@@ -3,6 +3,7 @@ using UniDoom.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>Prison interaction, cell-specific voices and the post-boss menu arrival.</summary>
@@ -38,7 +39,7 @@ public sealed class PrisonController : MonoBehaviour
             passage?.RevealImmediately();
         }
         BuildHUD();
-        if (PrisonProgress.AllCellsOpened) CompleteCellRescue(false);
+        if (PrisonProgress.AllCellsOpened) CompleteCellRescue();
     }
 
     void RememberVictory() => PrisonProgress.BossDefeated = true;
@@ -155,15 +156,30 @@ public sealed class PrisonController : MonoBehaviour
         if (activeVoice != null) activeVoice.Stop();
         activeVoice = gate.Voice;
         if (activeVoice != null && activeVoice.clip != null) activeVoice.Play();
-        if (PrisonProgress.AllCellsOpened) CompleteCellRescue(true);
+        if (PrisonProgress.AllCellsOpened) CompleteCellRescue();
         return true;
     }
 
-    void CompleteCellRescue(bool stopVoice)
+    void CompleteCellRescue()
     {
-        if (stopVoice && activeVoice != null) activeVoice.Stop();
-        foreach (var cell in GetComponentsInChildren<PrisonCellGate>(true)) cell.SetTeacherVisible(false);
+        foreach (var cell in GetComponentsInChildren<PrisonCellGate>(true))
+        {
+            var voice = cell.Voice;
+            if (activeVoice != null && voice == activeVoice && voice.isPlaying)
+            {
+                StartCoroutine(HideTeacherWhenSilent(cell));
+                continue;
+            }
+            cell.SetTeacherVisible(false);
+        }
         prompt = RescueMessage;
+    }
+
+    IEnumerator HideTeacherWhenSilent(PrisonCellGate cell)
+    {
+        var voice = cell.Voice;
+        while (voice != null && voice.isPlaying) yield return null;
+        cell.SetTeacherVisible(false);
     }
 
     // Same presentation as the other gameplay hints (GameplayNotice).

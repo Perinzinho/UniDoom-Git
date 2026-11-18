@@ -2,6 +2,8 @@
 
 ## Leitura rápida
 
+- **Fala da última cela — 18/11/2026:** `PrisonController.TryOpenCell` chamava `CompleteCellRescue(true)`, que parava o `AudioSource` recém-iniciado e desativava todos os professores no mesmo quadro — por isso a fala da 14ª cela era cortada, qualquer que fosse. A conclusão da liberação agora não para a voz: o professor da última cela só é ocultado quando seu clipe termina, via coroutine; os demais continuam desaparecendo na abertura da última porta. Verificação estática; Unity, Play Mode e conferência auditiva pendentes.
+
 - **Kits de cura — 15/11/2026:** os três kits do porão preservam o tamanho visual de cerca de 0,85 m de largura após a padronização do prefab global `Medkit`. Overrides no filho visual compensam a escala de raiz já usada no porão; posições, gatilhos e cura não mudam. Conferência estática; Unity e Play Mode pendentes por falta de licença válida.
 
 - **Spawn do jogador na sala do Diretor — 14/11/2026:** o prefab principal tem o ponto persistente `Boss room player spawn`, com ID de chegada `BossRoom`, perto da entrada da arena (`BossRoom` local `-10; 1,35; -4,73`) e voltado para o chefe. `DirectorBossEncounter` usa esse marcador como origem da busca por piso livre ao iniciar direto na sala pelo menu de mapas; o ponto `FinalBossSpawn` do chefe permanece separado. Referências conferidas estaticamente; Unity, Play Mode e verificação de colisão pendentes.
