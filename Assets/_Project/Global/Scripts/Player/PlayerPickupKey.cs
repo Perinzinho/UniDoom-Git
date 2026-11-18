@@ -57,7 +57,10 @@ public class PlayerPickupKey : MonoBehaviour
         if (keysUI != null) keysUI.SetKeys(usedKeys == 7 ? 0 : ownedKeys);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other) => TryCollect(other);
+    private void OnTriggerStay(Collider other) => TryCollect(other);
+
+    private void TryCollect(Collider other)
     {
         PlayerLife life = GetComponent<PlayerLife>();
         if ((life != null && life.IsDead) || UniDoom.UI.DeathScreen.IsVisible) return;
