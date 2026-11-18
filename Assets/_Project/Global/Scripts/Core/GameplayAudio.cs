@@ -9,9 +9,9 @@ public sealed class GameplayAudio : MonoBehaviour
 {
     public static GameplayAudio Instance { get; private set; }
     public GameplayAudioSettings Settings { get; private set; }
-    AudioSource pickups, room, nearby, music, doors;
+    AudioSource pickups, room, nearby, music, doors, investigation;
     DirectorBoss musicOwner;
-    Coroutine pendingEntry;
+    Coroutine pendingEntry, pendingInvestigation;
     float nextNearby;
     readonly Dictionary<Object, float> doorContacts = new Dictionary<Object, float>();
     readonly Dictionary<Object, float> nextLockedDoorSound = new Dictionary<Object, float>();
@@ -42,8 +42,11 @@ public sealed class GameplayAudio : MonoBehaviour
         nearby = CreateSource("Nearby zombie");
         music = CreateSource("Boss music");
         doors = CreateSource("Doors");
+        investigation = CreateSource("Investigation music");
         music.loop = true;
         music.priority = 32;
+        investigation.loop = true;
+        investigation.priority = 48;
         SceneManager.sceneLoaded += OnSceneLoaded;
         SceneManager.sceneUnloaded += OnSceneUnloaded;
     }
@@ -64,12 +67,42 @@ public sealed class GameplayAudio : MonoBehaviour
     {
         if (pendingEntry != null) StopCoroutine(pendingEntry);
         pendingEntry = null;
+        if (pendingInvestigation != null) StopCoroutine(pendingInvestigation);
+        pendingInvestigation = null;
+        StopInvestigationMusic();
         room.Stop();
         nearby.Stop();
         nextNearby = 0;
         doorContacts.Clear();
         nextLockedDoorSound.Clear();
         if (Settings.HasRoomCue(scene.name)) pendingEntry = StartCoroutine(PlayEntryWhenReady(scene));
+        if (Settings.InvestigationClipFor(scene.name) != null)
+            pendingInvestigation = StartCoroutine(PlayInvestigationWhenReady(scene));
+    }
+
+    IEnumerator PlayInvestigationWhenReady(Scene scene)
+    {
+        yield return null;
+        while (scene.isLoaded && (DoorReloadScreen.IsReloading || GameMenus.BlocksGameplay ||
+               GameManager.SessionPlayer == null)) yield return null;
+        if (scene.isLoaded && SceneManager.GetActiveScene() == scene && musicOwner == null)
+            StartInvestigationFor(scene);
+        pendingInvestigation = null;
+    }
+
+    void StartInvestigationFor(Scene scene)
+    {
+        if (!enabled || Settings == null || !scene.isLoaded) return;
+        AudioClip clip = Settings.InvestigationClipFor(scene.name);
+        if (clip == null) return;
+        investigation.clip = clip;
+        investigation.volume = Settings.investigationVolume;
+        if (!investigation.isPlaying) investigation.Play();
+    }
+
+    void StopInvestigationMusic()
+    {
+        if (investigation != null) investigation.Stop();
     }
 
     IEnumerator PlayEntryWhenReady(Scene scene)
@@ -131,8 +164,9 @@ public sealed class GameplayAudio : MonoBehaviour
     {
         if (!enabled || boss == null || boss.IsDead || musicOwner == boss) return;
         StopBossMusic();
+        StopInvestigationMusic();
         musicOwner = boss;
-        musicOwner.Defeated += StopBossMusic;
+        musicOwner.Defeated += OnBossDefeated;
         music.clip = Settings.bossMusic;
         music.volume = Settings.musicVolume;
         if (music.clip != null) music.Play();
@@ -140,16 +174,25 @@ public sealed class GameplayAudio : MonoBehaviour
 
     public void StopBossMusic()
     {
-        if (musicOwner != null) musicOwner.Defeated -= StopBossMusic;
+        if (musicOwner != null) musicOwner.Defeated -= OnBossDefeated;
         musicOwner = null;
         if (music != null) { music.Stop(); music.clip = null; }
+    }
+
+    void OnBossDefeated()
+    {
+        StopBossMusic();
+        StartInvestigationFor(SceneManager.GetActiveScene());
     }
 
     public void EndSession()
     {
         if (pendingEntry != null) StopCoroutine(pendingEntry);
         pendingEntry = null;
+        if (pendingInvestigation != null) StopCoroutine(pendingInvestigation);
+        pendingInvestigation = null;
         StopBossMusic();
+        StopInvestigationMusic();
         if (pickups != null) pickups.Stop();
         if (room != null) room.Stop();
         if (nearby != null) nearby.Stop();
@@ -170,6 +213,7 @@ public sealed class GameplayAudio : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneUnloaded -= OnSceneUnloaded;
         StopBossMusic();
+        StopInvestigationMusic();
         Instance = null;
     }
 }
