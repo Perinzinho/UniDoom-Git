@@ -275,7 +275,7 @@ namespace UniDoom.CampusLibrary
                 solved ? "CIRCUITO ESTÁVEL — GERADOR LIGADO" :
                 $"SINCRONIA DO CIRCUITO  {LibraryMissionProgress.SequenceStep}/7";
             instruction.text = solved ? "GERADOR RESTAURADO  •  RETORNANDO AO JOGO" :
-                "Clique nos terminais na ordem indicada pelos três registros de manutenção.";
+                "Clique nos terminais até encontrar a sequência correta.";
         }
 
         internal void FlashError(int id)
