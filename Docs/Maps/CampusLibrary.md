@@ -2,6 +2,8 @@
 
 ## Leitura rápida
 
+- **Puzzle do gerador sem pista de documentos — 18/11/2026:** o painel agora orienta apenas a clicar nos terminais até encontrar a sequência correta. O fallback dos bilhetes e a placa inativa `worldClue` não citam mais registros/bilhetes nem exibem a sequência sorteada. A ordem continua gerada e validada em `LibraryMissionProgress`; os três bilhetes e suas texturas foram preservados. A resolução depende de tentativa e erro. Conferência estática; Play Mode e leitura visual pendentes.
+
 - **Medkit fixo — 18/11/2026:** uma instância de `Global/Prefabs/Medkit.prefab` foi adicionada diretamente à cena em `(2,2; 0,69; -7,6)`, junto à chegada `FromCampusExterior`, a **0,05 m** acima do piso de granito (`y = 0,64`). Cura até 50 de 100 de vida; GUIDs e fileIDs existentes preservados. A edição foi feita na cena, não no prefab do interior, porque a cena aplica overrides próprios; o prefab não foi alterado. Posição e altura conferidas na Unity em modo de edição; Play Mode, coleta real e comparação visual pendentes.
 
 - **Coleta por contato — 16/11/2026:** os três fusíveis da missão agora são recolhidos ao encostar (trigger `SphereCollider` no alvo), como chaves e suprimentos, sem prompt `[E]`. O E permanece apenas como fallback silencioso em foco. As chaves do porão e as tags `Key01–03` também aceitam `OnTriggerStay`, padronizando o contato. Verificação estática; Play Mode pendente.
