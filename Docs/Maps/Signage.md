@@ -1,5 +1,7 @@
 # Sinalização física do jogo
 
+**Redondo, 18/11/2026:** os três acessos jogáveis exibem apenas os nomes por extenso em placas presas às folhas das portas. Os pictogramas acima dos vãos e nas folhas, os PNGs independentes e os suportes estáticos correspondentes foram desativados. Cada nome recebeu uma face de esmalte escuro, moldura metál![alt text](image-1.png)ica, fixadores discretos e letras marfim em negrito. A placa da entrada sul foi desativada após a captura mostrar escrita espelhada quando vista do Redondo para o corredor. Objetos e IDs anteriores preservados; materiais existentes reaproveitados. Validação estrutural estática concluída; leitura visual e movimento das placas em Play Mode pendentes.
+
 Revisão de **11/11/2026**. Abrange as 11 cenas em `Assets/_Project/Scenes/`, inclusive o mapa composto `Main/SampleScene`. O inventário em Unity encontrou 488 componentes TextMeshPro, dos quais 202 estavam visíveis antes da revisão. Textos de interface, teclados, bilhetes, pistas e letreiros institucionais foram distinguidos das placas de orientação.
 
 ## Padrão aplicado
