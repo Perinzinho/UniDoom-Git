@@ -2,6 +2,8 @@
 
 ## Leitura rápida
 
+- **Piscadas da lanterna em todo o jogo — 20/11/2026:** `PlayerFlashlight` não depende mais de `LibraryLightingController.IsUnpowered`: com a lanterna ligada e o gameplay ativo, sorteia um intervalo de 1 a 60 s e executa de 2 a 6 piscadas curtas (foco cai para 15% da intensidade e volta, sem desligar nem apagar o feixe). Troca de cena, menu, morte, reload, desligar a lanterna ou desabilitar o componente cancelam a sequência e restauram a intensidade. A falha de 3 s exclusiva da biblioteca foi removida; a nota de 13/11/2026 abaixo é histórica. Compilação C# isolada passou sem erros; Unity e Play Mode não executados.
+
 - **Puzzle do gerador sem pista de documentos — 18/11/2026:** o painel agora orienta apenas a clicar nos terminais até encontrar a sequência correta. O fallback dos bilhetes e a placa inativa `worldClue` não citam mais registros/bilhetes nem exibem a sequência sorteada. A ordem continua gerada e validada em `LibraryMissionProgress`; os três bilhetes e suas texturas foram preservados. A resolução depende de tentativa e erro. Conferência estática; Play Mode e leitura visual pendentes.
 
 - **Medkit fixo — 18/11/2026:** uma instância de `Global/Prefabs/Medkit.prefab` foi adicionada diretamente à cena em `(2,2; 0,69; -7,6)`, junto à chegada `FromCampusExterior`, a **0,05 m** acima do piso de granito (`y = 0,64`). Cura até 50 de 100 de vida; GUIDs e fileIDs existentes preservados. A edição foi feita na cena, não no prefab do interior, porque a cena aplica overrides próprios; o prefab não foi alterado. Posição e altura conferidas na Unity em modo de edição; Play Mode, coleta real e comparação visual pendentes.
