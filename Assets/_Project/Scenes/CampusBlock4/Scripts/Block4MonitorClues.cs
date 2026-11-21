@@ -48,7 +48,9 @@ namespace UniDoom.CampusBlock4
             PlacePhotographs();
             if (!ValidDestinations(Block4PuzzleProgress.MonitorDestinations))
                 Block4PuzzleProgress.MonitorDestinations = ChooseDestinations(firstRowMonitors.Length, initialDestinations);
-            CacheDisplayOffsets(Block4PuzzleProgress.MonitorDestinations);
+            // The prefab reloads clues at their authored positions even though the session
+            // retains a randomized destination map. Cache the authored offsets before applying it.
+            CacheDisplayOffsets(initialDestinations);
             ApplyDestinations(Block4PuzzleProgress.MonitorDestinations);
             CacheSymbolScreens();
             highlightUntil = Time.time + HighlightSeconds;
