@@ -11,7 +11,10 @@ public sealed class PrisonKeyPickup : MonoBehaviour
         if (player && PrisonProgress.HasCellKey(cellId, player.GetComponent<PlayerCellKeys>())) gameObject.SetActive(false);
     }
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other) => TryCollect(other);
+    void OnTriggerStay(Collider other) => TryCollect(other);
+
+    void TryCollect(Collider other)
     {
         if (UniDoom.UI.GameMenus.BlocksGameplay || Time.timeScale <= 0) return;
         var player = other.GetComponentInParent<PlayerPickupKey>();
@@ -20,7 +23,11 @@ public sealed class PrisonKeyPickup : MonoBehaviour
         if (life != null && life.IsDead) return;
         var inventory = player.GetComponent<PlayerCellKeys>();
         if (!inventory) inventory = player.gameObject.AddComponent<PlayerCellKeys>();
-        if (inventory.TryAddKey(PrisonProgress.CellKeyId(cellId))) SFXManager.Instance?.PlayKeyPickupSound();
+        if (inventory.TryAddKey(PrisonProgress.CellKeyId(cellId)))
+        {
+            SFXManager.Instance?.PlayKeyPickupSound();
+            UniDoom.UI.GameplayNotice.ShowKeyAcquired($"cela {cellId} da prisão");
+        }
         gameObject.SetActive(false);
     }
 }

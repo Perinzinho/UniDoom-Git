@@ -167,7 +167,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6669980544100880996
 Transform:
   m_ObjectHideFlags: 0
@@ -670,6 +670,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.3708947, y: 2, z: 0}
+--- !u!114 &8800000000000020039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 73222371936197236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 1214377934464852953}
+  doorVisual: {fileID: 5097646632081375698}
 --- !u!1 &75868931801400031
 GameObject:
   m_ObjectHideFlags: 0
@@ -767,7 +781,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0f361e90c4fe1d64ca658e37dfc2d70d, type: 2}
+  - {fileID: 2100000, guid: c240a0e1a3b726348bcda27aaaff3719, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1303,7 +1317,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 107563638574200368}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.5661891, y: 0, z: 0, w: 0.8242754}
   m_LocalPosition: {x: 0, y: 3.25, z: -0.65}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1320,12 +1334,12 @@ Light:
   m_GameObject: {fileID: 107563638574200368}
   m_Enabled: 1
   serializedVersion: 13
-  m_Type: 2
+  m_Type: 0
   m_Color: {r: 1, g: 0.73, b: 0.45, a: 1}
-  m_Intensity: 7
-  m_Range: 9
-  m_SpotAngle: 30
-  m_InnerSpotAngle: 21.80208
+  m_Intensity: 18
+  m_Range: 5.5
+  m_SpotAngle: 120
+  m_InnerSpotAngle: 70
   m_CookieSize2D: {x: 0.5, y: 0.5}
   m_Shadows:
     m_Type: 0
@@ -1386,7 +1400,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -1420,6 +1434,7 @@ MonoBehaviour:
   flickerAmount: 0.45
   speed: 7
   dropoutChancePerSecond: 0.15
+  synchronizeEmission: 0
 --- !u!1 &110355975887832763
 GameObject:
   m_ObjectHideFlags: 0
@@ -4012,7 +4027,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -4280,7 +4295,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8527615682996457050
 Transform:
   m_ObjectHideFlags: 0
@@ -4372,7 +4387,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -4406,6 +4421,7 @@ MonoBehaviour:
   flickerAmount: 0.45
   speed: 9
   dropoutChancePerSecond: 0.15
+  synchronizeEmission: 0
 --- !u!1 &354073202135670114
 GameObject:
   m_ObjectHideFlags: 0
@@ -5675,7 +5691,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: bfb87ace2e32372478af4628eecabfea, type: 2}
+  - {fileID: 2100000, guid: c240a0e1a3b726348bcda27aaaff3719, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -8222,6 +8238,7 @@ GameObject:
   - component: {fileID: 1875156933573074782}
   - component: {fileID: 8400577148571674640}
   - component: {fileID: 2700586350321467940}
+  - component: {fileID: 9014101600000000003}
   m_Layer: 0
   m_Name: Cold fluorescent spill
   m_TagString: Untagged
@@ -8229,7 +8246,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
-  - component: {fileID: 9014101600000000003}
 --- !u!4 &1875156933573074782
 Transform:
   m_ObjectHideFlags: 0
@@ -8339,6 +8355,22 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &9014101600000000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 587428174378470980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 207a0c2d979225248a336fcc408c7512, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TotalChaosMaps.TCFlickerLight
+  flickerAmount: 0.3
+  speed: 2.3
+  dropoutChancePerSecond: 0.16
+  synchronizeEmission: 1
 --- !u!1 &587654560115320862
 GameObject:
   m_ObjectHideFlags: 0
@@ -9343,6 +9375,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.785861, y: 2, z: 0}
+--- !u!114 &8800000000000020015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 649013561614550146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 173761396782616970}
+  doorVisual: {fileID: 6502885357954795167}
 --- !u!1 &653705548975483032
 GameObject:
   m_ObjectHideFlags: 0
@@ -9506,7 +9552,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5618716807426929685
 Transform:
   m_ObjectHideFlags: 0
@@ -11612,7 +11658,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5787194942209075352
 Transform:
   m_ObjectHideFlags: 0
@@ -12543,6 +12589,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.4186659, y: 2, z: 0}
+--- !u!114 &8800000000000020042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 830681039732438525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 9179185058479005345}
+  doorVisual: {fileID: 4045671838774354755}
 --- !u!1 &832039093004579003
 GameObject:
   m_ObjectHideFlags: 0
@@ -12738,7 +12798,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6278597897866579030
 Transform:
   m_ObjectHideFlags: 0
@@ -13088,7 +13148,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -13482,6 +13542,7 @@ GameObject:
   - component: {fileID: 2388675276950466025}
   - component: {fileID: 3832286037084169881}
   - component: {fileID: 4440055062588002417}
+  - component: {fileID: 9014101600000000004}
   m_Layer: 0
   m_Name: Light
   m_TagString: Untagged
@@ -13489,7 +13550,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
-  - component: {fileID: 9014101600000000004}
 --- !u!4 &2388675276950466025
 Transform:
   m_ObjectHideFlags: 0
@@ -13581,7 +13641,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -13600,6 +13660,22 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &9014101600000000004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 896770317247508660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 207a0c2d979225248a336fcc408c7512, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TotalChaosMaps.TCFlickerLight
+  flickerAmount: 0.24
+  speed: 2.6
+  dropoutChancePerSecond: 0.12
+  synchronizeEmission: 1
 --- !u!1 &904252527419651118
 GameObject:
   m_ObjectHideFlags: 0
@@ -14426,7 +14502,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4460473469760414924
 Transform:
   m_ObjectHideFlags: 0
@@ -15273,6 +15349,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.7858598, y: 2, z: 0}
+--- !u!114 &8800000000000020030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002857330934097463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 8016444462364043906}
+  doorVisual: {fileID: 3898927176030711991}
 --- !u!1 &1003299760051345551
 GameObject:
   m_ObjectHideFlags: 0
@@ -16741,6 +16831,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.3708956, y: 2, z: 0}
+--- !u!114 &8800000000000020000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1102944713143597751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 9091917154124358411}
+  doorVisual: {fileID: 3648764227760959299}
 --- !u!1 &1106461174160510314
 GameObject:
   m_ObjectHideFlags: 0
@@ -16756,7 +16860,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5789916735221474189
 Transform:
   m_ObjectHideFlags: 0
@@ -17813,7 +17917,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &752474913613297773
 Transform:
   m_ObjectHideFlags: 0
@@ -19192,7 +19296,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: bfb87ace2e32372478af4628eecabfea, type: 2}
+  - {fileID: 2100000, guid: c240a0e1a3b726348bcda27aaaff3719, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -27040,7 +27144,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1956976797884398599
 Transform:
   m_ObjectHideFlags: 0
@@ -27784,7 +27888,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 3.6, z: -0.39}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.35, y: 1.35, z: 1.35}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9065366589995202309}
@@ -27900,7 +28004,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -27934,6 +28038,7 @@ MonoBehaviour:
   flickerAmount: 0.45
   speed: 8
   dropoutChancePerSecond: 0.15
+  synchronizeEmission: 0
 --- !u!1 &1572902833305458150
 GameObject:
   m_ObjectHideFlags: 0
@@ -29638,6 +29743,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.5450574, y: 2, z: 0}
+--- !u!114 &8800000000000020021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1670444180321976735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 7568265020050636137}
+  doorVisual: {fileID: 503009062495021069}
 --- !u!1 &1674658027482844278
 GameObject:
   m_ObjectHideFlags: 0
@@ -32310,7 +32429,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7689258094316734726
 Transform:
   m_ObjectHideFlags: 0
@@ -33809,7 +33928,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5594187695736356893
 Transform:
   m_ObjectHideFlags: 0
@@ -34173,7 +34292,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2212521986757018613
 Transform:
   m_ObjectHideFlags: 0
@@ -34614,6 +34733,7 @@ GameObject:
   - component: {fileID: 987029093583537413}
   - component: {fileID: 5229933207314824466}
   - component: {fileID: 8440632390997174332}
+  - component: {fileID: 9014101600000000005}
   m_Layer: 0
   m_Name: Light
   m_TagString: Untagged
@@ -34621,7 +34741,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
-  - component: {fileID: 9014101600000000005}
 --- !u!4 &987029093583537413
 Transform:
   m_ObjectHideFlags: 0
@@ -34713,7 +34832,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -34732,6 +34851,22 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &9014101600000000005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1931771047059410239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 207a0c2d979225248a336fcc408c7512, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TotalChaosMaps.TCFlickerLight
+  flickerAmount: 0.2
+  speed: 3.3
+  dropoutChancePerSecond: 0.1
+  synchronizeEmission: 1
 --- !u!1 &1932592567090110614
 GameObject:
   m_ObjectHideFlags: 0
@@ -36660,7 +36795,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -37443,6 +37578,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.785863, y: 2, z: 0}
+--- !u!114 &8800000000000020027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2081135143264332043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 5922785722202132231}
+  doorVisual: {fileID: 578229423793419680}
 --- !u!1 &2082683580615068057
 GameObject:
   m_ObjectHideFlags: 0
@@ -41274,7 +41423,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1898244222952009874
 Transform:
   m_ObjectHideFlags: 0
@@ -41366,7 +41515,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -42800,7 +42949,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -42996,16 +43145,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc21b52bf5e0767499abbdb59529c2ac, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OpenDoorWithKey
   requiresKey01: 1
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
+  requiresManualActivation: 0
+  stayOpenAfterUnlock: 0
   door: {fileID: 5972046784575670852}
   hingePoint: {x: 0, y: 0, z: -0.5}
   openAngle: 100
   animationDuration: 0.65
   closeDelay: 0.7
+  fixedOpeningDirection: 0
+  openingSideAxis: {x: 1, y: 0, z: 0}
+  enableShaderReload: 1
+  reloadMode: 0
+  sectorName: NOVO SETOR
+  reloadCooldown: 5
 --- !u!1 &2418402723516997597
 GameObject:
   m_ObjectHideFlags: 0
@@ -51090,7 +51248,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 7a3df22e22d9edb439286d3afd1ef10a, type: 2}
+  m_Mesh: {fileID: 0}
 --- !u!1 &2452578020836793704
 GameObject:
   m_ObjectHideFlags: 0
@@ -53749,6 +53907,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.6786215, y: 2, z: 0}
+--- !u!114 &8800000000000020043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2595089047409156065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 4896038968413707592}
+  doorVisual: {fileID: 877935906560588330}
 --- !u!1 &2595277648392201503
 GameObject:
   m_ObjectHideFlags: 0
@@ -54223,7 +54395,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -54257,6 +54429,7 @@ MonoBehaviour:
   flickerAmount: 0.45
   speed: 7
   dropoutChancePerSecond: 0.15
+  synchronizeEmission: 0
 --- !u!1 &2621606071084226763
 GameObject:
   m_ObjectHideFlags: 0
@@ -55582,6 +55755,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.6132946, y: 2, z: 0}
+--- !u!114 &8800000000000020001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2710237976385676484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 470627306038353627}
+  doorVisual: {fileID: 1252783525507532224}
 --- !u!1 &2711735685602914702
 GameObject:
   m_ObjectHideFlags: 0
@@ -57277,7 +57464,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6376115463641587865
 Transform:
   m_ObjectHideFlags: 0
@@ -57370,6 +57557,7 @@ GameObject:
   - component: {fileID: 2488571910712196963}
   - component: {fileID: 2564810946271072936}
   - component: {fileID: 1409685890778216495}
+  - component: {fileID: 9014101600000000002}
   m_Layer: 0
   m_Name: Cold fluorescent spill
   m_TagString: Untagged
@@ -57377,7 +57565,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
-  - component: {fileID: 9014101600000000002}
 --- !u!4 &2488571910712196963
 Transform:
   m_ObjectHideFlags: 0
@@ -57487,6 +57674,22 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &9014101600000000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2830659709601558837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 207a0c2d979225248a336fcc408c7512, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TotalChaosMaps.TCFlickerLight
+  flickerAmount: 0.2
+  speed: 2.1
+  dropoutChancePerSecond: 0.08
+  synchronizeEmission: 1
 --- !u!1 &2832381925352070589
 GameObject:
   m_ObjectHideFlags: 0
@@ -59306,7 +59509,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -61179,7 +61382,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -62017,6 +62220,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.4784803, y: 2, z: 0}
+--- !u!114 &8800000000000020025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3134651005495022830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 7505431134821949781}
+  doorVisual: {fileID: 2193613497922321040}
 --- !u!1 &3135248211792213320
 GameObject:
   m_ObjectHideFlags: 0
@@ -64729,6 +64946,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.8222919, y: 2, z: 0}
+--- !u!114 &8800000000000020022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3286857586984802150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 8975478431673715460}
+  doorVisual: {fileID: 5820991105511815305}
 --- !u!1 &3287990217437397766
 GameObject:
   m_ObjectHideFlags: 0
@@ -65279,7 +65510,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6017261049689749849
 Transform:
   m_ObjectHideFlags: 0
@@ -66051,7 +66282,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7664998525147023841
 Transform:
   m_ObjectHideFlags: 0
@@ -66714,7 +66945,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -69962,6 +70193,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.5450628, y: 2, z: 0}
+--- !u!114 &8800000000000020032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3621937121780301326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 1035079790172290014}
+  doorVisual: {fileID: 7793694121881928483}
 --- !u!1 &3623054617307401390
 GameObject:
   m_ObjectHideFlags: 0
@@ -70472,7 +70717,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1892503653461040912
 Transform:
   m_ObjectHideFlags: 0
@@ -73189,7 +73434,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1503510826372785259
 Transform:
   m_ObjectHideFlags: 0
@@ -73865,7 +74110,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0f361e90c4fe1d64ca658e37dfc2d70d, type: 2}
+  - {fileID: 2100000, guid: c240a0e1a3b726348bcda27aaaff3719, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -74714,6 +74959,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.737179, y: 2, z: 0}
+--- !u!114 &8800000000000020010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3902340096490154202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 574561095023714712}
+  doorVisual: {fileID: 4044435979162721716}
 --- !u!1 &3903431382515487396
 GameObject:
   m_ObjectHideFlags: 0
@@ -77841,7 +78100,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0f361e90c4fe1d64ca658e37dfc2d70d, type: 2}
+  - {fileID: 2100000, guid: c240a0e1a3b726348bcda27aaaff3719, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -78841,7 +79100,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2125585441965352973
 Transform:
   m_ObjectHideFlags: 0
@@ -79869,7 +80128,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &738137031625970625
 Transform:
   m_ObjectHideFlags: 0
@@ -80252,7 +80511,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5706474452120662597
 Transform:
   m_ObjectHideFlags: 0
@@ -80759,6 +81018,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.8448097, y: 2, z: 0}
+--- !u!114 &8800000000000020019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4308339724155069199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 820271080877655435}
+  doorVisual: {fileID: 4595465853531079895}
 --- !u!1 &4308719550365040535
 GameObject:
   m_ObjectHideFlags: 0
@@ -91581,6 +91854,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.4784776, y: 2, z: 0}
+--- !u!114 &8800000000000020024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4535588018686584201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 1808529903561995866}
+  doorVisual: {fileID: 1742020821657263000}
 --- !u!1 &4537549225668705212
 GameObject:
   m_ObjectHideFlags: 0
@@ -91847,7 +92134,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3971813011199114068
 Transform:
   m_ObjectHideFlags: 0
@@ -92383,6 +92670,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.613295, y: 2, z: 0}
+--- !u!114 &8800000000000020033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4593647595360909351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 6531769064584371048}
+  doorVisual: {fileID: 8483013048058814008}
 --- !u!1 &4599690893667739651
 GameObject:
   m_ObjectHideFlags: 0
@@ -94864,7 +95165,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7903783646557612561
 Transform:
   m_ObjectHideFlags: 0
@@ -96618,6 +96919,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.3708911, y: 2, z: 0}
+--- !u!114 &8800000000000020041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4847578361458851182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 3409920680606991555}
+  doorVisual: {fileID: 6200181155283987236}
 --- !u!1 &4848663787566810461
 GameObject:
   m_ObjectHideFlags: 0
@@ -96804,7 +97119,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8982361027157314216
 Transform:
   m_ObjectHideFlags: 0
@@ -97417,7 +97732,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 3.6, z: -0.39}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.35, y: 1.35, z: 1.35}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2350510311477143631}
@@ -97562,7 +97877,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -97888,6 +98203,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.8448099, y: 2, z: 0}
+--- !u!114 &8800000000000020026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4936479811551622937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 1272566589611175553}
+  doorVisual: {fileID: 71906740999503566}
 --- !u!1 &4940891561037456488
 GameObject:
   m_ObjectHideFlags: 0
@@ -98454,6 +98783,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.6786183, y: 2, z: 0}
+--- !u!114 &8800000000000020006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4965961933875382094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 7748823257307334906}
+  doorVisual: {fileID: 5846330486441372346}
 --- !u!1 &4972156687406969733
 GameObject:
   m_ObjectHideFlags: 0
@@ -101368,7 +101711,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -103555,6 +103898,7 @@ GameObject:
   - component: {fileID: 1297406836861789369}
   - component: {fileID: 6026105909859072030}
   - component: {fileID: 2347742971554499020}
+  - component: {fileID: 9014101600000000006}
   m_Layer: 0
   m_Name: Light
   m_TagString: Untagged
@@ -103562,7 +103906,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
-  - component: {fileID: 9014101600000000006}
 --- !u!4 &1297406836861789369
 Transform:
   m_ObjectHideFlags: 0
@@ -103654,7 +103997,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -103673,6 +104016,22 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &9014101600000000006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5264245613431465960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 207a0c2d979225248a336fcc408c7512, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TotalChaosMaps.TCFlickerLight
+  flickerAmount: 0.26
+  speed: 2.9
+  dropoutChancePerSecond: 0.14
+  synchronizeEmission: 1
 --- !u!1 &5274498141039387197
 GameObject:
   m_ObjectHideFlags: 0
@@ -104000,6 +104359,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.7371789, y: 2, z: 0}
+--- !u!114 &8800000000000020028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5279989999616163859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 9061006154087240363}
+  doorVisual: {fileID: 3123543548809075296}
 --- !u!1 &5280629946610147154
 GameObject:
   m_ObjectHideFlags: 0
@@ -104700,16 +105073,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc21b52bf5e0767499abbdb59529c2ac, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OpenDoorWithKey
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
+  requiresManualActivation: 0
+  stayOpenAfterUnlock: 0
   door: {fileID: 6321458660598953700}
   hingePoint: {x: 0, y: 0, z: -0.5}
   openAngle: 100
   animationDuration: 0.65
   closeDelay: 0.7
+  fixedOpeningDirection: 0
+  openingSideAxis: {x: 1, y: 0, z: 0}
+  enableShaderReload: 1
+  reloadMode: 0
+  sectorName: NOVO SETOR
+  reloadCooldown: 5
 --- !u!1 &5306946806274384198
 GameObject:
   m_ObjectHideFlags: 0
@@ -104881,6 +105263,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.6786205, y: 2, z: 0}
+--- !u!114 &8800000000000020018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5309075910373594411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 3692721726571768345}
+  doorVisual: {fileID: 6988808920450347554}
 --- !u!1 &5310092301642831061
 GameObject:
   m_ObjectHideFlags: 0
@@ -105861,7 +106257,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6620386524827298688
 Transform:
   m_ObjectHideFlags: 0
@@ -106108,7 +106504,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2216854418732735789
 Transform:
   m_ObjectHideFlags: 0
@@ -106479,6 +106875,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.8222891, y: 2, z: 0}
+--- !u!114 &8800000000000020029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5403530583842886844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 4902683933038110406}
+  doorVisual: {fileID: 766592413369773135}
 --- !u!1 &5404086760962494778
 GameObject:
   m_ObjectHideFlags: 0
@@ -108925,7 +109335,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7340476052897302916
 Transform:
   m_ObjectHideFlags: 0
@@ -109803,6 +110213,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.7371792, y: 2, z: 0}
+--- !u!114 &8800000000000020005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5626655245452969732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 8346452454041607952}
+  doorVisual: {fileID: 1658596942513686429}
 --- !u!1 &5626901492642414569
 GameObject:
   m_ObjectHideFlags: 0
@@ -112161,7 +112585,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: bfb87ace2e32372478af4628eecabfea, type: 2}
+  - {fileID: 2100000, guid: c240a0e1a3b726348bcda27aaaff3719, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -112810,7 +113234,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &9061032334216480069
 Transform:
   m_ObjectHideFlags: 0
@@ -113784,6 +114208,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.4186692, y: 2, z: 0}
+--- !u!114 &8800000000000020031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5925764142512125332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 8967988747978287695}
+  doorVisual: {fileID: 3662386524693673140}
 --- !u!1 &5929161327333995763
 GameObject:
   m_ObjectHideFlags: 0
@@ -113839,6 +114277,7 @@ MonoBehaviour:
   fogColor: {r: 0.095, g: 0.11, b: 0.12, a: 1}
   ambient: {r: 0.6, g: 0.65, b: 0.68, a: 1}
   fogDensity: 0.009
+  directionalLightMultiplier: 0
   blendDistance: 2
   floorReference: {fileID: 0}
   floorClearHeight: 5.2
@@ -114286,7 +114725,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 3.6, z: -0.39}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.35, y: 1.35, z: 1.35}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8737705232099501869}
@@ -114715,6 +115154,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.613295, y: 2, z: 0}
+--- !u!114 &8800000000000020013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6003919309781508011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 102727555033890411}
+  doorVisual: {fileID: 3450858100952279268}
 --- !u!1 &6006842625561863747
 GameObject:
   m_ObjectHideFlags: 0
@@ -114944,7 +115397,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -117200,16 +117653,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc21b52bf5e0767499abbdb59529c2ac, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OpenDoorWithKey
   requiresKey01: 0
   requiresKey02: 1
   requiresKey03: 0
+  requiredInventoryKey: 
+  requiresManualActivation: 0
+  stayOpenAfterUnlock: 0
   door: {fileID: 1942392328763183557}
   hingePoint: {x: 0, y: 0, z: -0.5}
   openAngle: 100
   animationDuration: 0.65
   closeDelay: 0.7
+  fixedOpeningDirection: 0
+  openingSideAxis: {x: 1, y: 0, z: 0}
+  enableShaderReload: 1
+  reloadMode: 0
+  sectorName: NOVO SETOR
+  reloadCooldown: 5
 --- !u!1 &6190019433415140235
 GameObject:
   m_ObjectHideFlags: 0
@@ -117315,7 +117777,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &9104902414918221682
 Transform:
   m_ObjectHideFlags: 0
@@ -117824,6 +118286,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.478482, y: 2, z: 0}
+--- !u!114 &8800000000000020035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6240303740554284866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 4302519987487517321}
+  doorVisual: {fileID: 2411954896332130018}
 --- !u!1 &6244734792873515944
 GameObject:
   m_ObjectHideFlags: 0
@@ -117947,7 +118423,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1098456683733159892
 Transform:
   m_ObjectHideFlags: 0
@@ -119156,6 +119632,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.54506, y: 2, z: 0}
+--- !u!114 &8800000000000020023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6303990394459844250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 5490120404060262473}
+  doorVisual: {fileID: 8011986563493716238}
 --- !u!1 &6310804327094793591
 GameObject:
   m_ObjectHideFlags: 0
@@ -119857,7 +120347,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2013979252648440884
 Transform:
   m_ObjectHideFlags: 0
@@ -121241,7 +121731,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1624359599371931460
 Transform:
   m_ObjectHideFlags: 0
@@ -121696,7 +122186,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4362604164872788254
 Transform:
   m_ObjectHideFlags: 0
@@ -123275,6 +123765,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.6786215, y: 2, z: 0}
+--- !u!114 &8800000000000020016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6500446297706472754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 1848492566030055810}
+  doorVisual: {fileID: 7525905020126307031}
 --- !u!1 &6505512097317880167
 GameObject:
   m_ObjectHideFlags: 0
@@ -125332,7 +125836,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8159346573056522313
 Transform:
   m_ObjectHideFlags: 0
@@ -125424,7 +125928,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -126585,6 +127089,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.4186671, y: 2, z: 0}
+--- !u!114 &8800000000000020011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6680050597450700866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 3829467257613591424}
+  doorVisual: {fileID: 3454225772396150561}
 --- !u!1 &6680237759014652419
 GameObject:
   m_ObjectHideFlags: 0
@@ -126721,7 +127239,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4138255334842691257
 Transform:
   m_ObjectHideFlags: 0
@@ -127300,7 +127818,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -129771,7 +130289,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1401153744422900393
 Transform:
   m_ObjectHideFlags: 0
@@ -129799,6 +130317,7 @@ GameObject:
   - component: {fileID: 3326489376636908684}
   - component: {fileID: 8913311444593308694}
   - component: {fileID: 5025853000486260546}
+  - component: {fileID: 9014101600000000007}
   m_Layer: 0
   m_Name: Cold fluorescent spill
   m_TagString: Untagged
@@ -129806,7 +130325,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
-  - component: {fileID: 9014101600000000007}
 --- !u!4 &3326489376636908684
 Transform:
   m_ObjectHideFlags: 0
@@ -129916,6 +130434,22 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &9014101600000000007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6850520161462108264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 207a0c2d979225248a336fcc408c7512, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TotalChaosMaps.TCFlickerLight
+  flickerAmount: 0.28
+  speed: 2.5
+  dropoutChancePerSecond: 0.15
+  synchronizeEmission: 1
 --- !u!1 &6852371376917564534
 GameObject:
   m_ObjectHideFlags: 0
@@ -131146,7 +131680,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3070146817237038160
 Transform:
   m_ObjectHideFlags: 0
@@ -132161,6 +132695,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.4784824, y: 2, z: 0}
+--- !u!114 &8800000000000020008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7004750321374884649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 753057127363644459}
+  doorVisual: {fileID: 955954986197702648}
 --- !u!1 &7006801644011803973
 GameObject:
   m_ObjectHideFlags: 0
@@ -133741,7 +134289,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8222488728033422056
 Transform:
   m_ObjectHideFlags: 0
@@ -135416,6 +135964,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.6132973, y: 2, z: 0}
+--- !u!114 &8800000000000020002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7179546505385137442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 1816262235711223584}
+  doorVisual: {fileID: 3137470499152564469}
 --- !u!1 &7184299780052159093
 GameObject:
   m_ObjectHideFlags: 0
@@ -135626,7 +136188,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7187078421098781195}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.5661891, y: 0, z: 0, w: 0.8242754}
   m_LocalPosition: {x: 0, y: 3.25, z: -0.65}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -135643,12 +136205,12 @@ Light:
   m_GameObject: {fileID: 7187078421098781195}
   m_Enabled: 1
   serializedVersion: 13
-  m_Type: 2
+  m_Type: 0
   m_Color: {r: 1, g: 0.73, b: 0.45, a: 1}
-  m_Intensity: 7
-  m_Range: 9
-  m_SpotAngle: 30
-  m_InnerSpotAngle: 21.80208
+  m_Intensity: 18
+  m_Range: 5.5
+  m_SpotAngle: 120
+  m_InnerSpotAngle: 70
   m_CookieSize2D: {x: 0.5, y: 0.5}
   m_Shadows:
     m_Type: 0
@@ -135709,7 +136271,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -137312,6 +137874,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.8222926, y: 2, z: 0}
+--- !u!114 &8800000000000020009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7302240436022274754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 6838732880168694199}
+  doorVisual: {fileID: 1525211306526741903}
 --- !u!1 &7303037600259778251
 GameObject:
   m_ObjectHideFlags: 0
@@ -138242,7 +138818,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7047890837234982563
 Transform:
   m_ObjectHideFlags: 0
@@ -138647,6 +139223,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.844813, y: 2, z: 0}
+--- !u!114 &8800000000000020004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7387876013771108666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 6688096981338645253}
+  doorVisual: {fileID: 3468950954498704516}
 --- !u!1 &7387876517966928823
 GameObject:
   m_ObjectHideFlags: 0
@@ -138859,9 +139449,9 @@ Transform:
   m_LocalScale: {x: 1, y: 5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8903000000000000021}
-  - {fileID: 8902000000000000031}
-  - {fileID: 8901000000000000021}
+  - {fileID: 6676587310835718119}
+  - {fileID: 6678713217737611245}
+  - {fileID: 6675315187265001447}
   - {fileID: 6544422352432222490}
   - {fileID: 1972080068580356903}
   - {fileID: 6994786385926894723}
@@ -140965,7 +141555,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7511209122512843591}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.5661891, y: 0, z: 0, w: 0.8242754}
   m_LocalPosition: {x: 0, y: 3.25, z: -0.65}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -140982,12 +141572,12 @@ Light:
   m_GameObject: {fileID: 7511209122512843591}
   m_Enabled: 1
   serializedVersion: 13
-  m_Type: 2
+  m_Type: 0
   m_Color: {r: 1, g: 0.73, b: 0.45, a: 1}
-  m_Intensity: 7
-  m_Range: 9
-  m_SpotAngle: 30
-  m_InnerSpotAngle: 21.80208
+  m_Intensity: 18
+  m_Range: 5.5
+  m_SpotAngle: 120
+  m_InnerSpotAngle: 70
   m_CookieSize2D: {x: 0.5, y: 0.5}
   m_Shadows:
     m_Type: 0
@@ -141048,7 +141638,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -141668,6 +142258,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.7858598, y: 2, z: 0}
+--- !u!114 &8800000000000020014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7555243393922896730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 9004790065892115164}
+  doorVisual: {fileID: 1970560493910569699}
 --- !u!1 &7555730584680103071
 GameObject:
   m_ObjectHideFlags: 0
@@ -142640,6 +143244,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.68962, y: 3.6, z: 0.42}
   m_Center: {x: 0, y: 1.8, z: -0.03}
+--- !u!114 &8800000000000020037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7615963627228791950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 8696863068525358478}
+  doorVisual: {fileID: 0}
 --- !u!1 &7616664631379249706
 GameObject:
   m_ObjectHideFlags: 0
@@ -143527,6 +144145,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.3399367, y: 2, z: 0}
+--- !u!114 &8800000000000020034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7670139178263238010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 3032500467023552294}
+  doorVisual: {fileID: 8442629594184998998}
 --- !u!1 &7670808217262784567
 GameObject:
   m_ObjectHideFlags: 0
@@ -143542,7 +144174,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8824714423498794053
 Transform:
   m_ObjectHideFlags: 0
@@ -143878,7 +144510,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6316531672822516919
 Transform:
   m_ObjectHideFlags: 0
@@ -143970,7 +144602,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -144004,6 +144636,7 @@ MonoBehaviour:
   flickerAmount: 0.45
   speed: 8
   dropoutChancePerSecond: 0.15
+  synchronizeEmission: 0
 --- !u!1 &7693832072340625838
 GameObject:
   m_ObjectHideFlags: 0
@@ -144569,6 +145202,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.7371824, y: 2, z: 0}
+--- !u!114 &8800000000000020040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7726327205636311847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 3404336742311280201}
+  doorVisual: {fileID: 7746576969383845062}
 --- !u!1 &7726415922149336773
 GameObject:
   m_ObjectHideFlags: 0
@@ -144642,6 +145289,7 @@ GameObject:
   - component: {fileID: 176417154196341490}
   - component: {fileID: 7588875596714975938}
   - component: {fileID: 6820315247682623137}
+  - component: {fileID: 9014101600000000001}
   m_Layer: 0
   m_Name: Cold fluorescent spill
   m_TagString: Untagged
@@ -144649,7 +145297,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
-  - component: {fileID: 9014101600000000001}
 --- !u!4 &176417154196341490
 Transform:
   m_ObjectHideFlags: 0
@@ -144759,6 +145406,22 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &9014101600000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7733325252398632137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 207a0c2d979225248a336fcc408c7512, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TotalChaosMaps.TCFlickerLight
+  flickerAmount: 0.25
+  speed: 3.1
+  dropoutChancePerSecond: 0.14
+  synchronizeEmission: 1
 --- !u!1 &7736235560609486589
 GameObject:
   m_ObjectHideFlags: 0
@@ -144893,6 +145556,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.3399342, y: 2, z: 0}
+--- !u!114 &8800000000000020007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7738157075379438003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 3884910842194854276}
+  doorVisual: {fileID: 1090539431697586359}
 --- !u!1 &7738924828988257496
 GameObject:
   m_ObjectHideFlags: 0
@@ -149328,6 +150005,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.3708949, y: 2, z: 0}
+--- !u!114 &8800000000000020003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8042681049014670019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 6861320665278415076}
+  doorVisual: {fileID: 8242054818621959366}
 --- !u!1 &8044754795533233026
 GameObject:
   m_ObjectHideFlags: 0
@@ -150859,7 +151550,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6310886999417616113
 Transform:
   m_ObjectHideFlags: 0
@@ -152489,7 +153180,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6813243841008587961
 Transform:
   m_ObjectHideFlags: 0
@@ -153168,6 +153859,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.4186653, y: 2, z: 0}
+--- !u!114 &8800000000000020017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8281024046311647106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 4442950817513130938}
+  doorVisual: {fileID: 2298131237783545044}
 --- !u!1 &8285868453788515261
 GameObject:
   m_ObjectHideFlags: 0
@@ -154299,6 +155004,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.8222923, y: 2, z: 0}
+--- !u!114 &8800000000000020012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8357740671321476696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 7117359448458667003}
+  doorVisual: {fileID: 5604147296420615843}
 --- !u!1 &8361226224655291543
 GameObject:
   m_ObjectHideFlags: 0
@@ -156837,6 +157556,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.3399324, y: 2, z: 0}
+--- !u!114 &8800000000000020038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8526930994244566397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 6679250809820837127}
+  doorVisual: {fileID: 8151319014150985870}
 --- !u!1 &8528915442674590708
 GameObject:
   m_ObjectHideFlags: 0
@@ -156973,7 +157706,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2734509004902575402
 Transform:
   m_ObjectHideFlags: 0
@@ -158295,7 +159028,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6362051865745030865
 Transform:
   m_ObjectHideFlags: 0
@@ -159264,7 +159997,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &291701827291305572
 Transform:
   m_ObjectHideFlags: 0
@@ -160454,6 +161187,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.3399343, y: 2, z: 0}
+--- !u!114 &8800000000000020036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8791679265839834947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 7597238935327904798}
+  doorVisual: {fileID: 8200581685473726198}
 --- !u!1 &8798632817563287193
 GameObject:
   m_ObjectHideFlags: 0
@@ -160803,6 +161550,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 4, z: 0.65}
   m_Center: {x: 1.54506, y: 2, z: 0}
+--- !u!114 &8800000000000020020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8834661931259113659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
+  blockingCollider: {fileID: 2642177719738323685}
+  doorVisual: {fileID: 247768589470607431}
 --- !u!1 &8842947302267621274
 GameObject:
   m_ObjectHideFlags: 0
@@ -163940,7 +164701,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3290585728074799908
 Transform:
   m_ObjectHideFlags: 0
@@ -165470,11 +166231,20 @@ MonoBehaviour:
   requiresKey01: 0
   requiresKey02: 0
   requiresKey03: 0
+  requiredInventoryKey: 
+  requiresManualActivation: 0
+  stayOpenAfterUnlock: 0
   door: {fileID: 1954295137908173448}
   hingePoint: {x: 0, y: 0, z: -0.5}
   openAngle: 100
   animationDuration: 0.8
   closeDelay: 0.8
+  fixedOpeningDirection: 0
+  openingSideAxis: {x: 1, y: 0, z: 0}
+  enableShaderReload: 1
+  reloadMode: 0
+  sectorName: NOVO SETOR
+  reloadCooldown: 5
 --- !u!1 &9181587593460048511
 GameObject:
   m_ObjectHideFlags: 0
@@ -166283,118 +167053,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4344987164615674253}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9014101600000000001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7733325252398632137}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 207a0c2d979225248a336fcc408c7512, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TotalChaosMaps.TCFlickerLight
-  flickerAmount: 0.25
-  speed: 3.1
-  dropoutChancePerSecond: 0.14
-  synchronizeEmission: 1
---- !u!114 &9014101600000000002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2830659709601558837}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 207a0c2d979225248a336fcc408c7512, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TotalChaosMaps.TCFlickerLight
-  flickerAmount: 0.2
-  speed: 2.1
-  dropoutChancePerSecond: 0.08
-  synchronizeEmission: 1
---- !u!114 &9014101600000000003
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 587428174378470980}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 207a0c2d979225248a336fcc408c7512, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TotalChaosMaps.TCFlickerLight
-  flickerAmount: 0.3
-  speed: 2.3
-  dropoutChancePerSecond: 0.16
-  synchronizeEmission: 1
---- !u!114 &9014101600000000004
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 896770317247508660}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 207a0c2d979225248a336fcc408c7512, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TotalChaosMaps.TCFlickerLight
-  flickerAmount: 0.24
-  speed: 2.6
-  dropoutChancePerSecond: 0.12
-  synchronizeEmission: 1
---- !u!114 &9014101600000000005
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1931771047059410239}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 207a0c2d979225248a336fcc408c7512, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TotalChaosMaps.TCFlickerLight
-  flickerAmount: 0.2
-  speed: 3.3
-  dropoutChancePerSecond: 0.1
-  synchronizeEmission: 1
---- !u!114 &9014101600000000006
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5264245613431465960}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 207a0c2d979225248a336fcc408c7512, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TotalChaosMaps.TCFlickerLight
-  flickerAmount: 0.26
-  speed: 2.9
-  dropoutChancePerSecond: 0.14
-  synchronizeEmission: 1
---- !u!114 &9014101600000000007
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6850520161462108264}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 207a0c2d979225248a336fcc408c7512, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TotalChaosMaps.TCFlickerLight
-  flickerAmount: 0.28
-  speed: 2.5
-  dropoutChancePerSecond: 0.15
-  synchronizeEmission: 1
 --- !u!1001 &8901000000000000020
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -166403,6 +167061,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6147461068941608674}
     m_Modifications:
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -166416,15 +167086,7 @@ PrefabInstance:
       value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
-      propertyPath: m_LocalScale.z
+      propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
@@ -166439,10 +167101,6 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8215064285211661319, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
       propertyPath: m_Name
       value: Caixa de municao - Atrio
@@ -166452,7 +167110,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
---- !u!4 &8901000000000000021 stripped
+--- !u!4 &6675315187265001447 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
   m_PrefabInstance: {fileID: 8901000000000000020}
@@ -166466,6 +167124,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 6147461068941608674}
     m_Modifications:
     - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -166478,15 +167148,7 @@ PrefabInstance:
       value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
-      propertyPath: m_LocalScale.z
+      propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
@@ -166501,10 +167163,6 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8215064285211661319, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
       propertyPath: m_Name
       value: Caixa de municao - Circulacao central do redondo
@@ -166514,7 +167172,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
---- !u!4 &8902000000000000031 stripped
+--- !u!4 &6678713217737611245 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2820889012912510963, guid: 2f97ae5c989e43158cc2275d67c535be, type: 3}
   m_PrefabInstance: {fileID: 8902000000000000030}
@@ -166528,6 +167186,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 6147461068941608674}
     m_Modifications:
     - target: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2
       objectReference: {fileID: 0}
@@ -166540,15 +167210,7 @@ PrefabInstance:
       value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
-      propertyPath: m_LocalScale.z
+      propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
@@ -166563,10 +167225,6 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8215064285211661319, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
       propertyPath: m_Name
       value: Medkit - Redondo principal
@@ -166576,624 +167234,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
---- !u!4 &8903000000000000021 stripped
+--- !u!4 &6676587310835718119 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
   m_PrefabInstance: {fileID: 8903000000000000020}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8800000000000020000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1102944713143597751}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 9091917154124358411}
-  doorVisual: {fileID: 3648764227760959299}
---- !u!114 &8800000000000020001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2710237976385676484}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 470627306038353627}
-  doorVisual: {fileID: 1252783525507532224}
---- !u!114 &8800000000000020002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7179546505385137442}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 1816262235711223584}
-  doorVisual: {fileID: 3137470499152564469}
---- !u!114 &8800000000000020003
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8042681049014670019}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 6861320665278415076}
-  doorVisual: {fileID: 8242054818621959366}
---- !u!114 &8800000000000020004
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7387876013771108666}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 6688096981338645253}
-  doorVisual: {fileID: 3468950954498704516}
---- !u!114 &8800000000000020005
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5626655245452969732}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 8346452454041607952}
-  doorVisual: {fileID: 1658596942513686429}
---- !u!114 &8800000000000020006
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4965961933875382094}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 7748823257307334906}
-  doorVisual: {fileID: 5846330486441372346}
---- !u!114 &8800000000000020007
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7738157075379438003}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 3884910842194854276}
-  doorVisual: {fileID: 1090539431697586359}
---- !u!114 &8800000000000020008
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7004750321374884649}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 753057127363644459}
-  doorVisual: {fileID: 955954986197702648}
---- !u!114 &8800000000000020009
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7302240436022274754}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 6838732880168694199}
-  doorVisual: {fileID: 1525211306526741903}
---- !u!114 &8800000000000020010
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3902340096490154202}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 574561095023714712}
-  doorVisual: {fileID: 4044435979162721716}
---- !u!114 &8800000000000020011
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6680050597450700866}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 3829467257613591424}
-  doorVisual: {fileID: 3454225772396150561}
---- !u!114 &8800000000000020012
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8357740671321476696}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 7117359448458667003}
-  doorVisual: {fileID: 5604147296420615843}
---- !u!114 &8800000000000020013
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6003919309781508011}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 102727555033890411}
-  doorVisual: {fileID: 3450858100952279268}
---- !u!114 &8800000000000020014
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7555243393922896730}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 9004790065892115164}
-  doorVisual: {fileID: 1970560493910569699}
---- !u!114 &8800000000000020015
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 649013561614550146}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 173761396782616970}
-  doorVisual: {fileID: 6502885357954795167}
---- !u!114 &8800000000000020016
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6500446297706472754}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 1848492566030055810}
-  doorVisual: {fileID: 7525905020126307031}
---- !u!114 &8800000000000020017
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8281024046311647106}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 4442950817513130938}
-  doorVisual: {fileID: 2298131237783545044}
---- !u!114 &8800000000000020018
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5309075910373594411}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 3692721726571768345}
-  doorVisual: {fileID: 6988808920450347554}
---- !u!114 &8800000000000020019
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4308339724155069199}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 820271080877655435}
-  doorVisual: {fileID: 4595465853531079895}
---- !u!114 &8800000000000020020
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8834661931259113659}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 2642177719738323685}
-  doorVisual: {fileID: 247768589470607431}
---- !u!114 &8800000000000020021
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1670444180321976735}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 7568265020050636137}
-  doorVisual: {fileID: 503009062495021069}
---- !u!114 &8800000000000020022
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3286857586984802150}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 8975478431673715460}
-  doorVisual: {fileID: 5820991105511815305}
---- !u!114 &8800000000000020023
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6303990394459844250}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 5490120404060262473}
-  doorVisual: {fileID: 8011986563493716238}
---- !u!114 &8800000000000020024
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4535588018686584201}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 1808529903561995866}
-  doorVisual: {fileID: 1742020821657263000}
---- !u!114 &8800000000000020025
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3134651005495022830}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 7505431134821949781}
-  doorVisual: {fileID: 2193613497922321040}
---- !u!114 &8800000000000020026
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4936479811551622937}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 1272566589611175553}
-  doorVisual: {fileID: 71906740999503566}
---- !u!114 &8800000000000020027
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2081135143264332043}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 5922785722202132231}
-  doorVisual: {fileID: 578229423793419680}
---- !u!114 &8800000000000020028
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5279989999616163859}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 9061006154087240363}
-  doorVisual: {fileID: 3123543548809075296}
---- !u!114 &8800000000000020029
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5403530583842886844}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 4902683933038110406}
-  doorVisual: {fileID: 766592413369773135}
---- !u!114 &8800000000000020030
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1002857330934097463}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 8016444462364043906}
-  doorVisual: {fileID: 3898927176030711991}
---- !u!114 &8800000000000020031
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5925764142512125332}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 8967988747978287695}
-  doorVisual: {fileID: 3662386524693673140}
---- !u!114 &8800000000000020032
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3621937121780301326}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 1035079790172290014}
-  doorVisual: {fileID: 7793694121881928483}
---- !u!114 &8800000000000020033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4593647595360909351}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 6531769064584371048}
-  doorVisual: {fileID: 8483013048058814008}
---- !u!114 &8800000000000020034
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7670139178263238010}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 3032500467023552294}
-  doorVisual: {fileID: 8442629594184998998}
---- !u!114 &8800000000000020035
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6240303740554284866}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 4302519987487517321}
-  doorVisual: {fileID: 2411954896332130018}
---- !u!114 &8800000000000020036
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8791679265839834947}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 7597238935327904798}
-  doorVisual: {fileID: 8200581685473726198}
---- !u!114 &8800000000000020037
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7615963627228791950}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 8696863068525358478}
-  doorVisual: {fileID: 0}
---- !u!114 &8800000000000020038
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8526930994244566397}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 6679250809820837127}
-  doorVisual: {fileID: 8151319014150985870}
---- !u!114 &8800000000000020039
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 73222371936197236}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 1214377934464852953}
-  doorVisual: {fileID: 5097646632081375698}
---- !u!114 &8800000000000020040
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7726327205636311847}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 3404336742311280201}
-  doorVisual: {fileID: 7746576969383845062}
---- !u!114 &8800000000000020041
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4847578361458851182}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 3409920680606991555}
-  doorVisual: {fileID: 6200181155283987236}
---- !u!114 &8800000000000020042
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 830681039732438525}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 9179185058479005345}
-  doorVisual: {fileID: 4045671838774354755}
---- !u!114 &8800000000000020043
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2595089047409156065}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354f284814e540a88f81e26d1570ef4a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::LockedDoorSurface
-  blockingCollider: {fileID: 4896038968413707592}
-  doorVisual: {fileID: 877935906560588330}

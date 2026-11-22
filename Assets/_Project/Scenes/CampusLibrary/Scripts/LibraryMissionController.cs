@@ -9,6 +9,7 @@ namespace UniDoom.CampusLibrary
     [DisallowMultipleComponent]
     public sealed class LibraryMissionController : MonoBehaviour
     {
+        const string GeneratorPoweredNotice = "Gerador ligado. Volte para a prisão e liberte os professores.";
         [SerializeField] Transform discoveryPoint;
         [SerializeField] LibraryMissionTarget generator;
         [SerializeField] LibraryMissionTarget[] fuses = new LibraryMissionTarget[3];
@@ -173,10 +174,11 @@ namespace UniDoom.CampusLibrary
         }
         string Prompt(LibraryMissionTarget target)
         {
+            // Fuses are collected on contact; only the remaining devices keep an E prompt.
+            if (target.Kind == LibraryTargetKind.Fuse) return null;
             string key = Gamepad.current != null && Gamepad.current.wasUpdatedThisFrame ? "[X] " : "[E] ";
             switch (target.Kind)
             {
-                case LibraryTargetKind.Fuse: return key + "Coletar fusível";
                 case LibraryTargetKind.Clue: return key + "Ler bilhete de manutenção";
                 case LibraryTargetKind.Button: return key + "Usar o gerador para abrir o painel";
                 case LibraryTargetKind.FuseSocket:
@@ -198,11 +200,7 @@ namespace UniDoom.CampusLibrary
             switch (target.Kind)
             {
                 case LibraryTargetKind.Fuse:
-                    if (!LibraryMissionProgress.Collect(target.Id)) return false;
-                    SFXManager.Instance?.PlayKeyPickupSound();
-                    Notify($"Fusível coletado ({LibraryMissionProgress.FuseCount}/3)." +
-                        (LibraryMissionProgress.FuseCount == 3 ? " Volte ao gerador." : ""));
-                    return true;
+                    return CollectFuse(target);
                 case LibraryTargetKind.Clue:
                     if (target.Document && GameMenus.Instance) return GameMenus.Instance.TryOpenDocument(target.Document, target);
                     Notify(Clue); return false;
@@ -233,13 +231,29 @@ namespace UniDoom.CampusLibrary
                     }
                     if (LibraryMissionProgress.Stage == LibraryMissionStage.FusesInstalled)
                         return panel != null && panel.Open();
-                    if (LibraryMissionProgress.PowerOn()) { PlayGeneratorStartup(); Notify("Gerador ligado! Energia da biblioteca restaurada."); return true; }
+                    if (LibraryMissionProgress.PowerOn()) { PlayGeneratorStartup(); Notify(GeneratorPoweredNotice, 7.5f); return true; }
                     Notify(LibraryMissionProgress.Stage < LibraryMissionStage.FusesCollected ? $"Faltam {3 - LibraryMissionProgress.FuseCount} fusíveis para restaurar o gerador." :
                         LibraryMissionProgress.Stage == LibraryMissionStage.FusesCollected ? "Insira os três fusíveis diretamente no gerador." :
                         LibraryMissionProgress.IsLibraryGeneratorPowered ? "Energia da biblioteca restaurada." : "Use E no gerador para abrir o puzzle de energia.");
                     return false;
             }
         }
+        internal bool TryCollectOnTouch(LibraryMissionTarget target)
+        {
+            if (!isActiveAndEnabled || !GameplayAvailable || !target || target.Mission != this ||
+                target.Kind != LibraryTargetKind.Fuse) return false;
+            return CollectFuse(target);
+        }
+
+        bool CollectFuse(LibraryMissionTarget target)
+        {
+            if (!LibraryMissionProgress.Collect(target.Id)) return false;
+            SFXManager.Instance?.PlayKeyPickupSound();
+            Notify($"Fusível coletado ({LibraryMissionProgress.FuseCount}/3)." +
+                (LibraryMissionProgress.FuseCount == 3 ? " Volte ao gerador." : ""));
+            return true;
+        }
+
         internal bool TryPressFromPanel(int id, out bool correct)
         {
             correct = false;
@@ -254,7 +268,7 @@ namespace UniDoom.CampusLibrary
             else if (LibraryMissionProgress.Stage == LibraryMissionStage.PuzzleSolved && LibraryMissionProgress.PowerOn())
             {
                 PlayGeneratorStartup();
-                Notify("Gerador ligado! Energia da biblioteca restaurada.");
+                Notify(GeneratorPoweredNotice, 7.5f);
             }
             return true;
         }

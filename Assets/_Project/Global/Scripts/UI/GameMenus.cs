@@ -15,7 +15,11 @@ namespace UniDoom.UI
     /// <summary>Shared main, pause, death, options and confirmation screens. Progress lasts for the current run.</summary>
     public sealed partial class GameMenus : MonoBehaviour
     {
-        public enum Screen { Gameplay, Main, Pause, Death, Options, Credits, Confirm, MapSelect, GameOver, Document, Interaction }
+        // Optional test-only extension. When GameMenus.TestTeleport.cs is absent, the
+        // compiler removes this call and the public menu has no teleport entry.
+        partial void BuildTestTeleportMenu(ref Button entryButton);
+
+        public enum Screen { Gameplay, Main, Pause, Death, Options, Credits, Confirm, GameOver, Document, Interaction, Controls }
         public static GameMenus Instance { get; private set; }
         public static bool BlocksGameplay => Instance != null && (Instance.CurrentScreen != Screen.Gameplay || Instance.busy);
         public Screen CurrentScreen { get; private set; }
@@ -25,15 +29,14 @@ namespace UniDoom.UI
         Canvas canvas;
         RawImage backdrop;
         Image shade, fade;
-        GameObject main, pause, death, options, credits, confirmation, mapSelection, gameOver;
+        GameObject main, pause, death, options, credits, confirmation, gameOver, controls;
         Button gameOverRestart, gameOverBack;
-        Button chooseMap, mapFirst;
-        Button mainFirst, pauseFirst, deathRetry, deathBack, optionsBack, cancel;
+        Button mainFirst, pauseFirst, deathRetry, deathBack, optionsBack, cancel, controlsStart;
         Slider sensitivity, volume;
         Toggle invertY, fullscreen, showFps;
         TMP_Text sensitivityValue, volumeValue, confirmText, error, deathHint, fpsCounter;
         Image fpsBackground;
-        Screen optionsOrigin, confirmOrigin;
+        Screen optionsOrigin, confirmOrigin, controlsOrigin;
         Action confirmAction;
         PlayerRespawn deadPlayer;
         DeathScreen deathOwner;
@@ -60,7 +63,7 @@ namespace UniDoom.UI
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void ResetStatics() { Instance = null; }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Bootstrap()
         {
             if (Instance == null) new GameObject("[UniDoom Menus]", typeof(RectTransform)).AddComponent<GameMenus>();
@@ -91,6 +94,7 @@ namespace UniDoom.UI
         void Update()
         {
             UpdateFpsCounter();
+            UpdateSignLights();
             if (busy) return;
             UpdateCreditsScroll();
             bool back = (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) ||
@@ -129,6 +133,13 @@ namespace UniDoom.UI
             if (CurrentScreen == Screen.Document) FitDocument();
             if (CurrentScreen == Screen.Interaction && (interactionOwner == null || interactionPanel == null)) CloseInteraction();
             if (ownsPause) { Time.timeScale = 0; AudioListener.pause = true; FreezePlayer(); }
+            else if (CurrentScreen == Screen.Gameplay && !busy && !DoorReloadScreen.IsReloading &&
+                     !DeathScreen.IsVisible && Time.timeScale > 0f && AudioListener.pause)
+            {
+                // A pause owner can disappear during a scene change or lose focus.
+                // A playable session must never inherit its stale listener state.
+                AudioListener.pause = false;
+            }
             ApplyCursorState();
         }
 
@@ -175,8 +186,8 @@ namespace UniDoom.UI
                     if (creditsFinishSession) { creditsFinishSession = false; ReturnToMain(); }
                     else SetScreen(Screen.Main);
                     break;
-                case Screen.MapSelect: SetScreen(Screen.Main); Select(chooseMap); break;
                 case Screen.Confirm: SetScreen(confirmOrigin); break;
+                case Screen.Controls: SetScreen(controlsOrigin); break;
             }
         }
 
@@ -250,7 +261,9 @@ namespace UniDoom.UI
 
         public void StartNewGame()
         {
-            StartNewGameAtScene(SceneUtility.GetScenePathByBuildIndex(0));
+            if (busy || (CurrentScreen != Screen.Main && CurrentScreen != Screen.GameOver)) return;
+            controlsOrigin = CurrentScreen;
+            SetScreen(Screen.Controls);
         }
 
         void RestartFromBeginning()
@@ -258,17 +271,6 @@ namespace UniDoom.UI
             if (CurrentScreen != Screen.GameOver || deathOwner == null || !deathOwner.IsReady || DoorReloadScreen.IsReloading) return;
             StartNewGame();
         }
-
-        void OpenMapSelection()
-        {
-            if (busy || CurrentScreen != Screen.Main) return;
-            SetScreen(Screen.MapSelect);
-        }
-
-        void StartAtPrison() => StartNewGameAtScene("Assets/_Project/Scenes/Basement/Basement.unity", startAtPrison: true);
-
-        void StartFinaleTest() => StartNewGameAtScene(
-            "Assets/_Project/Scenes/Basement/Basement.unity", startAtPrison: true, startAtFinale: true);
 
         void StartNewGameAtScene(string scene, bool startAtBoss = false, bool startAtPrison = false,
             bool startAtFinale = false)
@@ -434,7 +436,9 @@ namespace UniDoom.UI
         void SetScreen(Screen screen)
         {
             CurrentScreen = screen;
+            SetSignLightsVisible(screen == Screen.Main);
             main.SetActive(screen == Screen.Main);
+            controls.SetActive(screen == Screen.Controls);
             pause.SetActive(screen == Screen.Pause);
             death.SetActive(screen == Screen.Death);
             gameOver.SetActive(screen == Screen.GameOver);
@@ -443,19 +447,18 @@ namespace UniDoom.UI
             credits.SetActive(screen == Screen.Credits);
             SetCreditsVisible(screen == Screen.Credits);
             confirmation.SetActive(screen == Screen.Confirm);
-            mapSelection.SetActive(screen == Screen.MapSelect);
-            bool mainBackground = screen == Screen.Main || screen == Screen.MapSelect ||
+            bool mainBackground = screen == Screen.Main ||
                 (screen == Screen.Options && optionsOrigin == Screen.Main);
             bool gameOverBackground = screen == Screen.GameOver || (screen == Screen.Confirm && confirmOrigin == Screen.GameOver);
             backdrop.gameObject.SetActive(mainBackground || gameOverBackground);
             shade.gameObject.SetActive(screen != Screen.Gameplay);
-            shade.color = new Color(0, 0, 0, screen == Screen.Credits ? 1 : mainBackground || screen == Screen.GameOver ? 0 : screen == Screen.Document ? .72f : screen == Screen.Pause ? .1f : screen == Screen.Death ? .2f : .78f);
+            shade.color = new Color(0, 0, 0, screen == Screen.Credits || screen == Screen.Controls ? 1 : mainBackground || screen == Screen.GameOver ? 0 : screen == Screen.Document ? .72f : screen == Screen.Pause ? .1f : screen == Screen.Death ? .2f : .78f);
             error.text = "";
             if (screen == Screen.Gameplay) RestoreHUD(); else HideHUD();
             EnsureEvents();
-            Select(screen switch { Screen.Main => mainFirst, Screen.Pause => pauseFirst,
+            Select(screen switch { Screen.Main => mainFirst, Screen.Controls => controlsStart, Screen.Pause => pauseFirst,
                 Screen.Death => deathRetry, Screen.Options => optionsBack,
-                Screen.Confirm => cancel, Screen.MapSelect => mapFirst, Screen.GameOver => gameOverRestart,
+                Screen.Confirm => cancel, Screen.GameOver => gameOverRestart,
                 Screen.Document => documentClose, _ => null });
             Fit();
         }
@@ -500,29 +503,29 @@ namespace UniDoom.UI
             MenuStyle.Stretch(backdrop.rectTransform);
             backdrop.texture = Resources.Load<Texture2D>("Menus/CampusBackground");
             backdrop.raycastTarget = false;
+            BuildSignLights();
             shade = MenuStyle.Image("Modal shade", transform, 0, 0, 0, 0, Color.clear);
             MenuStyle.Stretch(shade.rectTransform);
             shade.raycastTarget = true;
             layout = MenuStyle.Rect("1920 x 1080 composition", transform, 0, 0, 1920, 1080);
             layout.anchorMin = layout.anchorMax = layout.pivot = new Vector2(.5f, .5f);
             layout.anchoredPosition = Vector2.zero;
-            main = Page("Main"); pause = Page("Pause"); death = Page("Death");
+            main = Page("Main"); controls = Page("Controls"); pause = Page("Pause"); death = Page("Death");
             options = Page("Options"); credits = Page("Credits"); confirmation = Page("Confirm");
-            mapSelection = Page("Temporary map selection");
             gameOver = Page("Game Over");
             BuildDocument();
             BuildGameOver();
+            BuildControls();
             StandardHeader(main, 0);
             mainFirst = ColumnButton(main, "NewGame", "NOVO JOGO", StartNewGame);
-            chooseMap = ColumnButton(main, "TemporaryMapSelect", "ESCOLHER MAPA (TEMP.)", OpenMapSelection);
-            var prisonShortcut = ColumnButton(main, "PrisonShortcut", "PRISÃO — APÓS O BOSS", StartAtPrison);
-            var finaleShortcut = ColumnButton(main, "FinaleShortcut", "TESTAR FINAL", StartFinaleTest);
+            Button testTeleport = null;
+            BuildTestTeleportMenu(ref testTeleport);
             var mainOptions = ColumnButton(main, "Options", "OPÇÕES", OpenOptions);
             var creditButton = ColumnButton(main, "Credits", "CRÉDITOS", () => SetScreen(Screen.Credits));
             var quit = ColumnButton(main, "Quit", "SAIR", Quit);
-            MenuStyle.Link(mainFirst, chooseMap, prisonShortcut, finaleShortcut, mainOptions, creditButton, quit);
+            if (testTeleport != null) MenuStyle.Link(mainFirst, testTeleport, mainOptions, creditButton, quit);
+            else MenuStyle.Link(mainFirst, mainOptions, creditButton, quit);
             ColumnFooter(main);
-            BuildMapSelection();
             StandardHeader(pause, 1);
             pauseFirst = ColumnButton(pause, "Resume", "CONTINUAR   [ESC]", Resume);
             var pauseOptions = ColumnButton(pause, "Options", "OPÇÕES", OpenOptions);
@@ -667,63 +670,6 @@ namespace UniDoom.UI
             image.sprite = sprite;
             image.preserveAspect = true;
         }
-        static void Footer(GameObject page) => MenuStyle.Text("Navigation", page.transform,
-            "↑ ↓  NAVEGAR     ENTER  CONFIRMAR", 165, 985, 1000, 45, 21, MenuStyle.Muted);
-
-        // Temporary shortcut: use the same fresh-session loading flow as New Game.
-        void BuildMapSelection()
-        {
-            // Six rows of 64px buttons must stay above Back at y=885.
-            const float rowSpacing = 90;
-            MenuStyle.Text("Title", mapSelection.transform, "ESCOLHER MAPA", 165, 135, 1400, 100, 52, MenuStyle.Paper);
-            MenuStyle.Text("Hint", mapSelection.transform, "Selecione onde começar uma nova partida.", 165, 245, 1400, 45, 26, MenuStyle.Muted);
-            var controls = new List<Selectable>();
-            for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
-            {
-                string scene = SceneUtility.GetScenePathByBuildIndex(i);
-                if (string.IsNullOrEmpty(scene)) continue;
-                string sceneName = System.IO.Path.GetFileNameWithoutExtension(scene);
-                string label = sceneName switch
-                {
-                    "EntranceGarden" => "JARDIM DE ENTRADA",
-                    "SampleScene" => "CAMPUS COMPLETO",
-                    "Cylinder" => "CILINDRO",
-                    "Library" => "BIBLIOTECA",
-                    "CampusLibrary" => "BIBLIOTECA DO CAMPUS",
-                    "CampusBlock4" => "BLOCO 4",
-                    "ClassRoom" => "SALA DE AULA",
-                    "DirectorRoom" => "SALA DO DIRETOR",
-                    "LawSchool" => "BLOCO DE DIREITO",
-                    "CampusExterior" => "CAMPUS EXTERIOR — UNIMAR",
-                    "Basement" => "PORÃO — PRÉ-ARENA",
-                    _ => sceneName
-                };
-                var button = MenuStyle.Button(mapSelection.transform, "Map_" + sceneName, label,
-                    165 + controls.Count % 2 * 830, 320 + controls.Count / 2 * rowSpacing, 760, () => StartNewGameAtScene(scene), 32);
-                if (mapFirst == null) mapFirst = button;
-                controls.Add(button);
-                if (sceneName == "Basement")
-                    controls.Add(MenuStyle.Button(mapSelection.transform, "Map_BasementBoss", "PORÃO — ARENA DO BOSS",
-                        165 + controls.Count % 2 * 830, 320 + controls.Count / 2 * rowSpacing, 760,
-                        () => StartNewGameAtScene(scene, true), 32));
-            }
-            var back = MenuStyle.Button(mapSelection.transform, "Back", "VOLTAR   [ESC]", 165, 885, 1000, Back, 34);
-            if (mapFirst == null) mapFirst = back;
-            controls.Add(back);
-            MenuStyle.Link(controls.ToArray());
-            for (int i = 0; i < controls.Count - 1; i++)
-            {
-                int rowStart = i / 2 * 2;
-                var navigation = new Navigation { mode = Navigation.Mode.Explicit,
-                    selectOnUp = i >= 2 ? controls[i - 2] : back,
-                    selectOnDown = i + 2 < controls.Count - 1 ? controls[i + 2] : back,
-                    selectOnLeft = i % 2 == 1 ? controls[i - 1] : null,
-                    selectOnRight = i % 2 == 0 && rowStart + 1 < controls.Count - 1 ? controls[i + 1] : null };
-                controls[i].navigation = navigation;
-            }
-            Footer(mapSelection);
-        }
-
         void BuildOptions()
         {
             MenuStyle.Text("Title", options.transform, "OPÇÕES", 205, 150, 1200, 105, 52, MenuStyle.Paper);
@@ -898,6 +844,7 @@ namespace UniDoom.UI
             SceneManager.sceneLoaded -= OnSceneLoaded;
             ReleaseDocumentBackdrop();
             ReleasePause(); RestoreHUD();
+            if (signLightsMaterial != null) Destroy(signLightsMaterial);
             foreach (var sprite in artwork) if (sprite != null) Destroy(sprite);
             Instance = null;
         }

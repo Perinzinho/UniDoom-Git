@@ -3,12 +3,20 @@ using UnityEngine;
 
 public class OpenDoorWithKey : MonoBehaviour
 {
+    private static readonly Dictionary<string, float> visitedCampusRoomDoors = new Dictionary<string, float>();
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    public static void ResetSession() => visitedCampusRoomDoors.Clear();
+
     [Header("Chaves necessárias para abrir esta porta")]
     [SerializeField] private bool requiresKey01;
     [SerializeField] private bool requiresKey02;
     [SerializeField] private bool requiresKey03;
     [Tooltip("Optional key in the existing persistent PlayerCellKeys inventory.")]
     [SerializeField] private string requiredInventoryKey;
+    [Tooltip("Optional completed event in the persistent PlayerCellKeys inventory.")]
+    [SerializeField] private string requiredCompletedEvent;
+    [SerializeField, TextArea(2, 3)] private string lockedMessage;
     [Tooltip("Requires an explicit interaction instead of unlocking by proximity.")]
     [SerializeField] private bool requiresManualActivation;
     [SerializeField] private bool stayOpenAfterUnlock;
@@ -51,12 +59,17 @@ public class OpenDoorWithKey : MonoBehaviour
     private float contactOpenUntil;
     private bool unlocked;
     private float openingDirection = 1f;
+    private string sessionDoorId;
 
     private bool RequiresAnyKey => requiresKey01 || requiresKey02 || requiresKey03 ||
-        !string.IsNullOrEmpty(requiredInventoryKey);
+        !string.IsNullOrEmpty(requiredInventoryKey) || !string.IsNullOrEmpty(requiredCompletedEvent);
+    public string LockedMessage => lockedMessage;
     public bool IsUnlocked => unlocked;
     public bool IsOpen => unlocked && openProgress >= .8f;
     public bool IsFullyOpen => unlocked && openProgress >= .999f;
+
+    public bool NeedsKey(PlayerPickupKey player) => !unlocked && RequiresAnyKey &&
+        (player == null || !HasRequiredKey(player));
 
     public bool BlocksPlayer(Collider surface, PlayerPickupKey player) => door != null &&
         surface.transform.IsChildOf(door) && !unlocked &&
@@ -118,6 +131,9 @@ public enum DoorReloadTriggerMode
     private void Awake()
     {
         outsideTrigger = IsOutsideTrigger;
+        if (stayOpenAfterUnlock &&
+            (gameObject.scene.name == "LawSchool" || gameObject.scene.name == "CampusBlock4"))
+            sessionDoorId = BuildSessionDoorId();
         if (door == null) door = transform.Find("Door");
 
         if (door == null || door == transform)
@@ -155,6 +171,32 @@ public enum DoorReloadTriggerMode
         hinge.SetParent(motionRoot, false);
         hinge.position = hingePosition;
         door.SetParent(hinge, true);
+        RestoreVisitedDoor();
+    }
+
+    private void OnEnable() => RestoreVisitedDoor();
+
+    private string BuildSessionDoorId()
+    {
+        string path = "";
+        Transform current = transform;
+        while (current.parent != null)
+        {
+            path = current.GetSiblingIndex() + "/" + path;
+            current = current.parent;
+        }
+        return gameObject.scene.name + "/" + current.name + "/" + path;
+    }
+
+    private void RestoreVisitedDoor()
+    {
+        if (hinge == null || string.IsNullOrEmpty(sessionDoorId) ||
+            !visitedCampusRoomDoors.TryGetValue(sessionDoorId, out float direction)) return;
+
+        unlocked = true;
+        openingDirection = direction;
+        openProgress = 1f;
+        hinge.localRotation = Quaternion.Euler(0f, openingDirection * openAngle, 0f);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -241,27 +283,31 @@ public enum DoorReloadTriggerMode
             }
         }
 
-        // Disparo ao passar/cruzar o vão da porta
-        if (enableShaderReload && (reloadMode == DoorReloadTriggerMode.WhenPassingThrough || reloadMode == DoorReloadTriggerMode.Both))
+        // A travessia mantém aberta a sala visitada mesmo após recarregar o mapa.
+        // A tela de reload continua obedecendo às configurações da porta.
+        if (openProgress > 0.35f || shouldOpen)
         {
-            if (openProgress > 0.35f || shouldOpen)
+            foreach (Collider other in nearbyPlayers)
             {
-                foreach (Collider other in nearbyPlayers)
+                if (other == null) continue;
+                float currentSide = PlayerSide(other.transform.position);
+                if (playerEntrySides.TryGetValue(other, out float initialSide) &&
+                    Mathf.Abs(initialSide) > 0.15f && Mathf.Abs(currentSide) > 0.15f &&
+                    Mathf.Sign(initialSide) != Mathf.Sign(currentSide))
                 {
-                    if (other == null) continue;
-                    float currentSide = PlayerSide(other.transform.position);
-                    if (playerEntrySides.TryGetValue(other, out float initialSide))
+                    if (!string.IsNullOrEmpty(sessionDoorId))
+                        visitedCampusRoomDoors[sessionDoorId] = openingDirection;
+
+                    if (enableShaderReload && (reloadMode == DoorReloadTriggerMode.WhenPassingThrough ||
+                        reloadMode == DoorReloadTriggerMode.Both))
                     {
-                        // Se iniciou em um dos lados e agora cruzou com folga mínima
-                        if (Mathf.Abs(initialSide) > 0.15f && Mathf.Abs(currentSide) > 0.15f && Mathf.Sign(initialSide) != Mathf.Sign(currentSide))
+                        if (TryTriggerReload())
                         {
-                            if (TryTriggerReload())
-                            {
-                                playerEntrySides[other] = currentSide;
-                                break;
-                            }
+                            playerEntrySides[other] = currentSide;
+                            break;
                         }
                     }
+                    else playerEntrySides[other] = currentSide;
                 }
             }
         }
@@ -301,7 +347,9 @@ public enum DoorReloadTriggerMode
             (!requiresKey02 || player.key02) &&
             (!requiresKey03 || player.key03) &&
             (string.IsNullOrEmpty(requiredInventoryKey) ||
-                (player.TryGetComponent<PlayerCellKeys>(out var inventory) && inventory.HasKey(requiredInventoryKey)));
+                (player.TryGetComponent<PlayerCellKeys>(out var inventory) && inventory.HasKey(requiredInventoryKey))) &&
+            (string.IsNullOrEmpty(requiredCompletedEvent) ||
+                (player.TryGetComponent<PlayerCellKeys>(out var events) && events.HasCompletedEvent(requiredCompletedEvent)));
     }
 
     private float PlayerSide(Vector3 position)

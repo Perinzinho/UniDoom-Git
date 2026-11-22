@@ -20,6 +20,8 @@ public class PlayerMovement : MonoBehaviour
     private float walkBobPhase;
     private float walkBobWeight;
     private bool viewBobReady;
+    private Object lastLockedDoorNotice;
+    private float nextLockedDoorNoticeTime;
 
     public float WalkBobPhase => walkBobPhase;
     public float WalkBobWeight => walkBobWeight;
@@ -161,14 +163,35 @@ public class PlayerMovement : MonoBehaviour
         if (simpleDoor != null && simpleDoor.TryOpenByContact()) return;
 
         var audio = GameplayAudio.Instance;
-        if (audio == null) return;
+        if (simpleDoor != null && simpleDoor.IsLocked)
+        {
+            audio?.NotifyLockedDoorContact(simpleDoor);
+            ShowLockedDoorNotice(simpleDoor, UniDoom.UI.GameplayNotice.LockedDoorKeyMessage);
+            return;
+        }
+
         var sealedDoor = hit.collider.GetComponent<LockedDoorSurface>();
         if (sealedDoor != null && sealedDoor.Matches(hit.collider, hit.point))
         {
-            audio.NotifyLockedDoorContact(sealedDoor);
+            audio?.NotifyLockedDoorContact(sealedDoor);
             return;
         }
-        if (door != null && door.BlocksPlayer(hit.collider, GetComponent<PlayerPickupKey>()))
-            audio.NotifyLockedDoorContact(door);
+        if (door != null && door.BlocksPlayer(hit.collider, keys))
+        {
+            audio?.NotifyLockedDoorContact(door);
+            string message = door.LockedMessage;
+            if (string.IsNullOrEmpty(message))
+                message = door.NeedsKey(keys) ? UniDoom.UI.GameplayNotice.LockedDoorKeyMessage :
+                    UniDoom.UI.GameplayNotice.LockedDoorMessage;
+            ShowLockedDoorNotice(door, message);
+        }
+    }
+
+    private void ShowLockedDoorNotice(Object door, string message)
+    {
+        if (door == null || (door == lastLockedDoorNotice && Time.unscaledTime < nextLockedDoorNoticeTime)) return;
+        lastLockedDoorNotice = door;
+        nextLockedDoorNoticeTime = Time.unscaledTime + 2f;
+        UniDoom.UI.GameplayNotice.Show(message, 3.5f);
     }
 }

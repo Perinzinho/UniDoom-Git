@@ -23,7 +23,12 @@ public sealed class LawSchoolPowerPanel : MonoBehaviour
             hit.collider.transform.IsChildOf(transform);
     }
 
-    public bool TryUse(PlayerPickupKey player) => CanUse(player) && alarm.TryResolve(player);
+    public bool TryUse(PlayerPickupKey player)
+    {
+        if (!CanUse(player) || !alarm.TryResolve(player)) return false;
+        UniDoom.UI.GameplayNotice.Show("Alarme desligado. Fechadura eletrônica do auditório liberada.", 7.5f);
+        return true;
+    }
 
     void Update()
     {
@@ -46,6 +51,6 @@ public sealed class LawSchoolPowerPanel : MonoBehaviour
     void OnGUI()
     {
         if (!showPrompt || !alarm || !alarm.IsActive) return;
-        UniDoom.UI.GameplayNotice.Draw("[E]  Desligar alarme");
+        UniDoom.UI.GameplayNotice.Draw("[E] Desligar alarme e fechadura eletrônica");
     }
 }

@@ -57,7 +57,10 @@ public class PlayerPickupKey : MonoBehaviour
         if (keysUI != null) keysUI.SetKeys(usedKeys == 7 ? 0 : ownedKeys);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other) => TryCollect(other);
+    private void OnTriggerStay(Collider other) => TryCollect(other);
+
+    private void TryCollect(Collider other)
     {
         PlayerLife life = GetComponent<PlayerLife>();
         if ((life != null && life.IsDead) || UniDoom.UI.DeathScreen.IsVisible) return;
@@ -80,6 +83,12 @@ public class PlayerPickupKey : MonoBehaviour
     private void Collect(int index, Collider key)
     {
         if (SFXManager.Instance != null) SFXManager.Instance.PlayKeyPickupSound();
+        string keyName = index == 0 ? "biblioteca do Redondo" :
+            index == 1 ? "diretoria" : "passagem para o porão";
+        string use = index == 0 ? "Abre a biblioteca do Redondo." :
+            index == 1 ? "Abre a diretoria." :
+            "Abre a passagem entre a diretoria e o porão.";
+        UniDoom.UI.GameplayNotice.ShowKeyAcquired(keyName, use);
         // Register only a newly collected key. Its floating visual is not a spawn point.
         GetComponent<PlayerRespawn>()?.SaveCheckpoint(index);
         key.enabled = false;

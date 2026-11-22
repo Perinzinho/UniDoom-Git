@@ -16,6 +16,9 @@ namespace UniDoom.CampusBlock4
         [SerializeField] Vector2 shiftCooldown = Vector2.zero;
         [SerializeField, Range(0, 1)] float blackoutShiftChance = 1;
 
+        Vector3[] displayOffsets;
+        Quaternion[] displayRotations;
+
         void OnEnable() { if (power) power.BlackoutStarted += OnBlackout; }
         void OnDisable() { if (power) power.BlackoutStarted -= OnBlackout; }
         void Start()
@@ -31,12 +34,12 @@ namespace UniDoom.CampusBlock4
             PlacePhotographs();
             if (!ValidDestinations(Block4PuzzleProgress.MonitorDestinations))
                 Block4PuzzleProgress.MonitorDestinations = ChooseDestinations(firstRowMonitors.Length, initialDestinations);
+            CacheDisplayOffsets(Block4PuzzleProgress.MonitorDestinations);
             ApplyDestinations(Block4PuzzleProgress.MonitorDestinations);
             if (Block4PuzzleProgress.NextClueShiftAt <= 0)
                 Block4PuzzleProgress.NextClueShiftAt = Time.time + UnityEngine.Random.Range(shiftCooldown.x, shiftCooldown.y);
             GameplayNotice.ShowWhenGameplayReady(this,
-                "Bloco 4: entre oito computadores com fotos, encontre cinco pares de s\u00edmbolo e n\u00famero. Siga a ordem do quadro para abrir a sala 423 e pegar a chave da Biblioteca do Campus.", 7.5f);
-        }
+            "Nem tudo o que voc\u00ea precisa est\u00e1 \u00e0 primeira vista. Examine os computadores e procure conex\u00f5es entre as informa\u00e7\u00f5es encontradas. A resposta pode estar escondida nos pequenos detalhes.", 7.5f);        }
 
         bool ValidDestinations(int[] destinations)
         {
@@ -81,6 +84,18 @@ namespace UniDoom.CampusBlock4
             Block4PuzzleProgress.NextClueShiftAt = Time.time + UnityEngine.Random.Range(shiftCooldown.x, shiftCooldown.y);
         }
 
+        void CacheDisplayOffsets(int[] destinations)
+        {
+            displayOffsets = new Vector3[displays.Length];
+            displayRotations = new Quaternion[displays.Length];
+            for (int i = 0; i < displays.Length; i++)
+            {
+                var anchor = firstRowMonitors[destinations[i]];
+                displayOffsets[i] = anchor ? anchor.InverseTransformPoint(displays[i].position) : Vector3.zero;
+                displayRotations[i] = anchor ? Quaternion.Inverse(anchor.rotation) * displays[i].rotation : Quaternion.identity;
+            }
+        }
+
         // Placement changes only; the symbol, digit, photographs and solution are never rewritten.
         public void ApplyDestinations(int[] destinations)
         {
@@ -95,7 +110,10 @@ namespace UniDoom.CampusBlock4
             for (int i = 0; i < destinations.Length; i++)
             {
                 var anchor = firstRowMonitors[destinations[i]];
-                displays[i].SetPositionAndRotation(anchor.position, anchor.rotation);
+                if (displayOffsets != null && displayRotations != null && i < displayOffsets.Length)
+                    displays[i].SetPositionAndRotation(anchor.TransformPoint(displayOffsets[i]), anchor.rotation * displayRotations[i]);
+                else
+                    displays[i].SetPositionAndRotation(anchor.position, anchor.rotation);
             }
         }
 

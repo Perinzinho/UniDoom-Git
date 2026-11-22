@@ -5,19 +5,19 @@ using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using UniDoom.UI;
 
-/// <summary>The first local key triggers one persistent alarm and one finite group of zombies.</summary>
+/// <summary>The maintenance key triggers one persistent alarm and one finite group of zombies.</summary>
 [DisallowMultipleComponent, DefaultExecutionOrder(11000)]
 public sealed class LawSchoolAlarmPrototype : MonoBehaviour
 {
     [SerializeField] Transform building;
     [SerializeField] LawSchoolLighting lighting;
     [SerializeField] LawSchoolCellKeyPickup key;
+    [SerializeField] Transform libraryKeyLocation;
     [SerializeField] AudioSource siren;
     [SerializeField] GameObject zombiePrefab;
     [SerializeField] GameObject[] zombieVariants;
     [SerializeField] Transform[] arrivalPoints;
     [SerializeField] Transform[] keyLocations;
-    [SerializeField] Transform[] excludedKeyAreas;
     [SerializeField, Min(.1f)] float initialRedSeconds = 2;
     [SerializeField, Min(.1f)] float redSeconds = 3;
     [SerializeField, Min(.1f)] float blackoutSeconds = 1.6f;
@@ -40,14 +40,22 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
     public Transform SelectedKeyLocation { get; private set; }
     public const string EventId = "law-school-cell-key-alarm";
     public const string TriggeredEventId = "law-school-local-key-collected";
+    static readonly string[] OccupiedRooms = { "SALA 111", "SALA 116", "SALA 123", "SALA 128", "SALA 134" };
+    static readonly Vector2[] RoomZombiePositions =
+    {
+        new Vector2(.8f, 3f), new Vector2(4.3f, 3f),
+        new Vector2(.8f, 5.5f), new Vector2(4.3f, 5.5f),
+        new Vector2(.8f, 8f), new Vector2(4.3f, 8f),
+        new Vector2(2.5f, 4.2f), new Vector2(2.5f, 9.5f)
+    };
 
-    public static void NotifyKeyCollected(Component pickup, PlayerCellKeys inventory)
+    public static void NotifyMaintenanceKeyCollected(LawSchoolMaintenanceKeyPickup pickup, PlayerCellKeys inventory)
     {
         if (!pickup || !inventory || inventory.HasCompletedEvent(TriggeredEventId) ||
             inventory.HasCompletedEvent(EventId)) return;
         foreach (var alarm in FindObjectsByType<LawSchoolAlarmPrototype>())
         {
-            // Shared pickups in the library and Block 4 must not trigger this building.
+            // Only the maintenance pickup in this scene can start this building's alarm.
             if (!alarm.isActiveAndEnabled || alarm.gameObject.scene != pickup.gameObject.scene) continue;
             inventory.CompleteEvent(TriggeredEventId);
             alarm.BeginAlarm();
@@ -129,51 +137,87 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         // Returning to this scene keeps the specific key owned by the persistent player.
         while (!GameManager.SessionPlayer) yield return null;
         var player = GameManager.SessionPlayer;
-        if (!key || !building)
+        if (!key || !building || !libraryKeyLocation || !libraryKeyLocation.parent)
         {
-            Debug.LogError("LawSchool: configure a chave da biblioteca e a raiz do prédio.", this);
+            Debug.LogError("LawSchool: configure a chave da biblioteca, seu ponto no auditório e a raiz do prédio.", this);
             yield break;
         }
         var keys = player.GetComponent<PlayerCellKeys>();
         if (!keys) keys = player.gameObject.AddComponent<PlayerCellKeys>();
-        ChooseKeyRoom(keys);
+        PlaceLibraryKey(keys);
+        SpawnOccupiedRooms(keys);
         IsResolved = keys.HasCompletedEvent(EventId);
         // Publish the initial placement too, so maintenance is available in this same initialization.
         StateChanged?.Invoke();
         if (keys.HasCompletedEvent(TriggeredEventId) && !IsResolved) BeginAlarm();
         GameplayNotice.ShowWhenGameplayReady(this,
-            "Bloco de Direito: encontre duas chaves, uma para a Biblioteca do Campus e outra para a sala de manuten\u00e7\u00e3o 104. Use a chave da manuten\u00e7\u00e3o para desligar o alarme.", 7.5f);
+            "Neste bloco, encontre a chave da manutenção e uma das chaves da Biblioteca do Campus.",
+            10f);
     }
 
-    void ChooseKeyRoom(PlayerCellKeys inventory)
+    void PlaceLibraryKey(PlayerCellKeys inventory)
     {
-        if (keyLocations == null) return;
-        var available = new List<Transform>();
-        var names = new List<string>();
-        foreach (var location in keyLocations)
-        {
-            if (!location || !location.parent) continue;
-            bool maintenance = false;
-            if (excludedKeyAreas != null)
-                foreach (var area in excludedKeyAreas)
-                    if (area && location.IsChildOf(area)) { maintenance = true; break; }
-            for (var parent = location; parent && parent != building; parent = parent.parent)
-                if (parent.name.StartsWith("MANUTEN",System.StringComparison.OrdinalIgnoreCase)) { maintenance = true; break; }
-            if (maintenance || names.Contains(location.name)) continue;
-            available.Add(location); names.Add(location.name);
-        }
-        string chosen = inventory.GetOrChooseKeyLocation(key.CellId,names);
-        int index = names.IndexOf(chosen);
-        if (index < 0)
-        {
-            Debug.LogError("LawSchool: nenhum local válido para a chave da biblioteca.", this);
-            return;
-        }
-        SelectedKeyLocation = available[index];
+        SelectedKeyLocation = libraryKeyLocation;
         SelectedKeyRoom = SelectedKeyLocation.parent.name;
         key.transform.SetParent(building,true);
-        key.transform.position = available[index].position;
+        key.transform.position = SelectedKeyLocation.position;
         key.RefreshAvailability(inventory);
+    }
+
+    void SpawnOccupiedRooms(PlayerCellKeys inventory)
+    {
+        if (keyLocations == null) return;
+        for (int i = 0; i < OccupiedRooms.Length; i++)
+        {
+            string roomName = OccupiedRooms[i];
+            string clearedId = "law-school-room-zombie-" + roomName;
+            if (inventory.HasCompletedEvent(clearedId)) continue;
+            Transform room = null;
+            foreach (var point in keyLocations)
+                if (point && point.parent && point.parent.name == roomName)
+                {
+                    room = point.parent;
+                    break;
+                }
+            if (!room) continue;
+            GameObject prefab = zombieVariants != null && zombieVariants.Length > 0
+                ? zombieVariants[i % zombieVariants.Length] : null;
+            if (!prefab) prefab = zombiePrefab;
+            if (!prefab || !TryRoomZombiePosition(room, prefab, out var position)) continue;
+
+            var zombie = Instantiate(prefab, position, room.rotation);
+            SceneManager.MoveGameObjectToScene(zombie, gameObject.scene);
+            zombie.transform.SetParent(transform, true);
+            zombie.name = roomName + " - zumbi";
+            var enemy = zombie.GetComponent<Enemy>();
+            if (enemy) enemy.OnDeath.AddListener(_ => inventory.CompleteEvent(clearedId));
+        }
+    }
+
+    static bool TryRoomZombiePosition(Transform room, GameObject prefab, out Vector3 position)
+    {
+        position = default;
+        var capsule = prefab.GetComponent<CapsuleCollider>();
+        float radius = capsule ? capsule.radius + .03f : .53f;
+        float halfHeight = capsule ? Mathf.Max(capsule.height * .5f, radius) : 1f;
+        float centerY = capsule ? capsule.center.y : 0f;
+        foreach (var local in RoomZombiePositions)
+        {
+            Vector3 floor = room.TransformPoint(new Vector3(local.x, 0f, local.y));
+            if (!Physics.Raycast(floor + Vector3.up * 2.5f, Vector3.down, out var hit, 3f,
+                    Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore) ||
+                hit.normal.y < .7f || Mathf.Abs(hit.point.y - floor.y) > .25f) continue;
+            Vector3 root = hit.point + Vector3.up * (halfHeight - centerY + .04f);
+            Vector3 center = root + (capsule ? capsule.center : Vector3.zero);
+            float segment = Mathf.Max(0f, halfHeight - radius - .04f);
+            if (Physics.CheckCapsule(center - Vector3.up * segment, center + Vector3.up * segment,
+                    radius, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore)) continue;
+            var player = GameManager.SessionPlayer;
+            if (player && (player.transform.position - center).sqrMagnitude < 36f) continue;
+            position = root;
+            return true;
+        }
+        return false;
     }
 
     public bool TryResolve(PlayerPickupKey player)
@@ -256,8 +300,8 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
             flashlightOn = !flashlightOn;
             nextActorTintAt = 0;
         }
-        if (nearbyLight && nearbyLight.enabled != (flashlightOn && IsBlackout))
-            nearbyLight.enabled = flashlightOn && IsBlackout;
+        if (nearbyLight && nearbyLight.enabled != (flashlightOn && IsActive))
+            nearbyLight.enabled = flashlightOn && IsActive;
         Elapsed += Time.deltaTime;
         bool dark = Elapsed >= initialRedSeconds &&
             Mathf.Repeat(Elapsed - initialRedSeconds, blackoutSeconds + redSeconds) < blackoutSeconds;
@@ -282,7 +326,7 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         }
         foreach (var surface in surfaces) surface.Apply(dark);
         lighting.SetAlarmPhase(true, dark);
-        if (nearbyLight) nearbyLight.enabled = flashlightOn && dark;
+        if (nearbyLight) nearbyLight.enabled = flashlightOn && IsActive;
         if (weaponHud) weaponHud.color = weaponHudColor * (dark ? new Color(.17f,.20f,.25f,1) : SpriteRed);
         TintActors();
         nextActorTintAt = Time.unscaledTime + .12f;
@@ -305,7 +349,8 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
         if (!view) view = Camera.main;
         if (!nearbyLight && view)
         {
-            var source = new GameObject("LawSchool — visão próxima no apagão");
+            // Lanterna do apagão: alcance suficiente para o jogador enxergar o caminho à frente.
+            var source = new GameObject("LawSchool — lanterna no apagão");
             source.transform.SetParent(view.transform,false);
             source.transform.localPosition = new Vector3(0,-.08f,.12f);
             source.transform.localRotation = Quaternion.LookRotation(new Vector3(0,.08f,18f), Vector3.up);
@@ -313,11 +358,11 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
             nearbyLight.type = LightType.Spot;
             nearbyLight.spotAngle = 58;
             nearbyLight.innerSpotAngle = 30;
-            nearbyLight.range = Mathf.Min(nearbyVisibilityRange + 1.5f, 8f);
+            nearbyLight.range = 30f;
             nearbyLight.intensity = nearbyVisibilityIntensity;
             nearbyLight.color = new Color(1f,.92f,.78f);
             nearbyLight.shadows = LightShadows.None;
-            nearbyLight.enabled = flashlightOn && IsBlackout;
+            nearbyLight.enabled = flashlightOn && IsActive;
             nearbyLight.cullingMask = view.cullingMask;
         }
         if (!weaponHud)
@@ -348,11 +393,13 @@ public sealed class LawSchoolAlarmPrototype : MonoBehaviour
                 float proximity = view ? Mathf.Clamp01(1-distance/nearbyVisibilityRange) : 0;
                 if (flashlightOn && view && nearbyLight)
                 {
+                    // Usa nearbyVisibilityRange para o tint de sprites (independente do range real da luz).
                     float cone = Mathf.InverseLerp(Mathf.Cos(29 * Mathf.Deg2Rad), Mathf.Cos(15 * Mathf.Deg2Rad),
                         Vector3.Dot(view.transform.forward, delta.normalized));
-                    if (cone > 0 && distance < nearbyLight.range)
+                    float visRange = nearbyVisibilityRange;
+                    if (cone > 0 && distance < visRange)
                     {
-                        float beam = cone * (1 - distance / nearbyLight.range);
+                        float beam = cone * (1 - distance / visRange);
                         bool blocked = Physics.Linecast(view.transform.position, actor.renderer.bounds.center,
                             out var obstruction, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
                         if (!blocked || (actor.enemy && obstruction.collider &&
