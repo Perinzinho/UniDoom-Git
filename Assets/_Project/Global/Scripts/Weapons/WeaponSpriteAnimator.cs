@@ -377,7 +377,6 @@ public class WeaponSpriteAnimator : MonoBehaviour
         if (shootFrames == null || shootFrames.Length == 0) return;
         bool duringShotgunReload = isReloading && gun is Shotgun;
         if (isReloading && !duringShotgunReload) return;
-        if (isShooting && gun is AK47) return;
 
         isShooting = true;
         shootOverridesReload = duringShotgunReload;

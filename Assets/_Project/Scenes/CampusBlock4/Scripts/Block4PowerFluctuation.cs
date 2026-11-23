@@ -12,7 +12,6 @@ namespace UniDoom.CampusBlock4
         [SerializeField] Vector2 interval = new Vector2(60, 90);
         [SerializeField] Vector2 firstEventDelay = new Vector2(30, 45);
         [SerializeField] Vector2 blackoutDuration = new Vector2(2, 4);
-        [SerializeField, Min(1)] float keyBlackoutDuration = 15f;
         [SerializeField, Range(0, 1)] float blackoutAmbientFraction = .07f;
         [SerializeField, Range(0, 1)] float blackoutReflection = .12f;
         [SerializeField, Range(0, 1)] float powerDownVolume = .85f;
@@ -83,16 +82,6 @@ namespace UniDoom.CampusBlock4
         {
             if(!isActiveAndEnabled||intensities==null)return;
             phase=0;pulses=0;SetPower(false);remaining=.1f;
-        }
-        public void BeginKeyBlackout()
-        {
-            if (!isActiveAndEnabled || intensities == null) return;
-            phase = 1;
-            pulses = 0;
-            SetPower(false);
-            EnterBlackout();
-            remaining = keyBlackoutDuration;
-            BlackoutStarted?.Invoke();
         }
         void EnterBlackout()
         {
