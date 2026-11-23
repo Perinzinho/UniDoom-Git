@@ -83,12 +83,12 @@ public class PlayerPickupKey : MonoBehaviour
     private void Collect(int index, Collider key)
     {
         if (SFXManager.Instance != null) SFXManager.Instance.PlayKeyPickupSound();
-        string keyName = index == 0 ? "biblioteca do Redondo" :
-            index == 1 ? "diretoria" : "passagem para o porão";
-        string use = index == 0 ? "Abre a biblioteca do Redondo." :
-            index == 1 ? "Abre a diretoria." :
-            "Abre a passagem entre a diretoria e o porão.";
-        UniDoom.UI.GameplayNotice.ShowKeyAcquired(keyName, use);
+        if (index == 0)
+            UniDoom.UI.GameplayNotice.Show("Chave obtida: biblioteca da UniDoom", 7.5f);
+        else if (index == 2)
+            UniDoom.UI.GameplayNotice.Show("Chave obtida: Chave da Diretoria. Você não sabe onde ela pode ser usada", 7.5f);
+        else
+            UniDoom.UI.GameplayNotice.ShowKeyAcquired("diretoria", "Abre a diretoria.");
         // Register only a newly collected key. Its floating visual is not a spawn point.
         GetComponent<PlayerRespawn>()?.SaveCheckpoint(index);
         key.enabled = false;

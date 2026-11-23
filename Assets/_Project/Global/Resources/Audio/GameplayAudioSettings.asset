@@ -17,10 +17,10 @@ MonoBehaviour:
   zombieRoomEntry: {fileID: 8300000, guid: bd7179861ca9410a867ff8e45fc0abc9, type: 3}
   zombieNearby: {fileID: 8300000, guid: 0616b23ecc75419981e127ea4b9da2fa, type: 3}
   bossMusic: {fileID: 8300000, guid: 1d1ba2aceca94266ab95d6cc1db1c603, type: 3}
-  pickupVolume: 0.85
-  roomVolume: 0.7
-  nearbyVolume: 0.8
-  musicVolume: 0.45
+  pickupVolume: 1
+  roomVolume: 0.95
+  nearbyVolume: 0.9
+  musicVolume: 0.42
   nearbyDistance: 2.5
   nearbyResetDistance: 3.5
   nearbyCooldown: 6
@@ -33,4 +33,17 @@ MonoBehaviour:
   - SampleScene
   doorLocked: {fileID: 8300000, guid: 872a7e78fd7d4307b8fe4ed3be6a2a5d, type: 3}
   doorOpening: {fileID: 8300000, guid: d73bb815f05f4cb6a9d21987bed9ab37, type: 3}
-  doorVolume: 0.8
+  doorVolume: 0.9
+  investigationCampus: {fileID: 8300000, guid: 2a55415cbbbb91e43b4fa33c5bb82017, type: 3}
+  investigationInterior: {fileID: 8300000, guid: 95b357c8ad3353e4ab34990fcc9c2049, type: 3}
+  investigationVolume: 1
+  investigationCampusScenes:
+  - EntranceGarden
+  - CampusExterior
+  - CampusLibrary
+  investigationInteriorScenes:
+  - DirectorRoom
+  - CampusBlock4
+  - Basement
+  investigationSilentScenes:
+  - LawSchool
