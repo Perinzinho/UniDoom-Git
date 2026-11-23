@@ -91,8 +91,7 @@ public class PlayerWeaponManager : MonoBehaviour
         WeaponDefinition nextWeapon = pickup.Definition;
         // This slot accepts only the game's two firearms. The axe can never be replaced.
         if (!(nextWeapon.GunPrefab is Pistol) &&
-            !(nextWeapon.GunPrefab is Shotgun) &&
-            !(nextWeapon.GunPrefab is AK47))
+            !(nextWeapon.GunPrefab is Shotgun))
             return false;
         Gun nextGun = pickup.TakeGun(weaponHolder);
         if (nextGun == null)
