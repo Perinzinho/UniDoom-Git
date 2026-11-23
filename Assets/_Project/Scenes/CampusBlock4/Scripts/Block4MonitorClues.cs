@@ -145,6 +145,22 @@ namespace UniDoom.CampusBlock4
             }
         }
 
+        internal bool ReservesMonitor(Transform monitor)
+        {
+            if (!monitor) return false;
+            foreach (var anchor in firstRowMonitors)
+                if (anchor && anchor.IsChildOf(monitor)) return true;
+            foreach (var face in photoFaces)
+                if (face && face.IsChildOf(monitor)) return true;
+            return false;
+        }
+
+        internal bool HasReservedMonitors =>
+            firstRowMonitors != null && firstRowMonitors.Length == 8 &&
+            photoFaces != null && photoFaces.Length == 4 &&
+            Array.TrueForAll(firstRowMonitors, anchor => anchor != null) &&
+            Array.TrueForAll(photoFaces, face => face != null);
+
         public static int[] ChooseDestinations(int anchorCount, int[] current)
         {
             if (current == null || anchorCount <= current.Length) throw new ArgumentException("Additional monitors are required.");

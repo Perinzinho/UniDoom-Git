@@ -633952,6 +633952,7 @@ GameObject:
   - component: {fileID: 334255735369281679}
   - component: {fileID: 3486058168386907749}
   - component: {fileID: 2818847653013327809}
+  - component: {fileID: 8790000000000000003}
   m_Layer: 0
   m_Name: CampusBlock4
   m_TagString: Untagged
@@ -978470,3 +978471,18 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &8790000000000000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7416608979654397108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2367b7736ba4408bbafbb781fbef622a, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::UniDoom.CampusBlock4.Block4MonitorEasterEgg
+  puzzle: {fileID: 2818847653013327809}
+  screenMaterial: {fileID: 2100000, guid: 90157e4306bb44738d1a0a55dcc80138, type: 2}
+  screenCount: 15
