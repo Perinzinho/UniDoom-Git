@@ -21,8 +21,6 @@ namespace UniDoom.CampusBlock4
         [SerializeField] Vector2 shiftCooldown = Vector2.zero;
         [SerializeField, Range(0, 1)] float blackoutShiftChance = 1;
 
-        Vector3[] displayOffsets;
-        Quaternion[] displayRotations;
         Renderer[] symbolScreens;
         MaterialPropertyBlock screenProperties;
         float highlightUntil;
@@ -48,9 +46,6 @@ namespace UniDoom.CampusBlock4
             PlacePhotographs();
             if (!ValidDestinations(Block4PuzzleProgress.MonitorDestinations))
                 Block4PuzzleProgress.MonitorDestinations = ChooseDestinations(firstRowMonitors.Length, initialDestinations);
-            // The prefab reloads clues at their authored positions even though the session
-            // retains a randomized destination map. Cache the authored offsets before applying it.
-            CacheDisplayOffsets(initialDestinations);
             ApplyDestinations(Block4PuzzleProgress.MonitorDestinations);
             CacheSymbolScreens();
             highlightUntil = Time.time + HighlightSeconds;
@@ -130,18 +125,6 @@ namespace UniDoom.CampusBlock4
             Block4PuzzleProgress.NextClueShiftAt = Time.time + UnityEngine.Random.Range(shiftCooldown.x, shiftCooldown.y);
         }
 
-        void CacheDisplayOffsets(int[] destinations)
-        {
-            displayOffsets = new Vector3[displays.Length];
-            displayRotations = new Quaternion[displays.Length];
-            for (int i = 0; i < displays.Length; i++)
-            {
-                var anchor = firstRowMonitors[destinations[i]];
-                displayOffsets[i] = anchor ? anchor.InverseTransformPoint(displays[i].position) : Vector3.zero;
-                displayRotations[i] = anchor ? Quaternion.Inverse(anchor.rotation) * displays[i].rotation : Quaternion.identity;
-            }
-        }
-
         // Placement changes only; the symbol, digit, photographs and solution are never rewritten.
         public void ApplyDestinations(int[] destinations)
         {
@@ -156,10 +139,9 @@ namespace UniDoom.CampusBlock4
             for (int i = 0; i < destinations.Length; i++)
             {
                 var anchor = firstRowMonitors[destinations[i]];
-                if (displayOffsets != null && displayRotations != null && i < displayOffsets.Length)
-                    displays[i].SetPositionAndRotation(anchor.TransformPoint(displayOffsets[i]), anchor.rotation * displayRotations[i]);
-                else
-                    displays[i].SetPositionAndRotation(anchor.position, anchor.rotation);
+                // All clue roots have the same screen-relative geometry. Their authored
+                // positions differ, so each one must use the destination's pose directly.
+                displays[i].SetPositionAndRotation(anchor.position, anchor.rotation);
             }
         }
 

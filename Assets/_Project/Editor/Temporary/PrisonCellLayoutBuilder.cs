@@ -41,7 +41,7 @@ internal static class PrisonCellLayoutBuilder
         new("Matheus Santi", "Assets/_Project/Scenes/Basement/Prison/Prefabs/Teacher-matheus-santi.prefab"),
         new("Moacyr", "Assets/_Project/Scenes/Basement/Prison/Prefabs/Teacher-moacyr.prefab"),
         new("Querino", "Assets/_Project/Scenes/Basement/Prison/Prefabs/Teacher-querino.prefab"),
-        new("William", "Assets/_Project/Scenes/Basement/Prison/Prefabs/Teacher-william.prefab"),
+        new("William Pires", "Assets/_Project/Scenes/Basement/Prison/Prefabs/Teacher-william.prefab"),
         new("Bianca", BiancaPrefabPath)
     };
 
