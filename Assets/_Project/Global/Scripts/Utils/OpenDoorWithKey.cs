@@ -46,6 +46,9 @@ public class OpenDoorWithKey : MonoBehaviour
     [SerializeField] private string sectorName = "NOVO SETOR";
     [Tooltip("Tempo mínimo em segundos entre ativações da tela nesta porta.")]
     [SerializeField] private float reloadCooldown = 5f;
+    [Header("Som ao atravessar")]
+    [SerializeField] private AudioClip passageAudio;
+    [SerializeField, Range(0f, 1f)] private float passageVolume = 0.85f;
 
     private readonly HashSet<Collider> nearbyPlayers = new HashSet<Collider>();
     private readonly Dictionary<Collider, float> playerEntrySides = new Dictionary<Collider, float>();
@@ -60,6 +63,7 @@ public class OpenDoorWithKey : MonoBehaviour
     private bool unlocked;
     private float openingDirection = 1f;
     private string sessionDoorId;
+    private AudioSource passageAudioSource;
 
     private bool RequiresAnyKey => requiresKey01 || requiresKey02 || requiresKey03 ||
         !string.IsNullOrEmpty(requiredInventoryKey) || !string.IsNullOrEmpty(requiredCompletedEvent);
@@ -130,6 +134,21 @@ public enum DoorReloadTriggerMode
 
     private void Awake()
     {
+        bool isTurnstile = gameObject.name.IndexOf("catraca", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+            gameObject.name.IndexOf("turnstile", System.StringComparison.OrdinalIgnoreCase) >= 0;
+        if (isTurnstile)
+        {
+            if (passageAudio == null)
+                passageAudio = Resources.Load<AudioClip>("Audio/TurnstilePassing");
+            if (passageAudio != null)
+            {
+                passageAudioSource = gameObject.AddComponent<AudioSource>();
+                passageAudioSource.playOnAwake = false;
+                passageAudioSource.loop = false;
+                passageAudioSource.spatialBlend = 0f;
+            }
+        }
+
         outsideTrigger = IsOutsideTrigger;
         if (stayOpenAfterUnlock &&
             (gameObject.scene.name == "LawSchool" || gameObject.scene.name == "CampusBlock4"))
@@ -297,6 +316,8 @@ public enum DoorReloadTriggerMode
                 {
                     if (!string.IsNullOrEmpty(sessionDoorId))
                         visitedCampusRoomDoors[sessionDoorId] = openingDirection;
+                    if (passageAudioSource != null)
+                        passageAudioSource.PlayOneShot(passageAudio, passageVolume);
 
                     if (enableShaderReload && (reloadMode == DoorReloadTriggerMode.WhenPassingThrough ||
                         reloadMode == DoorReloadTriggerMode.Both))

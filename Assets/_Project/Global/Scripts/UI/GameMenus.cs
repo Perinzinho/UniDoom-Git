@@ -604,9 +604,11 @@ namespace UniDoom.UI
 
         static void ColumnFooter(GameObject page, float width = 500, bool centered = false)
         {
-            var text = MenuStyle.Text("Navigation", page.transform, "↑ ↓  NAVEGAR     ENTER  CONFIRMAR",
-                0, 0, width, 32, 19, MenuStyle.Muted);
-            if (centered) text.alignment = TextAlignmentOptions.Center;
+            float arrowsX = centered ? (width - 264) * .5f : 0;
+            MenuStyle.NavigationArrows(page.transform, arrowsX, 7, 18, MenuStyle.Muted);
+            var text = MenuStyle.Text("Navigation", page.transform, "NAVEGAR     ENTER  CONFIRMAR",
+                arrowsX + 46, 0, width - arrowsX - 46, 32, 19, MenuStyle.Muted);
+            if (centered) text.alignment = TextAlignmentOptions.Left;
             ColumnElement(text.gameObject, width, 32);
         }
 
