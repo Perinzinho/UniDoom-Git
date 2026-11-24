@@ -130,7 +130,7 @@ public sealed class DirectorSecretPassage : MonoBehaviour
         var keys = player.GetComponent<PlayerPickupKey>();
         if (keys == null || !keys.key03)
         {
-            message = "O cadeado precisa da chave sobre a mesa do diretor.";
+            message = "O cadeado precisa de uma chave";
             messageUntil = Time.unscaledTime + 3;
             return false;
         }

@@ -653,6 +653,11 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!4 &466690445 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 142441860923474218, guid: 94ec28a16c4d74a4a9ab922b9c6784a5, type: 3}
+  m_PrefabInstance: {fileID: 4400165280436238571}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &543360237
 GameObject:
   m_ObjectHideFlags: 0
@@ -1185,6 +1190,68 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1001 &1562973031
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 466690445}
+    m_Modifications:
+    - target: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.69
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -7.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8215064285211661319, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
+      propertyPath: m_Name
+      value: Medkit - Biblioteca do Campus
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
+--- !u!4 &1562973032 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2820889012912510963, guid: 28ef989a10fc4a37ac7fc764935f40ac, type: 3}
+  m_PrefabInstance: {fileID: 1562973031}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1601700283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1771,6 +1838,9 @@ PrefabInstance:
     - {fileID: 5152403863824546020, guid: 94ec28a16c4d74a4a9ab922b9c6784a5, type: 3}
     - {fileID: 7452005352991563125, guid: 94ec28a16c4d74a4a9ab922b9c6784a5, type: 3}
     m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 142441860923474218, guid: 94ec28a16c4d74a4a9ab922b9c6784a5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1562973032}
     - targetCorrespondingSourceObject: {fileID: 9099238028465322173, guid: 94ec28a16c4d74a4a9ab922b9c6784a5, type: 3}
       insertIndex: 62
       addedObject: {fileID: 1603642596}

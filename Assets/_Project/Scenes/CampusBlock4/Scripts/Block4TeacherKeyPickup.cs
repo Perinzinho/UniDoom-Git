@@ -37,7 +37,8 @@ namespace UniDoom.CampusBlock4
             cellKeys.TryAddKey(Block4PuzzleProgress.LibraryAccessKeyId);
             SFXManager.Instance?.PlayKeyPickupSound();
             keypad.ShowKeyCollected();
-            FindAnyObjectByType<Block4PowerFluctuation>()?.BeginKeyBlackout();
+            // Collecting the library key must not cut the power. The block's random
+            // fluctuations keep their own timer and continue after the pickup.
             gameObject.SetActive(false);
             return true;
         }

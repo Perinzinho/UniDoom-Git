@@ -121,7 +121,7 @@ public class FootstepController : SFXPlayer
         else
         {
             if (!wasGrounded && airTime >= landMinAirTime)
-                PlayFromSurface(1.2f); // aterrissagem: mais forte
+                PlayFromSurface(1f); // aterrissagem: mais forte
 
             airTime = 0f;
         }
