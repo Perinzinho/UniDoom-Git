@@ -63,6 +63,7 @@ namespace UniDoom.UI
             new DestinationArtwork("LawSchool"),
             new DestinationArtwork("EntranceGarden"),
             new DestinationArtwork("CampusExterior"),
+            new DestinationArtwork("BasementFromDirectorRoom"),
             new DestinationArtwork("Basement")
         };
         private static readonly string[] DebugSectors =
@@ -230,7 +231,7 @@ namespace UniDoom.UI
             bool success = false;
             try
             {
-                SelectDestinationArtwork(artworkScene ?? checkpointScene ?? sceneName, sectorName);
+                SelectDestinationArtwork(artworkScene ?? checkpointScene ?? sceneName, sectorName, spawnId);
                 titleText.text = string.IsNullOrWhiteSpace(sectorName) ? "SETOR DESCONHECIDO" : sectorName.ToUpperInvariant();
                 subtitleText.text = "ALÉM DA PORTA";
                 SetProgress(0, "A porta se fecha...");
@@ -370,7 +371,7 @@ namespace UniDoom.UI
             statusDetailText.text = status;
         }
 
-        private void SelectDestinationArtwork(string sceneName, string sectorName)
+        private void SelectDestinationArtwork(string sceneName, string sectorName, string spawnId)
         {
             // Actual travel always uses the scene ID; labels are only aliases for local/F8 previews.
             string destination = string.IsNullOrWhiteSpace(sceneName) ? sectorName : sceneName;
@@ -388,6 +389,8 @@ namespace UniDoom.UI
                 case "CAMPUS": case "CAMPUS UNIMAR": case "CAMPUS EXTERIOR": destination = "CAMPUSEXTERIOR"; break;
                 case "PORAO": case "PORÃO": case "PRISAO": case "PRISÃO": destination = "BASEMENT"; break;
             }
+            if (destination == "BASEMENT" && string.Equals(spawnId, "FromDirectorRoom", StringComparison.OrdinalIgnoreCase))
+                destination = "BASEMENTFROMDIRECTORROOM";
 
             // Reset to the shared image on every request, so an unknown destination cannot show the previous room.
             activePassageImage = passageImage;
