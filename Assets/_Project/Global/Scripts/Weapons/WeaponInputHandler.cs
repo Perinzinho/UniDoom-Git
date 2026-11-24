@@ -18,8 +18,7 @@ public class WeaponInputHandler : MonoBehaviour
             return;
 
         // Left mouse button attempts to shoot.
-        bool automaticFire = currentGun is AK47 && Input.GetMouseButton(0);
-        if (automaticFire || Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
             currentGun.TryShoot();
         }

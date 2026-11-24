@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -18,10 +19,13 @@ public sealed class PlayerFlashlight : MonoBehaviour
     bool sceneBound;
     bool wasDark;
     bool requested;
-    bool wasLibraryUnpowered;
-    float nextLibraryFailureAt = -1f;
-    float libraryFailureEndsAt = -1f;
-    const float LibraryFailureDuration = 3f;
+    Coroutine flickerRoutine;
+    int flickerToken;
+    float nextFlickerAt = -1f;
+    const float BeamIntensity = 65f;
+    const float FlickerDimFactor = .15f;
+    const float MinFlickerInterval = 1f;
+    const float MaxFlickerInterval = 60f;
     LibraryLightingController campusLibrary;
     LibraryEncounterDirector oldLibrary;
     Block4PowerFluctuation block4;
@@ -41,8 +45,7 @@ public sealed class PlayerFlashlight : MonoBehaviour
             block4 = FindAnyObjectByType<Block4PowerFluctuation>();
             lawSchool = FindAnyObjectByType<LawSchoolAlarmPrototype>();
             wasDark = false;
-            wasLibraryUnpowered = false;
-            nextLibraryFailureAt = libraryFailureEndsAt = -1f;
+            StopFlicker();
         }
 
         bool libraryUnpowered = campusLibrary && campusLibrary.IsUnpowered;
@@ -53,37 +56,68 @@ public sealed class PlayerFlashlight : MonoBehaviour
         if (dark && !wasDark) requested = true;
         wasDark = dark;
 
-        if (libraryUnpowered)
+        bool gameplayActive = Time.timeScale > 0f && !GameMenus.BlocksGameplay &&
+                              !DeathScreen.IsVisible && !DoorReloadScreen.IsReloading;
+        if (!gameplayActive)
         {
-            if (!wasLibraryUnpowered)
-                nextLibraryFailureAt = Time.time + Random.Range(1f, 60f);
-            if (Time.timeScale > 0f && !GameMenus.BlocksGameplay &&
-                !DeathScreen.IsVisible && !DoorReloadScreen.IsReloading)
-            {
-                if (libraryFailureEndsAt >= 0f && Time.time >= libraryFailureEndsAt)
-                {
-                    libraryFailureEndsAt = -1f;
-                    nextLibraryFailureAt = Time.time + Random.Range(1f, 60f);
-                }
-                if (libraryFailureEndsAt < 0f && Time.time >= nextLibraryFailureAt)
-                {
-                    libraryFailureEndsAt = Time.time + LibraryFailureDuration;
-                    nextLibraryFailureAt = -1f;
-                }
-            }
+            if (flickerRoutine != null || nextFlickerAt >= 0f) StopFlicker();
+            return;
         }
-        else
-            nextLibraryFailureAt = libraryFailureEndsAt = -1f;
-        wasLibraryUnpowered = libraryUnpowered;
 
-        if (Time.timeScale > 0 && !GameMenus.BlocksGameplay &&
-            !DeathScreen.IsVisible && !DoorReloadScreen.IsReloading &&
-            ((Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame) ||
-             (Gamepad.current != null && Gamepad.current.dpad.up.wasPressedThisFrame)))
+        if ((Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame) ||
+            (Gamepad.current != null && Gamepad.current.dpad.up.wasPressedThisFrame))
+        {
             requested = !requested;
+            StopFlicker();
+        }
 
         if (requested && !beam) CreateBeam();
-        if (beam) beam.enabled = requested && libraryFailureEndsAt < 0f;
+
+        if (beam)
+        {
+            beam.enabled = requested;
+            if (requested && flickerRoutine == null)
+            {
+                if (nextFlickerAt < 0f)
+                    nextFlickerAt = Time.time + Random.Range(MinFlickerInterval, MaxFlickerInterval);
+                if (Time.time >= nextFlickerAt)
+                    flickerRoutine = StartCoroutine(FlickerRoutine(++flickerToken));
+            }
+        }
+    }
+
+    bool CanFlicker(int token) => token == flickerToken && beam && requested &&
+                                  Time.timeScale > 0f && !GameMenus.BlocksGameplay &&
+                                  !DeathScreen.IsVisible && !DoorReloadScreen.IsReloading;
+
+    IEnumerator FlickerRoutine(int token)
+    {
+        int blinks = Random.Range(2, 7);
+        for (int i = 0; i < blinks; i++)
+        {
+            if (!CanFlicker(token)) break;
+            beam.intensity = BeamIntensity * FlickerDimFactor;
+            yield return new WaitForSeconds(Random.Range(.04f, .12f));
+            if (!CanFlicker(token)) break;
+            beam.intensity = BeamIntensity;
+            yield return new WaitForSeconds(Random.Range(.07f, .2f));
+        }
+        if (token != flickerToken) yield break;
+        beam.intensity = BeamIntensity;
+        flickerRoutine = null;
+        nextFlickerAt = Time.time + Random.Range(MinFlickerInterval, MaxFlickerInterval);
+    }
+
+    void StopFlicker()
+    {
+        flickerToken++;
+        if (flickerRoutine != null)
+        {
+            StopCoroutine(flickerRoutine);
+            flickerRoutine = null;
+        }
+        if (beam) beam.intensity = BeamIntensity;
+        nextFlickerAt = -1f;
     }
 
     void CreateBeam()
@@ -103,7 +137,7 @@ public sealed class PlayerFlashlight : MonoBehaviour
         beam.range = 30f;
         beam.spotAngle = 58f;
         beam.innerSpotAngle = 32f;
-        beam.intensity = 65f;
+        beam.intensity = BeamIntensity;
         beam.shadows = LightShadows.None;
         beam.renderMode = LightRenderMode.ForcePixel;
         beam.cullingMask = view.cullingMask;
@@ -114,8 +148,13 @@ public sealed class PlayerFlashlight : MonoBehaviour
 
     void OnDisable()
     {
+        StopFlicker();
         if (current == this) current = null;
         if (beam) beam.enabled = false;
     }
-    void OnDestroy() { if (beam) Destroy(beam.gameObject); }
+    void OnDestroy()
+    {
+        StopFlicker();
+        if (beam) Destroy(beam.gameObject);
+    }
 }

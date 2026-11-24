@@ -4,12 +4,17 @@ using UnityEngine;
 public class AmmoPickup : MonoBehaviour
 {
     [SerializeField] private int ammoAmount = 10;
-    [Tooltip("Fill the equipped weapon's magazine and reserve instead of adding a fixed amount.")]
+    [Tooltip("Fill the equipped weapon's magazine; if it is already full, add a fixed amount to the reserve.")]
     [SerializeField] private bool refillEquippedWeapon;
     private bool consumed;
     public event System.Action Collected;
 
     private void OnTriggerEnter(Collider other)
+    {
+        TryCollect(other);
+    }
+
+    private void OnTriggerStay(Collider other)
     {
         TryCollect(other);
     }
@@ -29,12 +34,8 @@ public class AmmoPickup : MonoBehaviour
         if (currentGun == null)
             return false;
 
-        if (refillEquippedWeapon)
-        {
-            if (!currentGun.RefillAmmo())
-                return false;
-        }
-        else
+        bool refilled = refillEquippedWeapon && currentGun.RefillAmmo();
+        if (!refilled)
         {
             if (ammoAmount <= 0)
                 return false;

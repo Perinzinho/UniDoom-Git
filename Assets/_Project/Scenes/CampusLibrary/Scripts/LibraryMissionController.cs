@@ -38,7 +38,7 @@ namespace UniDoom.CampusLibrary
         public LibraryMissionTarget[] Fuses => (LibraryMissionTarget[])fuses.Clone();
         public LibraryMissionTarget[] Buttons => (LibraryMissionTarget[])buttons.Clone();
         public LibraryMissionTarget Generator => generator;
-        public string Clue => "Consulte os bilhetes no acesso restrito, na oficina e nas mesas de estudo.";
+        public string Clue => "Não há instruções legíveis aqui.";
         public static bool GameplayAvailable => Time.timeScale > 0 && !GameMenus.BlocksGameplay && !DeathScreen.IsVisible && !DoorReloadScreen.IsReloading &&
             GameManager.SessionPlayer != null && (!GameManager.SessionPlayer.TryGetComponent<PlayerLife>(out var life) || !life.IsDead);
 
@@ -308,10 +308,7 @@ namespace UniDoom.CampusLibrary
             RefreshFuseHud();
             if (worldClue)
             {
-                if (randomizeSequence && sequence != null && LibraryMissionProgress.ValidSequence(sequence))
-                    worldClue.text = $"SEQUÊNCIA DO CIRCUITO\nT{sequence[0]} → T{sequence[1]} → T{sequence[2]} → T{sequence[3]}\nT{sequence[4]} → T{sequence[5]} → T{sequence[6]}";
-                else
-                    worldClue.text = "REGISTROS DE MANUTENÇÃO\nConsulte os bilhetes do plantão.";
+                worldClue.text = "SEQUÊNCIA DO CIRCUITO\nTeste os terminais na ordem que estabilizar o circuito.";
             }
             foreach (var fuse in fuses) if (fuse) fuse.gameObject.SetActive(LibraryMissionProgress.Stage >= LibraryMissionStage.SearchingFuses && !LibraryMissionProgress.HasFuse(fuse.Id));
             for (int i = 0; i < fuseSockets.Length; i++) Paint(fuseSockets[i], LibraryMissionProgress.Stage >= LibraryMissionStage.FusesInstalled);

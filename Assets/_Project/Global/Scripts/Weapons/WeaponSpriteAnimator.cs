@@ -24,6 +24,7 @@ public class WeaponSpriteAnimator : MonoBehaviour
     private float timer;
     private bool isShooting;
     private bool isReloading;
+    private bool shootOverridesReload;
     private Vector2 defaultHudPosition;
     private Vector2 defaultHudSize;
     private bool hasDefaultHudLayout;
@@ -299,7 +300,7 @@ public class WeaponSpriteAnimator : MonoBehaviour
         float frameInterval = 1f / Mathf.Max(currentFrameRate, 1f);
 
         timer += Time.deltaTime;
-        if (isReloading)
+        if (isReloading && !shootOverridesReload)
         {
             if (gun is Shotgun && gun.ReloadRoundCount > 0)
             {
@@ -332,8 +333,17 @@ public class WeaponSpriteAnimator : MonoBehaviour
                 if (isShooting)
                 {
                     isShooting = false;
-                    currentAnimation = idleFrames;
-                    currentFrameRate = idleFrameRate;
+                    if (shootOverridesReload)
+                    {
+                        shootOverridesReload = false;
+                        currentAnimation = rechargeFrames;
+                        currentFrameRate = rechargeFrameRate;
+                    }
+                    else
+                    {
+                        currentAnimation = idleFrames;
+                        currentFrameRate = idleFrameRate;
+                    }
                 }
 
                 currentFrame = 0;
@@ -364,12 +374,12 @@ public class WeaponSpriteAnimator : MonoBehaviour
 
     void PlayShootAnimation()
     {
-        if (isReloading || shootFrames == null || shootFrames.Length == 0)
-            return;
-        if (isShooting && gun is AK47)
-            return;
+        if (shootFrames == null || shootFrames.Length == 0) return;
+        bool duringShotgunReload = isReloading && gun is Shotgun;
+        if (isReloading && !duringShotgunReload) return;
 
         isShooting = true;
+        shootOverridesReload = duringShotgunReload;
         currentAnimation = shootFrames;
         currentFrameRate = shootFrameRate;
         currentFrame = 0;
@@ -385,6 +395,7 @@ public class WeaponSpriteAnimator : MonoBehaviour
 
         isReloading = true;
         isShooting = false;
+        shootOverridesReload = false;
         currentAnimation = rechargeFrames;
         currentFrameRate = rechargeFrameRate;
         currentFrame = 0;
@@ -398,6 +409,7 @@ public class WeaponSpriteAnimator : MonoBehaviour
     {
         isReloading = false;
         isShooting = false;
+        shootOverridesReload = false;
         currentAnimation = idleFrames;
         currentFrameRate = idleFrameRate;
         currentFrame = 0;

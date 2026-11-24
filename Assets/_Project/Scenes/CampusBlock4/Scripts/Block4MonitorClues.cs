@@ -8,6 +8,11 @@ namespace UniDoom.CampusBlock4
     [DisallowMultipleComponent]
     public sealed class Block4MonitorClues : MonoBehaviour
     {
+        static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
+        static readonly Color SymbolColor = new Color(.34f, .78f, .57f, 1f);
+        static readonly Color HighlightColor = new Color(1f, .85f, .28f, 1f);
+        const float HighlightSeconds = 8f;
+
         [SerializeField] Block4PowerFluctuation power;
         [SerializeField] Transform[] displays;
         [SerializeField] Transform[] firstRowMonitors;
@@ -16,11 +21,18 @@ namespace UniDoom.CampusBlock4
         [SerializeField] Vector2 shiftCooldown = Vector2.zero;
         [SerializeField, Range(0, 1)] float blackoutShiftChance = 1;
 
-        Vector3[] displayOffsets;
-        Quaternion[] displayRotations;
+        Renderer[] symbolScreens;
+        MaterialPropertyBlock screenProperties;
+        float highlightUntil;
 
         void OnEnable() { if (power) power.BlackoutStarted += OnBlackout; }
-        void OnDisable() { if (power) power.BlackoutStarted -= OnBlackout; }
+        void OnDisable()
+        {
+            if (power) power.BlackoutStarted -= OnBlackout;
+            if (symbolScreens == null) return;
+            foreach (var screen in symbolScreens)
+                if (screen) screen.SetPropertyBlock(null);
+        }
         void Start()
         {
             if (displays == null || displays.Length != 5 || firstRowMonitors == null || firstRowMonitors.Length != 8 ||
@@ -34,12 +46,40 @@ namespace UniDoom.CampusBlock4
             PlacePhotographs();
             if (!ValidDestinations(Block4PuzzleProgress.MonitorDestinations))
                 Block4PuzzleProgress.MonitorDestinations = ChooseDestinations(firstRowMonitors.Length, initialDestinations);
-            CacheDisplayOffsets(Block4PuzzleProgress.MonitorDestinations);
             ApplyDestinations(Block4PuzzleProgress.MonitorDestinations);
+            CacheSymbolScreens();
+            highlightUntil = Time.time + HighlightSeconds;
             if (Block4PuzzleProgress.NextClueShiftAt <= 0)
                 Block4PuzzleProgress.NextClueShiftAt = Time.time + UnityEngine.Random.Range(shiftCooldown.x, shiftCooldown.y);
             GameplayNotice.ShowWhenGameplayReady(this,
-            "Nem tudo o que voc\u00ea precisa est\u00e1 \u00e0 primeira vista. Examine os computadores e procure conex\u00f5es entre as informa\u00e7\u00f5es encontradas. A resposta pode estar escondida nos pequenos detalhes.", 7.5f);        }
+                "As pistas com símbolo e número ficam nas telas dos computadores da primeira fileira, junto às janelas. Elas mudam de monitor a cada apagão.", 7.5f);
+        }
+
+        void CacheSymbolScreens()
+        {
+            var found = new List<Renderer>();
+            foreach (var display in displays)
+            {
+                if (!display) continue;
+                foreach (var screen in display.GetComponentsInChildren<Renderer>(true))
+                    if (screen.sharedMaterial && screen.sharedMaterial.name == "LCD puzzle symbols")
+                        found.Add(screen);
+            }
+            symbolScreens = found.ToArray();
+            screenProperties = new MaterialPropertyBlock();
+        }
+
+        void Update()
+        {
+            if (symbolScreens == null || symbolScreens.Length == 0) return;
+            screenProperties ??= new MaterialPropertyBlock();
+            float wave = Mathf.PingPong(Time.time * 1.5f, 1f);
+            float pulse = Mathf.SmoothStep(0f, 1f, wave) * Mathf.SmoothStep(0f, 1f, 1f - wave);
+            float strength = Time.time < highlightUntil ? .35f + .65f * pulse : .12f * pulse;
+            screenProperties.SetColor(BaseColorId, Color.Lerp(SymbolColor, HighlightColor, strength));
+            foreach (var screen in symbolScreens)
+                if (screen) screen.SetPropertyBlock(screenProperties);
+        }
 
         bool ValidDestinations(int[] destinations)
         {
@@ -80,20 +120,9 @@ namespace UniDoom.CampusBlock4
                 UnityEngine.Random.value >= blackoutShiftChance) return;
             var next = ChooseDestinations(firstRowMonitors.Length, Block4PuzzleProgress.MonitorDestinations);
             ApplyDestinations(next);
+            highlightUntil = Time.time + HighlightSeconds;
             Block4PuzzleProgress.MonitorDestinations = next;
             Block4PuzzleProgress.NextClueShiftAt = Time.time + UnityEngine.Random.Range(shiftCooldown.x, shiftCooldown.y);
-        }
-
-        void CacheDisplayOffsets(int[] destinations)
-        {
-            displayOffsets = new Vector3[displays.Length];
-            displayRotations = new Quaternion[displays.Length];
-            for (int i = 0; i < displays.Length; i++)
-            {
-                var anchor = firstRowMonitors[destinations[i]];
-                displayOffsets[i] = anchor ? anchor.InverseTransformPoint(displays[i].position) : Vector3.zero;
-                displayRotations[i] = anchor ? Quaternion.Inverse(anchor.rotation) * displays[i].rotation : Quaternion.identity;
-            }
         }
 
         // Placement changes only; the symbol, digit, photographs and solution are never rewritten.
@@ -110,12 +139,27 @@ namespace UniDoom.CampusBlock4
             for (int i = 0; i < destinations.Length; i++)
             {
                 var anchor = firstRowMonitors[destinations[i]];
-                if (displayOffsets != null && displayRotations != null && i < displayOffsets.Length)
-                    displays[i].SetPositionAndRotation(anchor.TransformPoint(displayOffsets[i]), anchor.rotation * displayRotations[i]);
-                else
-                    displays[i].SetPositionAndRotation(anchor.position, anchor.rotation);
+                // All clue roots have the same screen-relative geometry. Their authored
+                // positions differ, so each one must use the destination's pose directly.
+                displays[i].SetPositionAndRotation(anchor.position, anchor.rotation);
             }
         }
+
+        internal bool ReservesMonitor(Transform monitor)
+        {
+            if (!monitor) return false;
+            foreach (var anchor in firstRowMonitors)
+                if (anchor && anchor.IsChildOf(monitor)) return true;
+            foreach (var face in photoFaces)
+                if (face && face.IsChildOf(monitor)) return true;
+            return false;
+        }
+
+        internal bool HasReservedMonitors =>
+            firstRowMonitors != null && firstRowMonitors.Length == 8 &&
+            photoFaces != null && photoFaces.Length == 4 &&
+            Array.TrueForAll(firstRowMonitors, anchor => anchor != null) &&
+            Array.TrueForAll(photoFaces, face => face != null);
 
         public static int[] ChooseDestinations(int anchorCount, int[] current)
         {

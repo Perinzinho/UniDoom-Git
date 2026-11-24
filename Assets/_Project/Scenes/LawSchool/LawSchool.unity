@@ -3873,6 +3873,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 941904419}
@@ -4635,6 +4637,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1870634901}
@@ -7500,6 +7504,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 22640239}
@@ -11727,6 +11733,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1250004550}
@@ -27733,118 +27741,6 @@ Transform:
   - {fileID: 428917132}
   m_Father: {fileID: 685027215}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &106224147
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 106224148}
-  - component: {fileID: 106224151}
-  - component: {fileID: 106224150}
-  - component: {fileID: 106224149}
-  m_Layer: 0
-  m_Name: Ceramic splashback
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 16
-  m_IsActive: 1
---- !u!4 &106224148
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 106224147}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -5.175, y: 0.72, z: 9.8}
-  m_LocalScale: {x: 0.04, y: 1.44, z: 19.45}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1383056641}
-  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
---- !u!23 &106224149
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 106224147}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 35490c71d7f77e84a93ded1905ecd8d8, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 1
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_MaskInteraction: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &106224150
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 106224147}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!33 &106224151
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 106224147}
-  m_Mesh: {fileID: 4300000, guid: 15b2f389304dca040a15fee6926169ad, type: 2}
 --- !u!1 &106241485
 GameObject:
   m_ObjectHideFlags: 0
@@ -35910,6 +35806,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 791388888}
@@ -42744,6 +42642,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 513745650}
@@ -49776,6 +49676,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 67419574}
@@ -53658,6 +53560,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 292515017}
@@ -57093,6 +56997,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 723707146}
@@ -86619,6 +86525,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1038815669}
@@ -89351,6 +89259,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1301871691}
@@ -100974,6 +100884,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 471018191}
@@ -105450,6 +105362,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 815366783}
@@ -116907,6 +116821,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1071627208}
@@ -118953,6 +118869,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1821704446}
@@ -122227,6 +122145,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1605701267}
@@ -133789,6 +133709,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1438148297}
@@ -137509,6 +137431,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 2102054135}
@@ -143430,6 +143354,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 62310591}
@@ -150644,6 +150570,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 2064410030}
@@ -155335,6 +155263,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1099861121}
@@ -155884,6 +155814,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 282879838}
@@ -163120,6 +163052,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1409207497}
@@ -166431,6 +166365,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1089094388}
@@ -173344,6 +173280,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 780883303}
@@ -173428,6 +173366,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1986455600}
@@ -175373,6 +175313,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1385213754}
@@ -186086,6 +186028,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1956862587}
@@ -187741,6 +187685,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1955652937}
@@ -193480,6 +193426,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1904957880}
@@ -198441,6 +198389,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 624730186}
@@ -201305,6 +201255,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 743675937}
@@ -211418,6 +211370,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 2083897536}
@@ -224256,6 +224210,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 681320513}
@@ -227654,6 +227610,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 41558962}
@@ -231854,6 +231812,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1827730560}
@@ -238117,6 +238077,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 288066990}
@@ -239843,6 +239805,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 915545240}
@@ -241366,6 +241330,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 432437189}
@@ -264709,6 +264675,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: law-school-maintenance
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1776898761}
@@ -265717,6 +265685,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 2068706549}
@@ -287397,6 +287367,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 2123623124}
@@ -294755,6 +294727,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 628162527}
@@ -299523,7 +299497,7 @@ MonoBehaviour:
   alarm: {fileID: 1795379039}
   solidBarrier: {fileID: 1291473152}
   warningDistance: 3
-  warningText: "Sa\u00edda bloqueada pelo alarme. Desligue-o no quadro da manuten\u00e7\u00e3o."
+  warningText: "Sa\xEDda bloqueada pelo alarme. Desligue-o no quadro da manuten\xE7\xE3o."
 --- !u!1 &1012703274
 GameObject:
   m_ObjectHideFlags: 0
@@ -300514,7 +300488,7 @@ MonoBehaviour:
   requiresKey03: 0
   requiredInventoryKey: 
   requiredCompletedEvent: law-school-cell-key-alarm
-  lockedMessage: "Fechadura eletr\u00f4nica ativa. O circuito precisa ser desligado."
+  lockedMessage: "Fechadura eletr\xF4nica ativa. O circuito precisa ser desligado."
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1119082858}
@@ -304304,6 +304278,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1288169404}
@@ -318275,6 +318251,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1476026221}
@@ -329049,6 +329027,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1708187350}
@@ -329138,6 +329118,7 @@ Transform:
   - {fileID: 2072239416}
   - {fileID: 164686869}
   - {fileID: 1453804150}
+  - {fileID: 8790000000000000005}
   m_Father: {fileID: 299184222}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1110936510
@@ -329708,6 +329689,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1246433873}
@@ -334608,6 +334591,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1888166276}
@@ -344259,6 +344244,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1383483670}
@@ -359356,6 +359343,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1512941236}
@@ -365803,6 +365792,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 876913175}
@@ -367201,6 +367192,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 463743450}
@@ -376353,7 +376346,6 @@ Transform:
   - {fileID: 1595985182}
   - {fileID: 108124163}
   - {fileID: 2089003254}
-  - {fileID: 9101000000000000003}
   - {fileID: 1809896598}
   - {fileID: 1793490381}
   - {fileID: 473223179}
@@ -376429,6 +376421,7 @@ Transform:
   - {fileID: 612566663}
   - {fileID: 2040592866}
   - {fileID: 1111631168}
+  - {fileID: 915205271}
   m_Father: {fileID: 1607353075}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1265100892
@@ -379251,6 +379244,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1509385277}
@@ -385350,6 +385345,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 911093138}
@@ -397511,6 +397508,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1667820186}
@@ -399711,6 +399710,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1524752112}
@@ -405752,6 +405753,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1320277580}
@@ -411736,7 +411739,6 @@ Transform:
   - {fileID: 1925913865}
   - {fileID: 883604809}
   - {fileID: 1939804177}
-  - {fileID: 106224148}
   - {fileID: 732803397}
   - {fileID: 200900987}
   - {fileID: 157256750}
@@ -419875,6 +419877,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 186227100}
@@ -433059,6 +433063,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1130804665}
@@ -434990,6 +434996,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 117586065}
@@ -445892,6 +445900,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1767848891}
@@ -452508,6 +452518,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1397207199}
@@ -454247,6 +454259,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 403341599}
@@ -457578,6 +457592,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 2036047743}
@@ -477012,7 +477028,6 @@ Transform:
   - {fileID: 162180590}
   - {fileID: 1265052195}
   - {fileID: 200616557}
-  - {fileID: 915205271}
   - {fileID: 1627603515}
   - {fileID: 243603363}
   - {fileID: 758680693}
@@ -488111,6 +488126,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1062652313}
@@ -520627,6 +520644,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 229421981}
@@ -528980,6 +528999,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 291431981}
@@ -529273,6 +529294,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1444904299}
@@ -548311,6 +548334,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 758450755}
@@ -549056,6 +549081,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 819339009}
@@ -573746,6 +573773,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 552144902}
@@ -579081,6 +579110,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 935548506}
@@ -580428,6 +580459,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 637886670}
@@ -588374,6 +588407,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 261487623}
@@ -603376,6 +603411,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 424423343}
@@ -604870,6 +604907,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1208982837}
@@ -606750,6 +606789,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 208692478}
@@ -611786,6 +611827,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1158447166}
@@ -624792,55 +624835,6 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 2484632528274995642, guid: 2f9f62908021eda41b3812a84cea2326, type: 3}
   m_PrefabInstance: {fileID: 2089003253}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &9101000000000000000
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1265052195}
-    m_Modifications:
-    - target: {fileID: 2820889012912510963, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
-      propertyPath: m_Name
-      value: AK47 Pickup — Mesa da sala 126
-      objectReference: {fileID: 0}
-    - target: {fileID: 2820889012912510963, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 2.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 2820889012912510963, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2820889012912510963, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 1.95
-      objectReference: {fileID: 0}
-    - target: {fileID: 2820889012912510963, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.003
-      objectReference: {fileID: 0}
-    - target: {fileID: 2820889012912510963, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.003
-      objectReference: {fileID: 0}
-    - target: {fileID: 8189128935669246334, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
-      propertyPath: m_Sprite
-      value: {fileID: 21300000, guid: e78bb4c8432845168a3765b2966936e7, type: 3}
-    - target: {fileID: 8189128935669246334, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
-      propertyPath: m_Size
-      value: {x: 21.72, y: 7.24}
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
---- !u!4 &9101000000000000003 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2820889012912510963, guid: c1b2a3d4e5f6478899aabbccddeeff01, type: 3}
-  m_PrefabInstance: {fileID: 9101000000000000000}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &2089381067
 GameObject:
@@ -639889,6 +639883,8 @@ MonoBehaviour:
   requiresKey02: 0
   requiresKey03: 0
   requiredInventoryKey: 
+  requiredCompletedEvent: 
+  lockedMessage: 
   requiresManualActivation: 0
   stayOpenAfterUnlock: 1
   door: {fileID: 1219033267}
@@ -643644,3 +643640,61 @@ SceneRoots:
   - {fileID: 580899698}
   - {fileID: 1153897547}
   - {fileID: 1750092089}
+--- !u!1001 &8790000000000000004
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1110338350}
+    m_Modifications:
+    - target: {fileID: 1001, guid: 8a5792e082604e75befe1a6418f2b35f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001, guid: 8a5792e082604e75befe1a6418f2b35f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001, guid: 8a5792e082604e75befe1a6418f2b35f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 19.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001, guid: 8a5792e082604e75befe1a6418f2b35f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001, guid: 8a5792e082604e75befe1a6418f2b35f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001, guid: 8a5792e082604e75befe1a6418f2b35f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001, guid: 8a5792e082604e75befe1a6418f2b35f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001, guid: 8a5792e082604e75befe1a6418f2b35f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001, guid: 8a5792e082604e75befe1a6418f2b35f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001, guid: 8a5792e082604e75befe1a6418f2b35f, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.5
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8a5792e082604e75befe1a6418f2b35f, type: 3}
+--- !u!4 &8790000000000000005 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1001, guid: 8a5792e082604e75befe1a6418f2b35f, type: 3}
+  m_PrefabInstance: {fileID: 8790000000000000004}
+  m_PrefabAsset: {fileID: 0}
