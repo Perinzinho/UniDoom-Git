@@ -20,6 +20,9 @@ namespace UniDoom.CampusBlock4
         readonly List<Renderer> selectedScreens = new();
         readonly List<Material> originalMaterials = new();
         VideoPlayer player;
+        GameObject audioHost;
+        AudioSource audioSource;
+        bool audioPositioned;
         RenderTexture videoTexture;
         Material videoMaterial;
 
@@ -57,15 +60,38 @@ namespace UniDoom.CampusBlock4
             }
             if (count == 0) return;
 
+            // Create the AudioSource before the VideoPlayer (same order as OpeningVideo,
+            // which works in this project). It sits on one of the actual monitors with
+            // a very short falloff, so the player hears it only when standing close.
+            // ignoreListenerPause keeps the video audible across scene transitions.
+            audioHost = new GameObject("Block 4 monitor video audio");
+            audioHost.transform.SetParent(transform, false);
+            audioHost.transform.position = selectedScreens[0].bounds.center; // refined in OnStarted
+            audioSource = audioHost.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
+            audioSource.spatialBlend = 1f;
+            audioSource.rolloffMode = AudioRolloffMode.Linear;
+            audioSource.minDistance = 1f;
+            audioSource.maxDistance = 5f;
+            audioSource.volume = 1f;
+            audioSource.mute = false;
+            // The project can leave AudioListener.pause set during transitions; keep
+            // this source independent of it (same approach as the opening video).
+            audioSource.ignoreListenerPause = true;
+
             player = gameObject.AddComponent<VideoPlayer>();
             player.playOnAwake = false;
             player.source = VideoSource.Url;
             player.url = path;
             player.renderMode = VideoRenderMode.RenderTexture;
             player.aspectRatio = VideoAspectRatio.FitInside;
-            player.audioOutputMode = VideoAudioOutputMode.None;
+            player.audioOutputMode = VideoAudioOutputMode.AudioSource;
+            player.controlledAudioTrackCount = 1;
+            player.EnableAudioTrack(0, true);
+            player.SetTargetAudioSource(0, audioSource);
             player.isLooping = true;
             player.prepareCompleted += OnPrepared;
+            player.started += OnStarted;
             player.errorReceived += OnError;
             player.Prepare();
         }
@@ -88,8 +114,41 @@ namespace UniDoom.CampusBlock4
             for (int i = 0; i < selectedScreens.Count; i++)
                 if (selectedScreens[i]) selectedScreens[i].sharedMaterial = videoMaterial;
 
+            // Bind the audio track before Play(): changing the target after playback
+            // has started can cut the audio stream.
+            if (audioSource != null)
+            {
+                prepared.EnableAudioTrack(0, true);
+                prepared.SetTargetAudioSource(0, audioSource);
+            }
             prepared.targetTexture = videoTexture;
             prepared.Play();
+        }
+
+        void OnStarted(VideoPlayer started)
+        {
+            if (audioSource == null || audioHost == null) return;
+
+            if (!audioPositioned)
+            {
+                // The first candidate can be in a sealed-off part of the building. Put
+                // the sound on the easter-egg monitor nearest to where the player is.
+                Vector3 reference = GameManager.SessionPlayer != null
+                    ? GameManager.SessionPlayer.transform.position
+                    : audioHost.transform.position;
+                Renderer nearest = null;
+                float best = float.MaxValue;
+                foreach (var screen in selectedScreens)
+                {
+                    if (!screen) continue;
+                    float distance = (screen.bounds.center - reference).sqrMagnitude;
+                    if (distance >= best) continue;
+                    best = distance;
+                    nearest = screen;
+                }
+                if (nearest != null) audioHost.transform.position = nearest.bounds.center;
+                audioPositioned = true;
+            }
         }
 
         void OnError(VideoPlayer _, string message)
@@ -105,12 +164,24 @@ namespace UniDoom.CampusBlock4
             if (player)
             {
                 player.prepareCompleted -= OnPrepared;
+                player.started -= OnStarted;
                 player.errorReceived -= OnError;
                 player.Stop();
                 player.targetTexture = null;
                 Destroy(player);
                 player = null;
             }
+            if (audioSource)
+            {
+                audioSource.Stop();
+                audioSource = null;
+            }
+            if (audioHost)
+            {
+                Destroy(audioHost);
+                audioHost = null;
+            }
+            audioPositioned = false;
             for (int i = 0; i < selectedScreens.Count; i++)
                 if (selectedScreens[i]) selectedScreens[i].sharedMaterial = originalMaterials[i];
             selectedScreens.Clear();

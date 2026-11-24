@@ -100,15 +100,31 @@ namespace UniDoom.CampusBlock4
         }
         void SetPower(bool on)
         {
-            for(int i=0;i<fixtures.Length;i++)if(fixtures[i])
+            // OnDisable can run before Awake (domain reload / scene teardown), when
+            // these serialized arrays and material blocks are still null.
+            if (fixtures == null || diffusers == null || intensities == null ||
+                fixtureEnabled == null || originalBlocks == null || darkBlock == null) return;
+            for(int i=0;i<fixtures.Length;i++)if(fixtures[i] && i<intensities.Length && i<fixtureEnabled.Length)
             {
                 bool emergency = !on && i%12==0;
                 fixtures[i].intensity = on ? intensities[i] : emergency ? intensities[i]*.035f : 0;
                 fixtures[i].enabled = fixtureEnabled[i] && (on || emergency);
             }
-            for(int i=0;i<diffusers.Length;i++)if(diffusers[i])diffusers[i].SetPropertyBlock(on?originalBlocks[i]:darkBlock);
+            for(int i=0;i<diffusers.Length;i++)if(diffusers[i] && i<originalBlocks.Length)
+            {
+                MaterialPropertyBlock block = on ? originalBlocks[i] : darkBlock;
+                if (block != null) diffusers[i].SetPropertyBlock(block);
+            }
         }
-        void RestorePower(){ExitBlackout();if(intensities!=null)SetPower(true);}
-        void OnDisable(){RestorePower();phase=-1;}
+        void RestorePower()
+        {
+            ExitBlackout();
+            if (intensities != null) SetPower(true);
+        }
+        void OnDisable()
+        {
+            if (intensities != null && diffusers != null) RestorePower();
+            phase = -1;
+        }
     }
 }
