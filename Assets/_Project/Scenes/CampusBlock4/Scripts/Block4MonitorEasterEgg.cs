@@ -44,7 +44,7 @@ namespace UniDoom.CampusBlock4
             }
 
             // Use a private RNG so picking the easter-egg screens does not change puzzle randomness.
-            var random = new System.Random(unchecked(Environment.TickCount ^ GetInstanceID()));
+            var random = new System.Random(unchecked(Environment.TickCount ^ GetEntityId().GetHashCode()));
             int count = Mathf.Min(screenCount, candidates.Count);
             for (int i = 0; i < count; i++)
             {
