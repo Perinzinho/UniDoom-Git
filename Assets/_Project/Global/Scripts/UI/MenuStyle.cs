@@ -65,6 +65,55 @@ namespace UniDoom.UI
             return text;
         }
 
+        static Sprite upArrowSprite;
+        static Sprite downArrowSprite;
+
+        static Sprite ArrowSprite(bool up)
+        {
+            var cached = up ? upArrowSprite : downArrowSprite;
+            if (cached != null) return cached;
+
+            const int size = 24;
+            var texture = new Texture2D(size, size, TextureFormat.RGBA32, false)
+            {
+                name = up ? "UpArrow" : "DownArrow",
+                filterMode = FilterMode.Bilinear
+            };
+            var pixels = new Color32[size * size];
+            for (int y = 0; y < size; y++)
+            {
+                float distanceFromTip = up ? size - 1 - y : y;
+                float halfWidth = Mathf.Lerp(.5f, 9f, Mathf.Clamp01(distanceFromTip / 14f));
+                for (int x = 0; x < size; x++)
+                {
+                    float horizontal = Mathf.Abs(x - (size - 1) * .5f);
+                    bool triangle = distanceFromTip <= 16f && horizontal <= halfWidth;
+                    bool stem = up ? y <= 13f : y >= 10f;
+                    stem = stem && horizontal <= 3f;
+                    pixels[y * size + x] = triangle || stem
+                        ? new Color32(255, 255, 255, 255)
+                        : new Color32(0, 0, 0, 0);
+                }
+            }
+            texture.SetPixels32(pixels);
+            texture.Apply();
+            var sprite = Sprite.Create(texture, new Rect(0, 0, size, size), new Vector2(.5f, .5f), 100);
+            if (up) upArrowSprite = sprite;
+            else downArrowSprite = sprite;
+            return sprite;
+        }
+
+        internal static void NavigationArrows(Transform parent, float x, float y, float size, Color color)
+        {
+            var up = Image("UpArrow", parent, x, y, size, size, color);
+            up.sprite = ArrowSprite(true);
+            up.preserveAspect = true;
+
+            var down = Image("DownArrow", parent, x + size + 5, y, size, size, color);
+            down.sprite = ArrowSprite(false);
+            down.preserveAspect = true;
+        }
+
         internal static Button Button(Transform parent, string name, string label, float x, float y,
             float w, UnityAction action, float size = 34, float height = 64)
         {

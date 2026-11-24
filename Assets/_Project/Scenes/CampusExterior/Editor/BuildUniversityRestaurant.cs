@@ -3,6 +3,7 @@ using System;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UniDoom.CampusExterior;
 
 // Rebuilds the restaurant from the supplied OBJ models. Run only from the menu or batch mode.
 public static class BuildUniversityRestaurant
@@ -184,6 +185,83 @@ public static class BuildUniversityRestaurant
         Debug.Log("RESTAURANT_CLEARANCE_TOTAL|otherColliders=" + overlaps + "|center=" + restaurant.transform.position);
     }
 
+    [MenuItem("Tools/UniDoom/Campus/Configure Restaurant Menu")]
+    public static void ConfigureRestaurantMenu()
+    {
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
+        if (prefab == null) throw new InvalidOperationException("Restaurant prefab is missing: " + PrefabPath);
+
+        var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+        foreach (var root in scene.GetRootGameObjects())
+        {
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(root) != PrefabPath) continue;
+            var menu = root.GetComponent<UniDoom.CampusExterior.UniversityRestaurantMenu>();
+            if (menu == null) menu = root.AddComponent<UniDoom.CampusExterior.UniversityRestaurantMenu>();
+            SaveMenuSettingsToPrefab(menu);
+            menu.Refresh();
+            EditorSceneManager.MarkSceneDirty(scene);
+            break;
+        }
+        EditorSceneManager.SaveScene(scene);
+        AssetDatabase.SaveAssets();
+        Debug.Log("University restaurant menu saved to the prefab and current scene.");
+    }
+
+    [MenuItem("Tools/UniDoom/Campus/Save Restaurant Menu to Prefab")]
+    public static void SaveRestaurantMenuToPrefab()
+    {
+        var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+        foreach (var root in scene.GetRootGameObjects())
+        {
+            if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(root) != PrefabPath) continue;
+            var menu = root.GetComponent<UniDoom.CampusExterior.UniversityRestaurantMenu>();
+            if (menu == null)
+                throw new InvalidOperationException("The UniversityRestaurant scene instance has no menu component.");
+            SaveMenuSettingsToPrefab(menu);
+            menu.Refresh();
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+            AssetDatabase.SaveAssets();
+            Debug.Log("Current UniversityRestaurant menu settings saved permanently to the prefab.");
+            return;
+        }
+        throw new InvalidOperationException("UniversityRestaurant instance is missing from CampusExterior.");
+    }
+
+    static void SaveMenuSettingsToPrefab(UniDoom.CampusExterior.UniversityRestaurantMenu sceneMenu)
+    {
+        var contents = PrefabUtility.LoadPrefabContents(PrefabPath);
+        try
+        {
+            var prefabMenu = contents.GetComponent<UniDoom.CampusExterior.UniversityRestaurantMenu>();
+            if (prefabMenu == null)
+                prefabMenu = contents.AddComponent<UniDoom.CampusExterior.UniversityRestaurantMenu>();
+
+            string[] fields =
+            {
+                "establishmentTitle", "statusText", "lanches", "salgados", "bebidas",
+                "ink", "accent", "textSize"
+            };
+
+            var source = new SerializedObject(sceneMenu);
+            var target = new SerializedObject(prefabMenu);
+            foreach (string field in fields)
+            {
+                var sourceProperty = source.FindProperty(field);
+                var targetProperty = target.FindProperty(field);
+                if (sourceProperty != null && targetProperty != null)
+                    targetProperty.serializedObject.CopyFromSerializedProperty(sourceProperty);
+            }
+            target.ApplyModifiedProperties();
+            prefabMenu.Refresh();
+            PrefabUtility.SaveAsPrefabAsset(contents, PrefabPath);
+        }
+        finally
+        {
+            PrefabUtility.UnloadPrefabContents(contents);
+        }
+    }
+
     [MenuItem("Tools/UniDoom/Campus/Rebuild University Restaurant")]
     public static void Build()
     {
@@ -243,6 +321,8 @@ public static class BuildUniversityRestaurant
             }
 
             ApplyEnlargement(root.transform);
+            if (root.GetComponent<UniDoom.CampusExterior.UniversityRestaurantMenu>() == null)
+                root.AddComponent<UniDoom.CampusExterior.UniversityRestaurantMenu>();
             PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
             UnityEngine.Object.DestroyImmediate(root);
             var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
