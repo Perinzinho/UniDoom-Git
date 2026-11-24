@@ -9,6 +9,13 @@ public class KeysUI : MonoBehaviour
     [SerializeField] private Sprite[] libraryKeySprites = new Sprite[2];
     private const int LifeSlots = 3;
     private const int MissionSlots = 3;
+    // Story keys match the campus library keys (72 px). The hearts occupy y=8..74,
+    // so the key row starts at y=84 to leave a gap below them.
+    private const float KeySize = 72f;
+    private const float KeySpacing = 84f;
+    private const float KeyRowTop = 84f;
+    private const float MissionRowTop = 164f;
+    private const float MissionRowTopWithLibraryKey = 196f;
     private PlayerRespawn player;
     private Material livesMaterial;
     private Image[] missionIcons;
@@ -26,14 +33,15 @@ public class KeysUI : MonoBehaviour
             rect.anchorMin = rect.anchorMax = new Vector2(0, 1);
             rect.pivot = new Vector2(.5f, .5f);
             rect.localScale = Vector3.one;
-            rect.sizeDelta = new Vector2(42, 42);
-            rect.anchoredPosition = new Vector2(53 + i * 54, -92);
+            rect.sizeDelta = new Vector2(KeySize, KeySize);
+            rect.anchoredPosition = new Vector2(32 + KeySize * .5f + i * KeySpacing,
+                -(KeyRowTop + KeySize * .5f));
         }
         libraryKeyIcons = new Image[libraryKeySprites.Length];
         for (int i = 0; i < libraryKeyIcons.Length; i++)
         {
             var icon = MenuStyle.Image("Library access key " + (i + 1), keyIcons[0].transform.parent,
-                32 + i * 84, 71, 72, 72, Color.white);
+                32 + i * KeySpacing, KeyRowTop, KeySize, KeySize, Color.white);
             icon.sprite = libraryKeySprites[i];
             icon.preserveAspect = true;
             icon.gameObject.SetActive(false);
@@ -105,14 +113,19 @@ public class KeysUI : MonoBehaviour
         {
             string keyId = i == 0 ? CampusLibraryAccess.LawSchoolKeyId : CampusLibraryAccess.Block4KeyId;
             var icon = libraryKeyIcons[i];
-            icon.rectTransform.anchoredPosition = new Vector2(32 + firstSlot * 54 + i * 84, -71);
+            icon.rectTransform.anchoredPosition = new Vector2(
+                32 + (firstSlot + i) * KeySpacing, -KeyRowTop);
             bool collected = inventory != null && inventory.HasKey(keyId) && icon.sprite != null;
             icon.gameObject.SetActive(collected);
             hasLibraryKey |= collected;
         }
         if (missionIcons != null)
+        {
+            float missionTop = hasLibraryKey ? MissionRowTopWithLibraryKey : MissionRowTop;
             for (int i = 0; i < missionIcons.Length; i++)
-                missionIcons[i].rectTransform.anchoredPosition = new Vector2(68 + i * 84, hasLibraryKey ? -191 : -161);
+                missionIcons[i].rectTransform.anchoredPosition = new Vector2(
+                    68 + i * KeySpacing, -(missionTop + KeySize * .5f));
+        }
     }
 
     public void SetMissionItems(Sprite sprite, int count)
@@ -126,11 +139,12 @@ public class KeysUI : MonoBehaviour
             Transform parent = keyIcons[0].transform.parent;
             for (int i = 0; i < missionIcons.Length; i++)
             {
-                var icon = MenuStyle.Image("Mission item " + (i + 1), parent, 0, 0, 72, 72, Color.white);
+                var icon = MenuStyle.Image("Mission item " + (i + 1), parent, 0, 0, KeySize, KeySize, Color.white);
                 var rect = icon.rectTransform;
                 rect.anchorMin = rect.anchorMax = new Vector2(0, 1);
                 rect.pivot = new Vector2(.5f, .5f);
-                rect.anchoredPosition = new Vector2(68 + i * 84, -161);
+                rect.anchoredPosition = new Vector2(68 + i * KeySpacing,
+                    -(MissionRowTop + KeySize * .5f));
                 icon.preserveAspect = true;
                 missionIcons[i] = icon;
             }

@@ -24,7 +24,10 @@ namespace UniDoom.CampusExterior
         [SerializeField] Color accent = new(0.78f, 0.34f, 0.16f);
         [SerializeField, Min(0.1f)] float textSize = 0.28f;
 
+        const string BoardName = "Post-apocalyptic menu board";
+
         Transform menuRoot;
+        Material boardMaterial;
 
         void OnEnable() => Refresh();
 
@@ -53,13 +56,29 @@ namespace UniDoom.CampusExterior
 
         public void Refresh()
         {
-            if (menuRoot != null) DestroyImmediate(menuRoot.gameObject);
-            menuRoot = new GameObject("Post-apocalyptic menu board").transform;
+            // menuRoot is not serialized, so after a scene reload it is null while the
+            // boards baked by earlier editor runs are still children. Remove every
+            // board by name, otherwise each Refresh stacks another copy on top.
+            for (int i = transform.childCount - 1; i >= 0; i--)
+            {
+                var child = transform.GetChild(i);
+                if (child.name != BoardName) continue;
+                if (Application.isPlaying) Destroy(child.gameObject);
+                else DestroyImmediate(child.gameObject);
+            }
+            menuRoot = new GameObject(BoardName).transform;
             menuRoot.SetParent(transform, false);
             CreateHeader();
             CreateCategory("Menu 1", "LANCHES", lanches, 0);
             CreateCategory("Menu 2", "SALGADOS", salgados, 1);
             CreateCategory("Menu 3", "BEBIDAS", bebidas, 2);
+        }
+
+        void OnDestroy()
+        {
+            if (boardMaterial == null) return;
+            if (Application.isPlaying) Destroy(boardMaterial);
+            else DestroyImmediate(boardMaterial);
         }
 
         void CreateHeader()
@@ -95,11 +114,14 @@ namespace UniDoom.CampusExterior
             if (collider != null) DestroyImmediate(collider);
 
             var renderer = plate.GetComponent<Renderer>();
-            var board = new Material(Shader.Find("Universal Render Pipeline/Lit"));
-            board.name = name + " material";
-            board.color = new Color(.055f, .065f, .060f);
-            board.SetFloat("_Smoothness", .12f);
-            renderer.sharedMaterial = board;
+            if (boardMaterial == null)
+            {
+                boardMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+                boardMaterial.name = BoardName + " material";
+                boardMaterial.color = new Color(.055f, .065f, .060f);
+                boardMaterial.SetFloat("_Smoothness", .12f);
+            }
+            renderer.sharedMaterial = boardMaterial;
         }
 
         TMP_Text CreateWorldText(string name, Vector3 localPosition, float width, float height)

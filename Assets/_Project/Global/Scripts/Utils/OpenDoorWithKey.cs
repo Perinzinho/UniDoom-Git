@@ -64,6 +64,7 @@ public class OpenDoorWithKey : MonoBehaviour
     private float openingDirection = 1f;
     private string sessionDoorId;
     private AudioSource passageAudioSource;
+    private bool isTurnstile;
 
     private bool RequiresAnyKey => requiresKey01 || requiresKey02 || requiresKey03 ||
         !string.IsNullOrEmpty(requiredInventoryKey) || !string.IsNullOrEmpty(requiredCompletedEvent);
@@ -134,7 +135,7 @@ public enum DoorReloadTriggerMode
 
     private void Awake()
     {
-        bool isTurnstile = gameObject.name.IndexOf("catraca", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+        isTurnstile = gameObject.name.IndexOf("catraca", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
             gameObject.name.IndexOf("turnstile", System.StringComparison.OrdinalIgnoreCase) >= 0;
         if (isTurnstile)
         {
@@ -283,7 +284,8 @@ public enum DoorReloadTriggerMode
             Time.time <= contactOpenUntil);
         if (shouldOpen && openProgress <= 0f)
         {
-            if (!UniDoom.UI.DoorReloadScreen.IsReloading && Time.timeScale > 0f)
+            // Catracas have their own passage sound; the generic door opening would overlap it.
+            if (!isTurnstile && !UniDoom.UI.DoorReloadScreen.IsReloading && Time.timeScale > 0f)
                 GameplayAudio.Instance?.PlayDoorOpening();
             // A direção só muda com a porta fechada, evitando saltos durante a passagem.
             foreach (Collider other in nearbyPlayers)
